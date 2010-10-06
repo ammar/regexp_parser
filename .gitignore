@@ -1,0 +1,5 @@
+.*.swp
+.DS_Store
+lib/regexp_parser/parser.rb
+doc
+.yardoc

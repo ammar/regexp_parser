@@ -1,0 +1,11 @@
+= Regexp::Parser
+
+A regular expressions parser library for Ruby that:
+
+* supports 1.8 and 1.9 regex flavors (as a first step)
+* 
+* is based on Ragel
+
+
+
+This project is still under development. More to come soon...
