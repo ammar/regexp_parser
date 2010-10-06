@@ -1,5 +1,5 @@
 require "test/unit"
-require File.expand_path("../../lib/regexp.rb", __FILE__)
+require File.expand_path("../../lib/regexp_parser.rb", __FILE__)
 
 class TestRegexpParser < Test::Unit::TestCase
 
