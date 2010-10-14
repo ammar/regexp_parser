@@ -1,7 +1,7 @@
 require 'rake'
 
-RAGEL_SOURCE_DIR = File.expand_path '../lib/regexp', __FILE__
-RAGEL_OUTPUT_DIR = File.expand_path '../lib/regexp', __FILE__
+RAGEL_SOURCE_DIR = File.expand_path '../lib/regexp_parser', __FILE__
+RAGEL_OUTPUT_DIR = File.expand_path '../lib/regexp_parser', __FILE__
 
 RAGEL_SOURCE_FILES = %w{parser}
 
