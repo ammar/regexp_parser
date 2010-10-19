@@ -1,5 +1,6 @@
 require "test/unit"
-require File.expand_path("../../lib/regexp_parser.rb", __FILE__)
+
+require File.expand_path("../../lib/regexp_parser", __FILE__)
 
 RP = Regexp::Parser
 
@@ -9,27 +10,32 @@ class TestRegexpParser < Test::Unit::TestCase
     assert_instance_of( RP::Expression::Root, RP.parse('abc'))
   end
 
-  def test_parse_tree_contains_parse_nodes
-    tree = RP.parse('abc+[one]{2,3}\b\d\\\C-C')
-    assert( tree.expressions.all?{|node| node.kind_of?(RP::Expression::Base)},
+  def test_parse_root_contains_expressions
+    root = RP.parse(/^a.c+[^one]{2,3}\b\d\\\C-C$/)
+    #root = RP.parse(/\b\d\\\c2\C-C\M-\C-2/)
+    #root = RP.parse(/[a-c[:alpha:][:ascii:]]/)
+    assert( root.expressions.all?{|exp| exp.kind_of?(RP::Expression::Base)},
           "Not all tree nodes are parse nodes")
   end
 
   # too much going on here, it's just for development
   def test_parse_node_types
-    tree = RP.parse('one{2,3}[def](ghi)+')
+    root = RP.parse('^(one){2,3}([^d\]efm-qz\,\-]*)(ghi)+$')
+    puts "ROOT: #{root.inspect}"
 
-    assert( tree.expressions[0].is_a?(RP::Expression::Literal),
+    assert( root.expressions[1].expressions[0].is_a?(RP::Expression::Literal),
           "Not a literal node, but should be")
 
-    assert( tree.expressions[0].quantified?, "Not quanfified, but should be")
+    assert( root.expressions[1].quantified?, "Not quanfified, but should be")
 
-    assert( tree.expressions[1].is_a?(RP::Expression::CharacterSet),
+    assert( root.expressions[2].expressions[0].is_a?(RP::Expression::CharacterSet),
           "Not a caracter set, but it should be")
 
-    assert_equal( false, tree.expressions[1].quantified? )
+    assert_equal( false, root.expressions[2].quantified? )
 
-    assert( tree.expressions[2].is_a?(RP::Expression::Group),
+    assert( root.expressions[3].is_a?(RP::Expression::Group),
           "Not a group, but should be")
+
+    assert_equal( true, root.expressions[3].quantified? )
   end
 end

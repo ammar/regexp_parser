@@ -1,94 +1,37 @@
 module Regexp::Parser
-  class Expression
+  module Expression
 
     class Group < Expression::Base
       attr_reader :expressions
 
-      def initialize(*args)
-        @expressions = []
+      def initialize(type, token, text)
         super
+        @expressions = []
       end
 
-      def type; :group end
-
-      def << exp; @expressions << exp end
+      def <<(exp)
+        @expressions << exp
+      end
 
       def capturing?
-        type == :group
+        @token == :capture
       end
+
+      class Comment < Expression::Group; end
+
+      class Capture < Expression::Group; end
+      class Passive < Expression::Group; end
+      class Atomic < Expression::Group; end
+
+      class Lookahead < Expression::Group; end
+      class NegativeLookahead < Expression::Group; end
+      class Lookbehind < Expression::Group; end
+      class NegativeLookbehind < Expression::Group; end
+
+      class Named < Expression::Group; end
+
+      class Options < Expression::Group; end
     end
 
-    class Comment < Expression::Group
-      def type; :comment end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-    class PassiveGroup < Expression::Group
-      def type; :passive_group end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-    class AtomicGroup < Expression::Group
-      def type; :atomic_group end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-    class Lookahead < Expression::Group
-      def type; :lookahead end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-    class NegativeLookahead < Expression::Group
-      def type; :nlookahead end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-    class Lookbehind < Expression::Group
-      def type; :lookbehind end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-    class NegativeLookbehind < Expression::Group
-      def type; :nlookbehind end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-    class Options < Expression::Group
-      def type; :options end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-    class NamedGroup < Expression::Group
-      def type; :named_group end
-
-      def initialize(*args)
-        super(*args)
-      end
-    end
-
-  end # class Expression
+  end # module Expression
 end # module Regexp::Parser
