@@ -1,9 +1,4 @@
-require "test/unit"
-
-require File.expand_path("../../lib/regexp_parser", __FILE__)
-require File.expand_path("../../lib/regexp_parser/lexer", __FILE__)
-
-RL = Regexp::Lexer
+require File.expand_path("../helpers", __FILE__)
 
 class TestRegexpLexer < Test::Unit::TestCase
 
@@ -17,9 +12,9 @@ class TestRegexpLexer < Test::Unit::TestCase
           "Not all array members are tokens")
   end
 
-  # too much going on here, it's just for development
   def test_lexer_token_count
     tokens = RL.lex(/^(one|two){2,3}([^d\]efm-qz\,\-]*)(ghi)+$/i)
     assert_equal( 28, tokens.length )
   end
+
 end

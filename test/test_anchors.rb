@@ -1,7 +1,4 @@
-require "test/unit"
-require File.expand_path("../../lib/regexp_parser.rb", __FILE__)
-
-RP = Regexp::Parser
+require File.expand_path("../helpers", __FILE__)
 
 class TestRegexpParserAnchors < Test::Unit::TestCase
 
@@ -28,4 +25,5 @@ class TestRegexpParserAnchors < Test::Unit::TestCase
       assert_equal( token,    t.expressions.send(args.last).token )
     end
   end
+
 end

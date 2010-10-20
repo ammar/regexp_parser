@@ -1,7 +1,4 @@
-require "test/unit"
-require File.expand_path("../../lib/regexp_parser.rb", __FILE__)
-
-RP = Regexp::Parser
+require File.expand_path("../helpers", __FILE__)
 
 class TestRegexpParserProperties < Test::Unit::TestCase
 
@@ -24,4 +21,5 @@ class TestRegexpParserProperties < Test::Unit::TestCase
       end
     end
   end
+
 end

@@ -1,8 +1,4 @@
-require "test/unit"
-
-require File.expand_path("../../lib/regexp_parser", __FILE__)
-
-RP = Regexp::Parser
+require File.expand_path("../helpers", __FILE__)
 
 class TestRegexpParserQuantifiers < Test::Unit::TestCase
 
@@ -236,4 +232,5 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal( :possessive, t.expressions.first.quantifier_mode )
     assert_equal( true, t.expressions.first.possessive? )
   end
+
 end
