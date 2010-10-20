@@ -17,6 +17,10 @@ module Regexp::Parser
         @token == :capture
       end
 
+      def comment?
+        @token == :comment
+      end
+
       class Comment < Expression::Group; end
 
       class Capture < Expression::Group; end

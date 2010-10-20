@@ -3,10 +3,12 @@
   include re_scanner "scanner.rl";
 }%%
 
+# Lexer
+# 
 module Regexp::Lexer
   %% write data;
 
-  def self.lex(input)
+  def self.lex(input, &block)
     top, stack = 0, []
 
     input = input.to_s if input.is_a?(Regexp)
@@ -18,7 +20,11 @@ module Regexp::Lexer
     %% write init;
     %% write exec;
 
-    @tokens
+    if block_given?
+      @tokens.each {|token| yield token}
+    else
+      @tokens
+    end
   end
 
   def self.emit(type, id, text, ts, te)

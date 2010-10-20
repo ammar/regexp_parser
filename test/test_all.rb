@@ -1,7 +1,4 @@
 require File.expand_path("../helpers", __FILE__)
-%w{
-  anchors comments escapes groups lexer parser properties
-  quantifiers sets
-}.each do|tc|
-  require File.expand_path("../test_#{tc}", __FILE__)
+%w{ lexer parser }.each do |subject|
+  require File.expand_path("../#{subject}/test_all", __FILE__)
 end

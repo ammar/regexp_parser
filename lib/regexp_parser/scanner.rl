@@ -174,8 +174,7 @@
 
     property_char . '{' . property_name . '}' > (escaped_alpha, 2) {
       text = data[ts..te-1].pack('c*')
-
-      type = text[0] == 'p' ? :property: :inverted_property
+      type = text[0,1] == 'p' ? :property: :inverted_property
 
       case name = data[ts+2..te-2].pack('c*')
       when 'Alnum';   self.emit(type, :alnum,  text, ts, te)

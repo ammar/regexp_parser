@@ -3,4 +3,5 @@
 lib/regexp_parser/lexer.rb
 lib/regexp_parser/parser.rb
 doc
+sandbox
 .yardoc

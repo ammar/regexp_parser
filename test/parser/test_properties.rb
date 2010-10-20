@@ -1,8 +1,8 @@
-require File.expand_path("../helpers", __FILE__)
+require File.expand_path("../../helpers", __FILE__)
 
 class TestRegexpParserProperties < Test::Unit::TestCase
 
-  types = %w{p P}
+  types = ['p', 'P']
   tests = [:alnum, :alpha, :any, :ascii, :blank, :cntrl, :digit, :graph,
            :lower, :print, :punct, :space, :upper, :word, :xdigit]
 

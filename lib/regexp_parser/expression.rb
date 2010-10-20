@@ -14,6 +14,10 @@ module Regexp::Parser
         @options  = nil
       end
 
+      #def to_s
+      #  @text
+      #end
+
       def quantify(quantifier, min = nil, max = nil, mode = :greedy)
         @quantifier = quantifier
         @min, @max  = min, max
@@ -122,7 +126,7 @@ module Regexp::Parser
     class CharacterProperty 
       class Base < Expression::Base
         def inverted?
-          type == :not_character_property
+          @type == :inverted_property
         end
       end
 
