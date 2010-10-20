@@ -58,7 +58,7 @@
   zero_or_more          = '*' | '*?' | '*+';
   one_or_more           = '+' | '+?' | '++';
 
-  quantifier_basic      = '?'  | '*'  | '+';
+  quantifier_greedy     = '?'  | '*'  | '+';
   quantifier_reluctant  = '??' | '*?' | '+?';
   quantifier_possessive = '?+' | '*+' | '++';
   quantifier_mode       = '?'  | '+';
@@ -66,7 +66,7 @@
   quantifier_range      = range_open . (digit+)? . ','? . (digit+)? .
                           range_close . quantifier_mode?;
 
-  quantifiers           = quantifier_basic | quantifier_reluctant |
+  quantifiers           = quantifier_greedy | quantifier_reluctant |
                           quantifier_possessive | quantifier_range;
 
 
@@ -92,7 +92,7 @@
   # characters the 'break' a literal
   meta_char             = wild | backslash | alternation |
                           curlies | parantheses | brackets |
-                          line_anchor | quantifier_basic;
+                          line_anchor | quantifier_greedy;
 
 
   # character set scanner, continues consuming characters until it meets the
@@ -107,7 +107,7 @@
       self.emit(:character_set, :negate, data[ts..te-1].pack('c*'), ts, te)
     };
 
-    alnum . '-' . alnum {
+    alnum . '-' . alnum { # TODO: add properties
       self.emit(:character_set, :range, data[ts..te-1].pack('c*'), ts, te)
     };
 
