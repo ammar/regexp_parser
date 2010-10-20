@@ -1,9 +1,130 @@
 = Regexp::Parser
 
-A regular expressions parser library for Ruby that:
-
-* supports 1.8 and 1.9 regex flavors (as a first step)
-* is based on Ragel
+  Note "This project is in its early stages of development."
+  Warn "Names and structures are still moving and changing."
 
 
-This project is still under development. More to come soon...
+== What?
+A library for parsing and transforming regular expressions.
+
+* Supports ruby 1.8 and 1.9 runtime
+* Supports ruby 1.8 and 1.9 regular expression syntax, other flavors planned.
+* Multilayered for reusability
+  * A scanner based on ragel[http://www.complang.org/ragel/]
+  * A lexer that produces a "stream" of tokens
+  * A parser that produces a "tree" of expression objects
+
+
+== Examples
+=== Lexer
+  Regexp::Lexer.lex(/a(b)[c])/) do |token|
+    puts token.inspect
+  end
+
+=== Parser
+  root = Regexp::Parser.parse(/a(b)[c])/m)
+
+  root.multi_line?  # => true
+  root.m?           # => true
+
+  root.insensitive? # => false
+  root.i?           # => false
+
+  root.expressions.each do |expression|
+    puts expression.inspect
+  end
+
+
+== Supported Syntax Elements
+The following is targeted for support by the scanner
+
+- Alternation: a|b|c ** MISSING
+- Anchors: ^, $, \b, etc...
+- Character Classes (aka Sets): [abc], [^\]] ** MISSING PROPERTIES
+- Character Types: \d, \H, \s, etc...
+- Escaped Sequences
+  - Backreference: \1 thru \9 ** MISSING
+  - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
+  - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
+  - Meta: \M-C, etc.. ** NEEDS REVIEW/TESTS
+  - Meta-Control: \M-\C-C ** NEEDS REVIEW/TESTS
+  - Metacharacters: \\, \+, \?, etc..
+  - Octal: \012 ** MISSING
+- Grouped Expressions
+  - Atomic: (?>abc) ** NEEDS REVIEW/TESTS
+  - Capturing: (abc) ** NEEDS REVIEW/TESTS
+  - Comment: (?# comment) ** NEEDS REVIEW/TESTS
+  - Named: (?<name>abc) (no single quotes, yet) ** NEEDS REVIEW/TESTS
+  - Options: (?mi-x:abc) ** MISSING SOME OPTIONS (u, e, etc..)
+  - Passive: (?:abc) ** NEEDS REVIEW/TESTS
+  - Assertions
+    - Lookahead: (?=abc) ** NEEDS REVIEW/TESTS
+    - Negative Lookahead: (?!abc) ** NEEDS REVIEW/TESTS
+    - Lookabehind: (?<=abc) ** NEEDS REVIEW/TESTS
+    - Negative Lookbehind: (?<\!abc) ** NEEDS REVIEW/TESTS
+- Literals: abc
+- Properties: 
+  - Classes: \p{{Alpha}}, \P{{Space}}, etc...
+  - Derived Properties: \p{{Math}}, \P{{Changes when Uppercased}} ** MISSING
+  - General Categories: \p{{Lu}}, \P{{Cs}}, etc... ** INCOMPLETE
+  - Scripts: \p{{Arabic}}, \P{{Hiragana}} ** MISSING
+  - Simple Properties: \p{{Ideographic}} ** MISSING
+- POSIX classes: [[:word:]], [a[:alpha:]c], etc...
+- Quantifiers
+  - Greedy: ?, *, + {m,n}
+  - Reluctant: ??, *?, +?, {n,m}?
+  - Possessive: ?++, *+++, ++++, {n,m}++  ** NOT IN ONIGURUMA?
+
+
+== Notes
+=== Scanner
+* Currently, regex syntax is checked by instantiating a Regexp object from the
+  input before scanning. If no error is raised, then the syntax is all good.
+  Obviously this only works for ruby regular expressions. Syntax error checking
+  will be required to support other flavors.
+
+* Need to extract a "baseline" scanner common to all flavours, and layer subsets
+  of syntax into individual machines, like posix classes and unicode properties.
+
+=== Token
+* Add a depth attribute.
+
+=== Parser
+* Think of ways to specify flavors.
+
+=== Expression
+* Implementing to_s and to_re requires saving open/close token text, including
+  quantifiers.
+
+
+== References
+Documentation and information being read while working on this project.
+
+==== Oniguruma Syntax
+* Oniguruma Regular Expressions link[http://www.geocities.jp/kosako3/oniguruma/doc/RE.txt]
+* Read Ruby > Regexps link[http://ruby.runpaint.org/regexps]
+* TextMate (uses Oniguruma) Manual: Regular Expressions link[http://manual.macromates.com/en/regular_expressions]
+
+==== General
+* Regular Expression Flavor Comparison link[http://www.regular-expressions.info/refflavors.html]
+* Perl Regular Expressions Reference link[http://perldoc.perl.org/perlreref.html]
+* Enumerating the strings of regular languages link[http://www.cs.dartmouth.edu/~doug/nfa.ps.gz]
+* Regular Expression Matching: the Virtual Machine Approach link[http://swtch.com/~rsc/regexp/regexp2.html]
+
+
+== Thanks
+This work is based on the work and ideas of many people, directly or indirectly.
+The following are some of them.
+
+* Adrian Thurston, for developing ragel[http://www.complang.org/ragel/].
+
+* Caleb Clausen, for feedback, which inspired this,  valuable insights on structuring the parser,
+  and lots of cool code[http://github.com/coatl].
+
+* Jan Goyvaerts, for his excellent resource[:http://www.regular-expressions.info] on regular expressions. I owe him a "steak dinner", at least.
+
+* Run Paint Run Run, for his work on Read[http://ruby.runpaint.org/] Ruby
+
+
+== Copyright
+Copyright (c) 2010 Ammar Ali. See LICENSE file for details.
