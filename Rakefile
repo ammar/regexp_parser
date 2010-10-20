@@ -8,6 +8,29 @@ RAGEL_OUTPUT_DIR = File.expand_path '../lib/regexp_parser', __FILE__
 
 RAGEL_SOURCE_FILES = %w{lexer parser}
 
+desc "Find and run all unit tests under test/ directory"
+Rake::TestTask.new("test") do |t|
+  #t.verbose = true
+  t.libs << "test"
+  t.test_files = FileList['test/**/test_*.rb']
+end
+
+task :test
+
+namespace :test do
+  desc "Run all lexer tests"
+  Rake::TestTask.new("lexer") do |t|
+    t.libs << "test"
+    t.test_files = ['test/lexer/test_all.rb']
+  end
+
+  desc "Run all parser tests"
+  Rake::TestTask.new("parser") do |t|
+    t.libs << "test"
+    t.test_files = ['test/parser/test_all.rb']
+  end
+end
+
 namespace :ragel do
   desc "Process the ragel source files and output ruby code"
   task :rb do |t|
@@ -29,12 +52,3 @@ end
 
 namespace :rcov do
 end
-
-
-desc "Find and run all unit tests under test/ directory"
-Rake::TestTask.new("test") do |t|
-  #t.verbose = true
-  t.libs << "test"
-  t.test_files = FileList['test/**/test_*.rb']
-end
-task :test
