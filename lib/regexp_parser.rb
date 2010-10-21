@@ -1,6 +1,6 @@
 class Regexp
 
-  TOKEN_KEYS = [:type, :id, :text, :ts, :te].freeze
+  TOKEN_KEYS = [:type, :token, :text, :ts, :te, :depth].freeze
   Token = Struct.new(*TOKEN_KEYS)
 
   module Parser
