@@ -14,7 +14,7 @@ module Regexp::Parser
       end
 
       def capturing?
-        @token == :capture
+        [:capture, :named].include? @token
       end
 
       def comment?

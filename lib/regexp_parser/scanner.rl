@@ -84,7 +84,7 @@
   assertion_lookbehind  = '?<=';
   assertion_nlookbehind = '?<!';
 
-  group_options         = '?' . ([mix]{1,3})? . '-' . ([mix]{1,3})? . ':';
+  group_options         = '?' . ([mix]{1,3})? . '-' . ([mix]{1,3})? . ':'?;
 
   group_name            = alpha . alnum+;
   group_named           = '?<' . group_name . '>';
@@ -100,7 +100,7 @@
                           line_anchor | quantifier_greedy;
 
 
-  # character set scanner, continues consuming characters until it meets the
+  # Character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
   # --------------------------------------------------------------------------
   character_set := |*
@@ -218,41 +218,41 @@
       when 'Me'; self.emit(type, :mark_enclosing,   text, ts, te)
 
       # Numbers
-      when 'N';  self.emit(type, :number_any, text, ts, te)
-      when 'Nd'; self.emit(type, :number_decimal, text, ts, te)
-      when 'Nl'; self.emit(type, :number_letter, text, ts, te)
-      when 'No'; self.emit(type, :number_other, text, ts, te)
+      when 'N';  self.emit(type, :number_any,       text, ts, te)
+      when 'Nd'; self.emit(type, :number_decimal,   text, ts, te)
+      when 'Nl'; self.emit(type, :number_letter,    text, ts, te)
+      when 'No'; self.emit(type, :number_other,     text, ts, te)
 
       # Punctuation
-      when 'P';  self.emit(type, :punct_any, text, ts, te)
-      when 'Pc'; self.emit(type, :punct_connector, text, ts, te)
-      when 'Pd'; self.emit(type, :punct_dash, text, ts, te)
-      when 'Ps'; self.emit(type, :punct_open, text, ts, te)
-      when 'Pe'; self.emit(type, :punct_close, text, ts, te)
-      when 'Pi'; self.emit(type, :punct_initial, text, ts, te)
-      when 'Pf'; self.emit(type, :punct_final, text, ts, te)
-      when 'Po'; self.emit(type, :punct_other, text, ts, te)
+      when 'P';  self.emit(type, :punct_any,        text, ts, te)
+      when 'Pc'; self.emit(type, :punct_connector,  text, ts, te)
+      when 'Pd'; self.emit(type, :punct_dash,       text, ts, te)
+      when 'Ps'; self.emit(type, :punct_open,       text, ts, te)
+      when 'Pe'; self.emit(type, :punct_close,      text, ts, te)
+      when 'Pi'; self.emit(type, :punct_initial,    text, ts, te)
+      when 'Pf'; self.emit(type, :punct_final,      text, ts, te)
+      when 'Po'; self.emit(type, :punct_other,      text, ts, te)
 
       # Symbols
-      when 'S';  self.emit(type, :symbol_any, text, ts, te)
-      when 'Sm'; self.emit(type, :symbol_math, text, ts, te)
-      when 'Sc'; self.emit(type, :symbol_currency, text, ts, te)
-      when 'Sk'; self.emit(type, :symbol_modifier, text, ts, te)
-      when 'So'; self.emit(type, :symbol_other, text, ts, te)
+      when 'S';  self.emit(type, :symbol_any,       text, ts, te)
+      when 'Sm'; self.emit(type, :symbol_math,      text, ts, te)
+      when 'Sc'; self.emit(type, :symbol_currency,  text, ts, te)
+      when 'Sk'; self.emit(type, :symbol_modifier,  text, ts, te)
+      when 'So'; self.emit(type, :symbol_other,     text, ts, te)
 
       # Separators
-      when 'Z';  self.emit(type, :separator_any, text, ts, te)
-      when 'Zs'; self.emit(type, :separator_space, text, ts, te)
-      when 'Zl'; self.emit(type, :separator_line, text, ts, te)
-      when 'Zp'; self.emit(type, :separator_paragraph, text, ts, te)
+      when 'Z';  self.emit(type, :separator_any,        text, ts, te)
+      when 'Zs'; self.emit(type, :separator_space,      text, ts, te)
+      when 'Zl'; self.emit(type, :separator_line,       text, ts, te)
+      when 'Zp'; self.emit(type, :separator_paragraph,  text, ts, te)
 
       # Codepoints
-      when 'C';  self.emit(type, :code_any, text, ts, te)
-      when 'Cc'; self.emit(type, :code_control, text, ts, te)
-      when 'Cf'; self.emit(type, :code_format, text, ts, te)
-      when 'Cs'; self.emit(type, :code_surrogate, text, ts, te)
-      when 'Co'; self.emit(type, :code_private, text, ts, te)
-      when 'Cn'; self.emit(type, :code_unassigned, text, ts, te)
+      when 'C';  self.emit(type, :code_any,         text, ts, te)
+      when 'Cc'; self.emit(type, :code_control,     text, ts, te)
+      when 'Cf'; self.emit(type, :code_format,      text, ts, te)
+      when 'Cs'; self.emit(type, :code_surrogate,   text, ts, te)
+      when 'Co'; self.emit(type, :code_private,     text, ts, te)
+      when 'Cn'; self.emit(type, :code_unassigned,  text, ts, te)
       end
     };
 
@@ -264,24 +264,24 @@
 
 
   # Main scanner
+  # --------------------------------------------------------------------------
   main := |*
 
-    # Anchors
+    # Meta characters
     alternation {
       self.emit(:meta, :alternation, data[ts..te-1].pack('c*'), ts, te)
     };
 
+    wild {
+      self.emit(:meta, :wild, data[ts..te-1].pack('c*'), ts, te)
+    };
+
     # Character types
-    #   .         any (except new line)
     #   \d, \D    digit, non-digit
     #   \h, \H    hex, non-hex
     #   \s, \S    whitespace, non-whitespace
     #   \w, \W    word, non-word
     # ------------------------------------------------------------------------
-    wild {
-      self.emit(:character_type, :any, data[ts..te-1].pack('c*'), ts, te)
-    };
-
     backslash . char_type > (backslashed, 2) {
       case text = data[ts..te-1].pack('c*')
       when '\\d'; self.emit(:character_type, :digit,      text, ts, te)
@@ -292,7 +292,6 @@
       when '\\S'; self.emit(:character_type, :non_space,  text, ts, te)
       when '\\w'; self.emit(:character_type, :word,       text, ts, te)
       when '\\W'; self.emit(:character_type, :non_word,   text, ts, te)
-      else raise "Unsupported character type at #{text} (char #{ts})"
       end
     };
 
@@ -340,7 +339,7 @@
     #                         x: extended form
     #
     #   (?imx-imx:subexp)   option on/off for subexp
-    group_open . group_options > (grouped, 1) {
+    group_open . group_options {
       self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -350,7 +349,7 @@
     #   (?<=subexp)         look-behind
     #   (?<!subexp)         negative look-behind
     # ------------------------------------------------------------------------
-    group_open . assertion_type? > (grouped, 2) {
+    group_open . assertion_type {
       case text =  data[ts..te-1].pack('c*')
       when '(?=';  self.emit(:assertion, :lookahead,    text, ts, te)
       when '(?!';  self.emit(:assertion, :nlookahead,   text, ts, te)
@@ -365,15 +364,18 @@
     #   (?<name>subexp)     named group (single quotes are no supported, yet)
     #   (subexp)            captured group
     # ------------------------------------------------------------------------
-    group_open . group_type? > (grouped, 3) {
+    group_open . group_type {
       case text =  data[ts..te-1].pack('c*')
       when '(?:';  self.emit(:group, :passive,      text, ts, te)
       when '(?>';  self.emit(:group, :atomic,       text, ts, te)
-      when '(?<[a-zA-Z]\w+>'
+      when /\(\?<\w+>/
         self.emit(:group, :named, text, ts, te)
-      else
-        self.emit(:group, :capture, text, ts, te)
       end
+    };
+
+    group_open  {
+      text =  data[ts..te-1].pack('c*')
+      self.emit(:group, :capture, text, ts, te)
     };
 
     group_close {

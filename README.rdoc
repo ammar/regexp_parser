@@ -51,22 +51,22 @@ The following is targeted for support by the scanner
   - Metacharacters: \\, \+, \?, etc..
   - Octal: \012 ** MISSING
 - Grouped Expressions
-  - Atomic: (?>abc) ** NEEDS REVIEW/TESTS
-  - Capturing: (abc) ** NEEDS REVIEW/TESTS
-  - Comment: (?# comment) ** NEEDS REVIEW/TESTS
-  - Named: (?<name>abc) (no single quotes, yet) ** NEEDS REVIEW/TESTS
-  - Options: (?mi-x:abc) ** MISSING SOME OPTIONS (u, e, etc..)
-  - Passive: (?:abc) ** NEEDS REVIEW/TESTS
+  - Atomic: (?>abc) ** SCANNER COMPLETE
+  - Capturing: (abc) ** SCANNER COMPLETE
+  - Comment: (?# comment) ** SCANNER COMPLETE
+  - Named: (?<name>abc) ** SCANNER COMPLETE (no single quotes, yet)
+  - Options: (?mi-x:abc) ** SCANNER COMPLETE (missing some options, u, e, etc..)
+  - Passive: (?:abc) ** SCANNER COMPLETE
   - Assertions
-    - Lookahead: (?=abc) ** NEEDS REVIEW/TESTS
-    - Negative Lookahead: (?!abc) ** NEEDS REVIEW/TESTS
-    - Lookabehind: (?<=abc) ** NEEDS REVIEW/TESTS
-    - Negative Lookbehind: (?<\!abc) ** NEEDS REVIEW/TESTS
+    - Lookahead: (?=abc) ** SCANNER COMPLETE
+    - Negative Lookahead: (?!abc) ** SCANNER COMPLETE
+    - Lookabehind: (?<=abc) ** SCANNER COMPLETE
+    - Negative Lookbehind: (?<\!abc) ** SCANNER COMPLETE
 - Literals: abc
 - Properties: 
   - Classes: \p{{Alpha}}, \P{{Space}}, etc...
   - Derived Properties: \p{{Math}}, \P{{Changes when Uppercased}} ** MISSING
-  - General Categories: \p{{Lu}}, \P{{Cs}}, etc... ** INCOMPLETE
+  - General Categories: \p{{Lu}}, \P{{Cs}}, etc... ** NEEDS REVIEW/TESTS
   - Scripts: \p{{Arabic}}, \P{{Hiragana}} ** MISSING
   - Simple Properties: \p{{Ideographic}} ** MISSING
 - POSIX classes: [[:word:]], [a[:alpha:]c], etc...
