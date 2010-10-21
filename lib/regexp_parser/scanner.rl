@@ -78,20 +78,23 @@
 
   group_atomic          = '?>';
   group_passive         = '?:';
-  group_lookahead       = '?=';
-  group_nlookahead      = '?!';
-  group_lookbehind      = '?<=';
-  group_nlookbehind     = '?<!';
+
+  assertion_lookahead   = '?=';
+  assertion_nlookahead  = '?!';
+  assertion_lookbehind  = '?<=';
+  assertion_nlookbehind = '?<!';
 
   group_options         = '?' . ([mix]{1,3})? . '-' . ([mix]{1,3})? . ':';
 
   group_name            = alpha . alnum+;
   group_named           = '?<' . group_name . '>';
 
-  group_type            = group_atomic | group_passive |
-                          group_lookahead | group_nlookahead |
-                          group_lookbehind | group_nlookbehind |
-                          group_named;
+  group_type            = group_atomic | group_passive | group_named;
+
+  assertion_type        = assertion_lookahead  | assertion_nlookahead |
+                          assertion_lookbehind | assertion_nlookbehind;
+
+  extended_group        = group_type | assertion_type;
 
   # characters the 'break' a literal
   meta_char             = wild | backslash | alternation |
@@ -346,7 +349,7 @@
     #   (?<!subexp)         negative look-behind
     #   (?<name>subexp)     named group (single quotes are no supported, yet)
     # ------------------------------------------------------------------------
-    group_open . group_type? > (grouped, 1) {
+    group_open . extended_group? > (grouped, 1) {
       case text =  data[ts..te-1].pack('c*')
       when '(?:';  self.emit(:group, :passive,      text, ts, te)
       when '(?>';  self.emit(:group, :atomic,       text, ts, te)
