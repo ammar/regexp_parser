@@ -204,6 +204,7 @@
       when 'Xdigit';  self.emit(type, :xdigit, text, ts, te)
 
       # Letters
+      when 'L';  self.emit(type, :letter_any,       text, ts, te)
       when 'Lu'; self.emit(type, :letter_uppercase, text, ts, te)
       when 'Ll'; self.emit(type, :letter_lowercase, text, ts, te)
       when 'Lt'; self.emit(type, :letter_titlecase, text, ts, te)
@@ -211,16 +212,19 @@
       when 'Lo'; self.emit(type, :letter_other,     text, ts, te)
 
       # Marks
+      when 'M';  self.emit(type, :mark_any,         text, ts, te)
       when 'Mn'; self.emit(type, :mark_nonspacing,  text, ts, te)
       when 'Mc'; self.emit(type, :mark_spacing,     text, ts, te)
       when 'Me'; self.emit(type, :mark_enclosing,   text, ts, te)
 
       # Numbers
+      when 'N';  self.emit(type, :number_any, text, ts, te)
       when 'Nd'; self.emit(type, :number_decimal, text, ts, te)
       when 'Nl'; self.emit(type, :number_letter, text, ts, te)
       when 'No'; self.emit(type, :number_other, text, ts, te)
 
       # Punctuation
+      when 'P';  self.emit(type, :punct_any, text, ts, te)
       when 'Pc'; self.emit(type, :punct_connector, text, ts, te)
       when 'Pd'; self.emit(type, :punct_dash, text, ts, te)
       when 'Ps'; self.emit(type, :punct_open, text, ts, te)
@@ -230,17 +234,20 @@
       when 'Po'; self.emit(type, :punct_other, text, ts, te)
 
       # Symbols
+      when 'S';  self.emit(type, :symbol_any, text, ts, te)
       when 'Sm'; self.emit(type, :symbol_math, text, ts, te)
       when 'Sc'; self.emit(type, :symbol_currency, text, ts, te)
       when 'Sk'; self.emit(type, :symbol_modifier, text, ts, te)
       when 'So'; self.emit(type, :symbol_other, text, ts, te)
 
       # Separators
+      when 'Z';  self.emit(type, :separator_any, text, ts, te)
       when 'Zs'; self.emit(type, :separator_space, text, ts, te)
       when 'Zl'; self.emit(type, :separator_line, text, ts, te)
       when 'Zp'; self.emit(type, :separator_paragraph, text, ts, te)
 
       # Codepoints
+      when 'C';  self.emit(type, :code_any, text, ts, te)
       when 'Cc'; self.emit(type, :code_control, text, ts, te)
       when 'Cf'; self.emit(type, :code_format, text, ts, te)
       when 'Cs'; self.emit(type, :code_surrogate, text, ts, te)
