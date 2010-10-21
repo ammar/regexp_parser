@@ -94,8 +94,6 @@
   assertion_type        = assertion_lookahead  | assertion_nlookahead |
                           assertion_lookbehind | assertion_nlookbehind;
 
-  extended_group        = group_type | assertion_type;
-
   # characters the 'break' a literal
   meta_char             = wild | backslash | alternation |
                           curlies | parantheses | brackets |
@@ -335,28 +333,35 @@
     #                         x: extended form
     #
     #   (?imx-imx:subexp)   option on/off for subexp
-    group_open . group_options > (grouped, 2) {
+    group_open . group_options > (grouped, 1) {
       self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
     };
 
-    # Extended Groups
-    #   (subexp)            captured group
-    #   (?:subexp)          passive (non-captured) group
-    #   (?>subexp)          atomic group, don't backtrack in subexp.
+    # Assertions
     #   (?=subexp)          look-ahead
     #   (?!subexp)          negative look-ahead
     #   (?<=subexp)         look-behind
     #   (?<!subexp)         negative look-behind
-    #   (?<name>subexp)     named group (single quotes are no supported, yet)
     # ------------------------------------------------------------------------
-    group_open . extended_group? > (grouped, 1) {
+    group_open . assertion_type? > (grouped, 2) {
+      case text =  data[ts..te-1].pack('c*')
+      when '(?=';  self.emit(:assertion, :lookahead,    text, ts, te)
+      when '(?!';  self.emit(:assertion, :nlookahead,   text, ts, te)
+      when '(?<='; self.emit(:assertion, :lookbehind,   text, ts, te)
+      when '(?<!'; self.emit(:assertion, :nlookbehind,  text, ts, te)
+      end
+    };
+
+    # Groups
+    #   (?:subexp)          passive (non-captured) group
+    #   (?>subexp)          atomic group, don't backtrack in subexp.
+    #   (?<name>subexp)     named group (single quotes are no supported, yet)
+    #   (subexp)            captured group
+    # ------------------------------------------------------------------------
+    group_open . group_type? > (grouped, 3) {
       case text =  data[ts..te-1].pack('c*')
       when '(?:';  self.emit(:group, :passive,      text, ts, te)
       when '(?>';  self.emit(:group, :atomic,       text, ts, te)
-      when '(?=';  self.emit(:group, :lookahead,    text, ts, te)
-      when '(?!';  self.emit(:group, :nlookahead,   text, ts, te)
-      when '(?<='; self.emit(:group, :lookbehind,   text, ts, te)
-      when '(?<!'; self.emit(:group, :nlookbehind,  text, ts, te)
       when '(?<[a-zA-Z]\w+>'
         self.emit(:group, :named, text, ts, te)
       else
