@@ -284,14 +284,14 @@
     # ------------------------------------------------------------------------
     backslash . char_type > (backslashed, 2) {
       case text = data[ts..te-1].pack('c*')
-      when '\\d'; self.emit(:character_type, :digit,      text, ts, te)
-      when '\\D'; self.emit(:character_type, :non_digit,  text, ts, te)
-      when '\\h'; self.emit(:character_type, :hex,        text, ts, te)
-      when '\\H'; self.emit(:character_type, :non_hex,    text, ts, te)
-      when '\\s'; self.emit(:character_type, :space,      text, ts, te)
-      when '\\S'; self.emit(:character_type, :non_space,  text, ts, te)
-      when '\\w'; self.emit(:character_type, :word,       text, ts, te)
-      when '\\W'; self.emit(:character_type, :non_word,   text, ts, te)
+      when '\\d'; self.emit(:type, :digit,      text, ts, te)
+      when '\\D'; self.emit(:type, :nondigit,   text, ts, te)
+      when '\\h'; self.emit(:type, :hex,        text, ts, te)
+      when '\\H'; self.emit(:type, :nonhex,     text, ts, te)
+      when '\\s'; self.emit(:type, :space,      text, ts, te)
+      when '\\S'; self.emit(:type, :nonspace,   text, ts, te)
+      when '\\w'; self.emit(:type, :word,       text, ts, te)
+      when '\\W'; self.emit(:type, :nonword,    text, ts, te)
       end
     };
 
@@ -310,7 +310,7 @@
       when '\\z'; self.emit(:anchor, :eos,                text, ts, te)
       when '\\Z'; self.emit(:anchor, :eos_or_before_eol,  text, ts, te)
       when '\\b'; self.emit(:anchor, :word_boundary,      text, ts, te)
-      when '\\B'; self.emit(:anchor, :non_word_boundary,  text, ts, te)
+      when '\\B'; self.emit(:anchor, :nonword_boundary,   text, ts, te)
       else raise "Unsupported anchor at #{text} (char #{ts})"
       end
     };

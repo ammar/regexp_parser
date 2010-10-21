@@ -3,6 +3,8 @@ require File.expand_path("../../helpers", __FILE__)
 class LexerGroups < Test::Unit::TestCase
 
   tests = {
+   '(?-mix)'       => [:group,     :options,     '(?-mix'],
+
    '(?>abc)'       => [:group,     :atomic,      '(?>'],
    '(abc)'         => [:group,     :capture,     '('],
    '(?<name>abc)'  => [:group,     :named,       '(?<name>'],
@@ -14,8 +16,6 @@ class LexerGroups < Test::Unit::TestCase
    '(?!abc)'       => [:assertion, :nlookahead,  '(?!'],
    '(?<=abc)'      => [:assertion, :lookbehind,  '(?<='],
    '(?<!abc)'      => [:assertion, :nlookbehind, '(?<!'],
-
-   '(?-mix)'       => [:group,     :options,     '(?-mix'],
   }
 
   tests.each do |pattern, test|

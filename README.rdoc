@@ -38,17 +38,24 @@ A library for parsing and transforming regular expressions.
 == Supported Syntax Elements
 The following is targeted for support by the scanner
 
+Notes with ** mean:
+
+  MISSING : nothing in place, or barely there
+  NEED REVIEW/TESTS: mostly there, but not varified
+  SCANNER COMPLETE: scanner support implemented, works, has tests
+  PARSER COMPLETE: parser support implemented, works, has tests (implies SCANNER COMPLETE)
+
 - Alternation: a|b|c ** MISSING
-- Anchors: ^, $, \b, etc...
+- Anchors: ^, $, \b, etc... ** SCANNER COMPLETE
 - Character Classes (aka Sets): [abc], [^\]] ** MISSING PROPERTIES
-- Character Types: \d, \H, \s, etc...
+- Character Types: \d, \H, \s, etc... ** SCANNER COMPLETE
 - Escaped Sequences
   - Backreference: \1 thru \9 ** MISSING
   - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
   - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
   - Meta: \M-C, etc.. ** NEEDS REVIEW/TESTS
   - Meta-Control: \M-\C-C ** NEEDS REVIEW/TESTS
-  - Metacharacters: \\, \+, \?, etc..
+  - Metacharacters: \\, \+, \?, etc.. ** NEEDS REVIEW/TESTS
   - Octal: \012 ** MISSING
 - Grouped Expressions
   - Atomic: (?>abc) ** SCANNER COMPLETE
@@ -62,18 +69,18 @@ The following is targeted for support by the scanner
     - Negative Lookahead: (?!abc) ** SCANNER COMPLETE
     - Lookabehind: (?<=abc) ** SCANNER COMPLETE
     - Negative Lookbehind: (?<\!abc) ** SCANNER COMPLETE
-- Literals: abc
+- Literals: abc ** NEEDS TESTS 
 - Properties: 
-  - Classes: \p{{Alpha}}, \P{{Space}}, etc...
+  - Classes: \p{{Alpha}}, \P{{Space}}, etc...  ** NEEDS REVIEW/TESTS
   - Derived Properties: \p{{Math}}, \P{{Changes when Uppercased}} ** MISSING
   - General Categories: \p{{Lu}}, \P{{Cs}}, etc... ** NEEDS REVIEW/TESTS
   - Scripts: \p{{Arabic}}, \P{{Hiragana}} ** MISSING
   - Simple Properties: \p{{Ideographic}} ** MISSING
 - POSIX classes: [[:word:]], [a[:alpha:]c], etc...
 - Quantifiers
-  - Greedy: ?, *, + {m,n}
-  - Reluctant: ??, *?, +?, {n,m}?
-  - Possessive: ?++, *+++, ++++, {n,m}++  ** NOT IN ONIGURUMA?
+  - Greedy: ?, *, + {m,n} ** SCANNER COMPLETE
+  - Reluctant: ??, *?, +?, {n,m}? ** SCANNER COMPLETE  
+  - Possessive: ?++, *+++, ++++, {n,m}++  ** SCANNER COMPLETE (not in Oniguruma?)
 
 
 == Notes
