@@ -36,6 +36,10 @@
   category_symbol       = 'S' . [mcko]?;
   category_separator    = 'Z' . [slp]?;
   category_codepoint    = 'C' . [cfson]?;
+  general_category      = category_letter | category_mark |
+                          category_number | category_punctuation |
+                          category_symbol | category_separator |
+                          category_codepoint;
 
   posix_class           = '[:' . posix_class_name . ':]';
 
@@ -97,6 +101,7 @@
 
   # character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
+  # --------------------------------------------------------------------------
   character_set := |*
     ']' {
       self.emit(:character_set, :close, data[ts..te-1].pack('c*'), ts, te)
@@ -146,6 +151,7 @@
 
 
   # escape sequence scanner
+  # --------------------------------------------------------------------------
   escape_sequence := |*
     hex_sequence {
       self.emit(:escape_sequence, :hex, data[ts..te-1].pack('c*'), ts, te)
@@ -172,11 +178,14 @@
       fret;
     };
 
-    property_char . '{' . property_name . '}' > (escaped_alpha, 2) {
+    # TODO: extract into a separate machine... use in sets
+    property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 2) {
       text = data[ts..te-1].pack('c*')
       type = text[0,1] == 'p' ? :property: :inverted_property
 
       case name = data[ts+2..te-2].pack('c*')
+
+      # Named
       when 'Alnum';   self.emit(type, :alnum,  text, ts, te)
       when 'Alpha';   self.emit(type, :alpha,  text, ts, te)
       when 'Any';     self.emit(type, :any,    text, ts, te)
@@ -192,6 +201,50 @@
       when 'Upper';   self.emit(type, :upper,  text, ts, te)
       when 'Word';    self.emit(type, :word,   text, ts, te)
       when 'Xdigit';  self.emit(type, :xdigit, text, ts, te)
+
+      # Letters
+      when 'Lu'; self.emit(type, :letter_uppercase, text, ts, te)
+      when 'Ll'; self.emit(type, :letter_lowercase, text, ts, te)
+      when 'Lt'; self.emit(type, :letter_titlecase, text, ts, te)
+      when 'Lm'; self.emit(type, :letter_modifier,  text, ts, te)
+      when 'Lo'; self.emit(type, :letter_other,     text, ts, te)
+
+      # Marks
+      when 'Mn'; self.emit(type, :mark_nonspacing,  text, ts, te)
+      when 'Mc'; self.emit(type, :mark_spacing,     text, ts, te)
+      when 'Me'; self.emit(type, :mark_enclosing,   text, ts, te)
+
+      # Numbers
+      when 'Nd'; self.emit(type, :number_decimal, text, ts, te)
+      when 'Nl'; self.emit(type, :number_letter, text, ts, te)
+      when 'No'; self.emit(type, :number_other, text, ts, te)
+
+      # Punctuation
+      when 'Pc'; self.emit(type, :punct_connector, text, ts, te)
+      when 'Pd'; self.emit(type, :punct_dash, text, ts, te)
+      when 'Ps'; self.emit(type, :punct_open, text, ts, te)
+      when 'Pe'; self.emit(type, :punct_close, text, ts, te)
+      when 'Pi'; self.emit(type, :punct_initial, text, ts, te)
+      when 'Pf'; self.emit(type, :punct_final, text, ts, te)
+      when 'Po'; self.emit(type, :punct_other, text, ts, te)
+
+      # Symbols
+      when 'Sm'; self.emit(type, :symbol_math, text, ts, te)
+      when 'Sc'; self.emit(type, :symbol_currency, text, ts, te)
+      when 'Sk'; self.emit(type, :symbol_modifier, text, ts, te)
+      when 'So'; self.emit(type, :symbol_other, text, ts, te)
+
+      # Separators
+      when 'Zs'; self.emit(type, :separator_space, text, ts, te)
+      when 'Zl'; self.emit(type, :separator_line, text, ts, te)
+      when 'Zp'; self.emit(type, :separator_paragraph, text, ts, te)
+
+      # Codepoints
+      when 'Cc'; self.emit(type, :code_control, text, ts, te)
+      when 'Cf'; self.emit(type, :code_format, text, ts, te)
+      when 'Cs'; self.emit(type, :code_surrogate, text, ts, te)
+      when 'Co'; self.emit(type, :code_private, text, ts, te)
+      when 'Cn'; self.emit(type, :code_unassigned, text, ts, te)
       end
     };
 
@@ -216,6 +269,7 @@
     #   \h, \H    hex, non-hex
     #   \s, \S    whitespace, non-whitespace
     #   \w, \W    word, non-word
+    # ------------------------------------------------------------------------
     wild {
       self.emit(:character_type, :any, data[ts..te-1].pack('c*'), ts, te)
     };
