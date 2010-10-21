@@ -372,15 +372,27 @@
     # Quantifiers
     # ------------------------------------------------------------------------
     zero_or_one {
-      self.emit(:quantifier, :zero_or_one, data[ts..te-1].pack('c*'), ts, te)
+      case text =  data[ts..te-1].pack('c*')
+      when '?' ;  self.emit(:quantifier, :zero_or_one,            text, ts, te)
+      when '??';  self.emit(:quantifier, :zero_or_one_reluctant,  text, ts, te)
+      when '?+';  self.emit(:quantifier, :zero_or_one_possessive, text, ts, te)
+      end
     };
   
     zero_or_more {
-      self.emit(:quantifier, :zero_or_more, data[ts..te-1].pack('c*'), ts, te)
+      case text =  data[ts..te-1].pack('c*')
+      when '*' ;  self.emit(:quantifier, :zero_or_more,            text, ts, te)
+      when '*?';  self.emit(:quantifier, :zero_or_more_reluctant,  text, ts, te)
+      when '*+';  self.emit(:quantifier, :zero_or_more_possessive, text, ts, te)
+      end
     };
   
     one_or_more {
-      self.emit(:quantifier, :one_or_more, data[ts..te-1].pack('c*'), ts, te)
+      case text =  data[ts..te-1].pack('c*')
+      when '+' ;  self.emit(:quantifier, :one_or_more,            text, ts, te)
+      when '+?';  self.emit(:quantifier, :one_or_more_reluctant,  text, ts, te)
+      when '++';  self.emit(:quantifier, :one_or_more_possessive, text, ts, te)
+      end
     };
 
 

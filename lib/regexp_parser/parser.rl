@@ -180,26 +180,26 @@ module Regexp::Parser
   def self.quantifier(type, token, text)
     case token
     when :zero_or_one
-      mode = case text
-      when '??'; :reluctant
-      when '?+'; :possessive
-      else :greedy
-      end
-      @node.expressions.last.quantify(:zero_or_one, 0, 1, mode)
+      @node.expressions.last.quantify(:zero_or_one, 0, 1, :greedy)
+    when :zero_or_one_reluctant
+      @node.expressions.last.quantify(:zero_or_one, 0, 1, :reluctant)
+    when :zero_or_one_possessive
+      @node.expressions.last.quantify(:zero_or_one, 0, 1, :possessive)
+
     when :zero_or_more
-      mode = case text
-      when '*?'; :reluctant
-      when '*+'; :possessive
-      else :greedy
-      end
-      @node.expressions.last.quantify(:zero_or_more, 0, -1, mode)
+      @node.expressions.last.quantify(:zero_or_more, 0, -1, :greedy)
+    when :zero_or_more_reluctant
+      @node.expressions.last.quantify(:zero_or_more, 0, -1, :reluctant)
+    when :zero_or_more_possessive
+      @node.expressions.last.quantify(:zero_or_more, 0, -1, :possessive)
+
     when :one_or_more
-      mode = case text
-      when '+?'; :reluctant
-      when '++'; :possessive
-      else :greedy
-      end
-      @node.expressions.last.quantify(:one_or_more, 1, -1, mode)
+      @node.expressions.last.quantify(:one_or_more, 1, -1, :greedy)
+    when :one_or_more_reluctant
+      @node.expressions.last.quantify(:one_or_more, 1, -1, :reluctant)
+    when :one_or_more_possessive
+      @node.expressions.last.quantify(:one_or_more, 1, -1, :possessive)
+
     when :interval
       self.interval(text)
     end
