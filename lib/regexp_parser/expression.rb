@@ -4,19 +4,29 @@ module Regexp::Parser
     class Base
       attr_reader :type, :token, :text
       attr_reader :quantifier, :min, :max
+      attr_reader :expressions
 
       attr_accessor :options
 
       def initialize(type, token, text)
-        @type     = type
-        @token    = token
-        @text     = text
-        @options  = nil
+        @type         = type
+        @token        = token
+        @text         = text
+        @options      = nil
+        @expressions  = []
       end
 
       #def to_s
       #  @text
       #end
+
+      def <<(exp)
+        @expressions << exp
+      end
+
+      def last
+        @expressions.last
+      end
 
       def quantify(quantifier, min = nil, max = nil, mode = :greedy)
         @quantifier = quantifier
@@ -57,19 +67,12 @@ module Regexp::Parser
     end
 
     class Root < Expression::Base
-      attr_reader :expressions
-
       def initialize
-        @expressions = []
-      end
-
-      def <<(exp)
-        @expressions << exp
+        super(:expression, :root, '')
       end
     end
 
     class Literal < Expression::Base; end
-
 
     class CharacterSet < Expression::Base
       attr_accessor :members
@@ -166,16 +169,35 @@ module Regexp::Parser
     end
 
     class Alternation < Expression::Base
-      def initialize(text, ts, te)
-        @alternatives = []
+      def alternatives
+        @expressions
+      end
+    end
+
+    class Group < Expression::Base
+      def capturing?
+        [:capture, :named].include? @token
       end
 
-      def <<(exp)
-        @alternatives << exp
+      def comment?
+        @token == :comment
       end
+
+      class Comment < Expression::Group; end
+
+      class Capture < Expression::Group; end
+      class Passive < Expression::Group; end
+      class Atomic < Expression::Group; end
+
+      class Lookahead < Expression::Group; end
+      class NegativeLookahead < Expression::Group; end
+      class Lookbehind < Expression::Group; end
+      class NegativeLookbehind < Expression::Group; end
+
+      class Named < Expression::Group; end
+
+      class Options < Expression::Group; end
     end
 
   end # module Expression
 end # module Regexp::Parser
-
-require File.expand_path('../group', __FILE__)

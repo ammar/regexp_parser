@@ -19,15 +19,20 @@
   set_close             = ']';
   brackets              = set_open | set_close;
 
-  posix_class_name      = 'alnum' | 'alpha' | 'blank' |
+  class_name_posix      = 'alnum' | 'alpha' | 'blank' |
                           'cntrl' | 'digit' | 'graph' |
                           'lower' | 'print' | 'punct' |
                           'space' | 'upper' | 'xdigit' |
                           'word'  | 'ascii';
 
-  property_name         = 'Alnum' | 'Alpha' | 'Any'   | 'Ascii' | 'Blank' |
+  property_name_unicode = 'Alnum' | 'Alpha' | 'Any'   | 'Ascii' | 'Blank' |
                           'Cntrl' | 'Digit' | 'Graph' | 'Lower' | 'Print' |
                           'Punct' | 'Space' | 'Upper' | 'Word' | 'Xdigit';
+
+  property_name_ruby    = 'Any' | 'Assigned' | 'Newline';
+
+  property_name         = property_name_unicode | property_name_ruby;
+
 
   category_letter       = 'L' . [ultmo]?;
   category_mark         = 'M' . [nce]?;
@@ -41,7 +46,7 @@
                           category_symbol | category_separator |
                           category_codepoint;
 
-  posix_class           = '[:' . posix_class_name . ':]';
+  class_posix           = '[:' . class_name_posix . ':]';
 
   char_type             = [dDhHsSwW];
 
@@ -126,10 +131,11 @@
       fcall set_escape_sequence;
     };
 
-    posix_class {
+    class_posix {
       case text = data[ts..te-1].pack('c*')
       when '[:alnum:]';  self.emit(:set, :class_alnum,  text, ts, te)
       when '[:alpha:]';  self.emit(:set, :class_alpha,  text, ts, te)
+      when '[:ascii:]';  self.emit(:set, :class_ascii,  text, ts, te)
       when '[:blank:]';  self.emit(:set, :class_blank,  text, ts, te)
       when '[:cntrl:]';  self.emit(:set, :class_cntrl,  text, ts, te)
       when '[:digit:]';  self.emit(:set, :class_digit,  text, ts, te)
@@ -139,9 +145,8 @@
       when '[:punct:]';  self.emit(:set, :class_punct,  text, ts, te)
       when '[:space:]';  self.emit(:set, :class_space,  text, ts, te)
       when '[:upper:]';  self.emit(:set, :class_upper,  text, ts, te)
-      when '[:xdigit:]'; self.emit(:set, :class_xdigit, text, ts, te)
       when '[:word:]';   self.emit(:set, :class_word,   text, ts, te)
-      when '[:ascii:]';  self.emit(:set, :class_ascii,  text, ts, te)
+      when '[:xdigit:]'; self.emit(:set, :class_xdigit, text, ts, te)
       else raise "Unsupported character posixe class at #{text} (char #{ts})"
       end
     };
@@ -312,16 +317,17 @@
       self.emit(:meta, :alternation, data[ts..te-1].pack('c*'), ts, te)
     };
 
-    wild {
-      self.emit(:meta, :wild, data[ts..te-1].pack('c*'), ts, te)
-    };
-
     # Character types
+    #     .       any
     #   \d, \D    digit, non-digit
     #   \h, \H    hex, non-hex
-    #   \s, \S    whitespace, non-whitespace
+    #   \s, \S    space, non-space
     #   \w, \W    word, non-word
     # ------------------------------------------------------------------------
+    wild {
+      self.emit(:type, :any, data[ts..te-1].pack('c*'), ts, te)
+    };
+
     backslash . char_type > (backslashed, 2) {
       case text = data[ts..te-1].pack('c*')
       when '\\d'; self.emit(:type, :digit,      text, ts, te)
