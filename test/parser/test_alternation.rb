@@ -12,7 +12,6 @@ class ParserAlternation < Test::Unit::TestCase
 
   def test_parse_alternation_alts
     alts = @root.expressions[0].alternatives
-    puts " *** ID: #{alts.inspect}"
 
     assert_equal( true,   alts[0].is_a?(RP::Expression::Group) )
     assert_equal( true,   alts[1].is_a?(RP::Expression::Group) )
