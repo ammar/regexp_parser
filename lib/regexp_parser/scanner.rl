@@ -50,7 +50,7 @@
   property_char         = [pP];
 
   escaped_char          = [aefnrtv];
-  octal_sequence        = '0' . [0-7]{2};
+  octal_sequence        = [0-7]{3};
 
   hex_sequence          = 'x' . xdigit{2};
   wide_hex_sequence     = 'x' . '{7' . xdigit{1,7} . '}';
