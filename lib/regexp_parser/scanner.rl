@@ -54,6 +54,7 @@
 
   hex_sequence          = 'x' . xdigit{2};
   wide_hex_sequence     = 'x' . '{7' . xdigit{1,7} . '}';
+
   control_sequence      = ('c' | 'C-') . xdigit{1,2};
   meta_sequence         = 'M-' . xdigit{1,2};
   meta_control_sequence = 'M-\\C-' . xdigit{1,2};
@@ -87,14 +88,14 @@
   group_options         = '?' . ([mix]{1,3})? . '-' . ([mix]{1,3})? . ':'?;
 
   group_name            = alpha . alnum+;
-  group_named           = '?<' . group_name . '>';
+  group_named           = ('?<' . group_name . '>') | ('?\'' . group_name . '\'');
 
   group_type            = group_atomic | group_passive | group_named;
 
   assertion_type        = assertion_lookahead  | assertion_nlookahead |
                           assertion_lookbehind | assertion_nlookbehind;
 
-  # characters the 'break' a literal
+  # characters that 'break' a literal
   meta_char             = wild | backslash | alternation |
                           curlies | parantheses | brackets |
                           line_anchor | quantifier_greedy;
