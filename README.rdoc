@@ -49,6 +49,7 @@ Notes with ** mean:
 - Anchors: ^, $, \b, etc... ** SCANNER COMPLETE
 - Character Classes (aka Sets): [abc], [^\]] ** MISSING PROPERTIES
 - Character Types: \d, \H, \s, etc... ** SCANNER COMPLETE
+
 - Escaped Sequences
   - Backreference: \1 thru \9 ** MISSING
   - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
@@ -57,6 +58,7 @@ Notes with ** mean:
   - Meta-Control: \M-\C-C ** NEEDS REVIEW/TESTS
   - Metacharacters: \\, \+, \?, etc.. ** NEEDS REVIEW/TESTS
   - Octal: \012 ** MISSING
+
 - Grouped Expressions
   - Atomic: (?>abc) ** SCANNER COMPLETE
   - Capturing: (abc) ** SCANNER COMPLETE
@@ -69,18 +71,22 @@ Notes with ** mean:
     - Negative Lookahead: (?!abc) ** SCANNER COMPLETE
     - Lookabehind: (?<=abc) ** SCANNER COMPLETE
     - Negative Lookbehind: (?<\!abc) ** SCANNER COMPLETE
+
 - Literals: abc ** NEEDS TESTS 
+
 - Properties: 
   - Classes: \p{{Alpha}}, \P{{Space}}, etc...  ** NEEDS REVIEW/TESTS
-  - Derived Properties: \p{{Math}}, \P{{Changes when Uppercased}} ** MISSING
+  - Derived Properties: \p{{Math}}, ** MISSING
   - General Categories: \p{{Lu}}, \P{{Cs}}, etc... ** NEEDS REVIEW/TESTS
   - Scripts: \p{{Arabic}}, \P{{Hiragana}} ** MISSING
-  - Simple Properties: \p{{Ideographic}} ** MISSING
-- POSIX classes: [[:word:]], [a[:alpha:]c], etc...
+  - Simple Properties (aka Aliases):  ** MISSING
+
+- POSIX classes: ** NEEDS REVIEW/TESTS
+
 - Quantifiers
-  - Greedy: ?, *, + {m,n} ** SCANNER COMPLETE
-  - Reluctant: ??, *?, +?, {n,m}? ** SCANNER COMPLETE  
-  - Possessive: ?++, *+++, ++++, {n,m}++  ** SCANNER COMPLETE (not in Oniguruma?)
+  - Greedy: ** SCANNER COMPLETE
+  - Reluctant: ** SCANNER COMPLETE  
+  - Possessive: ** SCANNER COMPLETE (not in Oniguruma?)
 
 
 == Notes
@@ -92,9 +98,6 @@ Notes with ** mean:
 
 * Need to extract a "baseline" scanner common to all flavours, and layer subsets
   of syntax into individual machines, like posix classes and unicode properties.
-
-=== Token
-* Add a depth attribute.
 
 === Parser
 * Think of ways to specify flavors.
@@ -117,6 +120,11 @@ Documentation and information being read while working on this project.
 * Perl Regular Expressions Reference link[http://perldoc.perl.org/perlreref.html]
 * Enumerating the strings of regular languages link[http://www.cs.dartmouth.edu/~doug/nfa.ps.gz]
 * Regular Expression Matching: the Virtual Machine Approach link[http://swtch.com/~rsc/regexp/regexp2.html]
+
+==== Unicode
+* Unicode Explained, By Jukka K. Korpela. book[http://oreilly.com/catalog/9780596101213]
+* Unicode Regular Expressions link[http://www.unicode.org/reports/tr18/]
+* Unicode Property Aliases link[http://www.unicode.org/Public/UNIDATA/PropertyAliases.txt]
 
 
 == Thanks
