@@ -50,10 +50,10 @@ module Regexp::Parser
       end
       alias :i? :case_insensitive?
 
-      def extended?
+      def free_spacing?
         (@options and @options[:x]) ? true : false
       end
-      alias :x? :extended?
+      alias :x? :free_spacing?
     end
 
     class Root < Expression::Base
