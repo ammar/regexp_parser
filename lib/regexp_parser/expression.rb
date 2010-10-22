@@ -24,10 +24,6 @@ module Regexp::Parser
         @expressions << exp
       end
 
-      def last
-        @expressions.last
-      end
-
       def quantify(quantifier, min = nil, max = nil, mode = :greedy)
         @quantifier = quantifier
         @min, @max  = min, max

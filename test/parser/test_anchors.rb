@@ -3,26 +3,26 @@ require File.expand_path("../../helpers", __FILE__)
 class TestRegexpParserAnchors < Test::Unit::TestCase
 
   tests = {
-    :beginning_of_line    => ['^a', :first],
-    :end_of_line          => ['a$', :last],
+   '^a'   => [:beginning_of_line, :first],
+   'a$'   => [:end_of_line,       :last],
 
-    :bos                  => ['\Aa', :first],
-    :eos                  => ['a\z', :last],
-    :eos_or_before_eol    => ['a\Z', :last],
+   '\Aa'  => [:bos,               :first],
+   'a\z'  => [:eos,               :last],
+   'a\Z'  => [:eos_or_before_eol, :last],
 
-    :word_boundary        => ['a\b', :last],
-    :non_word_boundary    => ['a\B', :last],
+   'a\b'  => [:word_boundary,     :last],
+   'a\B'  => [:nonword_boundary,  :last],
   }
 
-  tests.each do |token, args|
-    define_method "test_parse_anchor_#{token}" do
-      t = RP.parse(args.first)
+  tests.each do |pattern, args|
+    define_method "test_parse_anchor_#{args.first}" do
+      t = RP.parse(pattern)
 
       assert( t.expressions.send(args.last).is_a?(RP::Expression::Anchor),
              "Expected anchor, but got #{t.expressions.send(args.last).class.name}")
 
-      assert_equal( :anchor,  t.expressions.send(args.last).type )
-      assert_equal( token,    t.expressions.send(args.last).token )
+      assert_equal( :anchor,    t.expressions.send(args.last).type )
+      assert_equal( args.first, t.expressions.send(args.last).token )
     end
   end
 

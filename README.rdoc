@@ -8,27 +8,30 @@
 A library for parsing and transforming regular expressions.
 
 * Supports ruby 1.8 and 1.9 runtime
-* Supports ruby 1.8 and 1.9 regular expression syntax, other flavors planned.
+* Supports ruby 1.8 and 1.9 regular expression syntax
 * Multilayered for reusability
   * A scanner based on ragel[http://www.complang.org/ragel/]
   * A lexer that produces a "stream" of tokens
-  * A parser that produces a "tree" of expression objects
+  * A parser that produces a "tree" of Regexp::Expression objects (OO API)
+
+
+Thinking about
+* Support for other flavors (See References below)
+* A parser that produces s-expressions
+* A transformation "driver"
 
 
 == Examples
 === Lexer
-  Regexp::Lexer.lex(/a(b)[c])/) do |token|
+  Regexp::Lexer.lex /a?(b)*[c]+)/  do |token|
     puts token.inspect
   end
 
 === Parser
-  root = Regexp::Parser.parse(/a(b)[c])/m)
+  root = Regexp::Parser.parse /a(b)[c])/m
 
-  root.multi_line?  # => true
-  root.m?           # => true
-
-  root.insensitive? # => false
-  root.i?           # => false
+  root.multi_line?  # => true (aliased as m?)
+  root.insensitive? # => false (aliased as i?)
 
   root.expressions.each do |expression|
     puts expression.inspect
@@ -94,7 +97,8 @@ Notes with ** mean:
 * Currently, regex syntax is checked by instantiating a Regexp object from the
   input before scanning. If no error is raised, then the syntax is all good.
   Obviously this only works for ruby regular expressions. Syntax error checking
-  will be required to support other flavors.
+  will be required to support other flavors. (See syntax and value errors in
+  oniguruma.h)
 
 * Need to extract a "baseline" scanner common to all flavours, and layer subsets
   of syntax into individual machines, like posix classes and unicode properties.
@@ -110,21 +114,29 @@ Notes with ** mean:
 == References
 Documentation and information being read while working on this project.
 
-==== Oniguruma Syntax
+==== Oniguruma Syntax (main focus)
 * Oniguruma Regular Expressions link[http://www.geocities.jp/kosako3/oniguruma/doc/RE.txt]
 * Read Ruby > Regexps link[http://ruby.runpaint.org/regexps]
 * TextMate (uses Oniguruma) Manual: Regular Expressions link[http://manual.macromates.com/en/regular_expressions]
 
+==== Other Flavors
+* GNU: link[http://www.delorie.com/gnu/docs/regex/regex_toc.html]
+* PCRE link[http://www.pcre.org/pcre.txt]
+* PERL link[http://perldoc.perl.org/perlreref.html]
+* POSIX link[http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html]
+* TRE link[http://laurikari.net/tre/documentation/regex-syntax/]
+
 ==== General
-* Regular Expression Flavor Comparison link[http://www.regular-expressions.info/refflavors.html]
-* Perl Regular Expressions Reference link[http://perldoc.perl.org/perlreref.html]
+* GNU Comparisons link[http://www.greenend.org.uk/rjk/2002/06/regexp.html]
 * Enumerating the strings of regular languages link[http://www.cs.dartmouth.edu/~doug/nfa.ps.gz]
+* Mastering Regular Expressions, By Jeffrey E.F. Friedl (1st Edition) book[http://oreilly.com/catalog/9781565922570/]
+* Regular Expression Flavor Comparison link[http://www.regular-expressions.info/refflavors.html]
 * Regular Expression Matching: the Virtual Machine Approach link[http://swtch.com/~rsc/regexp/regexp2.html]
 
 ==== Unicode
 * Unicode Explained, By Jukka K. Korpela. book[http://oreilly.com/catalog/9780596101213]
-* Unicode Regular Expressions link[http://www.unicode.org/reports/tr18/]
 * Unicode Property Aliases link[http://www.unicode.org/Public/UNIDATA/PropertyAliases.txt]
+* Unicode Regular Expressions link[http://www.unicode.org/reports/tr18/]
 
 
 == Thanks

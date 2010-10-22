@@ -38,29 +38,26 @@ module Regexp::Parser
   def self.emit(type, token, text, ts, te)
     #puts "[#{type.inspect}, #{token.inspect}] #{text}"
     case type
+    when :meta;         self.meta(type, token, text)
+    when :quantifier;   self.quantifier(type, token, text)
+    when :anchor;       self.anchor(type, token, text)
+    when :escape;       self.escape(type, token, text)
+    when :group;        self.group(type, token, text)
+    when :set;          self.set(type, token, text)
+    when :type;         self.type(type, token, text)
+
+    when :property, :inverted_property
+      self.property(type, token, text)
+
     when :literal
       @node << Expression::Literal.new(type, token, text)
-    when :quantifier
-        self.quantifier(type, token, text)
-    when :group
-      self.group(type, token, text)
-    when :character_set
-      self.character_set(type, token, text)
-    when :character_type
-      self.character_type(type, token, text)
-    when :property, :inverted_property
-      self.character_property(type, token, text)
-    when :anchor
-      self.anchor(type, token, text)
-    when :escape_sequence
-      self.escape_sequence(type, token, text)
 
     else
       raise "EMIT: unexpected token type #{type.inspect}, #{token.inspect} #{text}"
     end
   end
 
-  def self.character_set(type, token, text)
+  def self.set(type, token, text)
     case token
     when :open
       self.open_set(type, token, text)
@@ -75,30 +72,43 @@ module Regexp::Parser
     end
   end
 
-  def self.character_type(type, token, text)
+  def self.meta(type, token, text)
+    case token
+    when :alternation
+      unless @node.token == :alternation
+        alt = Expression::Alternation.new(type, token, text)
+
+        alt << @node.expressions.pop
+        @node << alt
+        @node = alt
+      end
+    end
+  end
+
+  def self.type(type, token, text)
     case token
     when :any
       @node << Expression::CharacterType::Any.new(type, token, text)
     when :digit
       @node << Expression::CharacterType::Digit.new(type, token, text)
-    when :non_digit
+    when :nondigit
       @node << Expression::CharacterType::NonDigit.new(type, token, text)
     when :hex
       @node << Expression::CharacterType::Hex.new(type, token, text)
-    when :non_hex
+    when :nonhex
       @node << Expression::CharacterType::NonHex.new(type, token, text)
     when :space
       @node << Expression::CharacterType::Space.new(type, token, text)
-    when :non_space
+    when :nonspace
       @node << Expression::CharacterType::NonSpace.new(type, token, text)
     when :word
       @node << Expression::CharacterType::Word.new(type, token, text)
-    when :non_word
+    when :nonword
       @node << Expression::CharacterType::NonWord.new(type, token, text)
     end
   end
 
-  def self.character_property(type, token, text)
+  def self.property(type, token, text)
     case token
     when :alnum;  @node << CharacterProperty::Alnum.new(type, token, text)
     when :alpha;  @node << CharacterProperty::Alpha.new(type, token, text)
@@ -163,12 +173,12 @@ module Regexp::Parser
       @node << Expression::Anchor::EOSOrBeforeEOL.new(type, token, text)
     when :word_boundary
       @node << Expression::Anchor::WordBoundary.new(type, token, text)
-    when :non_word_boundary
+    when :nonword_boundary
       @node << Expression::Anchor::NonWordBoundary.new(type, token, text)
     end
   end
 
-  def self.escape_sequence(type, token, text)
+  def self.escape(type, token, text)
     case token
     when :control
       @node << Expression::EscapeSequence::Control.new(type, token, text)
