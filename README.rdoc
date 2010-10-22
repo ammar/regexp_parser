@@ -48,10 +48,10 @@ Notes with ** mean:
   SCANNER COMPLETE: scanner support implemented, works, has tests
   PARSER COMPLETE: parser support implemented, works, has tests (implies SCANNER COMPLETE)
 
-- Alternation: a|b|c ** MISSING
-- Anchors: ^, $, \b, etc... ** SCANNER COMPLETE
+- Alternation: a|b|c ** PARSER COMPLETE
+- Anchors: ^, $, \b, etc... ** PARSER COMPLETE
 - Character Classes (aka Sets): [abc], [^\]] ** MISSING PROPERTIES
-- Character Types: \d, \H, \s, etc... ** SCANNER COMPLETE
+- Character Types: \d, \H, \s, etc... ** PARSER COMPLETE
 
 - Escaped Sequences
   - Backreference: \1 thru \9 ** MISSING
@@ -87,9 +87,9 @@ Notes with ** mean:
 - POSIX classes: ** NEEDS REVIEW/TESTS
 
 - Quantifiers
-  - Greedy: ** SCANNER COMPLETE
-  - Reluctant: ** SCANNER COMPLETE  
-  - Possessive: ** SCANNER COMPLETE (not in Oniguruma?)
+  - Greedy: ** PARSER COMPLETE
+  - Reluctant: ** PARSER COMPLETE  
+  - Possessive: ** PARSER COMPLETE (not in Oniguruma?)
 
 
 == Notes
