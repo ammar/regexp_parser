@@ -105,48 +105,87 @@
   # --------------------------------------------------------------------------
   character_set := |*
     ']' {
-      self.emit(:character_set, :close, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:set, :close, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
 
     '^' {
-      self.emit(:character_set, :negate, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:set, :negate, data[ts..te-1].pack('c*'), ts, te)
     };
 
     alnum . '-' . alnum { # TODO: add properties
-      self.emit(:character_set, :range, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:set, :range, data[ts..te-1].pack('c*'), ts, te)
     };
 
     '&&' {
-      self.emit(:character_set, :intersection, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:set, :intersection, data[ts..te-1].pack('c*'), ts, te)
     };
 
-    '\\' . [\]\-\,b] {
-      self.emit(:character_set, :member, data[ts..te-1].pack('c*'), ts, te)
+    '\\' {
+      fcall set_escape_sequence;
     };
 
     posix_class {
       case text = data[ts..te-1].pack('c*')
-      when '[:alnum:]';  self.emit(:character_set, :set_class_alnum,  text, ts, te)
-      when '[:alpha:]';  self.emit(:character_set, :set_class_alpha,  text, ts, te)
-      when '[:blank:]';  self.emit(:character_set, :set_class_blank,  text, ts, te)
-      when '[:cntrl:]';  self.emit(:character_set, :set_class_cntrl,  text, ts, te)
-      when '[:digit:]';  self.emit(:character_set, :set_class_digit,  text, ts, te)
-      when '[:graph:]';  self.emit(:character_set, :set_class_graph,  text, ts, te)
-      when '[:lower:]';  self.emit(:character_set, :set_class_lower,  text, ts, te)
-      when '[:print:]';  self.emit(:character_set, :set_class_print,  text, ts, te)
-      when '[:punct:]';  self.emit(:character_set, :set_class_punct,  text, ts, te)
-      when '[:space:]';  self.emit(:character_set, :set_class_space,  text, ts, te)
-      when '[:upper:]';  self.emit(:character_set, :set_class_upper,  text, ts, te)
-      when '[:xdigit:]'; self.emit(:character_set, :set_class_xdigit, text, ts, te)
-      when '[:word:]';   self.emit(:character_set, :set_class_word,   text, ts, te)
-      when '[:ascii:]';  self.emit(:character_set, :set_class_ascii,  text, ts, te)
+      when '[:alnum:]';  self.emit(:set, :class_alnum,  text, ts, te)
+      when '[:alpha:]';  self.emit(:set, :class_alpha,  text, ts, te)
+      when '[:blank:]';  self.emit(:set, :class_blank,  text, ts, te)
+      when '[:cntrl:]';  self.emit(:set, :class_cntrl,  text, ts, te)
+      when '[:digit:]';  self.emit(:set, :class_digit,  text, ts, te)
+      when '[:graph:]';  self.emit(:set, :class_graph,  text, ts, te)
+      when '[:lower:]';  self.emit(:set, :class_lower,  text, ts, te)
+      when '[:print:]';  self.emit(:set, :class_print,  text, ts, te)
+      when '[:punct:]';  self.emit(:set, :class_punct,  text, ts, te)
+      when '[:space:]';  self.emit(:set, :class_space,  text, ts, te)
+      when '[:upper:]';  self.emit(:set, :class_upper,  text, ts, te)
+      when '[:xdigit:]'; self.emit(:set, :class_xdigit, text, ts, te)
+      when '[:word:]';   self.emit(:set, :class_word,   text, ts, te)
+      when '[:ascii:]';  self.emit(:set, :class_ascii,  text, ts, te)
       else raise "Unsupported character posixe class at #{text} (char #{ts})"
       end
     };
 
     any {
-      self.emit(:character_set, :member, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:set, :member, data[ts..te-1].pack('c*'), ts, te)
+    };
+  *|;
+
+  # set escapes scanner
+  # --------------------------------------------------------------------------
+  set_escape_sequence := |*
+    'b' {
+      self.emit(:set, :backspace, data[ts-1..te-1].pack('c*'), ts-1, te)
+      fret;
+    };
+
+    [\\\]\-\,] {
+      self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
+      fret;
+    };
+
+    [dDhHsSwW] {
+      case text = data[ts-1..te-1].pack('c*')
+      when '\d'; self.emit(:set, :type_digit,     text, ts-1, te)
+      when '\D'; self.emit(:set, :type_nondigit,  text, ts-1, te)
+      when '\h'; self.emit(:set, :type_hex,       text, ts-1, te)
+      when '\H'; self.emit(:set, :type_nonhex,    text, ts-1, te)
+      when '\s'; self.emit(:set, :type_space,     text, ts-1, te)
+      when '\S'; self.emit(:set, :type_nonspace,  text, ts-1, te)
+      when '\w'; self.emit(:set, :type_word,      text, ts-1, te)
+      when '\W'; self.emit(:set, :type_nonword,   text, ts-1, te)
+      end
+
+      fret;
+    };
+
+    hex_sequence . '-\\' . hex_sequence {
+      self.emit(:set, :range_hex, data[ts-1..te-1].pack('c*'), ts-1, te)
+      fret;
+    };
+
+    hex_sequence {
+      self.emit(:set, :member_hex, data[ts-1..te-1].pack('c*'), ts-1, te)
+      fret;
     };
   *|;
 
@@ -155,27 +194,27 @@
   # --------------------------------------------------------------------------
   escape_sequence := |*
     hex_sequence {
-      self.emit(:escape_sequence, :hex, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :hex, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
 
     wide_hex_sequence {
-      self.emit(:escape_sequence, :hex_wide, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :hex_wide, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
 
     control_sequence {
-      self.emit(:escape_sequence, :control, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :control, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
 
     meta_sequence {
-      self.emit(:escape_sequence, :meta, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :meta, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
 
     meta_control_sequence {
-      self.emit(:escape_sequence, :meta_control, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :meta_control, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
 
@@ -257,7 +296,7 @@
     };
 
     any > (escaped_alpha, 1)  {
-      self.emit(:escape_sequence, :literal, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :literal, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
   *|;
@@ -322,7 +361,7 @@
 
     # Character sets
     set_open {
-      self.emit(:character_set, :open, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:set, :open, data[ts..te-1].pack('c*'), ts, te)
       fcall character_set;
     };
 
