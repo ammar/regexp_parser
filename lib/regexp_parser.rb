@@ -9,5 +9,9 @@ class Regexp
 
 end
 
+require File.expand_path('../regexp_parser/scanner', __FILE__)
+
+require File.expand_path('../regexp_parser/syntax', __FILE__)
 require File.expand_path('../regexp_parser/lexer', __FILE__)
+
 require File.expand_path('../regexp_parser/parser', __FILE__)
