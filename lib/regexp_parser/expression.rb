@@ -38,6 +38,10 @@ module Regexp::Parser
         @quantifier_mode
       end
 
+      def quantity
+        [@min, @max]
+      end
+
       def reluctant?
         @quantifier_mode == :reluctant
       end
@@ -46,15 +50,15 @@ module Regexp::Parser
         @quantifier_mode == :possessive
       end
 
-      def multi_line?
+      def multiline?
         (@options and @options[:m]) ? true : false
       end
-      alias :m? :multi_line?
+      alias :m? :multiline?
 
-      def case_insensitive?
+      def insensitive?
         (@options and @options[:i]) ? true : false
       end
-      alias :i? :case_insensitive?
+      alias :i? :insensitive?
 
       def free_spacing?
         (@options and @options[:x]) ? true : false

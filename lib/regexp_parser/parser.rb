@@ -3,12 +3,12 @@ require File.expand_path('../expression', __FILE__)
 module Regexp::Parser
   include Expression
 
-  def self.parse(input)
+  def self.parse(input, syntax = :any)
     @root = @node = Expression::Root.new
-    @nesting = [@node]
+    @nesting  = [@node]
 
-    Regexp::Scanner.scan(input) do |type, token, text, ts, te|
-      self.parse_type type, token, text, ts, te
+    Regexp::Lexer.scan(input, syntax) do |token|
+      self.parse_token( *token.to_a[0,5] )
     end
 
     @root
@@ -21,7 +21,7 @@ module Regexp::Parser
     @node  = exp
   end
 
-  def self.parse_type(type, token, text, ts, te)
+  def self.parse_token(type, token, text, ts, te)
     #puts "[#{type.inspect}, #{token.inspect}] #{text}"
     case type
     when :meta;         self.meta(type, token, text)

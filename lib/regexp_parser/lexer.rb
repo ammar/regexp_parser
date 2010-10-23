@@ -6,7 +6,7 @@ module Regexp::Lexer
   OPEN_TOKENS   = [:open, :capture, :options]
   CLOSE_TOKENS  = [:close]
 
-  def self.scan(input, syntax = 'ruby/1.9', &block)
+  def self.scan(input, syntax = :any, &block)
     @depth  = 0
     @tokens = []
     @syntax = Regexp::Syntax.find(syntax)

@@ -1,5 +1,9 @@
 module Regexp::Syntax
+
   def self.find(name)
+    return Regexp::Syntax::Any.new if
+      ['*', 'any'].include?( name.to_s )
+
     path = File.expand_path('../syntax', __FILE__)
 
     full = "#{path}/#{name}"
@@ -20,7 +24,7 @@ module Regexp::Syntax
     end
   end
 
-  # A lookup map of supported tokens in a given syntax
+  # A lookup map of supported types and tokens in a given syntax
   class Base
     def initialize
       @implements = {}
@@ -48,6 +52,18 @@ module Regexp::Syntax
       raise "#{self.class.name} does not implement: [#{type} #{token}]" unless
         check?(type, token)
     end
+  end
+
+  # A syntax that passes any flavor
+  class Any < Base
+    def initialize
+      @implements = { :* => [:*] }
+    end
+
+    def implements(type, tokens); true end
+
+    def check?(type, token); true end
+    def check!(type, token); true end
   end
 
 end

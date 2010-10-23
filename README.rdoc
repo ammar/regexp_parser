@@ -5,114 +5,206 @@
 
 
 == What?
-A library for parsing and transforming regular expressions.
+A ruby library to help with lexing, parsing, and transforming regular expressions.
 
-* Supports ruby 1.8 and 1.9 runtime
-* Supports ruby 1.8 and 1.9 regular expression syntax
-* Multilayered for reusability
+* Multilayered
   * A scanner based on ragel[http://www.complang.org/ragel/]
   * A lexer that produces a "stream" of tokens
   * A parser that produces a "tree" of Regexp::Expression objects (OO API)
 
+* Lexes and parses several regular expression flavors
+    # In progress
+      # Ruby 1.8/1.9    ** INCOMPLETE
+      # POSIX BRE/ERE   ** INCOMPLETE
+
+    # Haven't started yet
+      # PCRE            ** MISSING SYNTAX DEFINITION
+      # PERL            ** MISSING SYNTAX DEFINITION
+      # Python          ** MISSING SYNTAX DEFINITION
+      # Java            ** MISSING SYNTAX DEFINITION
+      # JavaScript      ** MISSING SYNTAX DEFINITION
+      # .NET            ** MISSING SYNTAX DEFINITION
+
+* Supports ruby 1.8 and 1.9 runtime
+
 
 Thinking about
-* Support for other flavors (See References below)
-* A parser that produces s-expressions
-* A transformation "driver"
+  * A parser that produces s-expressions
+  * Aspect oriented transformation "driver"
 
 
-== Examples
+
+== Components
+=== Scanner
+A ragel generated scanner that understands the cumulative syntax of all
+supported flavors.
+
+==== Example
+The following scans the given pattern and prints out the type, token, text and
+start/end offsets for each token found.
+
+  require 'regexp_parser'
+
+  Regexp::Scanner.scan /a?(b)*[c]+)/  do |type, token, text, ts, te|
+    puts "type: #{type}, token: #{token}, text: '#{text}' [#{ts}..#{te}]"
+  end
+
+==== Notes
+  * Currently does no error checking, but could/should be responsible for
+    detecting lexical errors like missing balancing punctuation and premature
+    end of pattern. Flavor validity checks are a responsibility for higher
+    layers.
+
+==== TODO
+  * Consider extracting a "baseline" scanner (BRE?) common to all flavors, and
+    layer subsets of syntax into individual ragel machines, like assertions, posix
+    classes and unicode properties.
+
+  * Add a scanner (machine) for escaped sttrings, usable from other machines.
+
+
+---
+=== Syntax
+Defines the supported lexem types and tokens for specific engine implementation
+(aka a flavor). Syntax classes act as lookup tables, and can be layered to
+create flavor variations.
+
+==== Example
+The following instantiates the syntax for Ruby 1.9 and checks a couple of its
+implementations features.
+
+  require 'regexp_parser'
+
+  ruby_19 = Regexp::Syntax.new 'ruby/1.9'
+
+  ruby_19.implements? :quantifier, :zero_or_one_greedy       # => true
+  ruby_19.implements? :quantifier, :zero_or_one_possessive   # => false
+
+
+==== Notes
+  * Variatiions on a token, for example a named group with < and > vs one with a
+    pair of single quotes, *will be* specified as an underscore followed by two
+    characters appended to the base token. In the previous named group example,
+    the tokens would be :named_ab (angle brackets) and :named_sq (single quotes).
+    This should simplify specifying syntax that includes multiple variations by
+    testing/removing the last 3 characters. 
+
+==== TODO
+  * A lot. Complete Ruby and POSIX flavors first.
+
+
+---
 === Lexer
-  Regexp::Lexer.lex /a?(b)*[c]+)/  do |token|
+A thin wrapper around the scanner module that collects the emissions from it,
+checks their validity against a given syntax flavor, and packages them into
+Token class objects. 
+
+Tokens are Struct objects, basically data objects, with a couple of helper
+methods. 
+
+==== Example
+The following example scans the given pattern, checks it against the ruby 1.8
+syntax, and dumps the token objects.
+
+  Regexp::Lexer.scan /a?(b)*[c]+)/, 'ruby/1.8'  do |token|
     puts token.inspect
   end
 
-=== Parser
-  root = Regexp::Parser.parse /a(b)[c])/m
+==== Notes
+  * The lexer performs some basic parsing to determine the depth of a the
+    emitted tokens. This responsibility might be relegated to the scanner.
 
-  root.multi_line?  # => true (aliased as m?)
+==== TODO
+  * Consider normalizing token variations in the lexer to simplify parser
+    layer's code.
+
+
+---
+=== Parser
+Sits on top of the lexer and transforms the "stream" of Token objects emitted
+by it into a tree of Expression objects represented by an instance of the
+Expression::Root class. See Expression below for more information.
+
+==== Example
+  root = Regexp::Parser.parse /a?(b)*[c]+)/m, 'posix/ere'
+
+  root.multiline?   # => true (aliased as m?)
   root.insensitive? # => false (aliased as i?)
 
-  root.expressions.each do |expression|
-    puts expression.inspect
+  root.expressions.each do |exp|
+    if exp.quantified?
+      puts "#{exp.clas.name}: is quantified, min: #{exp.min}, #{exp.max}"
+    end
   end
 
 
-== Supported Syntax Elements
-The following is targeted for support by the scanner
-
-Notes with ** mean:
-
-  MISSING : nothing in place, or barely there
-  NEED REVIEW/TESTS: mostly there, but not varified
-  SCANNER COMPLETE: scanner support implemented, works, has tests
-  PARSER COMPLETE: parser support implemented, works, has tests (implies SCANNER COMPLETE)
-
-- Alternation: a|b|c ** PARSER COMPLETE
-- Anchors: ^, $, \b, etc... ** PARSER COMPLETE
-- Character Classes (aka Sets): [abc], [^\]] ** MISSING PROPERTIES
-- Character Types: \d, \H, \s, etc... ** PARSER COMPLETE
-
-- Escaped Sequences
-  - Backreference: \1 thru \9 ** MISSING
-  - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
-  - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
-  - Meta: \M-C, etc.. ** NEEDS REVIEW/TESTS
-  - Meta-Control: \M-\C-C ** NEEDS REVIEW/TESTS
-  - Metacharacters: \\, \+, \?, etc.. ** NEEDS REVIEW/TESTS
-  - Octal: \012 ** MISSING
-
-- Grouped Expressions
-  - Atomic: (?>abc) ** SCANNER COMPLETE
-  - Capturing: (abc) ** SCANNER COMPLETE
-  - Comment: (?# comment) ** SCANNER COMPLETE
-  - Named: (?<name>abc) ** SCANNER COMPLETE (no single quotes, yet)
-  - Options: (?mi-x:abc) ** SCANNER COMPLETE (missing some options, u, e, etc..)
-  - Passive: (?:abc) ** SCANNER COMPLETE
-  - Assertions
-    - Lookahead: (?=abc) ** SCANNER COMPLETE
-    - Negative Lookahead: (?!abc) ** SCANNER COMPLETE
-    - Lookabehind: (?<=abc) ** SCANNER COMPLETE
-    - Negative Lookbehind: (?<\!abc) ** SCANNER COMPLETE
-
-- Literals: abc ** NEEDS TESTS 
-
-- Properties: 
-  - Classes: \p{{Alpha}}, \P{{Space}}, etc...  ** NEEDS REVIEW/TESTS
-  - Derived Properties: \p{{Math}}, ** MISSING
-  - General Categories: \p{{Lu}}, \P{{Cs}}, etc... ** NEEDS REVIEW/TESTS
-  - Scripts: \p{{Arabic}}, \P{{Hiragana}} ** MISSING
-  - Simple Properties (aka Aliases):  ** MISSING
-
-- POSIX classes: ** NEEDS REVIEW/TESTS
-
-- Quantifiers
-  - Greedy: ** PARSER COMPLETE
-  - Reluctant: ** PARSER COMPLETE  
-  - Possessive: ** PARSER COMPLETE (not in Oniguruma?)
-
-
-== Notes
-=== Scanner
-* Checking regex syntax by instantiating a Regexp object from the input before
-  scanning is a very bad idea and was removed. Syntax error checking is now a
-  requirement. (See syntax and value errors in oniguruma.h)
-
-* Need to extract a "baseline" scanner common to all flavours, and layer subsets
-  of syntax into individual machines, like posix classes and unicode properties.
-
-=== Parser
-* Think of ways to specify flavors.
-
+---
 === Expression
-* Implementing to_s and to_re requires saving open/close token text, including
-  quantifiers.
+The base class of all objects returned by the parser, implements most of the
+functions of all expression classes.
+
+==== TODO
+  * Implementing to_s and to_re requires saving open/close token text, including
+    quantifiers.
+
+
+
+== Scanner Syntax
+The following is targeted for support by the scanner. This should be a table,
+but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
+
+  - Alternation: a|b|c ** PARSER COMPLETE
+  - Anchors: ^, $, \b, etc... ** PARSER COMPLETE
+  - Character Classes (aka Sets): [abc], [^\]] ** MISSING PROPERTIES
+  - Character Types: \d, \H, \s, etc... ** PARSER COMPLETE
+  - Escape Sequences
+    - Backreference: \1 thru \9 ** MISSING
+    - Metacharacters: \\, \+, \?, etc.. ** NEEDS REVIEW/TESTS
+  - Grouped Expressions
+    - Atomic: (?>abc) ** SCANNER COMPLETE
+    - Capturing: (abc) ** SCANNER COMPLETE
+    - Comment: (?# comment) ** SCANNER COMPLETE
+    - Named: (?<name>abc) ** SCANNER COMPLETE (no single quotes, yet)
+    - Options: (?mi-x:abc) ** SCANNER COMPLETE (missing some options, u, e, etc..)
+    - Passive: (?:abc) ** SCANNER COMPLETE
+    - Assertions
+      - Lookahead: (?=abc) ** SCANNER COMPLETE
+      - Negative Lookahead: (?!abc) ** SCANNER COMPLETE
+      - Lookabehind: (?<=abc) ** SCANNER COMPLETE
+      - Negative Lookbehind: (?<\!abc) ** SCANNER COMPLETE
+  - Literals: abc ** NEEDS TESTS 
+  - POSIX classes: ** NEEDS REVIEW/TESTS
+  - Quantifiers
+    - Greedy: ** PARSER COMPLETE
+    - Reluctant: ** PARSER COMPLETE  
+    - Possessive: ** PARSER COMPLETE
+  - String Escapes
+    - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
+    - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
+    - Meta: \M-C, etc.. ** NEEDS REVIEW/TESTS
+    - Meta-Control: \M-\C-C ** NEEDS REVIEW/TESTS
+    - Octal: \012 ** MISSING
+    - Unicode: \uHHHH, \u{H+ H+} ** MISSING
+  - Unicode Properties: 
+    - Classes: \p{Alpha}, \P{Space}, etc...  ** NEEDS REVIEW/TESTS
+    - Derived Properties: \p{Math}, ** MISSING
+    - General Categories: \p{Lu}, \P{Cs}, etc... ** NEEDS REVIEW/TESTS
+    - Scripts: \p{Arabic}, \P{Hiragana} ** MISSING
+    - Simple Properties (aka Aliases):  ** MISSING
+
+
+  Notes with ** mean:
+
+    MISSING : nothing in place, or barely there
+    NEED REVIEW/TESTS: mostly there, but not varified
+    SCANNER COMPLETE: scanner support implemented, works, has tests
+    PARSER COMPLETE: parser support implemented, works, has tests
 
 
 == References
 Documentation and information being read while working on this project.
 
-==== Oniguruma Syntax (main focus)
+==== Ruby Flavor
 * Oniguruma Regular Expressions link[http://www.geocities.jp/kosako3/oniguruma/doc/RE.txt]
 * Read Ruby > Regexps link[http://ruby.runpaint.org/regexps]
 * TextMate (uses Oniguruma) Manual: Regular Expressions link[http://manual.macromates.com/en/regular_expressions]
@@ -139,8 +231,9 @@ Documentation and information being read while working on this project.
 
 
 == Thanks
-This work is based on the work and ideas of many people, directly or indirectly.
-The following are some of them.
+This work is based on tnd inspired by the hard work and ideas of many people,
+directly or indirectly. The following are only some of those that should be 
+thanked.
 
 * Adrian Thurston, for developing ragel[http://www.complang.org/ragel/].
 
@@ -150,6 +243,8 @@ The following are some of them.
 * Jan Goyvaerts, for his excellent resource[:http://www.regular-expressions.info] on regular expressions. I owe him a "steak dinner", at least.
 
 * Run Paint Run Run, for his work on Read[http://ruby.runpaint.org/] Ruby
+
+* Yukihiro Matsumoto, of course! For "The Ruby", of course! A joy to hack in.
 
 
 == Copyright

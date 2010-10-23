@@ -1,17 +1,25 @@
 class Regexp
 
-  TOKEN_KEYS = [:type, :token, :text, :ts, :te, :depth].freeze
-  Token = Struct.new(*TOKEN_KEYS)
-
   module Parser
     VERSION = '0.0.1'
   end
 
+  TOKEN_KEYS = [:type, :token, :text, :ts, :te, :depth].freeze
+  Token = Struct.new(*TOKEN_KEYS) do
+    def offset
+      [self.ts, self.te]
+    end
+
+    def to_h
+      hash = {}
+      members.each do |member|
+        hash[member.to_sym] = self.send(member.to_sym)
+      end; hash
+    end
+  end
+
 end
 
-require File.expand_path('../regexp_parser/scanner', __FILE__)
-
-require File.expand_path('../regexp_parser/syntax', __FILE__)
-require File.expand_path('../regexp_parser/lexer', __FILE__)
-
-require File.expand_path('../regexp_parser/parser', __FILE__)
+%w{scanner syntax lexer parser}.each do |file|
+  require File.expand_path "../regexp_parser/#{file}", __FILE__
+end
