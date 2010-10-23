@@ -94,11 +94,9 @@ Notes with ** mean:
 
 == Notes
 === Scanner
-* Currently, regex syntax is checked by instantiating a Regexp object from the
-  input before scanning. If no error is raised, then the syntax is all good.
-  Obviously this only works for ruby regular expressions. Syntax error checking
-  will be required to support other flavors. (See syntax and value errors in
-  oniguruma.h)
+* Checking regex syntax by instantiating a Regexp object from the input before
+  scanning is a very bad idea and was removed. Syntax error checking is now a
+  requirement. (See syntax and value errors in oniguruma.h)
 
 * Need to extract a "baseline" scanner common to all flavours, and layer subsets
   of syntax into individual machines, like posix classes and unicode properties.
@@ -134,6 +132,7 @@ Documentation and information being read while working on this project.
 * Regular Expression Matching: the Virtual Machine Approach link[http://swtch.com/~rsc/regexp/regexp2.html]
 
 ==== Unicode
+* Unicode Derived Properties link[http://www.unicode.org/Public/UNIDATA/DerivedCoreProperties.txt]
 * Unicode Explained, By Jukka K. Korpela. book[http://oreilly.com/catalog/9780596101213]
 * Unicode Property Aliases link[http://www.unicode.org/Public/UNIDATA/PropertyAliases.txt]
 * Unicode Regular Expressions link[http://www.unicode.org/reports/tr18/]
