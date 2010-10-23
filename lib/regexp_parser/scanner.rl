@@ -200,34 +200,35 @@
   # --------------------------------------------------------------------------
   escape_sequence := |*
     hex_sequence {
-      self.emit(:escape, :hex, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :hex, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
+    # curly brackets
     wide_hex_sequence {
-      self.emit(:escape, :hex_wide, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :hex_wide, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
     control_sequence {
-      self.emit(:escape, :control, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :control, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
     meta_sequence {
-      self.emit(:escape, :meta, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :meta, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
     meta_control_sequence {
-      self.emit(:escape, :meta_control, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :meta_control, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
     # TODO: extract into a separate machine... use in sets
     property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 2) {
-      text = data[ts..te-1].pack('c*')
-      type = text[0,1] == 'p' ? :property: :inverted_property
+      text = data[ts-1..te-1].pack('c*')
+      type = text[1,1] == 'p' ? :property : :inverted_property
 
       case name = data[ts+2..te-2].pack('c*')
 
@@ -235,18 +236,26 @@
       when 'Alnum';   self.emit(type, :alnum,  text, ts, te)
       when 'Alpha';   self.emit(type, :alpha,  text, ts, te)
       when 'Any';     self.emit(type, :any,    text, ts, te)
+
       when 'Ascii';   self.emit(type, :ascii,  text, ts, te)
+      when 'ASCII';   self.emit(type, :ascii,  text, ts, te)
+
       when 'Blank';   self.emit(type, :blank,  text, ts, te)
       when 'Cntrl';   self.emit(type, :cntrl,  text, ts, te)
       when 'Digit';   self.emit(type, :digit,  text, ts, te)
       when 'Graph';   self.emit(type, :graph,  text, ts, te)
       when 'Lower';   self.emit(type, :lower,  text, ts, te)
+
       when 'Print';   self.emit(type, :print,  text, ts, te)
       when 'Punct';   self.emit(type, :punct,  text, ts, te)
       when 'Space';   self.emit(type, :space,  text, ts, te)
       when 'Upper';   self.emit(type, :upper,  text, ts, te)
       when 'Word';    self.emit(type, :word,   text, ts, te)
+
       when 'Xdigit';  self.emit(type, :xdigit, text, ts, te)
+      when 'XDigit';  self.emit(type, :xdigit, text, ts, te)
+
+      when 'NEWLINE'; self.emit(type, :newline,  text, ts, te)
 
       # Letters
       when 'L';  self.emit(type, :letter_any,       text, ts, te)
@@ -302,7 +311,7 @@
     };
 
     any > (escaped_alpha, 1)  {
-      self.emit(:escape, :literal, data[ts..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :literal, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
   *|;
@@ -472,3 +481,44 @@
 
   *|;
 }%%
+
+
+module Regexp::Scanner
+  %% write data;
+
+  # Scans the given regular expression text, or Regexp object and:
+  #
+  # If a block is given, calls it for each emitted token, and returns nil
+  # when done.
+  #
+  # If no block is given, collect the emitted arguments (as an array) into
+  # an array and return that when done.
+  #
+  # This may raise an error if a syntax error is encountered. ** this is still
+  # in progress.
+  # --------------------------------------------------------------------------
+  def self.scan(input, &block)
+    top, stack = 0, []
+
+    input = input.to_s if input.is_a?(Regexp)
+    data  = input.unpack("c*") if input.is_a?(String)
+    eof   = data.length
+
+    @block  = block if block_given?
+    @tokens = [] unless @block
+
+    %% write init;
+    %% write exec;
+
+    @tokens
+  end
+
+  def self.emit(type, token, text, ts, te)
+    if @block
+      @block.call type, token, text, ts, te
+    else
+      @tokens << [type, token, text, ts, te]
+    end
+  end
+
+end # module Regexp::Lexer
