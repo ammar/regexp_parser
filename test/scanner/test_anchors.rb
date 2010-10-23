@@ -1,6 +1,6 @@
 require File.expand_path("../../helpers", __FILE__)
 
-class LexerAnchors < Test::Unit::TestCase
+class ScannerAnchors < Test::Unit::TestCase
 
   tests = {
    '^abc'       => [:anchor,     :beginning_of_line,    '^',   0],
@@ -17,7 +17,7 @@ class LexerAnchors < Test::Unit::TestCase
   tests.each do |pattern, test|
     [:type, :token, :text].each_with_index do |member, i|
       define_method "test_lex_#{test[0]}_#{test[1]}_#{member}" do
-        assert_equal( test[i], RL.scan(pattern)[test[3]].send(member))
+        assert_equal( test[i], RS.scan(pattern)[test[3]].send(member))
       end
     end
   end

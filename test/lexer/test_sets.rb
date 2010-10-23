@@ -48,7 +48,7 @@ class LexerSets < Test::Unit::TestCase
 
     [:type, :token, :text].each_with_index do |member, i|
       define_method "test_lex_#{test[0]}_#{name}_#{member}" do
-        t = RL.lex(pattern)[test[3]]
+        t = RL.scan(pattern)[test[3]]
         assert_equal( test[i], t.send(member))
       end
     end

@@ -21,7 +21,7 @@ class LexerGroups < Test::Unit::TestCase
   tests.each do |pattern, test|
     [:type, :token, :text].each_with_index do |member, i|
       define_method "test_lex_#{test[0]}_#{test[1]}_#{member}" do
-        assert_equal( test[i], RL.lex(pattern)[0].send(member))
+        assert_equal( test[i], RL.scan(pattern)[0].send(member))
       end
     end
   end

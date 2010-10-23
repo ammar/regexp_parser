@@ -3,7 +3,7 @@ require File.expand_path("../../helpers", __FILE__)
 class TestRegexpLexerAlternation < Test::Unit::TestCase
 
   def test_lexer_alternation
-    tokens = RL.lex('ab??|cd*+|ef+')
+    tokens = RL.scan('ab??|cd*+|ef+')
 
     [2,5].each do |i|
       assert_equal( :meta,        tokens[i].type )

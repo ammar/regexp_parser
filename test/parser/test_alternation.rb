@@ -1,8 +1,9 @@
 require File.expand_path("../../helpers", __FILE__)
 
 class ParserAlternation < Test::Unit::TestCase
+
   def setup
-    @root = RP.parse('(ab??|cd*+|ef+)|(gh|ij|kl)?')
+    @root = RP.parse('(ab??|cd*+|ef+)*|(gh|ij|kl)?')
   end
 
   def test_parse_alternation_root

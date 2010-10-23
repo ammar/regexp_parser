@@ -1,9 +1,9 @@
 require File.expand_path("../../helpers", __FILE__)
 
-class TestRegexpParserProperties < Test::Unit::TestCase
+class ParserProperties < Test::Unit::TestCase
 
   types = ['p', 'P']
-  tests = [:alnum, :alpha, :any, :ascii, :blank, :cntrl, :digit, :graph,
+  tests = [:alnum, :alpha, :blank, :cntrl, :digit, :graph, :any, :ascii, 
            :lower, :print, :punct, :space, :upper, :word, :xdigit]
 
   types.each do |type|
@@ -11,7 +11,7 @@ class TestRegexpParserProperties < Test::Unit::TestCase
 
     tests.each do |property|
       define_method "test_parse_#{token_type}_#{property}" do
-        t = RP.parse("ab\\#{type}{#{property.to_s.capitalize}}")
+        t = RP.parse "ab\\#{type}{#{property.to_s.capitalize}}"
 
         assert( t.expressions.last.is_a?(RP::Expression::CharacterProperty::Base),
                "Expected property, but got #{t.expressions.last.class.name}")
