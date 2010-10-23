@@ -1,7 +1,5 @@
 module Regexp::Syntax
 
-  # POSIX Basic Regular Expressions
-  # TODO: fill out this stub
   module Ruby
     class V18 < Regexp::Syntax::Base
       def initialize

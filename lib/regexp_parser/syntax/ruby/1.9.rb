@@ -2,8 +2,6 @@ require File.expand_path '../1.8', __FILE__
 
 module Regexp::Syntax
 
-  # POSIX Extended Regular Expressions
-  # TODO: fill out this stub
   module Ruby
     class V19 < Regexp::Syntax::Ruby::V18
       def initialize
