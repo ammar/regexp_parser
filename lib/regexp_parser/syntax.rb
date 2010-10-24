@@ -44,14 +44,16 @@ module Regexp::Syntax
       end
     end
 
-    def check?(type, token)
+    def implements?(type, token)
       @implements[type] and @implements[type].include?(token)
     end
+    alias :check? :implements?
 
-    def check!(type, token)
-      raise "#{self.class.name} does not implement: [#{type} #{token}]" unless
-        check?(type, token)
+    def implements!(type, token)
+      raise "#{self.class.name} does not implement: [#{type}:#{token}]" unless
+        implements?(type, token)
     end
+    alias :check! :implements!
   end
 
   # A syntax that passes any flavor
@@ -60,10 +62,8 @@ module Regexp::Syntax
       @implements = { :* => [:*] }
     end
 
-    def implements(type, tokens); true end
-
-    def check?(type, token); true end
-    def check!(type, token); true end
+    def implements?(type, token) true end
+    def implements!(type, token) true end
   end
 
 end

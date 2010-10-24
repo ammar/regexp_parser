@@ -60,7 +60,7 @@ start/end offsets for each token found.
     layer subsets of syntax into individual ragel machines, like assertions, posix
     classes and unicode properties.
 
-  * Add a scanner (machine) for escaped sttrings, usable from other machines.
+  * Add a scanner (machine) for escaped strings, usable from other machines.
 
 
 ---
@@ -77,8 +77,9 @@ implementations features.
 
   ruby_19 = Regexp::Syntax.new 'ruby/1.9'
 
-  ruby_19.implements? :quantifier, :zero_or_one_greedy       # => true
-  ruby_19.implements? :quantifier, :zero_or_one_possessive   # => false
+  ruby_19.implements? :quantifier, :zero_or_one             # => true
+  ruby_19.implements? :quantifier, :zero_or_one_reluctant   # => true
+  ruby_19.implements? :quantifier, :zero_or_one_possessive  # => false
 
 
 ==== Notes
@@ -236,14 +237,10 @@ directly or indirectly. The following are only some of those that should be
 thanked.
 
 * Adrian Thurston, for developing ragel[http://www.complang.org/ragel/].
-
 * Caleb Clausen, for feedback, which inspired this,  valuable insights on structuring the parser,
   and lots of cool code[http://github.com/coatl].
-
-* Jan Goyvaerts, for his excellent resource[:http://www.regular-expressions.info] on regular expressions. I owe him a "steak dinner", at least.
-
+* Jan Goyvaerts, for his excellent resource[http://www.regular-expressions.info] on regular expressions. I owe him a "steak dinner", at least.
 * Run Paint Run Run, for his work on Read[http://ruby.runpaint.org/] Ruby
-
 * Yukihiro Matsumoto, of course! For "The Ruby", of course! A joy to hack in.
 
 
