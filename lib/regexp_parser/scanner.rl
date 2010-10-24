@@ -54,15 +54,19 @@
   anchor_char           = [AbBzZG];
   property_char         = [pP];
 
-  escaped_char          = [aefnrtv];
-  octal_sequence        = [0-7]{3};
+  escaped_char          = [abefnrstv];
+  octal_sequence        = [0-7]{1,3};
 
-  hex_sequence          = 'x' . xdigit{2};
+  hex_sequence          = 'x' . xdigit{1,2};
   wide_hex_sequence     = 'x' . '{7' . xdigit{1,7} . '}';
 
-  control_sequence      = ('c' | 'C-') . xdigit{1,2};
-  meta_sequence         = 'M-' . xdigit{1,2};
-  meta_control_sequence = 'M-\\C-' . xdigit{1,2};
+  codepoint_single      = 'u' . xdigit{4};
+  codepoint_list        = 'u{' . (xdigit{4} . space?)+'}'
+  codepoint_sequence    = codepoint_single | codepoint_list;
+
+  control_sequence      = ('c' | 'C-') . alpha;
+  meta_sequence         = 'M-' . alpha;
+  meta_control_sequence = 'M-\\C-' . alpha; # TODO: trace origin
 
   zero_or_one           = '?' | '??' | '?+';
   zero_or_more          = '*' | '*?' | '*+';
@@ -199,6 +203,16 @@
   # escape sequence scanner
   # --------------------------------------------------------------------------
   escape_sequence := |*
+    codepoint_sequence {
+      text = data[ts-1..te-1].pack('c*')
+      if text[2].chr == '{'
+        self.emit(:escape, :codepoint_list, data[ts-1..te-1].pack('c*'), ts, te)
+      else
+        self.emit(:escape, :codepoint, data[ts-1..te-1].pack('c*'), ts, te)
+      end
+      fret;
+    };
+
     hex_sequence {
       self.emit(:escape, :hex, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
@@ -209,6 +223,7 @@
       self.emit(:escape, :hex_wide, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
+
 
     control_sequence {
       self.emit(:escape, :control, data[ts-1..te-1].pack('c*'), ts, te)
@@ -230,84 +245,83 @@
       text = data[ts-1..te-1].pack('c*')
       type = text[1,1] == 'p' ? :property : :inverted_property
 
-      case name = data[ts+2..te-2].pack('c*')
+      case name = data[ts+2..te-2].pack('c*').downcase
 
       # Named
-      when 'Alnum';   self.emit(type, :alnum,  text, ts, te)
-      when 'Alpha';   self.emit(type, :alpha,  text, ts, te)
-      when 'Any';     self.emit(type, :any,    text, ts, te)
+      when 'alnum';   self.emit(type, :alnum,  text, ts, te)
+      when 'alpha';   self.emit(type, :alpha,  text, ts, te)
+      when 'any';     self.emit(type, :any,    text, ts, te)
 
-      when 'Ascii';   self.emit(type, :ascii,  text, ts, te)
-      when 'ASCII';   self.emit(type, :ascii,  text, ts, te)
+      when 'ascii';   self.emit(type, :ascii,  text, ts, te)
 
-      when 'Blank';   self.emit(type, :blank,  text, ts, te)
-      when 'Cntrl';   self.emit(type, :cntrl,  text, ts, te)
-      when 'Digit';   self.emit(type, :digit,  text, ts, te)
-      when 'Graph';   self.emit(type, :graph,  text, ts, te)
-      when 'Lower';   self.emit(type, :lower,  text, ts, te)
+      when 'blank';   self.emit(type, :blank,  text, ts, te)
+      when 'cntrl';   self.emit(type, :cntrl,  text, ts, te)
+      when 'digit';   self.emit(type, :digit,  text, ts, te)
+      when 'graph';   self.emit(type, :graph,  text, ts, te)
+      when 'lower';   self.emit(type, :lower,  text, ts, te)
 
-      when 'Print';   self.emit(type, :print,  text, ts, te)
-      when 'Punct';   self.emit(type, :punct,  text, ts, te)
-      when 'Space';   self.emit(type, :space,  text, ts, te)
-      when 'Upper';   self.emit(type, :upper,  text, ts, te)
-      when 'Word';    self.emit(type, :word,   text, ts, te)
+      when 'print';   self.emit(type, :print,  text, ts, te)
+      when 'punct';   self.emit(type, :punct,  text, ts, te)
+      when 'space';   self.emit(type, :space,  text, ts, te)
+      when 'upper';   self.emit(type, :upper,  text, ts, te)
+      when 'word';    self.emit(type, :word,   text, ts, te)
 
-      when 'Xdigit';  self.emit(type, :xdigit, text, ts, te)
-      when 'XDigit';  self.emit(type, :xdigit, text, ts, te)
+      when 'xdigit';  self.emit(type, :xdigit, text, ts, te)
 
-      when 'NEWLINE'; self.emit(type, :newline,  text, ts, te)
+      when 'newline'; self.emit(type, :newline,  text, ts, te)
 
       # Letters
-      when 'L';  self.emit(type, :letter_any,       text, ts, te)
-      when 'Lu'; self.emit(type, :letter_uppercase, text, ts, te)
-      when 'Ll'; self.emit(type, :letter_lowercase, text, ts, te)
-      when 'Lt'; self.emit(type, :letter_titlecase, text, ts, te)
-      when 'Lm'; self.emit(type, :letter_modifier,  text, ts, te)
-      when 'Lo'; self.emit(type, :letter_other,     text, ts, te)
+      when 'l';  self.emit(type, :letter_any,       text, ts, te)
+      when 'lu'; self.emit(type, :letter_uppercase, text, ts, te)
+      when 'll'; self.emit(type, :letter_lowercase, text, ts, te)
+      when 'lt'; self.emit(type, :letter_titlecase, text, ts, te)
+      when 'lm'; self.emit(type, :letter_modifier,  text, ts, te)
+      when 'lo'; self.emit(type, :letter_other,     text, ts, te)
 
       # Marks
-      when 'M';  self.emit(type, :mark_any,         text, ts, te)
-      when 'Mn'; self.emit(type, :mark_nonspacing,  text, ts, te)
-      when 'Mc'; self.emit(type, :mark_spacing,     text, ts, te)
-      when 'Me'; self.emit(type, :mark_enclosing,   text, ts, te)
+      when 'm';  self.emit(type, :mark_any,         text, ts, te)
+      when 'mn'; self.emit(type, :mark_nonspacing,  text, ts, te)
+      when 'mc'; self.emit(type, :mark_spacing,     text, ts, te)
+      when 'me'; self.emit(type, :mark_enclosing,   text, ts, te)
 
       # Numbers
-      when 'N';  self.emit(type, :number_any,       text, ts, te)
-      when 'Nd'; self.emit(type, :number_decimal,   text, ts, te)
-      when 'Nl'; self.emit(type, :number_letter,    text, ts, te)
-      when 'No'; self.emit(type, :number_other,     text, ts, te)
+      when 'n';  self.emit(type, :number_any,       text, ts, te)
+      when 'nd'; self.emit(type, :number_decimal,   text, ts, te)
+      when 'nl'; self.emit(type, :number_letter,    text, ts, te)
+      when 'no'; self.emit(type, :number_other,     text, ts, te)
 
       # Punctuation
-      when 'P';  self.emit(type, :punct_any,        text, ts, te)
-      when 'Pc'; self.emit(type, :punct_connector,  text, ts, te)
-      when 'Pd'; self.emit(type, :punct_dash,       text, ts, te)
-      when 'Ps'; self.emit(type, :punct_open,       text, ts, te)
-      when 'Pe'; self.emit(type, :punct_close,      text, ts, te)
-      when 'Pi'; self.emit(type, :punct_initial,    text, ts, te)
-      when 'Pf'; self.emit(type, :punct_final,      text, ts, te)
-      when 'Po'; self.emit(type, :punct_other,      text, ts, te)
+      when 'p';  self.emit(type, :punct_any,        text, ts, te)
+      when 'pc'; self.emit(type, :punct_connector,  text, ts, te)
+      when 'pd'; self.emit(type, :punct_dash,       text, ts, te)
+      when 'ps'; self.emit(type, :punct_open,       text, ts, te)
+      when 'pe'; self.emit(type, :punct_close,      text, ts, te)
+      when 'pi'; self.emit(type, :punct_initial,    text, ts, te)
+      when 'pf'; self.emit(type, :punct_final,      text, ts, te)
+      when 'po'; self.emit(type, :punct_other,      text, ts, te)
 
       # Symbols
-      when 'S';  self.emit(type, :symbol_any,       text, ts, te)
-      when 'Sm'; self.emit(type, :symbol_math,      text, ts, te)
-      when 'Sc'; self.emit(type, :symbol_currency,  text, ts, te)
-      when 'Sk'; self.emit(type, :symbol_modifier,  text, ts, te)
-      when 'So'; self.emit(type, :symbol_other,     text, ts, te)
+      when 's';  self.emit(type, :symbol_any,       text, ts, te)
+      when 'sm'; self.emit(type, :symbol_math,      text, ts, te)
+      when 'sc'; self.emit(type, :symbol_currency,  text, ts, te)
+      when 'sk'; self.emit(type, :symbol_modifier,  text, ts, te)
+      when 'so'; self.emit(type, :symbol_other,     text, ts, te)
 
       # Separators
-      when 'Z';  self.emit(type, :separator_any,        text, ts, te)
-      when 'Zs'; self.emit(type, :separator_space,      text, ts, te)
-      when 'Zl'; self.emit(type, :separator_line,       text, ts, te)
-      when 'Zp'; self.emit(type, :separator_paragraph,  text, ts, te)
+      when 'z';  self.emit(type, :separator_any,        text, ts, te)
+      when 'zs'; self.emit(type, :separator_space,      text, ts, te)
+      when 'zl'; self.emit(type, :separator_line,       text, ts, te)
+      when 'zp'; self.emit(type, :separator_paragraph,  text, ts, te)
 
       # Codepoints
-      when 'C';  self.emit(type, :code_any,         text, ts, te)
-      when 'Cc'; self.emit(type, :code_control,     text, ts, te)
-      when 'Cf'; self.emit(type, :code_format,      text, ts, te)
-      when 'Cs'; self.emit(type, :code_surrogate,   text, ts, te)
-      when 'Co'; self.emit(type, :code_private,     text, ts, te)
-      when 'Cn'; self.emit(type, :code_unassigned,  text, ts, te)
+      when 'c';  self.emit(type, :code_any,         text, ts, te)
+      when 'cc'; self.emit(type, :code_control,     text, ts, te)
+      when 'cf'; self.emit(type, :code_format,      text, ts, te)
+      when 'cs'; self.emit(type, :code_surrogate,   text, ts, te)
+      when 'co'; self.emit(type, :code_private,     text, ts, te)
+      when 'cn'; self.emit(type, :code_unassigned,  text, ts, te)
       end
+      fret;
     };
 
     curlies | parantheses  > (escaped_alpha, 2)  {
@@ -316,6 +330,21 @@
       when ')'; self.emit(:escape, :group_close,      text, ts, te)
       when '{'; self.emit(:escape, :interval_open,    text, ts, te)
       when '}'; self.emit(:escape, :interval_close,   text, ts, te)
+      end
+      fret;
+    };
+
+    escaped_char {
+      case text = data[ts-1..te-1].pack('c*')
+      when 'a'; self.emit(:escape, :bell,       text, ts, te)
+      when 'b'; self.emit(:escape, :backspace,  text, ts, te)
+      when 'e'; self.emit(:escape, :escape,     text, ts, te)
+      when 'f'; self.emit(:escape, :ffeed,      text, ts, te)
+      when 'n'; self.emit(:escape, :newline,    text, ts, te)
+      when 'r'; self.emit(:escape, :carriage,   text, ts, te)
+      when 's'; self.emit(:escape, :space,      text, ts, te)
+      when 't'; self.emit(:escape, :tab,        text, ts, te)
+      when 'v'; self.emit(:escape, :vtab,       text, ts, te)
       end
       fret;
     };
