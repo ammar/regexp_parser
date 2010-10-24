@@ -241,9 +241,12 @@
     };
 
     # TODO: extract into a separate machine... use in sets
-    property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 3) {
+    property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 4) {
       text = data[ts-1..te-1].pack('c*')
+
+      # TODO: rename :inverted_property to :nonproperty
       type = text[1,1] == 'p' ? :property : :inverted_property
+      # TODO: add ^ for property negation, :nonproperty_caret
 
       case name = data[ts+2..te-2].pack('c*').downcase
 
@@ -324,7 +327,7 @@
       fret;
     };
 
-    curlies | parantheses  > (escaped_alpha, 2)  {
+    curlies | parantheses > (escaped_alpha, 3)  {
       case text = data[ts..te-1].pack('c*')
       when '('; self.emit(:escape, :group_open,       text, ts, te)
       when ')'; self.emit(:escape, :group_close,      text, ts, te)
@@ -334,8 +337,11 @@
       fret;
     };
 
-    escaped_char {
-      case text = data[ts-1..te-1].pack('c*')
+    escaped_char > (escaped_alpha, 2) {
+      text = data[ts-1..te-1].pack('c*')
+      #puts " *** TEXT: #{text.inspect}"
+
+      case text
       when 'a'; self.emit(:escape, :bell,       text, ts, te)
       when 'b'; self.emit(:escape, :backspace,  text, ts, te)
       when 'e'; self.emit(:escape, :escape,     text, ts, te)
