@@ -14,16 +14,21 @@ A ruby library to help with lexing, parsing, and transforming regular expression
 
 * Lexes and parses several regular expression flavors
     # In progress
-      # Ruby 1.8/1.9    ** INCOMPLETE
-      # POSIX BRE/ERE   ** INCOMPLETE
+      # Ruby 1.8/1.9    ** In progres
+      # POSIX BRE/ERE   ** In progres
 
     # Haven't started yet
-      # PCRE            ** MISSING SYNTAX DEFINITION
-      # PERL            ** MISSING SYNTAX DEFINITION
-      # Python          ** MISSING SYNTAX DEFINITION
-      # Java            ** MISSING SYNTAX DEFINITION
-      # JavaScript      ** MISSING SYNTAX DEFINITION
-      # .NET            ** MISSING SYNTAX DEFINITION
+      # .NET
+      # ARE (Tcl)
+      # GNU (BRE/ERE)
+      # Java
+      # JavaScript
+      # PCRE
+      # PERL
+      # PHP (ERE for ereg, PCRE for preg)
+      # Python
+      # XML
+      # XPath
 
 * Supports ruby 1.8 and 1.9 runtime
 
@@ -38,9 +43,8 @@ Thinking about
 === Scanner
 A ragel generated scanner that understands the cumulative syntax of all
 supported flavors (this might change soon). The scanner's job is to break
-the expression into the smallest meaningful syntax elements (lexemes),
-including their type, token (id), text, and the start/end offsets within
-the original pattern.
+the expression into the syntax elements (lexemes), including their type,
+token (id), text, and the start/end offsets within the original pattern.
 
 ==== Example
 The following scans the given pattern and prints out the type, token, text and
@@ -215,6 +219,7 @@ Documentation and information being read while working on this project.
 
 ==== POSIX Flavors
 * BRE/ERE link[http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html#tag_09_05_01]
+
 
 ==== Other Flavors
 * GNU: link[http://www.delorie.com/gnu/docs/regex/regex_toc.html]
