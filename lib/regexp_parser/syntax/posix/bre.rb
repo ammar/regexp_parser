@@ -8,18 +8,18 @@ module Regexp::Syntax
         super
 
         implements :anchors, [
-            :beginning_of_line,
-            :end_of_line
-          ]
+          :beginning_of_line,
+          :end_of_line
+        ]
 
         implements :type, [
-            :any,
-          ]
+          :any,
+        ]
 
         implements :group, [
-            :capture, # not really, but that's the token for group open
-            :close,
-          ]
+          :capture,
+          :close,
+        ]
       end
     end
   end
