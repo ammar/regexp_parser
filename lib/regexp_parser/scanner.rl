@@ -34,13 +34,13 @@
   property_name         = property_name_unicode | property_name_ruby;
 
 
-  category_letter       = 'L' . [ultmo]?;
-  category_mark         = 'M' . [nce]?;
-  category_number       = 'N' . [dlo]?;
-  category_punctuation  = 'P' . [cdseifo]?;
-  category_symbol       = 'S' . [mcko]?;
-  category_separator    = 'Z' . [slp]?;
-  category_codepoint    = 'C' . [cfson]?;
+  category_letter       = [Ll] . [ultmo]?;
+  category_mark         = [Mm] . [nce]?;
+  category_number       = [Nn] . [dlo]?;
+  category_punctuation  = [Pp] . [cdseifo]?;
+  category_symbol       = [Ss] . [mcko]?;
+  category_separator    = [Zz] . [slp]?;
+  category_codepoint    = [Cc] . [cfson]?;
   general_category      = category_letter | category_mark |
                           category_number | category_punctuation |
                           category_symbol | category_separator |
@@ -61,7 +61,7 @@
   wide_hex_sequence     = 'x' . '{7' . xdigit{1,7} . '}';
 
   codepoint_single      = 'u' . xdigit{4};
-  codepoint_list        = 'u{' . (xdigit{4} . space?)+'}'
+  codepoint_list        = 'u{' . (xdigit{4} . space?)+'}';
   codepoint_sequence    = codepoint_single | codepoint_list;
 
   control_sequence      = ('c' | 'C-') . alpha;
