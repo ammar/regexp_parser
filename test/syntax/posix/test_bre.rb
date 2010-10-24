@@ -1,4 +1,4 @@
-require File.expand_path("../../../../helpers", __FILE__)
+require File.expand_path("../../../helpers", __FILE__)
 
 class TestSyntaxPosix_BRE < Test::Unit::TestCase
 

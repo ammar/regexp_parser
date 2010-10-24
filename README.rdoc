@@ -37,7 +37,10 @@ Thinking about
 == Components
 === Scanner
 A ragel generated scanner that understands the cumulative syntax of all
-supported flavors.
+supported flavors (this might change soon). The scanner's job is to break
+the expression into the smallest meaningful syntax elements (lexemes),
+including their type, token (id), text, and the start/end offsets within
+the original pattern.
 
 ==== Example
 The following scans the given pattern and prints out the type, token, text and
@@ -209,6 +212,9 @@ Documentation and information being read while working on this project.
 * Oniguruma Regular Expressions link[http://www.geocities.jp/kosako3/oniguruma/doc/RE.txt]
 * Read Ruby > Regexps link[http://ruby.runpaint.org/regexps]
 * TextMate (uses Oniguruma) Manual: Regular Expressions link[http://manual.macromates.com/en/regular_expressions]
+
+==== POSIX Flavors
+* BRE/ERE link[http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html#tag_09_05_01]
 
 ==== Other Flavors
 * GNU: link[http://www.delorie.com/gnu/docs/regex/regex_toc.html]

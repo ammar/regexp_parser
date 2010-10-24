@@ -1,4 +1,4 @@
-require File.expand_path("../../../../helpers", __FILE__)
+require File.expand_path("../../../helpers", __FILE__)
 
 class TestSyntaxRuby_V18 < Test::Unit::TestCase
 

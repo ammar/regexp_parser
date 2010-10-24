@@ -226,7 +226,7 @@
     };
 
     # TODO: extract into a separate machine... use in sets
-    property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 2) {
+    property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 3) {
       text = data[ts-1..te-1].pack('c*')
       type = text[1,1] == 'p' ? :property : :inverted_property
 
@@ -308,6 +308,16 @@
       when 'Co'; self.emit(type, :code_private,     text, ts, te)
       when 'Cn'; self.emit(type, :code_unassigned,  text, ts, te)
       end
+    };
+
+    curlies | parantheses  > (escaped_alpha, 2)  {
+      case text = data[ts..te-1].pack('c*')
+      when '('; self.emit(:escape, :group_open,       text, ts, te)
+      when ')'; self.emit(:escape, :group_close,      text, ts, te)
+      when '{'; self.emit(:escape, :interval_open,    text, ts, te)
+      when '}'; self.emit(:escape, :interval_close,   text, ts, te)
+      end
+      fret;
     };
 
     any > (escaped_alpha, 1)  {
@@ -473,7 +483,7 @@
 
 
     # Literal: anything, except meta characters. This includes 2, 3, and 4
-    # unicode byte sequences.
+    # unicode byte sequences. TODO: verify
     # ------------------------------------------------------------------------
     (any - meta_char)+ {
       self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
@@ -504,8 +514,8 @@ module Regexp::Scanner
     data  = input.unpack("c*") if input.is_a?(String)
     eof   = data.length
 
-    @block  = block if block_given?
-    @tokens = [] unless @block
+    @block  = block_given? ? block : nil
+    @tokens = block_given? ? nil : []
 
     %% write init;
     %% write exec;
