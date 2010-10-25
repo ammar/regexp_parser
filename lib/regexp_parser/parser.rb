@@ -35,7 +35,7 @@ module Regexp::Parser
     when :set;          self.set(type, token, text)
     when :type;         self.type(type, token, text)
 
-    when :property, :inverted_property
+    when :property, :nonproperty
       self.property(type, token, text)
 
     when :literal

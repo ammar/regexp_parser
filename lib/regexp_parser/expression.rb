@@ -131,7 +131,7 @@ module Regexp::Parser
     module CharacterProperty 
       class Base < Expression::Base
         def inverted?
-          @type == :inverted_property
+          @type == :nonproperty
         end
       end
 

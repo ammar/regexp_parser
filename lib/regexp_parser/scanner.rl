@@ -25,11 +25,11 @@
                           'space' | 'upper' | 'xdigit' |
                           'word'  | 'ascii';
 
-  property_name_unicode = 'Alnum' | 'Alpha' | 'Any'   | 'Ascii' | 'Blank' |
-                          'Cntrl' | 'Digit' | 'Graph' | 'Lower' | 'Print' |
-                          'Punct' | 'Space' | 'Upper' | 'Word' | 'Xdigit';
+  property_name_unicode = 'Alnum'i | 'Alpha'i | 'Any'i   | 'Ascii'i | 'Blank'i |
+                          'Cntrl'i | 'Digit'i | 'Graph'i | 'Lower'i | 'Print'i |
+                          'Punct'i | 'Space'i | 'Upper'i | 'Word'i | 'Xdigit'i;
 
-  property_name_ruby    = 'Any' | 'Assigned' | 'Newline';
+  property_name_ruby    = 'any'i | 'assigned'i | 'newline'i;
 
   property_name         = property_name_unicode | property_name_ruby;
 
@@ -41,6 +41,7 @@
   category_symbol       = [Ss] . [mcko]?;
   category_separator    = [Zz] . [slp]?;
   category_codepoint    = [Cc] . [cfson]?;
+
   general_category      = category_letter | category_mark |
                           category_number | category_punctuation |
                           category_symbol | category_separator |
@@ -58,7 +59,7 @@
   octal_sequence        = [0-7]{1,3};
 
   hex_sequence          = 'x' . xdigit{1,2};
-  wide_hex_sequence     = 'x' . '{7' . xdigit{1,7} . '}';
+  wide_hex_sequence     = 'x' . '{' . xdigit{1,8} . '}';
 
   codepoint_single      = 'u' . xdigit{4};
   codepoint_list        = 'u{' . (xdigit{4} . space?)+'}';
@@ -66,7 +67,6 @@
 
   control_sequence      = ('c' | 'C-') . alpha;
   meta_sequence         = 'M-' . alpha;
-  meta_control_sequence = 'M-\\C-' . alpha; # TODO: trace origin
 
   zero_or_one           = '?' | '??' | '?+';
   zero_or_more          = '*' | '*?' | '*+';
@@ -116,6 +116,12 @@
   character_set := |*
     ']' {
       self.emit(:set, :close, data[ts..te-1].pack('c*'), ts, te)
+      fret;
+    };
+
+    '-]' { # special case, emits two tokens
+      self.emit(:set, :member, data[ts..te-2].pack('c*'), ts, te)
+      self.emit(:set, :close,  data[ts+1..te-1].pack('c*'), ts, te)
       fret;
     };
 
@@ -184,7 +190,6 @@
       when '\w'; self.emit(:set, :type_word,      text, ts-1, te)
       when '\W'; self.emit(:set, :type_nonword,   text, ts-1, te)
       end
-
       fret;
     };
 
@@ -230,7 +235,7 @@
       fret;
     };
 
-    escaped_char > (escaped_alpha, 2) {
+    escaped_char > (escaped_alpha, 8) {
       case text = data[ts-1..te-1].pack('c*')
       when '\a'; self.emit(:escape, :bell,           text, ts, te)
       when '\b'; self.emit(:escape, :backspace,      text, ts, te) # TODO: in what context?
@@ -245,7 +250,7 @@
       fret;
     };
 
-    codepoint_sequence {
+    codepoint_sequence > (escaped_alpha, 7) {
       text = data[ts-1..te-1].pack('c*')
       if text[2].chr == '{'
         self.emit(:escape, :codepoint_list, text, ts, te)
@@ -255,39 +260,34 @@
       fret;
     };
 
-    hex_sequence {
+    hex_sequence > (escaped_alpha, 6) {
       self.emit(:escape, :hex, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
-    # curly brackets
-    wide_hex_sequence {
+    # FIXME: scanner returns nil
+    wide_hex_sequence > (escaped_alpha, 5) {
       self.emit(:escape, :hex_wide, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
-
-    control_sequence {
+    control_sequence > (escaped_alpha, 4) {
       self.emit(:escape, :control, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
-    meta_sequence {
+    meta_sequence > (escaped_alpha, 3) {
+      # TODO: add escapes
       self.emit(:escape, :meta, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
     };
 
-    meta_control_sequence {
-      self.emit(:escape, :meta_control, data[ts-1..te-1].pack('c*'), ts, te)
-      fret;
-    };
-
     # TODO: extract into a separate machine... use in sets
-    property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 4) {
+    property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 2) {
       text = data[ts-1..te-1].pack('c*')
 
-      # TODO: rename :inverted_property to :nonproperty
-      type = text[1,1] == 'p' ? :property : :inverted_property
+      # TODO: rename :nonproperty to :nonproperty
+      type = text[1,1] == 'p' ? :property : :nonproperty
       # TODO: add ^ for property negation, :nonproperty_caret
 
       case name = data[ts+2..te-2].pack('c*').downcase

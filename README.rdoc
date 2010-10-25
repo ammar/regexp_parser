@@ -13,11 +13,11 @@ A ruby library to help with lexing, parsing, and transforming regular expression
   * A parser that produces a "tree" of Regexp::Expression objects (OO API)
 
 * Lexes and parses several regular expression flavors
-    # In progress
+    # Initial focus
       # Ruby 1.8/1.9    ** In progress
       # POSIX BRE/ERE   ** In progress
 
-    # Haven't started yet
+    # Probably mostly there, but there are no syntax specs in place yet.
       # .NET
       # ARE (Tcl)
       # GNU (BRE/ERE)
@@ -207,8 +207,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
   - String Escapes
     - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
     - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
-    - Meta: \M-C, etc.. ** NEEDS REVIEW/TESTS
-    - Meta-Control: \M-\C-C ** NEEDS REVIEW/TESTS (does this actually exist?)
+    - Meta: \M-c, \M-\x23, \M-\C-C etc.. ** NEEDS REVIEW/TESTS
     - Octal: \012 ** MISSING
     - Unicode: \uHHHH, \u{H+ H+} ** MISSING
   - Unicode Properties: 
