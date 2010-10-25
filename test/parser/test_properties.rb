@@ -7,7 +7,7 @@ class ParserProperties < Test::Unit::TestCase
            :lower, :print, :punct, :space, :upper, :word, :xdigit]
 
   types.each do |type|
-    token_type = type == 'p' ? :property : :inverted_property
+    token_type = type == 'p' ? :property : :nonproperty
 
     tests.each do |property|
       define_method "test_parse_#{token_type}_#{property}" do

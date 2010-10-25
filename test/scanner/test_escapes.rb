@@ -35,8 +35,6 @@ class ScannerEscapes < Test::Unit::TestCase
     define_method "test_scan_#{test[1]}_#{test[2]}_#{count+=1}" do
 
       tokens = RS.scan(pattern)
-      puts; tokens.each_with_index {|t, i| puts "#{i}: #{t.inspect}"}
-
       token = tokens[test[0]]
       assert_equal( test[1,5], token )
 
