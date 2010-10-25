@@ -54,6 +54,22 @@ module Regexp::Syntax
       end
     end
 
+    # removes
+    def excludes(type, tokens)
+      if tokens
+        tokens = [tokens] unless tokens.is_a?(Array)
+      end
+
+      if @implements[type]
+        if tokens
+          @implements[type] = @implements[type] - tokens
+          @implements[type] = nil if @implements[type].empty?
+        else
+          @implements[type] = nil
+        end
+      end
+    end
+
     def implements?(type, token)
       @implements[type] and @implements[type].include?(token)
     end

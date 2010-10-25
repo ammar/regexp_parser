@@ -1,6 +1,6 @@
 require File.expand_path("../../helpers", __FILE__)
 
-class LexerQuantifiers < Test::Unit::TestCase
+class ScannerQuantifiers < Test::Unit::TestCase
 
   tests = {
    'a?'     => [:quantifier,  :zero_or_one,             '?'],
@@ -26,8 +26,11 @@ class LexerQuantifiers < Test::Unit::TestCase
     name = (test[1] == :interval ? "interval_#{counter += 1}" : test[1])
 
     [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_lex_#{test[0]}_#{name}_#{member}" do
-        assert_equal( test[i], RL.scan(pattern).last.send(member))
+      define_method "test_scan_#{test[0]}_#{name}_#{member}" do
+
+        token = RS.scan(pattern).last
+        assert_equal( test[i], token[i] )
+
       end
     end
   end

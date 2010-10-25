@@ -1,6 +1,6 @@
 require File.expand_path("../../helpers", __FILE__)
 
-class LexerTypes < Test::Unit::TestCase
+class ScannerTypes < Test::Unit::TestCase
 
   tests = {
    'a\dc'       => [:type,  :digit,       '\d',  1],
@@ -18,8 +18,11 @@ class LexerTypes < Test::Unit::TestCase
 
   tests.each do |pattern, test|
     [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_lex_#{test[0]}_#{test[1]}_#{member}" do
-        assert_equal( test[i], RL.scan(pattern)[test[3]].send(member))
+      define_method "test_scan_#{test[0]}_#{test[1]}_#{member}" do
+
+        token = RS.scan(pattern)[test[3]]
+        assert_equal( test[i], token[i] )
+
       end
     end
   end

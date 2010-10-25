@@ -4,7 +4,10 @@ class ScannerEscapes < Test::Unit::TestCase
 
   tests = {
     'c\at'          => [:escape,  :bell,          '\a',       1],
-    'c\bt'          => [:escape,  :backspace,     '\b',       1],
+
+    # TODO: figure this out: escape:backspace or anchor:word_boundary
+    #'c\bt'          => [:escape,  :backspace,     '\b',       1],
+
     'c\ft'          => [:escape,  :form_feed,     '\f',       1],
     'c\nt'          => [:escape,  :newline,       '\n',       1],
     'c\tt'          => [:escape,  :tab,           '\t',       1],
@@ -28,10 +31,9 @@ class ScannerEscapes < Test::Unit::TestCase
     [:type, :token, :text].each_with_index do |member, i|
       define_method "test_scan_#{test[0]}_#{name}_#{member}" do
 
-        t = RS.scan(pattern)[test[3]]
-        #puts " *** T: #{t.inspect}"
+        token = RS.scan(pattern)[test[3]]
+        assert_equal( test[i], token[i] )
 
-        assert_equal( test[i], t[i] )
       end
     end
   end

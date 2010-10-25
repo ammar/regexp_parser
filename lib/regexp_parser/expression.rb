@@ -98,56 +98,58 @@ module Regexp::Parser
     end
 
     class Anchor < Expression::Base
-      class BeginningOfLine < Anchor; end
-      class EndOfLine < Anchor; end
-      class BeginningOfString < Anchor; end
-      class EndOfString < Anchor; end
-      class EndOfStringOrBeforeEndOfLine < Anchor; end
+      class BeginningOfLine               < Anchor; end
+      class EndOfLine                     < Anchor; end
 
-      BOL = BeginningOfLine 
-      EOL = EndOfLine 
-      BOS = BeginningOfString
-      EOS = EndOfString
-      EOSOrBeforeEOL = EndOfStringOrBeforeEndOfLine
+      class BeginningOfString             < Anchor; end
+      class EndOfString                   < Anchor; end
 
-      class WordBoundary < Anchor; end
-      class NonWordBoundary < Anchor; end
+      class EndOfStringOrBeforeEndOfLine  < Anchor; end
+
+      class WordBoundary                  < Anchor; end
+      class NonWordBoundary               < Anchor; end
+
+      BOL      = BeginningOfLine 
+      EOL      = EndOfLine 
+      BOS      = BeginningOfString
+      EOS      = EndOfString
+      EOSobEOL = EndOfStringOrBeforeEndOfLine
     end
 
     class CharacterType < Expression::Base
-      class Any < CharacterType; end
-      class Digit < CharacterType; end
-      class NonDigit < CharacterType; end
-      class Hex < CharacterType; end
-      class NonHex < CharacterType; end
-      class Word < CharacterType; end
-      class NonWord < CharacterType; end
-      class Space < CharacterType; end
-      class NonSpace < CharacterType; end
+      class Any         < CharacterType; end
+      class Digit       < CharacterType; end
+      class NonDigit    < CharacterType; end
+      class Hex         < CharacterType; end
+      class NonHex      < CharacterType; end
+      class Word        < CharacterType; end
+      class NonWord     < CharacterType; end
+      class Space       < CharacterType; end
+      class NonSpace    < CharacterType; end
     end
 
-    class CharacterProperty 
+    module CharacterProperty 
       class Base < Expression::Base
         def inverted?
           @type == :inverted_property
         end
       end
 
-      class Alnum   < CharacterProperty::Base; end
-      class Alpha   < CharacterProperty::Base; end
-      class Any     < CharacterProperty::Base; end
-      class Ascii   < CharacterProperty::Base; end
-      class Blank   < CharacterProperty::Base; end
-      class Cntrl   < CharacterProperty::Base; end
-      class Digit   < CharacterProperty::Base; end
-      class Graph   < CharacterProperty::Base; end
-      class Lower   < CharacterProperty::Base; end
-      class Print   < CharacterProperty::Base; end
-      class Punct   < CharacterProperty::Base; end
-      class Space   < CharacterProperty::Base; end
-      class Upper   < CharacterProperty::Base; end
-      class Word    < CharacterProperty::Base; end
-      class Xdigit  < CharacterProperty::Base; end
+      class Alnum         < Base; end
+      class Alpha         < Base; end
+      class Any           < Base; end
+      class Ascii         < Base; end
+      class Blank         < Base; end
+      class Cntrl         < Base; end
+      class Digit         < Base; end
+      class Graph         < Base; end
+      class Lower         < Base; end
+      class Print         < Base; end
+      class Punct         < Base; end
+      class Space         < Base; end
+      class Upper         < Base; end
+      class Word          < Base; end
+      class Xdigit        < Base; end
 
       class Letter  < CharacterProperty::Base
         class Any         < Letter; end
@@ -164,7 +166,6 @@ module Regexp::Parser
         class Spacing     < Mark; end
         class Enclosing   < Mark; end
       end
-
 
       class Number  < CharacterProperty::Base
         class Any         < Number; end
@@ -209,6 +210,7 @@ module Regexp::Parser
       end
     end
 
+    # TODO: split this into escape sequences and string escapes
     class EscapeSequence < Expression::Base
       class Literal       < CharacterType; end
       class Tab           < CharacterType; end
@@ -242,20 +244,20 @@ module Regexp::Parser
         @token == :comment
       end
 
-      class Comment < Expression::Group; end
+      class Comment   < Expression::Group; end
 
-      class Capture < Expression::Group; end
-      class Passive < Expression::Group; end
-      class Atomic < Expression::Group; end
+      class Atomic    < Expression::Group; end
+      class Capture   < Expression::Group; end
+      class Named     < Expression::Group; end
+      class Passive   < Expression::Group; end
+      class Options   < Expression::Group; end
+    end
 
-      class Lookahead < Expression::Group; end
-      class NegativeLookahead < Expression::Group; end
-      class Lookbehind < Expression::Group; end
-      class NegativeLookbehind < Expression::Group; end
-
-      class Named < Expression::Group; end
-
-      class Options < Expression::Group; end
+    class Assertion < Expression::Group
+      class Lookahead           < Expression::Assertion; end
+      class NegativeLookahead   < Expression::Assertion; end
+      class Lookbehind          < Expression::Assertion; end
+      class NegativeLookbehind  < Expression::Assertion; end
     end
 
   end # module Expression

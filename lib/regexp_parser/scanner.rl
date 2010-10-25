@@ -209,12 +209,48 @@
       fret;
     };
 
+    meta_char {
+      case text = data[ts-1..te-1].pack('c*')
+      when '\.';  self.emit(:escape, :dot,               text, ts, te)
+      when '\|';  self.emit(:escape, :alternation,       text, ts, te)
+      when '\^';  self.emit(:escape, :beginning_of_line, text, ts, te)
+      when '\$';  self.emit(:escape, :end_of_line,       text, ts, te)
+      when '\?';  self.emit(:escape, :zero_or_one,       text, ts, te)
+      when '\*';  self.emit(:escape, :zero_or_more,      text, ts, te)
+      when '\+';  self.emit(:escape, :one_or_more,       text, ts, te)
+      when '\(';  self.emit(:escape, :group_open,        text, ts, te)
+      when '\)';  self.emit(:escape, :group_close,       text, ts, te)
+      when '\{';  self.emit(:escape, :interval_open,     text, ts, te)
+      when '\}';  self.emit(:escape, :interval_close,    text, ts, te)
+      when '\[';  self.emit(:escape, :set_open,          text, ts, te)
+      when '\]';  self.emit(:escape, :set_close,         text, ts, te)
+      when '\\\\';
+        self.emit(:escape, :backslash, text, ts, te)
+      end
+      fret;
+    };
+
+    escaped_char > (escaped_alpha, 2) {
+      case text = data[ts-1..te-1].pack('c*')
+      when '\a'; self.emit(:escape, :bell,           text, ts, te)
+      when '\b'; self.emit(:escape, :backspace,      text, ts, te) # TODO: in what context?
+      when '\e'; self.emit(:escape, :escape,         text, ts, te)
+      when '\f'; self.emit(:escape, :form_feed,      text, ts, te)
+      when '\n'; self.emit(:escape, :newline,        text, ts, te)
+      when '\r'; self.emit(:escape, :carriage,       text, ts, te)
+      when '\s'; self.emit(:escape, :space,          text, ts, te)
+      when '\t'; self.emit(:escape, :tab,            text, ts, te)
+      when '\v'; self.emit(:escape, :vertical_tab,   text, ts, te)
+      end
+      fret;
+    };
+
     codepoint_sequence {
       text = data[ts-1..te-1].pack('c*')
       if text[2].chr == '{'
-        self.emit(:escape, :codepoint_list, data[ts-1..te-1].pack('c*'), ts, te)
+        self.emit(:escape, :codepoint_list, text, ts, te)
       else
-        self.emit(:escape, :codepoint, data[ts-1..te-1].pack('c*'), ts, te)
+        self.emit(:escape, :codepoint,      text, ts, te)
       end
       fret;
     };
@@ -257,27 +293,22 @@
       case name = data[ts+2..te-2].pack('c*').downcase
 
       # Named
-      when 'alnum';   self.emit(type, :alnum,  text, ts, te)
-      when 'alpha';   self.emit(type, :alpha,  text, ts, te)
-      when 'any';     self.emit(type, :any,    text, ts, te)
-
-      when 'ascii';   self.emit(type, :ascii,  text, ts, te)
-
-      when 'blank';   self.emit(type, :blank,  text, ts, te)
-      when 'cntrl';   self.emit(type, :cntrl,  text, ts, te)
-      when 'digit';   self.emit(type, :digit,  text, ts, te)
-      when 'graph';   self.emit(type, :graph,  text, ts, te)
-      when 'lower';   self.emit(type, :lower,  text, ts, te)
-
-      when 'print';   self.emit(type, :print,  text, ts, te)
-      when 'punct';   self.emit(type, :punct,  text, ts, te)
-      when 'space';   self.emit(type, :space,  text, ts, te)
-      when 'upper';   self.emit(type, :upper,  text, ts, te)
-      when 'word';    self.emit(type, :word,   text, ts, te)
-
-      when 'xdigit';  self.emit(type, :xdigit, text, ts, te)
-
-      when 'newline'; self.emit(type, :newline,  text, ts, te)
+      when 'alnum';   self.emit(type, :alnum,       text, ts, te)
+      when 'alpha';   self.emit(type, :alpha,       text, ts, te)
+      when 'any';     self.emit(type, :any,         text, ts, te)
+      when 'ascii';   self.emit(type, :ascii,       text, ts, te)
+      when 'blank';   self.emit(type, :blank,       text, ts, te)
+      when 'cntrl';   self.emit(type, :cntrl,       text, ts, te)
+      when 'digit';   self.emit(type, :digit,       text, ts, te)
+      when 'graph';   self.emit(type, :graph,       text, ts, te)
+      when 'lower';   self.emit(type, :lower,       text, ts, te)
+      when 'newline'; self.emit(type, :newline,     text, ts, te)
+      when 'print';   self.emit(type, :print,       text, ts, te)
+      when 'punct';   self.emit(type, :punct,       text, ts, te)
+      when 'space';   self.emit(type, :space,       text, ts, te)
+      when 'upper';   self.emit(type, :upper,       text, ts, te)
+      when 'word';    self.emit(type, :word,        text, ts, te)
+      when 'xdigit';  self.emit(type, :xdigit,      text, ts, te)
 
       # Letters
       when 'l';  self.emit(type, :letter_any,       text, ts, te)
@@ -317,43 +348,18 @@
       when 'so'; self.emit(type, :symbol_other,     text, ts, te)
 
       # Separators
-      when 'z';  self.emit(type, :separator_any,        text, ts, te)
-      when 'zs'; self.emit(type, :separator_space,      text, ts, te)
-      when 'zl'; self.emit(type, :separator_line,       text, ts, te)
-      when 'zp'; self.emit(type, :separator_paragraph,  text, ts, te)
+      when 'z';  self.emit(type, :separator_any,    text, ts, te)
+      when 'zs'; self.emit(type, :separator_space,  text, ts, te)
+      when 'zl'; self.emit(type, :separator_line,   text, ts, te)
+      when 'zp'; self.emit(type, :separator_para,   text, ts, te)
 
       # Codepoints
-      when 'c';  self.emit(type, :codepoint_any,        text, ts, te)
-      when 'cc'; self.emit(type, :codepoint_control,    text, ts, te)
-      when 'cf'; self.emit(type, :codepoint_format,     text, ts, te)
-      when 'cs'; self.emit(type, :codepoint_surrogate,  text, ts, te)
-      when 'co'; self.emit(type, :codepoint_private,    text, ts, te)
-      when 'cn'; self.emit(type, :codepoint_unassigned, text, ts, te)
-      end
-      fret;
-    };
-
-    curlies | parantheses > (escaped_alpha, 3)  {
-      case text = data[ts..te-1].pack('c*')
-      when '('; self.emit(:escape, :group_open,       text, ts, te)
-      when ')'; self.emit(:escape, :group_close,      text, ts, te)
-      when '{'; self.emit(:escape, :interval_open,    text, ts, te)
-      when '}'; self.emit(:escape, :interval_close,   text, ts, te)
-      end
-      fret;
-    };
-
-    escaped_char > (escaped_alpha, 2) {
-      case text = data[ts-1..te-1].pack('c*')
-      when '\a'; self.emit(:escape, :bell,           text, ts, te)
-      when '\b'; self.emit(:escape, :backspace,      text, ts, te)
-      when '\e'; self.emit(:escape, :escape,         text, ts, te)
-      when '\f'; self.emit(:escape, :form_feed,      text, ts, te)
-      when '\n'; self.emit(:escape, :newline,        text, ts, te)
-      when '\r'; self.emit(:escape, :carriage,       text, ts, te)
-      when '\s'; self.emit(:escape, :space,          text, ts, te)
-      when '\t'; self.emit(:escape, :tab,            text, ts, te)
-      when '\v'; self.emit(:escape, :vertical_tab,   text, ts, te)
+      when 'c';  self.emit(type, :cp_any,           text, ts, te)
+      when 'cc'; self.emit(type, :cp_control,       text, ts, te)
+      when 'cf'; self.emit(type, :cp_format,        text, ts, te)
+      when 'cs'; self.emit(type, :cp_surrogate,     text, ts, te)
+      when 'co'; self.emit(type, :cp_private,       text, ts, te)
+      when 'cn'; self.emit(type, :cp_unassigned,    text, ts, te)
       end
       fret;
     };
@@ -464,15 +470,19 @@
     # Groups
     #   (?:subexp)          passive (non-captured) group
     #   (?>subexp)          atomic group, don't backtrack in subexp.
-    #   (?<name>subexp)     named group (single quotes are no supported, yet)
+    #   (?<name>subexp)     named group
+    #   (?'name'subexp)     named group (single quoted version)
     #   (subexp)            captured group
     # ------------------------------------------------------------------------
     group_open . group_type {
       case text =  data[ts..te-1].pack('c*')
       when '(?:';  self.emit(:group, :passive,      text, ts, te)
       when '(?>';  self.emit(:group, :atomic,       text, ts, te)
+
       when /\(\?<\w+>/
-        self.emit(:group, :named, text, ts, te)
+        self.emit(:group, :named,     text, ts, te)
+      when /\(\?'\w+'/
+        self.emit(:group, :named_sq,  text, ts, te)
       end
     };
 

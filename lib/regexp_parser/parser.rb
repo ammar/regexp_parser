@@ -4,7 +4,7 @@ module Regexp::Parser
   include Expression
 
   def self.parse(input, syntax = :any, &block)
-    @nesting = [@root = @node = Expression::Root.new]
+    @nesting = [@root = @node = Root.new]
 
     Regexp::Lexer.scan(input, syntax) do |token|
       self.parse_token( *token.to_a[0,5] )
@@ -39,7 +39,7 @@ module Regexp::Parser
       self.property(type, token, text)
 
     when :literal
-      @node << Expression::Literal.new(type, token, text)
+      @node << Literal.new(type, token, text)
 
     else
       raise "EMIT: unexpected token type #{type.inspect}, #{token.inspect} #{text}"
@@ -65,7 +65,7 @@ module Regexp::Parser
     case token
     when :alternation
       unless @node.token == :alternation
-        alt = Expression::Alternation.new(type, token, text)
+        alt = Alternation.new(type, token, text)
 
         alt << @node.expressions.pop
         @node << alt
@@ -77,118 +77,118 @@ module Regexp::Parser
   def self.type(type, token, text)
     case token
     when :any
-      @node << Expression::CharacterType::Any.new(type, token, text)
+      @node << CharacterType::Any.new(type, token, text)
     when :digit
-      @node << Expression::CharacterType::Digit.new(type, token, text)
+      @node << CharacterType::Digit.new(type, token, text)
     when :nondigit
-      @node << Expression::CharacterType::NonDigit.new(type, token, text)
+      @node << CharacterType::NonDigit.new(type, token, text)
     when :hex
-      @node << Expression::CharacterType::Hex.new(type, token, text)
+      @node << CharacterType::Hex.new(type, token, text)
     when :nonhex
-      @node << Expression::CharacterType::NonHex.new(type, token, text)
+      @node << CharacterType::NonHex.new(type, token, text)
     when :space
-      @node << Expression::CharacterType::Space.new(type, token, text)
+      @node << CharacterType::Space.new(type, token, text)
     when :nonspace
-      @node << Expression::CharacterType::NonSpace.new(type, token, text)
+      @node << CharacterType::NonSpace.new(type, token, text)
     when :word
-      @node << Expression::CharacterType::Word.new(type, token, text)
+      @node << CharacterType::Word.new(type, token, text)
     when :nonword
-      @node << Expression::CharacterType::NonWord.new(type, token, text)
+      @node << CharacterType::NonWord.new(type, token, text)
     end
   end
 
   def self.property(type, token, text)
+    include Expression::CharacterProperty
     #puts "type: #{type.inspect}, token: #{token.inspect}, text: #{text.inspect}"
 
     case token
-    when :alnum;  @node << CharacterProperty::Alnum.new(type, token, text)
-    when :alpha;  @node << CharacterProperty::Alpha.new(type, token, text)
-    when :any;    @node << CharacterProperty::Any.new(type, token, text)
-    when :ascii;  @node << CharacterProperty::Ascii.new(type, token, text)
-    when :blank;  @node << CharacterProperty::Blank.new(type, token, text)
-    when :cntrl;  @node << CharacterProperty::Cntrl.new(type, token, text)
-    when :digit;  @node << CharacterProperty::Digit.new(type, token, text)
-    when :graph;  @node << CharacterProperty::Graph.new(type, token, text)
-    when :lower;  @node << CharacterProperty::Lower.new(type, token, text)
-    when :print;  @node << CharacterProperty::Print.new(type, token, text)
-    when :punct;  @node << CharacterProperty::Punct.new(type, token, text)
-    when :space;  @node << CharacterProperty::Space.new(type, token, text)
-    when :upper;  @node << CharacterProperty::Upper.new(type, token, text)
-    when :word;   @node << CharacterProperty::Word.new(type, token, text)
-    when :xdigit; @node << CharacterProperty::Xdigit.new(type, token, text)
+    when :alnum;            @node << Alnum.new(type, token, text)
+    when :alpha;            @node << Alpha.new(type, token, text)
+    when :any;              @node << Any.new(type, token, text)
+    when :ascii;            @node << Ascii.new(type, token, text)
+    when :blank;            @node << Blank.new(type, token, text)
+    when :cntrl;            @node << Cntrl.new(type, token, text)
+    when :digit;            @node << Digit.new(type, token, text)
+    when :graph;            @node << Graph.new(type, token, text)
+    when :lower;            @node << Lower.new(type, token, text)
+    when :print;            @node << Print.new(type, token, text)
+    when :punct;            @node << Punct.new(type, token, text)
+    when :space;            @node << Space.new(type, token, text)
+    when :upper;            @node << Upper.new(type, token, text)
+    when :word;             @node << Word.new(type, token, text)
+    when :xdigit;           @node << Xdigit.new(type, token, text)
 
+    when :letter_any;       @node << Letter::Any.new(type, token, text)
+    when :letter_uppercase; @node << Letter::Uppercase.new(type, token, text)
+    when :letter_lowercase; @node << Letter::Lowercase.new(type, token, text)
+    when :letter_titlecase; @node << Letter::Titlecase.new(type, token, text)
+    when :letter_modifier;  @node << Letter::Modifier.new(type, token, text)
+    when :letter_other;     @node << Letter::Other.new(type, token, text)
 
-    when :letter_any;       @node << CharacterProperty::Letter::Any.new(type, token, text)
-    when :letter_uppercase; @node << CharacterProperty::Letter::Uppercase.new(type, token, text)
-    when :letter_lowercase; @node << CharacterProperty::Letter::Lowercase.new(type, token, text)
-    when :letter_titlecase; @node << CharacterProperty::Letter::Titlecase.new(type, token, text)
-    when :letter_modifier;  @node << CharacterProperty::Letter::Modifier.new(type, token, text)
-    when :letter_other;     @node << CharacterProperty::Letter::Other.new(type, token, text)
+    when :mark_any;         @node << Mark::Any.new(type, token, text)
+    when :mark_nonspacing;  @node << Mark::Nonspacing.new(type, token, text)
+    when :mark_spacing;     @node << Mark::Spacing.new(type, token, text)
+    when :mark_enclosing;   @node << Mark::Enclosing.new(type, token, text)
 
-    when :mark_any;         @node << CharacterProperty::Mark::Any.new(type, token, text)
-    when :mark_nonspacing;  @node << CharacterProperty::Mark::Nonspacing.new(type, token, text)
-    when :mark_spacing;     @node << CharacterProperty::Mark::Spacing.new(type, token, text)
-    when :mark_enclosing;   @node << CharacterProperty::Mark::Enclosing.new(type, token, text)
+    when :number_any;       @node << Number::Any.new(type, token, text)
+    when :number_decimal;   @node << Number::Decimal.new(type, token, text)
+    when :number_letter;    @node << Number::Letter.new(type, token, text)
+    when :number_other;     @node << Number::Other.new(type, token, text)
 
-    when :number_any;       @node << CharacterProperty::Number::Any.new(type, token, text)
-    when :number_decimal;   @node << CharacterProperty::Number::Decimal.new(type, token, text)
-    when :number_letter;    @node << CharacterProperty::Number::Letter.new(type, token, text)
-    when :number_other;     @node << CharacterProperty::Number::Other.new(type, token, text)
+    when :punct_any;        @node << Punctuation::Any.new(type, token, text)
+    when :punct_connector;  @node << Punctuation::Connector.new(type, token, text)
+    when :punct_dash;       @node << Punctuation::Dash.new(type, token, text)
+    when :punct_open;       @node << Punctuation::Open.new(type, token, text)
+    when :punct_close;      @node << Punctuation::Close.new(type, token, text)
+    when :punct_initial;    @node << Punctuation::Initial.new(type, token, text)
+    when :punct_final;      @node << Punctuation::Final.new(type, token, text)
+    when :punct_other;      @node << Punctuation::Other.new(type, token, text)
 
-    when :punct_any;        @node << CharacterProperty::Punctuation::Any.new(type, token, text)
-    when :punct_connector;  @node << CharacterProperty::Punctuation::Connector.new(type, token, text)
-    when :punct_dash;       @node << CharacterProperty::Punctuation::Dash.new(type, token, text)
-    when :punct_open;       @node << CharacterProperty::Punctuation::Open.new(type, token, text)
-    when :punct_close;      @node << CharacterProperty::Punctuation::Close.new(type, token, text)
-    when :punct_initial;    @node << CharacterProperty::Punctuation::Initial.new(type, token, text)
-    when :punct_final;      @node << CharacterProperty::Punctuation::Final.new(type, token, text)
-    when :punct_other;      @node << CharacterProperty::Punctuation::Other.new(type, token, text)
+    when :separator_any;    @node << Separator::Any.new(type, token, text)
+    when :separator_space;  @node << Separator::Space.new(type, token, text)
+    when :separator_line;   @node << Separator::Line.new(type, token, text)
+    when :separator_para;   @node << Separator::Paragraph.new(type, token, text)
 
-    when :separator_any;    @node << CharacterProperty::Separator::Any.new(type, token, text)
-    when :separator_space;  @node << CharacterProperty::Separator::Space.new(type, token, text)
-    when :separator_line;   @node << CharacterProperty::Separator::Line.new(type, token, text)
-    when :separator_paragraph; @node << CharacterProperty::Separator::Paragraph.new(type, token, text)
+    when :symbol_any;       @node << Symbol::Any.new(type, token, text)
+    when :symbol_math;      @node << Symbol::Math.new(type, token, text)
+    when :symbol_currency;  @node << Symbol::Currency.new(type, token, text)
+    when :symbol_modifier;  @node << Symbol::Modifier.new(type, token, text)
+    when :symbol_other;     @node << Symbol::Other.new(type, token, text)
 
-    when :symbol_any;       @node << CharacterProperty::Symbol::Any.new(type, token, text)
-    when :symbol_math;      @node << CharacterProperty::Symbol::Math.new(type, token, text)
-    when :symbol_currency;  @node << CharacterProperty::Symbol::Currency.new(type, token, text)
-    when :symbol_modifier;  @node << CharacterProperty::Symbol::Modifier.new(type, token, text)
-    when :symbol_other;     @node << CharacterProperty::Symbol::Other.new(type, token, text)
-
-    when :codepoint_any;        @node << CharacterProperty::Codepoint::Any.new(type, token, text)
-    when :codepoint_control;    @node << CharacterProperty::Codepoint::Control.new(type, token, text)
-    when :codepoint_format;     @node << CharacterProperty::Codepoint::Format.new(type, token, text)
-    when :codepoint_surrogate;  @node << CharacterProperty::Codepoint::Surrogate.new(type, token, text)
-    when :codepoint_private;    @node << CharacterProperty::Codepoint::PrivateUse.new(type, token, text)
-    when :codepoint_unassigned; @node << CharacterProperty::Codepoint::Unassigned.new(type, token, text)
+    when :cp_any;           @node << Codepoint::Any.new(type, token, text)
+    when :cp_control;       @node << Codepoint::Control.new(type, token, text)
+    when :cp_format;        @node << Codepoint::Format.new(type, token, text)
+    when :cp_surrogate;     @node << Codepoint::Surrogate.new(type, token, text)
+    when :cp_private;       @node << Codepoint::PrivateUse.new(type, token, text)
+    when :cp_unassigned;    @node << Codepoint::Unassigned.new(type, token, text)
     end
   end
 
   def self.anchor(type, token, text)
     case token
     when :beginning_of_line
-      @node << Expression::Anchor::BeginningOfLine.new(type, token, text)
+      @node << Anchor::BeginningOfLine.new(type, token, text)
     when :end_of_line
-      @node << Expression::Anchor::EndOfLine.new(type, token, text)
+      @node << Anchor::EndOfLine.new(type, token, text)
     when :bos
-      @node << Expression::Anchor::BOS.new(type, token, text)
+      @node << Anchor::BOS.new(type, token, text)
     when :eos
-      @node << Expression::Anchor::EOS.new(type, token, text)
+      @node << Anchor::EOS.new(type, token, text)
     when :eos_or_before_eol
-      @node << Expression::Anchor::EOSOrBeforeEOL.new(type, token, text)
+      @node << Anchor::EOSobEOL.new(type, token, text)
     when :word_boundary
-      @node << Expression::Anchor::WordBoundary.new(type, token, text)
+      @node << Anchor::WordBoundary.new(type, token, text)
     when :nonword_boundary
-      @node << Expression::Anchor::NonWordBoundary.new(type, token, text)
+      @node << Anchor::NonWordBoundary.new(type, token, text)
     end
   end
 
   def self.escape(type, token, text)
     case token
     when :control
-      @node << Expression::EscapeSequence::Control.new(type, token, text)
+      @node << EscapeSequence::Control.new(type, token, text)
     when :literal
-      @node << Expression::EscapeSequence::Literal.new(type, token, text)
+      @node << EscapeSequence::Literal.new(type, token, text)
     end
   end
 
@@ -242,7 +242,7 @@ module Regexp::Parser
     when :close
       self.close_group
     when :comment
-      @node << Expression::Group::Comment.new(type, token, text)
+      @node << Group::Comment.new(type, token, text)
     else
       self.open_group(type, token, text)
     end
@@ -251,7 +251,7 @@ module Regexp::Parser
   def self.options(type, token, text)
     opt = text.split('-', 2)
 
-    exp = Expression::Group::Options.new(type, token, text)
+    exp = Group::Options.new(type, token, text)
     exp.options = {
       :m => opt[0].include?('m') ? true : false,
       :i => opt[0].include?('i') ? true : false,
@@ -264,21 +264,21 @@ module Regexp::Parser
   def self.open_group(type, token, text)
     case token
     when :passive
-      exp = Expression::Group::Passive.new(type, token, text)
+      exp = Group::Passive.new(type, token, text)
     when :atomic
-      exp = Expression::Group::Atomic.new(type, token, text)
+      exp = Group::Atomic.new(type, token, text)
     when :lookahead
-      exp = Expression::Group::Lookahead.new(type, token, text)
+      exp = Group::Lookahead.new(type, token, text)
     when :nlookahead
-      exp = Expression::Group::NegativeLookahead.new(type, token, text)
+      exp = Group::NegativeLookahead.new(type, token, text)
     when :lookbehind
-      exp = Expression::Group::Lookbehind.new(type, token, text)
+      exp = Group::Lookbehind.new(type, token, text)
     when :nlookbehind
-      exp = Expression::Group::NegativeLookbehind.new(type, token, text)
+      exp = Group::NegativeLookbehind.new(type, token, text)
     when :named
-      exp = Expression::Group::Named.new(type, token, text)
+      exp = Group::Named.new(type, token, text)
     when :capture
-      exp = Expression::Group::Capture.new(type, token, text)
+      exp = Group::Capture.new(type, token, text)
     else
       raise "unexpected #{type.inspect}, #{token.inspect} #{text}"
     end
@@ -292,7 +292,7 @@ module Regexp::Parser
   end
 
   def self.open_set(type, token, text)
-    @node << (@set = Expression::CharacterSet.new(type, token, text))
+    @node << (@set = CharacterSet.new(type, token, text))
   end
 
   def self.negate_set

@@ -1,6 +1,6 @@
 require File.expand_path("../../helpers", __FILE__)
 
-class LexerSets < Test::Unit::TestCase
+class ScannerSets < Test::Unit::TestCase
 
   tests = {
     '[a]'             => [:set,  :open,         '[',    0],
@@ -47,9 +47,11 @@ class LexerSets < Test::Unit::TestCase
     end
 
     [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_lex_#{test[0]}_#{name}_#{member}" do
-        t = RL.scan(pattern)[test[3]]
-        assert_equal( test[i], t.send(member))
+      define_method "test_scan_#{test[0]}_#{name}_#{member}" do
+
+        token = RS.scan(pattern)[test[3]]
+        assert_equal( test[i], token[i] )
+
       end
     end
   end

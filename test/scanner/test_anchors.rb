@@ -17,8 +17,10 @@ class ScannerAnchors < Test::Unit::TestCase
   tests.each do |pattern, test|
     [:type, :token, :text].each_with_index do |member, i|
       define_method "test_scanner_#{test[0]}_#{test[1]}_#{member}" do
+
         tokens = RS.scan(pattern)
-        assert_equal( test[i], tokens[test[3]][i])
+        assert_equal( test[i], tokens[test[3]][i] )
+
       end
     end
   end

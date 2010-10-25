@@ -1,11 +1,5 @@
 require File.expand_path("../../helpers", __FILE__)
 
-%w{
-  anchors escapes groups properties quantifiers sets types
-}.each do|tc|
-  require File.expand_path("../test_#{tc}", __FILE__)
-end
-
 class TestRegexpLexer < Test::Unit::TestCase
 
   def test_lexer_returns_an_array
@@ -20,7 +14,7 @@ class TestRegexpLexer < Test::Unit::TestCase
 
   def test_lexer_token_count
     tokens = RL.scan(/^(one|two){2,3}([^d\]efm-qz\,\-]*)(ghi)+$/i)
-    assert_equal( 28, tokens.length )
+    assert_equal( 26, tokens.length )
   end
 
 end

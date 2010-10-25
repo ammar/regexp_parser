@@ -14,8 +14,8 @@ A ruby library to help with lexing, parsing, and transforming regular expression
 
 * Lexes and parses several regular expression flavors
     # In progress
-      # Ruby 1.8/1.9    ** In progres
-      # POSIX BRE/ERE   ** In progres
+      # Ruby 1.8/1.9    ** In progress
+      # POSIX BRE/ERE   ** In progress
 
     # Haven't started yet
       # .NET
