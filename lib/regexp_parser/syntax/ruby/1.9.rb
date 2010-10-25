@@ -1,4 +1,4 @@
-require File.expand_path '../1.8', __FILE__
+require File.expand_path('../1.8', __FILE__)
 
 module Regexp::Syntax
 

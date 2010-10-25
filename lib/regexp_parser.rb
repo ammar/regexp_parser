@@ -21,5 +21,5 @@ class Regexp
 end
 
 %w{scanner syntax lexer parser}.each do |file|
-  require File.expand_path "../regexp_parser/#{file}", __FILE__
+  require File.expand_path("../regexp_parser/#{file}", __FILE__)
 end

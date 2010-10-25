@@ -203,6 +203,12 @@
   # escape sequence scanner
   # --------------------------------------------------------------------------
   escape_sequence := |*
+    [1-9] {
+      text = data[ts-1..te-1].pack('c*')
+      self.emit(:backref, :digit, text, ts, te)
+      fret;
+    };
+
     codepoint_sequence {
       text = data[ts-1..te-1].pack('c*')
       if text[2].chr == '{'
@@ -317,12 +323,12 @@
       when 'zp'; self.emit(type, :separator_paragraph,  text, ts, te)
 
       # Codepoints
-      when 'c';  self.emit(type, :code_any,         text, ts, te)
-      when 'cc'; self.emit(type, :code_control,     text, ts, te)
-      when 'cf'; self.emit(type, :code_format,      text, ts, te)
-      when 'cs'; self.emit(type, :code_surrogate,   text, ts, te)
-      when 'co'; self.emit(type, :code_private,     text, ts, te)
-      when 'cn'; self.emit(type, :code_unassigned,  text, ts, te)
+      when 'c';  self.emit(type, :codepoint_any,        text, ts, te)
+      when 'cc'; self.emit(type, :codepoint_control,    text, ts, te)
+      when 'cf'; self.emit(type, :codepoint_format,     text, ts, te)
+      when 'cs'; self.emit(type, :codepoint_surrogate,  text, ts, te)
+      when 'co'; self.emit(type, :codepoint_private,    text, ts, te)
+      when 'cn'; self.emit(type, :codepoint_unassigned, text, ts, te)
       end
       fret;
     };
@@ -338,19 +344,16 @@
     };
 
     escaped_char > (escaped_alpha, 2) {
-      text = data[ts-1..te-1].pack('c*')
-      #puts " *** TEXT: #{text.inspect}"
-
-      case text
-      when 'a'; self.emit(:escape, :bell,       text, ts, te)
-      when 'b'; self.emit(:escape, :backspace,  text, ts, te)
-      when 'e'; self.emit(:escape, :escape,     text, ts, te)
-      when 'f'; self.emit(:escape, :ffeed,      text, ts, te)
-      when 'n'; self.emit(:escape, :newline,    text, ts, te)
-      when 'r'; self.emit(:escape, :carriage,   text, ts, te)
-      when 's'; self.emit(:escape, :space,      text, ts, te)
-      when 't'; self.emit(:escape, :tab,        text, ts, te)
-      when 'v'; self.emit(:escape, :vtab,       text, ts, te)
+      case text = data[ts-1..te-1].pack('c*')
+      when '\a'; self.emit(:escape, :bell,           text, ts, te)
+      when '\b'; self.emit(:escape, :backspace,      text, ts, te)
+      when '\e'; self.emit(:escape, :escape,         text, ts, te)
+      when '\f'; self.emit(:escape, :form_feed,      text, ts, te)
+      when '\n'; self.emit(:escape, :newline,        text, ts, te)
+      when '\r'; self.emit(:escape, :carriage,       text, ts, te)
+      when '\s'; self.emit(:escape, :space,          text, ts, te)
+      when '\t'; self.emit(:escape, :tab,            text, ts, te)
+      when '\v'; self.emit(:escape, :vertical_tab,   text, ts, te)
       end
       fret;
     };
@@ -545,7 +548,7 @@ module Regexp::Scanner
   def self.scan(input, &block)
     top, stack = 0, []
 
-    input = input.to_s if input.is_a?(Regexp)
+    input = input.source if input.is_a?(Regexp)
     data  = input.unpack("c*") if input.is_a?(String)
     eof   = data.length
 
@@ -559,6 +562,8 @@ module Regexp::Scanner
   end
 
   def self.emit(type, token, text, ts, te)
+    #puts " > emit: #{type}:#{token} '#{text}' [#{ts}..#{te}]"
+
     if @block
       @block.call type, token, text, ts, te
     else

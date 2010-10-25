@@ -1,5 +1,6 @@
 .*.swp
 .DS_Store
+i.rb
 lib/regexp_parser/scanner.rb
 doc
 sandbox

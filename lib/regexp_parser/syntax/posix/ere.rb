@@ -1,4 +1,4 @@
-require File.expand_path '../bre', __FILE__
+require File.expand_path('../bre', __FILE__)
 
 module Regexp::Syntax
 

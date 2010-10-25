@@ -33,12 +33,6 @@ A ruby library to help with lexing, parsing, and transforming regular expression
 * Supports ruby 1.8 and 1.9 runtime
 
 
-Thinking about
-  * A parser that produces s-expressions
-  * Aspect oriented transformation "driver"
-
-
-
 == Components
 === Scanner
 A ragel generated scanner that understands the cumulative syntax of all
@@ -63,8 +57,8 @@ start/end offsets for each token found.
     layers.
 
 ==== TODO
-  * Consider extracting a "baseline" scanner (BRE?) common to all flavors, and
-    layer subsets of syntax into individual ragel machines, like assertions, posix
+  * Consider extracting a "baseline" scanner common to all flavors, and layer
+    subsets of syntax into individual ragel machines, like assertions, posix
     classes and unicode properties.
 
   * Add a scanner (machine) for escaped strings, usable from other machines.
@@ -114,8 +108,8 @@ methods.
 The following example scans the given pattern, checks it against the ruby 1.8
 syntax, and dumps the token objects.
 
-  Regexp::Lexer.scan /a?(b)*[c]+)/, 'ruby/1.8'  do |token|
-    puts token.inspect
+  Regexp::Lexer.scan /a?(b)*[c]+/, 'ruby/1.8'  do |token|
+    puts "#{'  ' * token.depth}#{token.text}"
   end
 
 ==== Notes
@@ -124,7 +118,8 @@ syntax, and dumps the token objects.
 
 ==== TODO
   * Consider normalizing token variations in the lexer to simplify parser
-    layer's code.
+    layer's code, for example BRE's escaped groupings to abstract grouping
+    tokens.
 
 
 ---

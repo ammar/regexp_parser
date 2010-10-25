@@ -148,6 +148,65 @@ module Regexp::Parser
       class Upper   < CharacterProperty::Base; end
       class Word    < CharacterProperty::Base; end
       class Xdigit  < CharacterProperty::Base; end
+
+      class Letter  < CharacterProperty::Base
+        class Any         < Letter; end
+        class Uppercase   < Letter; end
+        class Lowercase   < Letter; end
+        class Titlecase   < Letter; end
+        class Modifier    < Letter; end
+        class Other       < Letter; end
+      end
+
+      class Mark  < CharacterProperty::Base
+        class Any         < Mark; end
+        class Nonspacing  < Mark; end
+        class Spacing     < Mark; end
+        class Enclosing   < Mark; end
+      end
+
+
+      class Number  < CharacterProperty::Base
+        class Any         < Number; end
+        class Decimal     < Number; end
+        class Letter      < Number; end
+        class Other       < Number; end
+      end
+
+      class Punctuation  < CharacterProperty::Base
+        class Any         < Punctuation; end
+        class Connector   < Punctuation; end
+        class Dash        < Punctuation; end
+        class Open        < Punctuation; end
+        class Close       < Punctuation; end
+        class Initial     < Punctuation; end
+        class Final       < Punctuation; end
+        class Other       < Punctuation; end
+      end
+
+      class Separator  < CharacterProperty::Base
+        class Any         < Separator; end
+        class Space       < Separator; end
+        class Line        < Separator; end
+        class Paragraph   < Separator; end
+      end
+
+      class Symbol  < CharacterProperty::Base
+        class Any         < Symbol; end
+        class Math        < Symbol; end
+        class Currency    < Symbol; end
+        class Modifier    < Symbol; end
+        class Other       < Symbol; end
+      end
+
+      class Codepoint  < CharacterProperty::Base
+        class Any         < Codepoint; end
+        class Control     < Codepoint; end
+        class Format      < Codepoint; end
+        class Surrogate   < Codepoint; end
+        class PrivateUse  < Codepoint; end
+        class Unassigned  < Codepoint; end
+      end
     end
 
     class EscapeSequence < Expression::Base

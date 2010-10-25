@@ -1,7 +1,7 @@
 require File.expand_path("../../helpers", __FILE__)
 
 %w{
-  anchors
+  anchors escapes
 }.each do|tc|
   require File.expand_path("../test_#{tc}", __FILE__)
 end

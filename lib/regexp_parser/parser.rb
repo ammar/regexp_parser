@@ -3,15 +3,18 @@ require File.expand_path('../expression', __FILE__)
 module Regexp::Parser
   include Expression
 
-  def self.parse(input, syntax = :any)
-    @root = @node = Expression::Root.new
-    @nesting  = [@node]
+  def self.parse(input, syntax = :any, &block)
+    @nesting = [@root = @node = Expression::Root.new]
 
     Regexp::Lexer.scan(input, syntax) do |token|
       self.parse_token( *token.to_a[0,5] )
     end
 
-    @root
+    if block_given?
+      block.call @root
+    else
+      @root
+    end
   end
 
   def self.nest(exp)
@@ -114,39 +117,52 @@ module Regexp::Parser
     when :word;   @node << CharacterProperty::Word.new(type, token, text)
     when :xdigit; @node << CharacterProperty::Xdigit.new(type, token, text)
 
+
+    when :letter_any;       @node << CharacterProperty::Letter::Any.new(type, token, text)
+    when :letter_uppercase; @node << CharacterProperty::Letter::Uppercase.new(type, token, text)
+    when :letter_lowercase; @node << CharacterProperty::Letter::Lowercase.new(type, token, text)
+    when :letter_titlecase; @node << CharacterProperty::Letter::Titlecase.new(type, token, text)
+    when :letter_modifier;  @node << CharacterProperty::Letter::Modifier.new(type, token, text)
+    when :letter_other;     @node << CharacterProperty::Letter::Other.new(type, token, text)
+
+    when :mark_any;         @node << CharacterProperty::Mark::Any.new(type, token, text)
+    when :mark_nonspacing;  @node << CharacterProperty::Mark::Nonspacing.new(type, token, text)
+    when :mark_spacing;     @node << CharacterProperty::Mark::Spacing.new(type, token, text)
+    when :mark_enclosing;   @node << CharacterProperty::Mark::Enclosing.new(type, token, text)
+
+    when :number_any;       @node << CharacterProperty::Number::Any.new(type, token, text)
+    when :number_decimal;   @node << CharacterProperty::Number::Decimal.new(type, token, text)
+    when :number_letter;    @node << CharacterProperty::Number::Letter.new(type, token, text)
+    when :number_other;     @node << CharacterProperty::Number::Other.new(type, token, text)
+
+    when :punct_any;        @node << CharacterProperty::Punctuation::Any.new(type, token, text)
+    when :punct_connector;  @node << CharacterProperty::Punctuation::Connector.new(type, token, text)
+    when :punct_dash;       @node << CharacterProperty::Punctuation::Dash.new(type, token, text)
+    when :punct_open;       @node << CharacterProperty::Punctuation::Open.new(type, token, text)
+    when :punct_close;      @node << CharacterProperty::Punctuation::Close.new(type, token, text)
+    when :punct_initial;    @node << CharacterProperty::Punctuation::Initial.new(type, token, text)
+    when :punct_final;      @node << CharacterProperty::Punctuation::Final.new(type, token, text)
+    when :punct_other;      @node << CharacterProperty::Punctuation::Other.new(type, token, text)
+
+    when :separator_any;    @node << CharacterProperty::Separator::Any.new(type, token, text)
+    when :separator_space;  @node << CharacterProperty::Separator::Space.new(type, token, text)
+    when :separator_line;   @node << CharacterProperty::Separator::Line.new(type, token, text)
+    when :separator_paragraph; @node << CharacterProperty::Separator::Paragraph.new(type, token, text)
+
+    when :symbol_any;       @node << CharacterProperty::Symbol::Any.new(type, token, text)
+    when :symbol_math;      @node << CharacterProperty::Symbol::Math.new(type, token, text)
+    when :symbol_currency;  @node << CharacterProperty::Symbol::Currency.new(type, token, text)
+    when :symbol_modifier;  @node << CharacterProperty::Symbol::Modifier.new(type, token, text)
+    when :symbol_other;     @node << CharacterProperty::Symbol::Other.new(type, token, text)
+
+    when :codepoint_any;        @node << CharacterProperty::Codepoint::Any.new(type, token, text)
+    when :codepoint_control;    @node << CharacterProperty::Codepoint::Control.new(type, token, text)
+    when :codepoint_format;     @node << CharacterProperty::Codepoint::Format.new(type, token, text)
+    when :codepoint_surrogate;  @node << CharacterProperty::Codepoint::Surrogate.new(type, token, text)
+    when :codepoint_private;    @node << CharacterProperty::Codepoint::PrivateUse.new(type, token, text)
+    when :codepoint_unassigned; @node << CharacterProperty::Codepoint::Unassigned.new(type, token, text)
     end
   end
-
-  # Lu  Uppercase_Letter  Uppercase letter
-  # Ll  Lowercase_Letter  Lowercase letter
-  # Lt  Titlecase_Letter  Digraphic character, with first part uppercase
-  # Lm  Modifier_Letter Modifier letter
-  # Lo  Other_Letter  Remaining letters, e.g. syllables and ideographs
-  # Mn  Nonspacing_Mark Non-spacing combining mark (zero advance width)
-  # Mc  Spacing_Mark  Spacing, combining mark (positive advance width)
-  # Me  Enclosing_Mark  Enclosing combining mark
-  # Nd  Decimal_Number  Decimal digit
-  # Nl  Letter_Number Letter-like numeric character
-  # No  Other_Number  Another type of numeric character
-  # Pc  Connector_Punctuation Connecting punctuation mark
-  # Pd  Dash_Punctuation  Dash or hyphen punctuation mark
-  # Ps  Open_Punctuation  Opening punctuation mark (of a pair)
-  # Pe  Close_Punctuation Closing punctuation mark (of a pair)
-  # Pi  Initial_Punctuation Initial quotation mark
-  # Pf  Final_Punctuation Final quotation mark
-  # Po  Other_Punctuation Another type of punctuation mark
-  # Sm  Math_Symbol Mathematical symbol
-  # Sc  Currency_Symbol Currency sign
-  # Sk  Modifier_Symbol Non-letter-like modifier symbol
-  # So  Other_Symbol  Another type of symbol
-  # Zs  Space_Separator Space character (of non-zero width)
-  # Zl  Line_Separator  Line separator (U＋2028)
-  # Zp  Paragraph_Separator Paragraph separator (U＋2029)
-  # Cc  Control A C0 or C1 control code
-  # Cf  Format  Format control character
-  # Cs  Surrogate Surrogate code point
-  # Co  Private_Use Private-use character
-  # Cn  Unassigned  Reserved, unassigned code point or a non-character codepoint
 
   def self.anchor(type, token, text)
     case token
