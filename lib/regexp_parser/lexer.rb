@@ -4,8 +4,8 @@
 module Regexp::Lexer
 
   # TODO: complete, test token sets
-  OPEN_TOKENS   = [:open, :capture, :options]
-  CLOSE_TOKENS  = [:close]
+  OPENING_TOKENS = [:open, :capture, :options].freeze
+  CLOSING_TOKENS = [:close].freeze
 
   def self.scan(input, syntax = :any, &block)
     syntax = Regexp::Syntax.new(syntax)
@@ -13,12 +13,21 @@ module Regexp::Lexer
     tokens = []
     nesting = 0
 
+    last = nil
     Regexp::Scanner.scan(input) do |type, token, text, ts, te|
       syntax.check! type, token
 
-      nesting -= 1 if CLOSE_TOKENS.include?(token)
-      tokens << Regexp::Token.new(type, token, text, ts, te, nesting)
-      nesting += 1 if OPEN_TOKENS.include?(token)
+      nesting -= 1 if CLOSING_TOKENS.include?(token)
+
+      current = Regexp::Token.new(type, token, text, ts, te, nesting)
+
+      last.next(current) if last
+      current.previous(last) if last
+
+      tokens << current
+      last = current
+
+      nesting += 1 if OPENING_TOKENS.include?(token)
     end
 
     if block_given?

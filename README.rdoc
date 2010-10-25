@@ -56,12 +56,17 @@ start/end offsets for each token found.
     end of pattern. Flavor validity checks are a responsibility for higher
     layers.
 
+  * If the input is a ruby Regexp object, the scanner calls #source on it to
+    get its string representation. #source does not include the options of
+    expression (m, i, etc.) To include the options, call #to_s on the Regexp
+    before passing it.
+
 ==== TODO
   * Consider extracting a "baseline" scanner common to all flavors, and layer
     subsets of syntax into individual ragel machines, like assertions, posix
     classes and unicode properties.
 
-  * Add a scanner (machine) for escaped strings, usable from other machines.
+  * Add a machine for escaped strings, usable from other machines.
 
 
 ---
@@ -94,6 +99,9 @@ implementations features.
 ==== TODO
   * A lot. Complete Ruby and POSIX flavors first.
 
+  * Add flavor limits: like Ruby 1.8's maximum allowed number of grouped 
+    expressions (253).
+
 
 ---
 === Lexer
@@ -112,6 +120,11 @@ syntax, and dumps the token objects.
     puts "#{'  ' * token.depth}#{token.text}"
   end
 
+  # get the text "stream"
+  Regexp::Lexer.scan(/(cat?([b]at)+hat*){3,5}/).map {|token| token.text}
+
+  => ["(", "cat", "?", "(", "[", "b", "]", "at", ")", "+", "hat", "*", ")", "{3,5}"]
+
 ==== Notes
   * The lexer performs some basic parsing to determine the depth of a the
     emitted tokens. This responsibility might be relegated to the scanner.
@@ -120,6 +133,13 @@ syntax, and dumps the token objects.
   * Consider normalizing token variations in the lexer to simplify parser
     layer's code, for example BRE's escaped groupings to abstract grouping
     tokens.
+
+  * Consider breaking the interval quantifier into individual tokens as:
+    :open, :min, :min_default, :comma, :max, :max_default, :exact, :close. 
+    Adding :exact will require lookahead or a separate state in the scanner.
+
+  * If tokens are broken further, like interval, consider adding a "combine"
+    option in the lexer that can merge them into single strings.
 
 
 ---
@@ -148,7 +168,10 @@ functions of all expression classes.
 
 ==== TODO
   * Implementing to_s and to_re requires saving open/close token text, including
-    quantifiers.
+    quantifiers since the parser coalesces the two into a single object.
+
+  * Add a quantifier class, to be a member in Expression, that handles the
+    details and text of the modifier.
 
 
 
@@ -167,7 +190,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
     - Atomic: (?>abc) ** SCANNER COMPLETE
     - Capturing: (abc) ** SCANNER COMPLETE
     - Comment: (?# comment) ** SCANNER COMPLETE
-    - Named: (?<name>abc) ** SCANNER COMPLETE (no single quotes, yet)
+    - Named: (?<name>abc) ** SCANNER COMPLETE
     - Options: (?mi-x:abc) ** SCANNER COMPLETE (missing some options, u, e, etc..)
     - Passive: (?:abc) ** SCANNER COMPLETE
     - Assertions
@@ -185,7 +208,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
     - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
     - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
     - Meta: \M-C, etc.. ** NEEDS REVIEW/TESTS
-    - Meta-Control: \M-\C-C ** NEEDS REVIEW/TESTS
+    - Meta-Control: \M-\C-C ** NEEDS REVIEW/TESTS (does this actually exist?)
     - Octal: \012 ** MISSING
     - Unicode: \uHHHH, \u{H+ H+} ** MISSING
   - Unicode Properties: 
