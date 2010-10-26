@@ -2,19 +2,20 @@ module Regexp::Syntax
 
   module Ruby
     class V18 < Regexp::Syntax::Base
+
+      include Regexp::Syntax::Token
+
       def initialize
         super
 
-        implements :meta, [:alternation]
+        implements :meta, Meta::Extended
 
-        implements :anchor, [
-          :beginning_of_line, :end_of_line,
-          :word_boundary
-        ]
+        implements :anchor,
+          Anchor::Extended + Anchor::String
 
-        implements :escape, [
-          :literal,
-        ]
+        implements :escape, 
+          Escape::Backreference + Escape::ASCII +
+          Escape::Meta
 
         implements :group, [
           :capture,

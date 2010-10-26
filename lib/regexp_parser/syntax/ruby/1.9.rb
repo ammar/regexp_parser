@@ -13,6 +13,8 @@ module Regexp::Syntax
           :zero_or_more_reluctant,
           :one_or_more_reluctant,
         ]
+
+        implements :escape, [:backslash]
       end
     end
   end

@@ -1,4 +1,5 @@
 module Regexp::Syntax
+  require File.expand_path('../syntax/tokens', __FILE__)
 
   SYNTAX_SPEC_ROOT = File.expand_path('../syntax', __FILE__)
 
