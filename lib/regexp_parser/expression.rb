@@ -230,8 +230,30 @@ module Regexp::Parser
     end
 
     class Alternation < Expression::Base
+      def <<(exp)
+        if @expressions.last.is_a?(Literal) and exp.is_a?(Literal)
+          seq = Expression::Sequence.new
+          seq << exp
+          seq << @expressions.pop
+          @expressions << seq
+        else
+          @expressions << exp
+        end
+      end
+
       def alternatives
         @expressions
+      end
+
+    end
+
+    class Sequence < Expression::Base
+      def initialize
+        super(:expression, :sequence, '')
+      end
+
+      def <<(exp)
+        @expressions.insert 0, exp
       end
     end
 

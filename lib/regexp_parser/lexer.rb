@@ -7,7 +7,7 @@ module Regexp::Lexer
   OPENING_TOKENS = [:open, :capture, :options].freeze
   CLOSING_TOKENS = [:close].freeze
 
-  def self.scan(input, syntax = :any, &block)
+  def self.scan(input, syntax = 'ruby/1.9', &block)
     syntax = Regexp::Syntax.new(syntax)
 
     tokens = []

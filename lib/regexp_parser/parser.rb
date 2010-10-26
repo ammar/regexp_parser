@@ -67,7 +67,16 @@ module Regexp::Parser
       unless @node.token == :alternation
         alt = Alternation.new(type, token, text)
 
-        alt << @node.expressions.pop
+        if @node.expressions.last.is_a?(Literal)
+          seq = Expression::Sequence.new
+          while @node.expressions.last.is_a?(Literal)
+            seq << @node.expressions.pop
+          end
+          alt << seq
+        else
+          alt << @node.expressions.pop
+        end
+
         @node << alt
         @node = alt
       end
@@ -174,7 +183,7 @@ module Regexp::Parser
       @node << Anchor::BOS.new(type, token, text)
     when :eos
       @node << Anchor::EOS.new(type, token, text)
-    when :eos_or_before_eol
+    when :eos_ob_eol
       @node << Anchor::EOSobEOL.new(type, token, text)
     when :word_boundary
       @node << Anchor::WordBoundary.new(type, token, text)

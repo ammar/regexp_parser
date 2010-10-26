@@ -8,7 +8,7 @@ class ScannerAnchors < Test::Unit::TestCase
 
    '\Aabc'      => [:anchor,     :bos,                  '\A',  0],
    'abc\z'      => [:anchor,     :eos,                  '\z',  1],
-   'abc\Z'      => [:anchor,     :eos_or_before_eol,    '\Z',  1],
+   'abc\Z'      => [:anchor,     :eos_ob_eol,           '\Z',  1],
 
    'a\bc'       => [:anchor,     :word_boundary,        '\b',  1],
    'a\Bc'       => [:anchor,     :nonword_boundary,     '\B',  1],

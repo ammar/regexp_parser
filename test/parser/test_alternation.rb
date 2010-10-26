@@ -25,13 +25,15 @@ class ParserAlternation < Test::Unit::TestCase
     assert_equal( true,   e.is_a?(RP::Expression::Alternation) )
   end
 
-  def test_parse_alternation_nested_alts
-    alts = @root.expressions[0].alternatives[0].expressions[0].alternatives
+  def test_parse_alternation_nested_sequence
+    alts = @root.expressions[0].alternatives[0].
+           expressions[0].alternatives[0]
 
-    assert_equal( true,   alts[0].is_a?(RP::Expression::Literal) )
-    assert_equal( true,   alts[1].is_a?(RP::Expression::Literal) )
-    assert_equal( true,   alts[2].is_a?(RP::Expression::Literal) )
-    assert_equal( 3,      alts.length )
+    assert_equal( true,   alts.is_a?(RP::Expression::Sequence) )
+
+    assert_equal( true,   alts.expressions[0].is_a?(RP::Expression::Literal) )
+    assert_equal( true,   alts.expressions[1].is_a?(RP::Expression::Literal) )
+    assert_equal( 2,      alts.expressions.length )
   end
 
 end

@@ -4,8 +4,8 @@ class ScannerMeta < Test::Unit::TestCase
 
   tests = {
    'ab??|cd*+|ef+' => {
-      2   => [:meta,    :alternation,    '|',  4,   5],
-      5   => [:meta,    :alternation,    '|',  9,   10],
+      3   => [:meta,    :alternation,    '|',  4,   5],
+      7   => [:meta,    :alternation,    '|',  9,   10],
    },
 
    '(a\|b)|(c|d)\|(e[|]f)' => {
