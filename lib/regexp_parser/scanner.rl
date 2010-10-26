@@ -1,7 +1,7 @@
 %%{
   machine re_scanner;
 
-  wild                  = '.';
+  dot                   = '.';
   backslash             = '\\';
   alternation           = '|';
   beginning_of_line     = '^';
@@ -25,9 +25,9 @@
                           'space' | 'upper' | 'xdigit' |
                           'word'  | 'ascii';
 
-  property_name_unicode = 'Alnum'i | 'Alpha'i | 'Any'i   | 'Ascii'i | 'Blank'i |
-                          'Cntrl'i | 'Digit'i | 'Graph'i | 'Lower'i | 'Print'i |
-                          'Punct'i | 'Space'i | 'Upper'i | 'Word'i | 'Xdigit'i;
+  property_name_unicode = 'alnum'i | 'alpha'i | 'any'i   | 'ascii'i | 'blank'i |
+                          'cntrl'i | 'digit'i | 'graph'i | 'lower'i | 'print'i |
+                          'punct'i | 'space'i | 'upper'i | 'word'i  | 'xdigit'i;
 
   property_name_ruby    = 'any'i | 'assigned'i | 'newline'i;
 
@@ -105,7 +105,7 @@
                           assertion_lookbehind | assertion_nlookbehind;
 
   # characters that 'break' a literal
-  meta_char             = wild | backslash | alternation |
+  meta_char             = dot | backslash | alternation |
                           curlies | parantheses | brackets |
                           line_anchor | quantifier_greedy;
 
@@ -376,21 +376,20 @@
   main := |*
 
     # Meta characters
+    dot {
+      self.emit(:meta, :dot, data[ts..te-1].pack('c*'), ts, te)
+    };
+
     alternation {
       self.emit(:meta, :alternation, data[ts..te-1].pack('c*'), ts, te)
     };
 
     # Character types
-    #     .       any
     #   \d, \D    digit, non-digit
     #   \h, \H    hex, non-hex
     #   \s, \S    space, non-space
     #   \w, \W    word, non-word
     # ------------------------------------------------------------------------
-    wild {
-      self.emit(:type, :any, data[ts..te-1].pack('c*'), ts, te)
-    };
-
     backslash . char_type > (backslashed, 2) {
       case text = data[ts..te-1].pack('c*')
       when '\\d'; self.emit(:type, :digit,      text, ts, te)
@@ -417,7 +416,7 @@
       case text = data[ts..te-1].pack('c*')
       when '\\A'; self.emit(:anchor, :bos,                text, ts, te)
       when '\\z'; self.emit(:anchor, :eos,                text, ts, te)
-      when '\\Z'; self.emit(:anchor, :eos_or_before_eol,  text, ts, te)
+      when '\\Z'; self.emit(:anchor, :eos_ob_eol,         text, ts, te)
       when '\\b'; self.emit(:anchor, :word_boundary,      text, ts, te)
       when '\\B'; self.emit(:anchor, :nonword_boundary,   text, ts, te)
       else raise "Unsupported anchor at #{text} (char #{ts})"
@@ -534,7 +533,17 @@
     # unicode byte sequences. TODO: verify
     # ------------------------------------------------------------------------
     (any - meta_char)+ {
-      self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
+      if (te - ts) > 1 and data[te]
+        case data[te].chr
+        when '?', '*', '+', '{'
+          p -= 1
+          self.emit(:literal, :literal, data[ts..te-2].pack('c*'), ts, te)
+        else
+          self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
+        end
+      else
+        self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
+      end
     };
 
   *|;
@@ -581,4 +590,4 @@ module Regexp::Scanner
     end
   end
 
-end # module Regexp::Lexer
+end # module Regexp::Scanner
