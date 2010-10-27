@@ -536,7 +536,7 @@
       if (te - ts) > 1 and data[te]
         case data[te].chr
         when '?', '*', '+', '{'
-          p -= 1
+          p -= 1 # backup one byte FIXME: probably breaks unicode multibytes!
           self.emit(:literal, :literal, data[ts..te-2].pack('c*'), ts, te)
         else
           self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)

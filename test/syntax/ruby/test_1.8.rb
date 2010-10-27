@@ -12,12 +12,15 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
       :escape => [
         Escape::Backreference + Escape::ASCII + Escape::Meta
       ].flatten,
+
+      :quantifier => [
+        Quantifier::Greedy
+      ].flatten,
     },
 
     :excludes => {
       :quantifier => [
-        Quantifier::Reluctant +
-        Quantifier::Possessive
+        Quantifier::Reluctant + Quantifier::Possessive
       ].flatten,
     },
   }
