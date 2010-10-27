@@ -1,6 +1,7 @@
 require File.expand_path("../../../helpers", __FILE__)
 
 class TestSyntaxRuby_V18 < Test::Unit::TestCase
+  include Regexp::Syntax::Token
 
   def setup
     @syntax = Regexp::Syntax.new 'ruby/1.8'
@@ -8,10 +9,16 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
 
   tests = {
     :implements => {
-      :escape => [:backspace].flatten,
+      :escape => [
+        Escape::Backreference + Escape::ASCII + Escape::Meta
+      ].flatten,
     },
 
     :excludes => {
+      :quantifier => [
+        Quantifier::Reluctant +
+        Quantifier::Possessive
+      ].flatten,
     },
   }
 

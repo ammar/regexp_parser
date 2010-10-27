@@ -17,36 +17,17 @@ module Regexp::Syntax
           Escape::Backreference + Escape::ASCII +
           Escape::Meta
 
-        implements :group, [
-          :capture,
-          :options,
-          :close,
-        ]
+        implements :group,
+          Group::Extended + Group::Assertion
 
-        implements :set, [
-          :open, :close, :negate, :escape, :intersection, :member,
-          :range, :range_hex, :backspace,
+        implements :set, 
+          CharacterSet::Extended + CharacterSet::Types
 
-          :type_digit, :type_nondigit,
-          :type_hex,   :type_nonhex,
-          :type_space, :type_nonspace,
-          :type_word,  :type_nonword
-        ]
+        implements :type,
+          CharacterType::Extended
 
-        implements :type, [
-          :any,
-          :digit, :nondigit,
-          :hex,   :nonhex,
-          :space, :nonspace,
-          :word, :nonword,
-        ]
-
-        implements :quantifier, [
-          :zero_or_one,
-          :zero_or_more,
-          :one_or_more,
-          :interval,
-        ]
+        implements :quantifier, 
+          Quantifier::Greedy + Quantifier::Interval
       end
     end
   end

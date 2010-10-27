@@ -14,7 +14,8 @@ module Regexp::Syntax
 
     module Group
       Basic     = [:capture, :close]
-      Extended  = Basic + []
+      Extended  = Basic + [:options]
+      Assertion = [:lookahead, :nlookahead, :lookbehind, :nlookbehind]
     end
 
     module CharacterType
