@@ -1,7 +1,7 @@
 require File.expand_path('../expression', __FILE__)
 
 module Regexp::Parser
-  include Expression
+  include Regexp::Expression
 
   def self.parse(input, syntax = :any, &block)
     @nesting = [@root = @node = Root.new]
@@ -68,7 +68,7 @@ module Regexp::Parser
         alt = Alternation.new(type, token, text)
 
         if @node.expressions.last.is_a?(Literal)
-          seq = Expression::Sequence.new
+          seq = Sequence.new
           while @node.expressions.last.is_a?(Literal)
             seq << @node.expressions.pop
           end
@@ -107,8 +107,7 @@ module Regexp::Parser
   end
 
   def self.property(type, token, text)
-    include Expression::CharacterProperty
-    #puts "type: #{type.inspect}, token: #{token.inspect}, text: #{text.inspect}"
+    include Regexp::Expression::CharacterProperty
 
     case token
     when :alnum;            @node << Alnum.new(type, token, text)

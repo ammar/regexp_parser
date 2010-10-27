@@ -6,7 +6,7 @@ RL = Regexp::Lexer
 RP = Regexp::Parser
 
 # move this one namescape higher, and just include Regexp?
-include RP::Expression
+include Regexp::Expression
 
 def pr(re, d=0)
   puts "[#{d}]#{'  ' * d}#{re.class.name}"

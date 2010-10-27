@@ -7,11 +7,9 @@ module Regexp::Syntax
       def initialize
         super
 
-        # add extensions
         implements :quantifier, [
-          :zero_or_one_reluctant,
-          :zero_or_more_reluctant,
-          :one_or_more_reluctant,
+          :zero_or_one_reluctant, :zero_or_more_reluctant, :one_or_more_reluctant,
+          :zero_or_one_possessive, :zero_or_more_possessive, :one_or_more_possessive,
         ]
 
         implements :escape, [:backslash]

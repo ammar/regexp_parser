@@ -77,15 +77,19 @@ create flavor variations.
 
 ==== Example
 The following instantiates the syntax for Ruby 1.9 and checks a couple of its
-implementations features.
+implementations features, and then doe the same for Ruby 1.8:
 
   require 'regexp_parser'
 
   ruby_19 = Regexp::Syntax.new 'ruby/1.9'
-
   ruby_19.implements? :quantifier, :zero_or_one             # => true
   ruby_19.implements? :quantifier, :zero_or_one_reluctant   # => true
-  ruby_19.implements? :quantifier, :zero_or_one_possessive  # => false
+  ruby_19.implements? :quantifier, :zero_or_one_possessive  # => true
+
+  ruby_18 = Regexp::Syntax.new 'ruby/1.8'
+  ruby_18.implements? :quantifier, :zero_or_one             # => true
+  ruby_18.implements? :quantifier, :zero_or_one_reluctant   # => false
+  ruby_18.implements? :quantifier, :zero_or_one_possessive  # => false
 
 
 ==== Notes

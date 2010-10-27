@@ -17,7 +17,7 @@ class TestRegexpParserAnchors < Test::Unit::TestCase
   tests.each do |pattern, args|
     define_method "test_parse_anchor_#{args.first}" do
       t = RP.parse(pattern)
-      assert( t.expressions.send(args.last).is_a?(RP::Expression::Anchor),
+      assert( t.expressions.send(args.last).is_a?(Anchor),
              "Expected anchor, but got #{t.expressions.send(args.last).class.name}")
 
       assert_equal( :anchor,    t.expressions.send(args.last).type )
