@@ -85,6 +85,10 @@ module Regexp::Expression
       @members << member
     end
 
+    def include?(member)
+      @members.include? member
+    end
+
     def negate
       @negative = true
     end
