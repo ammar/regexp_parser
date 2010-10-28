@@ -125,9 +125,9 @@ syntax, and dumps the token objects.
   end
 
   # get the text "stream"
-  Regexp::Lexer.scan(/(cat?([b]at)+hat*){3,5}/).map {|token| token.text}
+  Regexp::Lexer.scan( /(cat?([b]at)+hat*){3,5}/ ).map {|token| token.text}
 
-  => ["(", "cat", "?", "(", "[", "b", "]", "at", ")", "+", "hat", "*", ")", "{3,5}"]
+  => ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", "+", "ha", "t", "*", ")", "{3,5}"]
 
 ==== Notes
   * The lexer performs some basic parsing to determine the depth of a the
