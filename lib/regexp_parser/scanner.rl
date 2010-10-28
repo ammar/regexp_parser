@@ -126,7 +126,12 @@
     };
 
     '^' {
-      self.emit(:set, :negate, data[ts..te-1].pack('c*'), ts, te)
+      text = data[ts..te-1].pack('c*')
+      if @tokens.last[1] == :open
+        self.emit(:set, :negate, text, ts, te)
+      else
+        self.emit(:set, :member, text, ts, te)
+      end
     };
 
     alnum . '-' . alnum { # TODO: add properties
@@ -553,13 +558,9 @@
 module Regexp::Scanner
   %% write data;
 
-  # Scans the given regular expression text, or Regexp object and:
-  #
-  # If a block is given, calls it for each emitted token, and returns nil
-  # when done.
-  #
-  # If no block is given, collect the emitted arguments (as an array) into
-  # an array and return that when done.
+  # Scans the given regular expression text, or Regexp object and collects the
+  # emitted token into an array that gets returns at the end. If a block is
+  # given, it gets called for each emitted token.
   #
   # This may raise an error if a syntax error is encountered. ** this is still
   # in progress.
@@ -571,8 +572,8 @@ module Regexp::Scanner
     data  = input.unpack("c*") if input.is_a?(String)
     eof   = data.length
 
+    @tokens = []
     @block  = block_given? ? block : nil
-    @tokens = block_given? ? nil : []
 
     %% write init;
     %% write exec;
@@ -585,9 +586,9 @@ module Regexp::Scanner
 
     if @block
       @block.call type, token, text, ts, te
-    else
-      @tokens << [type, token, text, ts, te]
     end
+
+    @tokens << [type, token, text, ts, te]
   end
 
 end # module Regexp::Scanner

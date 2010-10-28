@@ -27,6 +27,8 @@ class ScannerSets < Test::Unit::TestCase
     '[\W]'            => [:set,  :type_nonword,   '\W', 1],
 
     '[a-c]'           => [:set,  :range,          'a-c', 1],
+    '[a-c-]'          => [:set,  :member,         '-',   2],
+    '[a-c^]'          => [:set,  :member,         '^',   2],
     '[a-cd-f]'        => [:set,  :range,          'd-f', 2],
 
     '[a-d&&g-h]'      => [:set,  :intersection,   '&&', 2],
