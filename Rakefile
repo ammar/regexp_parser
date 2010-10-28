@@ -18,6 +18,12 @@ end
 task :test
 
 namespace :test do
+  desc "Run all scanner tests"
+  Rake::TestTask.new("scanner") do |t|
+    t.libs << "test"
+    t.test_files = ['test/scanner/test_all.rb']
+  end
+
   desc "Run all lexer tests"
   Rake::TestTask.new("lexer") do |t|
     t.libs << "test"
