@@ -13,6 +13,9 @@ module Regexp::Syntax
         ]
 
         implements :escape, [:backslash]
+
+        implements :set, 
+          CharacterSet::POSIX::Extensions 
       end
     end
   end

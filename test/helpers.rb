@@ -12,7 +12,11 @@ def pr(re, d=0)
   puts "[#{d}]#{'  ' * d}#{re.class.name}"
   re.expressions.each do |e|
     if e.expressions.empty?
-      puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name} : #{e.text}"
+      if e.respond_to? :members
+        puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name} : #{e.members.join(', ')}"
+      else
+        puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name} : #{e.text}"
+      end
     else
       puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name}"
       pr(e, d+2)

@@ -31,6 +31,15 @@ module Regexp::Syntax
 
       Types     = [:type_digit, :type_nondigit, :type_hex, :type_nonhex,
                    :type_space, :type_nonspace, :type_word, :type_nonword]
+
+      module POSIX
+        Standard  = [:class_alnum, :class_alpha, :class_blank, :class_cntrl,
+                     :class_digit, :class_graph, :class_lower, :class_print,
+                     :class_punct, :class_space, :class_upper, :class_xdigit]
+
+        Extensions = [:class_ascii, :class_word]
+        All    = Standard + Extensions
+      end
     end
 
     module Quantifier

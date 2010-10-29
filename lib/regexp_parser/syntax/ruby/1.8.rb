@@ -21,7 +21,8 @@ module Regexp::Syntax
           Group::Extended + Group::Assertion
 
         implements :set, 
-          CharacterSet::Extended + CharacterSet::Types
+          CharacterSet::Extended + CharacterSet::Types +
+          CharacterSet::POSIX::Standard 
 
         implements :type,
           CharacterType::Extended

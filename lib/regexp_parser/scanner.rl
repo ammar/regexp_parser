@@ -66,7 +66,7 @@
   codepoint_sequence    = codepoint_single | codepoint_list;
 
   control_sequence      = ('c' | 'C-') . alpha;
-  meta_sequence         = 'M-' . alpha;
+  meta_sequence         = 'M-' . alpha; # FIXME: incorrect, and can include escapes
 
   zero_or_one           = '?' | '??' | '?+';
   zero_or_more          = '*' | '*?' | '*+';
@@ -291,7 +291,6 @@
     property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 2) {
       text = data[ts-1..te-1].pack('c*')
 
-      # TODO: rename :nonproperty to :nonproperty
       type = text[1,1] == 'p' ? :property : :nonproperty
       # TODO: add ^ for property negation, :nonproperty_caret
 

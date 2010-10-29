@@ -2,6 +2,7 @@ require File.expand_path('../expression', __FILE__)
 
 module Regexp::Parser
   include Regexp::Expression
+  include Regexp::Syntax
 
   def self.parse(input, syntax = :any, &block)
     @nesting = [@root = @node = Root.new]
@@ -55,6 +56,8 @@ module Regexp::Parser
     when :member
       self.append_set(type, token, text)
     when :range
+      self.append_set(type, token, text)
+    when *Token::CharacterSet::POSIX::All
       self.append_set(type, token, text)
     when :close
       self.close_set
@@ -308,7 +311,15 @@ module Regexp::Parser
   end
 
   def self.append_set(type, token, text)
-    @set << text
+    case token
+    when :range
+      # FIXME: this is naive
+      parts = text.split('-', 2)
+      range = (parts.first..parts.last).to_a
+      range.each {|m| @set << m }
+    else
+      @set << text
+    end
   end
 
   def self.close_set

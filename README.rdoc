@@ -77,7 +77,7 @@ create flavor variations.
 
 ==== Example
 The following instantiates the syntax for Ruby 1.9 and checks a couple of its
-implementations features, and then doe the same for Ruby 1.8:
+implementations features, and then does the same for Ruby 1.8:
 
   require 'regexp_parser'
 

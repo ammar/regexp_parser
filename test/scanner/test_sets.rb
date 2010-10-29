@@ -36,20 +36,10 @@ class ScannerSets < Test::Unit::TestCase
     '[\\x20-\\x28]'   => [:set,  :range_hex,      '\x20-\x28', 1],
   }
 
-  member_count = 0
-  escape_count = 0
-  range_count = 0
-
+  count = 0
   tests.each do |pattern, test|
-    case test[1]
-    when :member; name = "member_#{member_count += 1}"
-    when :escape; name = "escape_#{escape_count += 1}"
-    when :range;  name = "range_#{range_count += 1}"
-    else name = test[1]
-    end
-
     [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_scan_#{test[0]}_#{name}_#{member}" do
+      define_method "test_scan_#{test[0]}_#{test[1]}_#{count}_#{member}" do
 
         token = RS.scan(pattern)[test[3]]
         assert_equal( test[i], token[i] )
