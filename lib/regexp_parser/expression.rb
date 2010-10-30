@@ -22,30 +22,28 @@ module Regexp::Expression
       @expressions << exp
     end
 
-    def quantify(quantifier, min = nil, max = nil, mode = :greedy)
-      @quantifier = quantifier
-      @min, @max  = min, max
-      @quantifier_mode = mode
+    def quantify(token, text, min = nil, max = nil, mode = :greedy)
+      @quantifier = Quantifier.new(token, text, min, max, mode)
     end
 
     def quantified?
       not @quantifier.nil?
     end
 
-    def quantifier_mode
-      @quantifier_mode
+    def quantity
+      [@quantifier.min, @quantifier.max]
     end
 
-    def quantity
-      [@min, @max]
+    def greedy?
+      @quantifier.mode == :greedy
     end
 
     def reluctant?
-      @quantifier_mode == :reluctant
+      @quantifier.mode == :reluctant
     end
 
     def possessive?
-      @quantifier_mode == :possessive
+      @quantifier.mode == :possessive
     end
 
     def multiline?
@@ -67,6 +65,18 @@ module Regexp::Expression
   class Root < Regexp::Expression::Base
     def initialize
       super(:expression, :root, '')
+    end
+  end
+
+  class Quantifier
+    attr_reader :token, :text, :min, :max, :mode
+
+    def initialize(token, text, min, max, mode)
+      @token = token
+      @text  = text
+      @mode  = mode
+      @min   = min
+      @max   = max
     end
   end
 
@@ -110,6 +120,8 @@ module Regexp::Expression
       else
         raise "Unexpected character set member '#{member}'"
       end
+
+      @members.uniq!
     end
 
     def include?(member)

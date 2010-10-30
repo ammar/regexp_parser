@@ -174,9 +174,6 @@ functions of all expression classes.
   * Implementing to_s and to_re requires saving open/close token text, including
     quantifiers since the parser coalesces the two into a single object.
 
-  * Add a quantifier class, to be a member in Expression, that handles the
-    details and text of the modifier.
-
 
 
 == Scanner Syntax

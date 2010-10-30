@@ -206,25 +206,25 @@ module Regexp::Parser
   def self.quantifier(type, token, text)
     case token
     when :zero_or_one
-      @node.expressions.last.quantify(:zero_or_one, 0, 1, :greedy)
+      @node.expressions.last.quantify(:zero_or_one, text, 0, 1, :greedy)
     when :zero_or_one_reluctant
-      @node.expressions.last.quantify(:zero_or_one, 0, 1, :reluctant)
+      @node.expressions.last.quantify(:zero_or_one, text, 0, 1, :reluctant)
     when :zero_or_one_possessive
-      @node.expressions.last.quantify(:zero_or_one, 0, 1, :possessive)
+      @node.expressions.last.quantify(:zero_or_one, text, 0, 1, :possessive)
 
     when :zero_or_more
-      @node.expressions.last.quantify(:zero_or_more, 0, -1, :greedy)
+      @node.expressions.last.quantify(:zero_or_more, text, 0, -1, :greedy)
     when :zero_or_more_reluctant
-      @node.expressions.last.quantify(:zero_or_more, 0, -1, :reluctant)
+      @node.expressions.last.quantify(:zero_or_more, text, 0, -1, :reluctant)
     when :zero_or_more_possessive
-      @node.expressions.last.quantify(:zero_or_more, 0, -1, :possessive)
+      @node.expressions.last.quantify(:zero_or_more, text, 0, -1, :possessive)
 
     when :one_or_more
-      @node.expressions.last.quantify(:one_or_more, 1, -1, :greedy)
+      @node.expressions.last.quantify(:one_or_more, text, 1, -1, :greedy)
     when :one_or_more_reluctant
-      @node.expressions.last.quantify(:one_or_more, 1, -1, :reluctant)
+      @node.expressions.last.quantify(:one_or_more, text, 1, -1, :reluctant)
     when :one_or_more_possessive
-      @node.expressions.last.quantify(:one_or_more, 1, -1, :possessive)
+      @node.expressions.last.quantify(:one_or_more, text, 1, -1, :possessive)
 
     when :interval
       self.interval(text)
@@ -243,7 +243,7 @@ module Regexp::Parser
     min = range[0].empty? ? 0 : range[0]
     max = range[1] ? (range[1].empty? ? -1 : range[1]) : min
 
-    @node.expressions.last.quantify(:interval, min.to_i, max.to_i, mode)
+    @node.expressions.last.quantify(:interval, text, min.to_i, max.to_i, mode)
   end
 
   def self.group(type, token, text)
