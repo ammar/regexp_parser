@@ -36,6 +36,6 @@ class Regexp
 
 end
 
-%w{scanner syntax lexer parser}.each do |file|
+%w{ctype scanner syntax lexer parser}.each do |file|
   require File.expand_path("../regexp_parser/#{file}", __FILE__)
 end
