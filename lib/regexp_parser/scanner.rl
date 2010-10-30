@@ -109,6 +109,13 @@
                           curlies | parantheses | brackets |
                           line_anchor | quantifier_greedy;
 
+  ascii_nonprint        = (0x01..0x1f | 0x7f)+;
+
+  utf8_2_byte           = (0xc2..0xdf 0x80..0xbf)+;
+  utf8_3_byte           = (0xe0..0xef 0x80..0xbf 0x80..0xbf)+;
+  utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf)+;
+  utf8_byte_sequence    = utf8_2_byte | utf8_3_byte | utf8_4_byte;
+
 
   # Character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
@@ -540,7 +547,7 @@
       if (te - ts) > 1 and data[te]
         case data[te].chr
         when '?', '*', '+', '{'
-          p -= 1 # backup one byte FIXME: probably breaks unicode multibytes!
+          p -= 1 # backup one byte FIXME: breaks unicode multibytes!!!
           self.emit(:literal, :literal, data[ts..te-2].pack('c*'), ts, te)
         else
           self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
@@ -548,6 +555,12 @@
       else
         self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
       end
+    };
+
+
+    # UTF-8 byte runs
+    ascii_nonprint | utf8_byte_sequence {
+      self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
     };
 
   *|;
