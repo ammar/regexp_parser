@@ -109,6 +109,7 @@
                           curlies | parantheses | brackets |
                           line_anchor | quantifier_greedy;
 
+  ascii_print           = ((0x20..0x7e) - meta_char)+;
   ascii_nonprint        = (0x01..0x1f | 0x7f)+;
 
   utf8_2_byte           = (0xc2..0xdf 0x80..0xbf)+;
@@ -117,16 +118,59 @@
   utf8_byte_sequence    = utf8_2_byte | utf8_3_byte | utf8_4_byte;
 
 
+  # group (nesting) and set open/close actions
+  action group_opened {
+    #puts "GROUP: OPENED"
+    in_group += 1
+  }
+
+  action group_closed {
+    #puts "GROUP: CLOSED"
+    in_group -= 1
+  }
+
+  action set_opened {
+    #puts "SET: OPENED"
+    in_set = true
+  }
+
+  action set_closed {
+    #puts "SET: CLOSED"
+    in_set = false
+  }
+
+  # ASCII non print and UTF-8 exit actions
+  action ascii_nonprint_sequence {
+    #puts "ASCII-NONPRINT #{data[ts..te-1].pack('c*')}"
+    # TODO: check for a following quantifier
+  }
+
+  action utf8_2_byte_sequence {
+    #puts "UTF8-2-BYTE: #{data[ts..te-1].pack('c*')}"
+    # TODO: check for a following quantifier
+  }
+
+  action utf8_3_byte_sequence {
+    #puts "UTF8-3-BYTE: #{data[ts..te-1].pack('c*')}"
+    # TODO: check for a following quantifier
+  }
+
+  action utf8_4_byte_sequence {
+    #puts "UTF8-4-BYTE: #{data[ts..te-1].pack('c*')}"
+    # TODO: check for a following quantifier
+  }
+
+
   # Character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
   # --------------------------------------------------------------------------
   character_set := |*
-    ']' {
+    ']' %set_closed {
       self.emit(:set, :close, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
 
-    '-]' { # special case, emits two tokens
+    '-]' %set_closed { # special case, emits two tokens
       self.emit(:set, :member, data[ts..te-2].pack('c*'), ts, te)
       self.emit(:set, :close,  data[ts+1..te-1].pack('c*'), ts, te)
       fret;
@@ -440,7 +484,7 @@
     };
 
     # Character sets
-    set_open {
+    set_open %set_opened {
       self.emit(:set, :open, data[ts..te-1].pack('c*'), ts, te)
       fcall character_set;
     };
@@ -458,7 +502,7 @@
     #                         x: extended form
     #
     #   (?imx-imx:subexp)   option on/off for subexp
-    group_open . group_options {
+    group_open . group_options %group_opened {
       self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -468,7 +512,7 @@
     #   (?<=subexp)         look-behind
     #   (?<!subexp)         negative look-behind
     # ------------------------------------------------------------------------
-    group_open . assertion_type {
+    group_open . assertion_type %group_opened {
       case text =  data[ts..te-1].pack('c*')
       when '(?=';  self.emit(:assertion, :lookahead,    text, ts, te)
       when '(?!';  self.emit(:assertion, :nlookahead,   text, ts, te)
@@ -484,7 +528,7 @@
     #   (?'name'subexp)     named group (single quoted version)
     #   (subexp)            captured group
     # ------------------------------------------------------------------------
-    group_open . group_type {
+    group_open . group_type %group_opened {
       case text =  data[ts..te-1].pack('c*')
       when '(?:';  self.emit(:group, :passive,      text, ts, te)
       when '(?>';  self.emit(:group, :atomic,       text, ts, te)
@@ -496,12 +540,12 @@
       end
     };
 
-    group_open  {
+    group_open %group_opened {
       text =  data[ts..te-1].pack('c*')
       self.emit(:group, :capture, text, ts, te)
     };
 
-    group_close {
+    group_close %group_closed {
       self.emit(:group, :close, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -543,8 +587,8 @@
     # Literal: anything, except meta characters. This includes 2, 3, and 4
     # unicode byte sequences. TODO: verify
     # ------------------------------------------------------------------------
-    (any - meta_char)+ {
-      if (te - ts) > 1 and data[te]
+    ascii_print+ {
+      if (te - ts) > 1 and data[te] and data[te] >=0 
         case data[te].chr
         when '?', '*', '+', '{'
           p -= 1 # backup one byte FIXME: breaks unicode multibytes!!!
@@ -557,9 +601,15 @@
       end
     };
 
+    # TODO: verify range and use in escapes
+    ascii_nonprint+ %ascii_nonprint_sequence {
+      self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
+    };
 
-    # UTF-8 byte runs
-    ascii_nonprint | utf8_byte_sequence {
+    # UTF-8 byte runs: TODO: should these be broken into separate machines?
+    utf8_2_byte+ %utf8_2_byte_sequence |
+    utf8_3_byte+ %utf8_3_byte_sequence |
+    utf8_4_byte+ %utf8_4_byte_sequence {
       self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -586,6 +636,9 @@ module Regexp::Scanner
 
     @tokens = []
     @block  = block_given? ? block : nil
+
+    in_group = 0
+    in_set = 0
 
     %% write init;
     %% write exec;
