@@ -3,6 +3,7 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerUTF8 < Test::Unit::TestCase
 
   tests = {
+    # 2 byte wide characters, arabic
     'aاbبcت' => {
       0     => [:literal,     :literal,       'aاbبcت',   0, 9],
     },
@@ -29,6 +30,17 @@ class ScannerUTF8 < Test::Unit::TestCase
       6     => [:literal,     :literal,       'c',        9, 10],
       7     => [:literal,     :literal,       'ت',        10, 12],
       8     => [:quantifier,  :zero_or_one,   '?',        12, 13],
+    },
+
+    # 3 byte wide characters, japanese
+    'ab?れます+cd' => {
+      0     => [:literal,     :literal,       'a',        0, 1],
+      1     => [:literal,     :literal,       'b',        1, 2],
+      2     => [:quantifier,  :zero_or_one,   '?',        2, 3],
+      3     => [:literal,     :literal,       'れま',     3, 9],
+      4     => [:literal,     :literal,       'す',       9, 12],
+      5     => [:quantifier,  :one_or_more,   '+',        12, 13],
+      6     => [:literal,     :literal,       'cd',       13, 15],
     },
   }
 
