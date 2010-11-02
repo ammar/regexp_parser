@@ -25,6 +25,10 @@
                           'space' | 'upper' | 'xdigit' |
                           'word'  | 'ascii';
 
+  # Property names are being treated as case-insensitive, but it is not clear
+  # yet if this applies to all flavors and in all encodings. A bug has just
+  # been filed against ruby regarding this issue.
+  # http://redmine.ruby-lang.org/issues/show/4014
   property_name_unicode = 'alnum'i | 'alpha'i | 'any'i   | 'ascii'i | 'blank'i |
                           'cntrl'i | 'digit'i | 'graph'i | 'lower'i | 'print'i |
                           'punct'i | 'space'i | 'upper'i | 'word'i  | 'xdigit'i;
