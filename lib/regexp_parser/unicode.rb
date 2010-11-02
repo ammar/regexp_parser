@@ -1,5 +1,52 @@
 module Regexp::Scanner
   module Unicode
+
+    # for \p{Age=4.0}, \P{age=5.2}
+    # Not in Ruby, yet, but available in PERL
+    Ages = [
+      '1.1',
+      '2.0',
+      '2.1',
+      '3.0',
+      '3.1',
+      '3.2',
+      '4.0',
+      '4.1',
+      '5.0',
+      '5.1',
+      '5.2',
+      '6.0',
+    ].freeze
+
+    module DerivedProperties
+      Core = [
+        'Math',
+        'Alphabetic',
+        'Lowercase',
+        'Uppercase',
+        'ID_Start',
+        'ID_Continue',
+        'XID_Start',
+        'XID_Continue',
+        'Default_Ignorable_Code_Point',
+        'Grapheme_Base',
+        'Grapheme_Extend',
+      ].freeze
+
+      Normalization = [
+        'FNC',
+        'Comp_Ex',
+        'NFD_QuickCheck',
+        'NFKD_QuickCheck',
+        'NFC_QuickCheck',
+        'NFKC_QuickCheck',
+        'NFC_Expands',
+        'NFD_Expands',
+        'NFKC_Expands',
+        'NFKD_Expands',
+      ].freeze
+    end
+
     Scripts = [
       'Arab', 'Arabic',
       'Armi', 'Imperial Aramaic',
@@ -95,6 +142,7 @@ module Regexp::Scanner
       'Zinh', 'Inherited', 'Qaa',
       'Zyyy', 'Common',
       'Zzzz', 'Unknown',
-    ]
+    ].freeze
+
   end Unicode
 end # module Regexp::Scanner
