@@ -21,7 +21,8 @@ class ScannerEscapes < Test::Unit::TestCase
     # TODO: figure out why this fails, not POSIX or Ruby, can wait
     #'a\x{0640}c'   => [1, :escape,  :hex,            '\x{0640}',  2,  8],
 
-    'a\u0640c'      => [1, :escape,  :codepoint,      '\u0640',    2,  7],
+    'a\u0640c'        => [1, :escape,  :codepoint,      '\u0640',    2,  7],
+    'a\u{0640 0641}c' => [1, :escape,  :codepoint_list, '\u{0640 0641}',  2,  14],
 
     'a\cCc'         => [1, :escape,  :control,        '\cC',       2,  4],
     'a\M-Cc'        => [1, :escape,  :meta,           '\M-C',      2,  5],

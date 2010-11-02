@@ -5,7 +5,6 @@ RS = Regexp::Scanner
 RL = Regexp::Lexer
 RP = Regexp::Parser
 
-# move this one namescape higher, and just include Regexp?
 include Regexp::Expression
 
 def pr(re, d=0)
@@ -21,5 +20,11 @@ def pr(re, d=0)
       puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name}"
       pr(e, d+2)
     end
+  end
+end
+
+def pt(tokens)
+  tokens.each_with_index do |token, i|
+    puts "#{'%02d' % i}: #{token.inspect}"
   end
 end

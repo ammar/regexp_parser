@@ -2,7 +2,6 @@ module Regexp::Syntax
 
   module Ruby
     class V18 < Regexp::Syntax::Base
-
       include Regexp::Syntax::Token
 
       def initialize
@@ -14,8 +13,8 @@ module Regexp::Syntax
           Anchor::Extended + Anchor::String
 
         implements :escape, 
-          Escape::Backreference + Escape::ASCII +
-          Escape::Meta
+          Escape::Basic + Escape::Backreference +
+          Escape::ASCII + Escape::Meta
 
         implements :group,
           Group::Extended + Group::Assertion

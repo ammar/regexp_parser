@@ -4,15 +4,13 @@ module Regexp::Syntax
 
   module Ruby
     class V19 < Regexp::Syntax::Ruby::V18
+      include Regexp::Syntax::Token
+
       def initialize
         super
 
-        implements :quantifier, [
-          :zero_or_one_reluctant, :zero_or_more_reluctant, :one_or_more_reluctant,
-          :zero_or_one_possessive, :zero_or_more_possessive, :one_or_more_possessive,
-        ]
-
-        implements :escape, [:backslash]
+        implements :quantifier, 
+          Quantifier::Reluctant + Quantifier::Possessive
 
         implements :set, 
           CharacterSet::POSIX::Extensions 

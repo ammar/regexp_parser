@@ -25,7 +25,6 @@ module Regexp::Syntax
     end
 
     module CharacterSet
-       # TODO: break apart
       Basic     = [:open, :close, :negate, :member, :range]
       Extended  = Basic + [:escape, :intersection, :range_hex, :backspace]
 
@@ -50,6 +49,8 @@ module Regexp::Syntax
     end
 
     module Escape
+      Basic     = [:backslash]
+
       Backreference = [:digit]
 
       ASCII = [:bell, :backspace, :escape, :form_feed, :newline, :carriage,

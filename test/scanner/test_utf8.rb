@@ -3,17 +3,44 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerUTF8 < Test::Unit::TestCase
 
   tests = {
-   'aاbبcت'  => [:literal,  :literal,   'ب',  3],
+    'aاbبcت' => {
+      0     => [:literal,     :literal,       'aاbبcت',   0, 9],
+    },
+
+    'aاbبت?' => {
+      0     => [:literal,     :literal,       'aاbب',     0, 6],
+      1     => [:literal,     :literal,       'ت',        6, 8],
+      2     => [:quantifier,  :zero_or_one,   '?',        8, 9],
+    },
+
+    'aا?bبcت+' => {
+      1     => [:literal,     :literal,       'ا',        1, 3],
+      2     => [:quantifier,  :zero_or_one,   '?',        3, 4],
+      3     => [:literal,     :literal,       'bبc',      4, 8],
+    },
+
+    'a(اbب+)cت?' => {
+      0     => [:literal,     :literal,       'a',        0, 1],
+      1     => [:group,       :capture,       '(',        1, 2],
+      2     => [:literal,     :literal,       'اb',       2, 5],
+      3     => [:literal,     :literal,       'ب',        5, 7],
+      4     => [:quantifier,  :one_or_more,   '+',        7, 8],
+      5     => [:group,       :close,         ')',        8, 9],
+      6     => [:literal,     :literal,       'c',        9, 10],
+      7     => [:literal,     :literal,       'ت',        10, 12],
+      8     => [:quantifier,  :zero_or_one,   '?',        12, 13],
+    },
   }
 
-  tests.each do |pattern, test|
-    [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_scan_#{test[0]}_#{test[1]}_#{member}" do
+  count = 0
+  tests.each do |pattern, checks|
+    define_method "test_scan_utf8_runs_#{count+=1}" do
 
-        token = RS.scan(pattern)[test[3]]
-        assert_equal( test[i], token[i] )
-
+      tokens = RS.scan(pattern)
+      checks.each do |offset, token|
+        assert_equal( token, tokens[offset] )
       end
+
     end
   end
 

@@ -139,27 +139,6 @@
     in_set = false
   }
 
-  # ASCII non print and UTF-8 exit actions
-  action ascii_nonprint_sequence {
-    #puts "ASCII-NONPRINT #{data[ts..te-1].pack('c*')}"
-    # TODO: check for a following quantifier
-  }
-
-  action utf8_2_byte_sequence {
-    #puts "UTF8-2-BYTE: #{data[ts..te-1].pack('c*')}"
-    # TODO: check for a following quantifier
-  }
-
-  action utf8_3_byte_sequence {
-    #puts "UTF8-3-BYTE: #{data[ts..te-1].pack('c*')}"
-    # TODO: check for a following quantifier
-  }
-
-  action utf8_4_byte_sequence {
-    #puts "UTF8-4-BYTE: #{data[ts..te-1].pack('c*')}"
-    # TODO: check for a following quantifier
-  }
-
 
   # Character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
@@ -294,7 +273,7 @@
     escaped_char > (escaped_alpha, 8) {
       case text = data[ts-1..te-1].pack('c*')
       when '\a'; self.emit(:escape, :bell,           text, ts, te)
-      when '\b'; self.emit(:escape, :backspace,      text, ts, te) # TODO: in what context?
+      when '\b'; self.emit(:escape, :backspace,      text, ts, te) # FIXME: a backspace only inside a set
       when '\e'; self.emit(:escape, :escape,         text, ts, te)
       when '\f'; self.emit(:escape, :form_feed,      text, ts, te)
       when '\n'; self.emit(:escape, :newline,        text, ts, te)
@@ -583,34 +562,20 @@
       self.emit(:quantifier, :interval, data[ts..te-1].pack('c*'), ts, te)
     };
 
-
-    # Literal: anything, except meta characters. This includes 2, 3, and 4
-    # unicode byte sequences. TODO: verify
+    # Literal: any run of ASCII, UTF-8, except meta characters.
     # ------------------------------------------------------------------------
-    ascii_print+ {
-      if (te - ts) > 1 and data[te] and data[te] >=0 
-        case data[te].chr
-        when '?', '*', '+', '{'
-          p -= 1 # backup one byte FIXME: breaks unicode multibytes!!!
-          self.emit(:literal, :literal, data[ts..te-2].pack('c*'), ts, te)
-        else
-          self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
-        end
-      else
-        self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
-      end
-    };
+    action ascii_sequence       { fpc = self.literal_run(fpc, data, ts, fpc, 1) }
+    action utf8_2_byte_sequence { fpc = self.literal_run(fpc, data, ts, fpc, 2) }
+    action utf8_3_byte_sequence { fpc = self.literal_run(fpc, data, ts, fpc, 3) }
+    action utf8_4_byte_sequence { fpc = self.literal_run(fpc, data, ts, fpc, 4) }
 
-    # TODO: verify range and use in escapes
-    ascii_nonprint+ %ascii_nonprint_sequence {
-      self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
-    };
-
-    # UTF-8 byte runs: TODO: should these be broken into separate machines?
+    # ASCII, printable, non printable, and UTF-8 exit actions
+    ascii_print+      %ascii_sequence  |
+    ascii_nonprint+   %ascii_sequence  |
     utf8_2_byte+ %utf8_2_byte_sequence |
     utf8_3_byte+ %utf8_3_byte_sequence |
     utf8_4_byte+ %utf8_4_byte_sequence {
-      self.emit(:literal, :literal, data[ts..te-1].pack('c*'), ts, te)
+      # all work is done in the exit action
     };
 
   *|;
@@ -638,16 +603,68 @@ module Regexp::Scanner
     @block  = block_given? ? block : nil
 
     in_group = 0
-    in_set = 0
+    in_set   = false
 
     %% write init;
     %% write exec;
 
+    # when the entire expression is a literal run
+    self.emit_literal if @literal
+
     @tokens
+  end
+
+  # checks if a literal run, ascii or utf-8, that is longer than one character,
+  # is followed by a quantifier, and if so, backs up one character and emits
+  # the preceding characters (could be just one) as a separate token. works
+  # in combination with the append_literal and emit_literal methods (below)
+  def self.literal_run(p, data, ts, te, char_width)
+    if ((te-ts) > char_width) and data[te] and data[te] >=0 
+      case data[te].chr
+      when '?', '*', '+', '{'
+        p -= char_width # backup the parser 'pointer' by one char (1 or more bytes)
+        te -= char_width
+
+        self.append_literal(data, ts, te)
+        self.emit_literal if @literal
+      else
+        self.append_literal(data, ts, te)
+      end
+    elsif char_width > 1 and ((te-ts) == char_width) and data[te] and data[te] >=0 
+      case data[te].chr
+      when '?', '*', '+', '{'
+        self.emit_literal if @literal
+        self.append_literal(data, ts, te)
+      else
+        self.append_literal(data, ts, te)
+      end
+    else
+      self.append_literal(data, ts, te)
+    end; p # return scan pointer, possibly backed up
+  end
+
+  # appends one or more characters to the literal buffer, to be emitted later
+  # by a call to emit_literal. contents a mix of ASCII and UTF-8
+  def self.append_literal(data, ts, te)
+    @literal ||= []
+    @literal << [data[ts..te-1].pack('c*'), ts, te]
+  end
+
+  # emits the collected literal run collected by one or more calls to the 
+  # append_literal method
+  def self.emit_literal
+    ts, te = @literal.first[1], @literal.last[2]
+    text = @literal.map {|t| t[0]}.join
+    self.emit(:literal, :literal, text, ts, te)
+    @literal = nil
   end
 
   def self.emit(type, token, text, ts, te)
     #puts " > emit: #{type}:#{token} '#{text}' [#{ts}..#{te}]"
+
+    if @literal and type != :literal
+      self.emit_literal
+    end
 
     if @block
       @block.call type, token, text, ts, te

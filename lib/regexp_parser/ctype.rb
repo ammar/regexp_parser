@@ -1,3 +1,5 @@
+# defines character type constants (as arrays) and methods that test
+# whether a given character belongs in one of them.
 module CType
   Digit   = ('0'..'9').to_a.freeze
   Lower   = ('a'..'z').to_a.freeze
@@ -23,23 +25,24 @@ module CType
   ].flatten.freeze
 
   XDigit  = [
+    Digit,
     ('a'..'f').to_a,
-    ('A'..'F').to_a,
-    ('0'..'9').to_a
+    ('A'..'F').to_a
   ].flatten.freeze
 
-  def self.alnum?(c);   c =~ /[[:alnum:]]/  ? true : false end 
-  def self.alpha?(c);   c =~ /[[:alpha:]]/  ? true : false end 
-  def self.blank?(c);   c =~ /[[:blank:]]/  ? true : false end 
-  def self.cntrl?(c);   c =~ /[[:cntrl:]]/  ? true : false end 
-  def self.digit?(c);   c =~ /[[:digit:]]/  ? true : false end 
-  def self.graph?(c);   c =~ /[[:graph:]]/  ? true : false end 
-  def self.lower?(c);   c =~ /[[:lower:]]/  ? true : false end 
-  def self.print?(c);   c =~ /[[:print:]]/  ? true : false end 
-  def self.punct?(c);   c =~ /[[:punct:]]/  ? true : false end 
-  def self.space?(c);   c =~ /[[:space:]]/  ? true : false end 
-  def self.upper?(c);   c =~ /[[:upper:]]/  ? true : false end 
-  def self.xdigit?(c);  c =~ /[[:xdigit:]]/ ? true : false end 
-  def self.word?(c);    c =~ /[[:alnum:]_]/ ? true : false end 
-  def self.ascii?(c);   c =~ /[\x00-\x7F]/  ? true : false end 
+  def self.alnum?(c);  Alnum.include?(c)  end 
+  def self.alpha?(c);  Alpha.include?(c)  end 
+  def self.blank?(c);  Blank.include?(c)  end 
+  def self.cntrl?(c);  Cntrl.include?(c)  end 
+  def self.digit?(c);  Digit.include?(c)  end 
+  def self.graph?(c);  Graph.include?(c)  end 
+  def self.lower?(c);  Lower.include?(c)  end 
+  def self.print?(c);  Print.include?(c)  end 
+  def self.punct?(c);  Punct.include?(c)  end 
+  def self.space?(c);  Space.include?(c)  end 
+  def self.upper?(c);  Upper.include?(c)  end 
+  def self.xdigit?(c); XDigit.include?(c) end 
+
+  def self.word?(c);   Word.include?(c)   end 
+  def self.ascii?(c);  ASCII.include?(c)  end 
 end
