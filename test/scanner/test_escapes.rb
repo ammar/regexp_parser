@@ -15,6 +15,10 @@ class ScannerEscapes < Test::Unit::TestCase
 
     /c\qt/          => [1, :escape,  :literal,        '\q',        2,  3],
 
+    'a\012c'        => [1, :escape,  :octal,          '\012',      2,  5],
+    'a\0124'        => [1, :escape,  :octal,          '\012',      2,  5],
+    '\712+7'        => [0, :escape,  :octal,          '\712',      1,  4],
+
     'a\x24c'        => [1, :escape,  :hex,            '\x24',      2,  5],
     'a\x0640c'      => [1, :escape,  :hex,            '\x06',      2,  5],
 

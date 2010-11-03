@@ -299,6 +299,11 @@
       fret;
     };
 
+    octal_sequence {
+      self.emit(:escape, :octal, data[ts-1..te-1].pack('c*'), ts, te)
+      fret;
+    };
+
     hex_sequence > (escaped_alpha, 6) {
       self.emit(:escape, :hex, data[ts-1..te-1].pack('c*'), ts, te)
       fret;
