@@ -10,6 +10,10 @@ class Regexp
       [self.ts, self.te]
     end
 
+    def length
+      self.te - self.ts
+    end
+
     def to_h
       hash = {}
       members.each do |member|

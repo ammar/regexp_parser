@@ -255,19 +255,19 @@
 
     meta_char {
       case text = data[ts-1..te-1].pack('c*')
-      when '\.';  self.emit(:escape, :dot,               text, ts, te)
-      when '\|';  self.emit(:escape, :alternation,       text, ts, te)
-      when '\^';  self.emit(:escape, :beginning_of_line, text, ts, te)
-      when '\$';  self.emit(:escape, :end_of_line,       text, ts, te)
-      when '\?';  self.emit(:escape, :zero_or_one,       text, ts, te)
-      when '\*';  self.emit(:escape, :zero_or_more,      text, ts, te)
-      when '\+';  self.emit(:escape, :one_or_more,       text, ts, te)
-      when '\(';  self.emit(:escape, :group_open,        text, ts, te)
-      when '\)';  self.emit(:escape, :group_close,       text, ts, te)
-      when '\{';  self.emit(:escape, :interval_open,     text, ts, te)
-      when '\}';  self.emit(:escape, :interval_close,    text, ts, te)
-      when '\[';  self.emit(:escape, :set_open,          text, ts, te)
-      when '\]';  self.emit(:escape, :set_close,         text, ts, te)
+      when '\.';  self.emit(:escape, :dot,               text, ts-1, te)
+      when '\|';  self.emit(:escape, :alternation,       text, ts-1, te)
+      when '\^';  self.emit(:escape, :beginning_of_line, text, ts-1, te)
+      when '\$';  self.emit(:escape, :end_of_line,       text, ts-1, te)
+      when '\?';  self.emit(:escape, :zero_or_one,       text, ts-1, te)
+      when '\*';  self.emit(:escape, :zero_or_more,      text, ts-1, te)
+      when '\+';  self.emit(:escape, :one_or_more,       text, ts-1, te)
+      when '\(';  self.emit(:escape, :group_open,        text, ts-1, te)
+      when '\)';  self.emit(:escape, :group_close,       text, ts-1, te)
+      when '\{';  self.emit(:escape, :interval_open,     text, ts-1, te)
+      when '\}';  self.emit(:escape, :interval_close,    text, ts-1, te)
+      when '\[';  self.emit(:escape, :set_open,          text, ts-1, te)
+      when '\]';  self.emit(:escape, :set_close,         text, ts-1, te)
       when '\\\\';
         self.emit(:escape, :backslash, text, ts, te)
       end
@@ -571,20 +571,21 @@
       self.emit(:quantifier, :interval, data[ts..te-1].pack('c*'), ts, te)
     };
 
-    # Literal: any run of ASCII, UTF-8, except meta characters.
-    # ------------------------------------------------------------------------
-    action ascii_sequence       { fpc = self.literal_run(fpc, data, ts, fpc, 1) }
-    action utf8_2_byte_sequence { fpc = self.literal_run(fpc, data, ts, fpc, 2) }
-    action utf8_3_byte_sequence { fpc = self.literal_run(fpc, data, ts, fpc, 3) }
-    action utf8_4_byte_sequence { fpc = self.literal_run(fpc, data, ts, fpc, 4) }
+    # BRE version
+    backslash . range_open . (digit+)? . ','? . (digit+)? . backslash . range_close {
+      self.emit(:quantifier, :interval_bre, data[ts..te-1].pack('c*'), ts, te)
+    };
 
-    # ASCII, printable, non printable, and UTF-8 exit actions
-    ascii_print+      %ascii_sequence  |
-    ascii_nonprint+   %ascii_sequence  |
-    utf8_2_byte+ %utf8_2_byte_sequence |
-    utf8_3_byte+ %utf8_3_byte_sequence |
-    utf8_4_byte+ %utf8_4_byte_sequence {
-      # all work is done in the exit action
+
+    # Literal: any run of ASCII (pritable or non-printable), and/or UTF-8,
+    # except meta characters.
+    # ------------------------------------------------------------------------
+    ascii_print+    |
+    ascii_nonprint+ |
+    utf8_2_byte+    |
+    utf8_3_byte+    |
+    utf8_4_byte+    {
+      self.append_literal(data, ts, te)
     };
 
   *|;
@@ -621,35 +622,6 @@ module Regexp::Scanner
     self.emit_literal if @literal
 
     @tokens
-  end
-
-  # checks if a literal run, ascii or utf-8, that is longer than one character,
-  # is followed by a quantifier, and if so, backs up one character and emits
-  # the preceding characters (could be just one) as a separate token. works
-  # in combination with the append_literal and emit_literal methods (below)
-  def self.literal_run(p, data, ts, te, char_width)
-    if ((te-ts) > char_width) and data[te] and data[te] >=0 
-      case data[te].chr
-      when '?', '*', '+', '{'
-        p -= char_width # backup the parser 'pointer' by one char (1 or more bytes)
-        te -= char_width
-
-        self.append_literal(data, ts, te)
-        self.emit_literal if @literal
-      else
-        self.append_literal(data, ts, te)
-      end
-    elsif char_width > 1 and ((te-ts) == char_width) and data[te] and data[te] >=0 
-      case data[te].chr
-      when '?', '*', '+', '{'
-        self.emit_literal if @literal
-        self.append_literal(data, ts, te)
-      else
-        self.append_literal(data, ts, te)
-      end
-    else
-      self.append_literal(data, ts, te)
-    end; p # return scan pointer, possibly backed up
   end
 
   # appends one or more characters to the literal buffer, to be emitted later
