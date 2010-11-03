@@ -209,7 +209,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
     - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
     - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
     - Meta: \M-c, \M-\x23, \M-\C-C etc.. ** NEEDS REVIEW/TESTS
-    - Octal: \012 ** MISSING
+    - Octal: \012 ** SCANNER COMPLETE
     - Unicode: \uHHHH, \u{H+ H+} ** SCANNER COMPLETE
   - Unicode Properties: 
     - Classes: \p{Alpha}, \P{Space}, etc...  ** NEEDS REVIEW/TESTS
