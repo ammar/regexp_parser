@@ -81,6 +81,10 @@ module Regexp::Syntax
         implements?(type, token)
     end
     alias :check! :implements!
+
+    def normalize(type, token)
+      [type, token]
+    end
   end
 
   # A syntax that always returns true, passing all tokens as implemented. This
