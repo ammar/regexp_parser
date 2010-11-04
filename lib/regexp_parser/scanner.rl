@@ -255,7 +255,7 @@
       fhold; fcall unicode_property;
     };
 
-    (ascii_print - char_type) > (escaped_set_alpha, 1) |
+    (ascii_print - char_type -- [\-]) > (escaped_set_alpha, 1) |
     ascii_nonprint            |
     utf8_2_byte               |
     utf8_3_byte               |
@@ -377,73 +377,73 @@
       case name = data[ts+2..te-2].pack('c*').downcase
 
       # Named
-      when 'alnum';   self.emit(type, :alnum,       text, ts, te)
-      when 'alpha';   self.emit(type, :alpha,       text, ts, te)
-      when 'any';     self.emit(type, :any,         text, ts, te)
-      when 'ascii';   self.emit(type, :ascii,       text, ts, te)
-      when 'blank';   self.emit(type, :blank,       text, ts, te)
-      when 'cntrl';   self.emit(type, :cntrl,       text, ts, te)
-      when 'digit';   self.emit(type, :digit,       text, ts, te)
-      when 'graph';   self.emit(type, :graph,       text, ts, te)
-      when 'lower';   self.emit(type, :lower,       text, ts, te)
-      when 'newline'; self.emit(type, :newline,     text, ts, te)
-      when 'print';   self.emit(type, :print,       text, ts, te)
-      when 'punct';   self.emit(type, :punct,       text, ts, te)
-      when 'space';   self.emit(type, :space,       text, ts, te)
-      when 'upper';   self.emit(type, :upper,       text, ts, te)
-      when 'word';    self.emit(type, :word,        text, ts, te)
-      when 'xdigit';  self.emit(type, :xdigit,      text, ts, te)
+      when 'alnum';   self.emit(type, :alnum,       text, ts-1, te)
+      when 'alpha';   self.emit(type, :alpha,       text, ts-1, te)
+      when 'any';     self.emit(type, :any,         text, ts-1, te)
+      when 'ascii';   self.emit(type, :ascii,       text, ts-1, te)
+      when 'blank';   self.emit(type, :blank,       text, ts-1, te)
+      when 'cntrl';   self.emit(type, :cntrl,       text, ts-1, te)
+      when 'digit';   self.emit(type, :digit,       text, ts-1, te)
+      when 'graph';   self.emit(type, :graph,       text, ts-1, te)
+      when 'lower';   self.emit(type, :lower,       text, ts-1, te)
+      when 'newline'; self.emit(type, :newline,     text, ts-1, te)
+      when 'print';   self.emit(type, :print,       text, ts-1, te)
+      when 'punct';   self.emit(type, :punct,       text, ts-1, te)
+      when 'space';   self.emit(type, :space,       text, ts-1, te)
+      when 'upper';   self.emit(type, :upper,       text, ts-1, te)
+      when 'word';    self.emit(type, :word,        text, ts-1, te)
+      when 'xdigit';  self.emit(type, :xdigit,      text, ts-1, te)
 
       # Letters
-      when 'l';  self.emit(type, :letter_any,       text, ts, te)
-      when 'lu'; self.emit(type, :letter_uppercase, text, ts, te)
-      when 'll'; self.emit(type, :letter_lowercase, text, ts, te)
-      when 'lt'; self.emit(type, :letter_titlecase, text, ts, te)
-      when 'lm'; self.emit(type, :letter_modifier,  text, ts, te)
-      when 'lo'; self.emit(type, :letter_other,     text, ts, te)
+      when 'l';  self.emit(type, :letter_any,       text, ts-1, te)
+      when 'lu'; self.emit(type, :letter_uppercase, text, ts-1, te)
+      when 'll'; self.emit(type, :letter_lowercase, text, ts-1, te)
+      when 'lt'; self.emit(type, :letter_titlecase, text, ts-1, te)
+      when 'lm'; self.emit(type, :letter_modifier,  text, ts-1, te)
+      when 'lo'; self.emit(type, :letter_other,     text, ts-1, te)
 
       # Marks
-      when 'm';  self.emit(type, :mark_any,         text, ts, te)
-      when 'mn'; self.emit(type, :mark_nonspacing,  text, ts, te)
-      when 'mc'; self.emit(type, :mark_spacing,     text, ts, te)
-      when 'me'; self.emit(type, :mark_enclosing,   text, ts, te)
+      when 'm';  self.emit(type, :mark_any,         text, ts-1, te)
+      when 'mn'; self.emit(type, :mark_nonspacing,  text, ts-1, te)
+      when 'mc'; self.emit(type, :mark_spacing,     text, ts-1, te)
+      when 'me'; self.emit(type, :mark_enclosing,   text, ts-1, te)
 
       # Numbers
-      when 'n';  self.emit(type, :number_any,       text, ts, te)
-      when 'nd'; self.emit(type, :number_decimal,   text, ts, te)
-      when 'nl'; self.emit(type, :number_letter,    text, ts, te)
-      when 'no'; self.emit(type, :number_other,     text, ts, te)
+      when 'n';  self.emit(type, :number_any,       text, ts-1, te)
+      when 'nd'; self.emit(type, :number_decimal,   text, ts-1, te)
+      when 'nl'; self.emit(type, :number_letter,    text, ts-1, te)
+      when 'no'; self.emit(type, :number_other,     text, ts-1, te)
 
       # Punctuation
-      when 'p';  self.emit(type, :punct_any,        text, ts, te)
-      when 'pc'; self.emit(type, :punct_connector,  text, ts, te)
-      when 'pd'; self.emit(type, :punct_dash,       text, ts, te)
-      when 'ps'; self.emit(type, :punct_open,       text, ts, te)
-      when 'pe'; self.emit(type, :punct_close,      text, ts, te)
-      when 'pi'; self.emit(type, :punct_initial,    text, ts, te)
-      when 'pf'; self.emit(type, :punct_final,      text, ts, te)
-      when 'po'; self.emit(type, :punct_other,      text, ts, te)
+      when 'p';  self.emit(type, :punct_any,        text, ts-1, te)
+      when 'pc'; self.emit(type, :punct_connector,  text, ts-1, te)
+      when 'pd'; self.emit(type, :punct_dash,       text, ts-1, te)
+      when 'ps'; self.emit(type, :punct_open,       text, ts-1, te)
+      when 'pe'; self.emit(type, :punct_close,      text, ts-1, te)
+      when 'pi'; self.emit(type, :punct_initial,    text, ts-1, te)
+      when 'pf'; self.emit(type, :punct_final,      text, ts-1, te)
+      when 'po'; self.emit(type, :punct_other,      text, ts-1, te)
 
       # Symbols
-      when 's';  self.emit(type, :symbol_any,       text, ts, te)
-      when 'sm'; self.emit(type, :symbol_math,      text, ts, te)
-      when 'sc'; self.emit(type, :symbol_currency,  text, ts, te)
-      when 'sk'; self.emit(type, :symbol_modifier,  text, ts, te)
-      when 'so'; self.emit(type, :symbol_other,     text, ts, te)
+      when 's';  self.emit(type, :symbol_any,       text, ts-1, te)
+      when 'sm'; self.emit(type, :symbol_math,      text, ts-1, te)
+      when 'sc'; self.emit(type, :symbol_currency,  text, ts-1, te)
+      when 'sk'; self.emit(type, :symbol_modifier,  text, ts-1, te)
+      when 'so'; self.emit(type, :symbol_other,     text, ts-1, te)
 
       # Separators
-      when 'z';  self.emit(type, :separator_any,    text, ts, te)
-      when 'zs'; self.emit(type, :separator_space,  text, ts, te)
-      when 'zl'; self.emit(type, :separator_line,   text, ts, te)
-      when 'zp'; self.emit(type, :separator_para,   text, ts, te)
+      when 'z';  self.emit(type, :separator_any,    text, ts-1, te)
+      when 'zs'; self.emit(type, :separator_space,  text, ts-1, te)
+      when 'zl'; self.emit(type, :separator_line,   text, ts-1, te)
+      when 'zp'; self.emit(type, :separator_para,   text, ts-1, te)
 
       # Codepoints
-      when 'c';  self.emit(type, :cp_any,           text, ts, te)
-      when 'cc'; self.emit(type, :cp_control,       text, ts, te)
-      when 'cf'; self.emit(type, :cp_format,        text, ts, te)
-      when 'cs'; self.emit(type, :cp_surrogate,     text, ts, te)
-      when 'co'; self.emit(type, :cp_private,       text, ts, te)
-      when 'cn'; self.emit(type, :cp_unassigned,    text, ts, te)
+      when 'c';  self.emit(type, :cp_any,           text, ts-1, te)
+      when 'cc'; self.emit(type, :cp_control,       text, ts-1, te)
+      when 'cf'; self.emit(type, :cp_format,        text, ts-1, te)
+      when 'cs'; self.emit(type, :cp_surrogate,     text, ts-1, te)
+      when 'co'; self.emit(type, :cp_private,       text, ts-1, te)
+      when 'cn'; self.emit(type, :cp_unassigned,    text, ts-1, te)
       end
       fret;
     };
