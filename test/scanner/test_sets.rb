@@ -3,48 +3,53 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerSets < Test::Unit::TestCase
 
   tests = {
-    '[a]'             => [:set,  :open,         '[',    0],
-    '[b]'             => [:set,  :close,        ']',    2],
-    '[^n]'            => [:set,  :negate,       '^',    1],
+    '[a]'             => [0, :set,  :open,           '[',    0, 1],
+    '[b]'             => [2, :set,  :close,          ']',    2, 3],
+    '[^n]'            => [1, :set,  :negate,         '^',    1, 2],
 
-    '[c]'             => [:set,  :member,       'c',    1],
-    '[\b]'            => [:set,  :backspace,    '\b',   1],
+    '[c]'             => [1, :set,  :member,         'c',    0, 2],
+    '[\b]'            => [1, :set,  :backspace,      '\b',   1, 3],
 
-    '[\]]'            => [:set,  :escape,       '\]',   1],
-    '[\\\]'           => [:set,  :escape,       '\\\\', 1],
-    '[a\-c]'          => [:set,  :escape,       '\-',   2],
+    '[.]'             => [1, :set,  :member,         '.',    1, 2],
+    '[?]'             => [1, :set,  :member,         '?',    1, 2],
+    '[*]'             => [1, :set,  :member,         '*',    1, 2],
+    '[+]'             => [1, :set,  :member,         '+',    1, 2],
+    '[{]'             => [1, :set,  :member,         '{',    1, 2],
+    '[}]'             => [1, :set,  :member,         '}',    1, 2],
 
-    '[\d]'            => [:set,  :type_digit,     '\d', 1],
-    '[\D]'            => [:set,  :type_nondigit,  '\D', 1],
+    '[\]]'            => [1, :set,  :escape,         '\]',   1, 3],
+    '[\\\]'           => [1, :set,  :escape,         '\\\\', 1, 3],
+    '[a\-c]'          => [1, :set,  :escape,         '\-',   2, 3],
 
-    '[\h]'            => [:set,  :type_hex,       '\h', 1],
-    '[\H]'            => [:set,  :type_nonhex,    '\H', 1],
+    '[\d]'            => [1, :set,  :type_digit,     '\d',   1, 3],
+    '[\D]'            => [1, :set,  :type_nondigit,  '\D',   1, 3],
 
-    '[\s]'            => [:set,  :type_space,     '\s', 1],
-    '[\S]'            => [:set,  :type_nonspace,  '\S', 1],
+    '[\h]'            => [1, :set,  :type_hex,       '\h',   1, 3],
+    '[\H]'            => [1, :set,  :type_nonhex,    '\H',   1, 3],
 
-    '[\w]'            => [:set,  :type_word,      '\w', 1],
-    '[\W]'            => [:set,  :type_nonword,   '\W', 1],
+    '[\s]'            => [1, :set,  :type_space,     '\s',   1, 3],
+    '[\S]'            => [1, :set,  :type_nonspace,  '\S',   1, 3],
 
-    '[a-c]'           => [:set,  :range,          'a-c', 1],
-    '[a-c-]'          => [:set,  :member,         '-',   2],
-    '[a-c^]'          => [:set,  :member,         '^',   2],
-    '[a-cd-f]'        => [:set,  :range,          'd-f', 2],
+    '[\w]'            => [1, :set,  :type_word,      '\w',   1, 3],
+    '[\W]'            => [1, :set,  :type_nonword,   '\W',   1, 3],
 
-    '[a-d&&g-h]'      => [:set,  :intersection,   '&&', 2],
+    '[a-c]'           => [1, :set,  :range,          'a-c',  1, 3],
+    '[a-c-]'          => [1, :set,  :member,         '-',    2, 3],
+    '[a-c^]'          => [1, :set,  :member,         '^',    2, 3],
+    '[a-cd-f]'        => [2, :set,  :range,          'd-f',  4, 7],
 
-    '[\\x20-\\x28]'   => [:set,  :range_hex,      '\x20-\x28', 1],
+    '[a-d&&g-h]'      => [2, :set,  :intersection,   '&&',   4, 6],
+
+    '[\\x20-\\x28]'   => [1, :set,  :range_hex,      '\x20-\x28', 1, 10],
   }
 
   count = 0
   tests.each do |pattern, test|
-    [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_scan_#{test[0]}_#{test[1]}_#{count}_#{member}" do
+    define_method "test_scan_#{test[1]}_#{test[2]}_#{count}" do
 
-        token = RS.scan(pattern)[test[3]]
-        assert_equal( test[i], token[i] )
+      token = RS.scan(pattern)[test[0]]
+      assert_equal( test[1,5], token )
 
-      end
     end
   end
 

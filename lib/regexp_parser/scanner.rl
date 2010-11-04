@@ -29,6 +29,7 @@
   # yet if this applies to all flavors and in all encodings. A bug has just
   # been filed against ruby regarding this issue.
   # http://redmine.ruby-lang.org/issues/show/4014
+  property_char         = [pP];
   property_name_unicode = 'alnum'i | 'alpha'i | 'any'i   | 'ascii'i | 'blank'i |
                           'cntrl'i | 'digit'i | 'graph'i | 'lower'i | 'print'i |
                           'punct'i | 'space'i | 'upper'i | 'word'i  | 'xdigit'i;
@@ -36,7 +37,6 @@
   property_name_ruby    = 'any'i | 'assigned'i | 'newline'i;
 
   property_name         = property_name_unicode | property_name_ruby;
-
 
   category_letter       = [Ll] . [ultmo]?;
   category_mark         = [Mm] . [nce]?;
@@ -51,13 +51,16 @@
                           category_symbol | category_separator |
                           category_codepoint;
 
+  property_sequence     = property_char.'{'.(property_name | general_category).'}';
+
+
+
   class_posix           = '[:' . class_name_posix . ':]';
 
   char_type             = [dDhHsSwW];
 
   line_anchor           = beginning_of_line | end_of_line;
   anchor_char           = [AbBzZG];
-  property_char         = [pP];
 
   escaped_char          = [abefnrstv];
   octal_sequence        = [0-7]{1,3};
@@ -83,6 +86,9 @@
 
   quantifier_range      = range_open . (digit+)? . ','? . (digit+)? .
                           range_close . quantifier_mode?;
+
+  quantifier_range_bre  = backslash . range_open . (digit+)? . ','? . (digit+)? .
+                          backslash . range_close;
 
   quantifiers           = quantifier_greedy | quantifier_reluctant |
                           quantifier_possessive | quantifier_range;
@@ -122,26 +128,15 @@
   utf8_byte_sequence    = utf8_2_byte | utf8_3_byte | utf8_4_byte;
 
 
+  # EOF error, used where it can be detected
+  action premature_end_error { raise "Premature end of pattern" }
+
   # group (nesting) and set open/close actions
-  action group_opened {
-    #puts "GROUP: OPENED"
-    in_group += 1
-  }
+  action group_opened { in_group += 1 }
+  action group_closed { in_group -= 1 }
 
-  action group_closed {
-    #puts "GROUP: CLOSED"
-    in_group -= 1
-  }
-
-  action set_opened {
-    #puts "SET: OPENED"
-    in_set = true
-  }
-
-  action set_closed {
-    #puts "SET: CLOSED"
-    in_set = false
-  }
+  action set_opened { in_set = true }
+  action set_closed { in_set = false }
 
 
   # Character set scanner, continues consuming characters until it meets the
@@ -180,7 +175,7 @@
       fcall set_escape_sequence;
     };
 
-    class_posix {
+    class_posix @err(premature_end_error) {
       case text = data[ts..te-1].pack('c*')
       when '[:alnum:]';  self.emit(:set, :class_alnum,  text, ts, te)
       when '[:alpha:]';  self.emit(:set, :class_alpha,  text, ts, te)
@@ -204,7 +199,7 @@
       self.emit(:set, :member, data[ts..te-1].pack('c*'), ts, te)
     };
 
-    ascii_print    |
+    any            |
     ascii_nonprint |
     utf8_2_byte    |
     utf8_3_byte    |
@@ -221,7 +216,7 @@
       fret;
     };
 
-    [dDhHsSwW] {
+    char_type {
       case text = data[ts-1..te-1].pack('c*')
       when '\d'; self.emit(:set, :type_digit,     text, ts-1, te)
       when '\D'; self.emit(:set, :type_nondigit,  text, ts-1, te)
@@ -255,11 +250,11 @@
       fret;
     };
 
-    ascii_print    |
-    ascii_nonprint |
-    utf8_2_byte    |
-    utf8_3_byte    |
-    utf8_4_byte    {
+    (ascii_print - char_type) |
+    ascii_nonprint            |
+    utf8_2_byte               |
+    utf8_3_byte               |
+    utf8_4_byte               {
       self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
@@ -349,7 +344,7 @@
     };
 
     # TODO: extract into a separate machine... use in sets
-    property_char . '{' . (property_name | general_category) . '}' > (escaped_alpha, 2) {
+    property_sequence  >(escaped_alpha, 2) @err(premature_end_error) {
       text = data[ts-1..te-1].pack('c*')
 
       type = text[1,1] == 'p' ? :property : :nonproperty
@@ -494,14 +489,15 @@
     };
 
     # Character sets
-    set_open %set_opened {
+    set_open %set_opened  {
       self.emit(:set, :open, data[ts..te-1].pack('c*'), ts, te)
       fcall character_set;
     };
 
     # (?#...) comments: parsed as a single expression, without introducing a
     # new nesting level. Comments may not include parentheses, escaped or not.
-    group_open . group_comment {
+    # special case for close, all transitions
+    group_open . group_comment $group_closed {
       self.emit(:group, :comment, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -512,7 +508,7 @@
     #                         x: extended form
     #
     #   (?imx-imx:subexp)   option on/off for subexp
-    group_open . group_options %group_opened {
+    group_open . group_options >group_opened {
       self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -522,7 +518,7 @@
     #   (?<=subexp)         look-behind
     #   (?<!subexp)         negative look-behind
     # ------------------------------------------------------------------------
-    group_open . assertion_type %group_opened {
+    group_open . assertion_type >group_opened {
       case text =  data[ts..te-1].pack('c*')
       when '(?=';  self.emit(:assertion, :lookahead,    text, ts, te)
       when '(?!';  self.emit(:assertion, :nlookahead,   text, ts, te)
@@ -538,7 +534,7 @@
     #   (?'name'subexp)     named group (single quoted version)
     #   (subexp)            captured group
     # ------------------------------------------------------------------------
-    group_open . group_type %group_opened {
+    group_open . group_type >group_opened {
       case text =  data[ts..te-1].pack('c*')
       when '(?:';  self.emit(:group, :passive,      text, ts, te)
       when '(?>';  self.emit(:group, :atomic,       text, ts, te)
@@ -550,12 +546,12 @@
       end
     };
 
-    group_open %group_opened {
+    group_open @group_opened {
       text =  data[ts..te-1].pack('c*')
       self.emit(:group, :capture, text, ts, te)
     };
 
-    group_close %group_closed {
+    group_close @group_closed {
       self.emit(:group, :close, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -589,12 +585,12 @@
 
     # Intervals: min, max, and exact notations
     # ------------------------------------------------------------------------
-    range_open . (digit+)? . ','? . (digit+)? . range_close . quantifier_mode? {
+    quantifier_range  @err(premature_end_error) {
       self.emit(:quantifier, :interval, data[ts..te-1].pack('c*'), ts, te)
     };
 
     # BRE version
-    backslash . range_open . (digit+)? . ','? . (digit+)? . backslash . range_close {
+    quantifier_range_bre  @err(premature_end_error) {
       self.emit(:quantifier, :interval_bre, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -639,6 +635,10 @@ module Regexp::Scanner
 
     %% write init;
     %% write exec;
+
+    raise "Premature end of pattern (missing group closing paranthesis) [#{in_group}]" if
+      in_group > 0
+    raise "Premature end of pattern (missing set closing bracket)" if in_set 
 
     # when the entire expression is a literal run
     self.emit_literal if @literal

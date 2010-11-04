@@ -46,9 +46,10 @@ start/end offsets for each token found.
 
   require 'regexp_parser'
 
-  Regexp::Scanner.scan /a?(b)*[c]+)/  do |type, token, text, ts, te|
+  Regexp::Scanner.scan /(a?(b)*[c]+)/  do |type, token, text, ts, te|
     puts "type: #{type}, token: #{token}, text: '#{text}' [#{ts}..#{te}]"
   end
+
 
 ==== Notes
   * Currently does no error checking, but could/should be responsible for

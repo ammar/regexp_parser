@@ -2,6 +2,7 @@
 .DS_Store
 i.rb
 lib/regexp_parser/scanner.rb
+coverage
 doc
 sandbox
 .yardoc

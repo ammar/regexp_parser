@@ -1,8 +1,8 @@
 require File.expand_path("../../helpers", __FILE__)
 
 %w{
-  anchors escapes groups meta properties quantifiers
-  sets types utf8
+  anchors errors escapes groups meta properties
+  quantifiers sets types utf8
 }.each do|tc|
   require File.expand_path("../test_#{tc}", __FILE__)
 end

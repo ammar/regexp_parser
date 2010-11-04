@@ -49,7 +49,7 @@ module Regexp::Syntax
     end
 
     module Escape
-      Basic     = [:backslash]
+      Basic     = [:backslash, :literal]
 
       Backreference = [:digit]
 

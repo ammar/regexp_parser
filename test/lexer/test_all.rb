@@ -1,5 +1,11 @@
 require File.expand_path("../../helpers", __FILE__)
 
+%w{
+  literals
+}.each do|tc|
+  require File.expand_path("../test_#{tc}", __FILE__)
+end
+
 class TestRegexpLexer < Test::Unit::TestCase
 
   def test_lexer_returns_an_array
