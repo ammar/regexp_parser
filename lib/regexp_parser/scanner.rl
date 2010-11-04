@@ -30,6 +30,7 @@
   # been filed against ruby regarding this issue.
   # http://redmine.ruby-lang.org/issues/show/4014
   property_char         = [pP];
+
   property_name_unicode = 'alnum'i | 'alpha'i | 'any'i   | 'ascii'i | 'blank'i |
                           'cntrl'i | 'digit'i | 'graph'i | 'lower'i | 'print'i |
                           'punct'i | 'space'i | 'upper'i | 'word'i  | 'xdigit'i;
@@ -343,8 +344,20 @@
       fret;
     };
 
-    # TODO: extract into a separate machine... use in sets
-    property_sequence  >(escaped_alpha, 2) @err(premature_end_error) {
+    property_char > (escaped_alpha, 2) {
+      fhold; fcall unicode_property; fret;
+    };
+
+    any > (escaped_alpha, 1)  {
+      self.emit(:escape, :literal, data[ts-1..te-1].pack('c*'), ts, te)
+      fret;
+    };
+  *|;
+
+  # Unicode properties scanner
+  # --------------------------------------------------------------------------
+  unicode_property := |*
+    property_sequence < err(premature_end_error) {
       text = data[ts-1..te-1].pack('c*')
 
       type = text[1,1] == 'p' ? :property : :nonproperty
@@ -421,12 +434,6 @@
       when 'co'; self.emit(type, :cp_private,       text, ts, te)
       when 'cn'; self.emit(type, :cp_unassigned,    text, ts, te)
       end
-      fret;
-    };
-
-    any > (escaped_alpha, 1)  {
-      self.emit(:escape, :literal, data[ts-1..te-1].pack('c*'), ts, te)
-      fret;
     };
   *|;
 
