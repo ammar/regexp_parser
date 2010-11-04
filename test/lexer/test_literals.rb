@@ -3,7 +3,23 @@ require File.expand_path("../../helpers", __FILE__)
 class LexerLiterals < Test::Unit::TestCase
 
   tests = {
+    # ascii, single byte characters
+    'a' => {
+      0     => [:literal,     :literal,       'a',        0, 1, 0],
+    },
+
+    'ab+' => {
+      0     => [:literal,     :literal,       'a',        0, 1, 0],
+      1     => [:literal,     :literal,       'b',        1, 2, 0],
+      2     => [:quantifier,  :one_or_more,   '+',        2, 3, 0],
+    },
+
+
     # 2 byte wide characters, Arabic
+    'ا' => {
+      0     => [:literal,     :literal,       'ا',        0, 2, 0],
+    },
+
     'aاbبcت' => {
       0     => [:literal,     :literal,       'aاbبcت',   0, 9, 0],
     },
@@ -35,6 +51,7 @@ class LexerLiterals < Test::Unit::TestCase
       8     => [:quantifier,  :zero_or_one,   '?',        12, 13, 0],
     },
 
+
     # 3 byte wide characters, Japanese
     'ab?れます+cd' => {
       0     => [:literal,     :literal,       'a',        0, 1, 0],
@@ -45,6 +62,7 @@ class LexerLiterals < Test::Unit::TestCase
       5     => [:quantifier,  :one_or_more,   '+',        12, 13, 0],
       6     => [:literal,     :literal,       'cd',       13, 15, 0],
     },
+
 
     # 4 byte wide characters, Osmanya
     '𐒀𐒁?𐒂ab+𐒃' => {
@@ -80,6 +98,21 @@ class LexerLiterals < Test::Unit::TestCase
       end
 
     end
+  end
+
+  def test_lex_single_2_byte_char
+    tokens = RL.scan('ا+')
+    assert_equal( 2, tokens.length )
+  end
+
+  def test_lex_single_3_byte_char
+    tokens = RL.scan('れ+')
+    assert_equal( 2, tokens.length )
+  end
+
+  def test_lex_single_4_byte_char
+    tokens = RL.scan('𝄞+')
+    assert_equal( 2, tokens.length )
   end
 
 end

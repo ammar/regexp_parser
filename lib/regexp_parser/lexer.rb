@@ -45,7 +45,7 @@ module Regexp::Lexer
   # into two separate tokens when it is followed by a quantifier
   def self.break_literal(token)
     text = token.text
-    if text.length > 1
+    if text.scan(/./mu).length > 1
       lead = text.sub(/.\z/mu, "")
       last = text[/.\z/mu] || ''
 
