@@ -41,14 +41,18 @@ class ScannerSets < Test::Unit::TestCase
     '[a-d&&g-h]'      => [2, :set,  :intersection,   '&&',   4, 6],
 
     '[\\x20-\\x28]'   => [1, :set,  :range_hex,      '\x20-\x28', 1, 10],
+
+    '[a\p{digit}c]'   => [2, :set,  :digit,          '\p{digit}', 3, 11],
+    '[a\p{ALPHA}c]'   => [2, :set,  :alpha,          '\p{ALPHA}', 3, 11],
+    '[a\p{P}c]'       => [2, :set,  :punct_any,      '\p{P}',     3, 7],
   }
 
   count = 0
   tests.each do |pattern, test|
     define_method "test_scan_#{test[1]}_#{test[2]}_#{count}" do
 
-      token = RS.scan(pattern)[test[0]]
-      assert_equal( test[1,5], token )
+      tokens = RS.scan(pattern)
+      assert_equal( test[1,5], tokens[test[0]] )
 
     end
   end

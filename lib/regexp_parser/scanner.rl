@@ -251,7 +251,11 @@
       fret;
     };
 
-    (ascii_print - char_type) |
+    property_char > (escaped_set_alpha, 2) {
+      fhold; fcall unicode_property;
+    };
+
+    (ascii_print - char_type) > (escaped_set_alpha, 1) |
     ascii_nonprint            |
     utf8_2_byte               |
     utf8_3_byte               |
@@ -295,7 +299,7 @@
     escaped_char > (escaped_alpha, 8) {
       case text = data[ts-1..te-1].pack('c*')
       when '\a'; self.emit(:escape, :bell,           text, ts, te)
-      when '\b'; self.emit(:escape, :backspace,      text, ts, te) # FIXME: a backspace only inside a set
+      #when '\b'; self.emit(:escape, :backspace,      text, ts, te) # a backspace only inside a set
       when '\e'; self.emit(:escape, :escape,         text, ts, te)
       when '\f'; self.emit(:escape, :form_feed,      text, ts, te)
       when '\n'; self.emit(:escape, :newline,        text, ts, te)
@@ -354,13 +358,20 @@
     };
   *|;
 
+
   # Unicode properties scanner
   # --------------------------------------------------------------------------
   unicode_property := |*
     property_sequence < err(premature_end_error) {
       text = data[ts-1..te-1].pack('c*')
 
-      type = text[1,1] == 'p' ? :property : :nonproperty
+      if in_set
+        type = :set
+        pref = text[1,1] == 'p' ? :property : :nonproperty
+      else
+        type = text[1,1] == 'p' ? :property : :nonproperty
+        pref = ''
+      end
       # TODO: add ^ for property negation, :nonproperty_caret
 
       case name = data[ts+2..te-2].pack('c*').downcase
@@ -434,6 +445,7 @@
       when 'co'; self.emit(type, :cp_private,       text, ts, te)
       when 'cn'; self.emit(type, :cp_unassigned,    text, ts, te)
       end
+      fret;
     };
   *|;
 
