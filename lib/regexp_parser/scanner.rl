@@ -205,7 +205,7 @@
     utf8_2_byte    |
     utf8_3_byte    |
     utf8_4_byte    {
-      self.emit(:set, :member, data[ts..te-1].pack('c*'), ts-1, te)
+      self.emit(:set, :member, data[ts..te-1].pack('c*'), ts, te)
     };
   *|;
 
@@ -255,6 +255,7 @@
       fhold; fcall unicode_property;
     };
 
+    # special case exclusion of escaped dash, could be cleaner.
     (ascii_print - char_type -- [\-]) > (escaped_set_alpha, 1) |
     ascii_nonprint            |
     utf8_2_byte               |
@@ -271,7 +272,7 @@
   escape_sequence := |*
     [1-9] {
       text = data[ts-1..te-1].pack('c*')
-      self.emit(:backref, :digit, text, ts, te)
+      self.emit(:backref, :digit, text, ts-1, te)
       fret;
     };
 
@@ -298,15 +299,15 @@
 
     escaped_char > (escaped_alpha, 8) {
       case text = data[ts-1..te-1].pack('c*')
-      when '\a'; self.emit(:escape, :bell,           text, ts, te)
-      #when '\b'; self.emit(:escape, :backspace,      text, ts, te) # a backspace only inside a set
-      when '\e'; self.emit(:escape, :escape,         text, ts, te)
-      when '\f'; self.emit(:escape, :form_feed,      text, ts, te)
-      when '\n'; self.emit(:escape, :newline,        text, ts, te)
-      when '\r'; self.emit(:escape, :carriage,       text, ts, te)
-      when '\s'; self.emit(:escape, :space,          text, ts, te)
-      when '\t'; self.emit(:escape, :tab,            text, ts, te)
-      when '\v'; self.emit(:escape, :vertical_tab,   text, ts, te)
+      when '\a'; self.emit(:escape, :bell,           text, ts-1, te)
+      #when '\b'; self.emit(:escape, :backspace,     text, ts-1, te) # a backspace only inside a set
+      when '\e'; self.emit(:escape, :escape,         text, ts-1, te)
+      when '\f'; self.emit(:escape, :form_feed,      text, ts-1, te)
+      when '\n'; self.emit(:escape, :newline,        text, ts-1, te)
+      when '\r'; self.emit(:escape, :carriage,       text, ts-1, te)
+      when '\s'; self.emit(:escape, :space,          text, ts-1, te)
+      when '\t'; self.emit(:escape, :tab,            text, ts-1, te)
+      when '\v'; self.emit(:escape, :vertical_tab,   text, ts-1, te)
       end
       fret;
     };

@@ -7,7 +7,7 @@ class ScannerSets < Test::Unit::TestCase
     '[b]'             => [2, :set,  :close,          ']',    2, 3],
     '[^n]'            => [1, :set,  :negate,         '^',    1, 2],
 
-    '[c]'             => [1, :set,  :member,         'c',    0, 2],
+    '[c]'             => [1, :set,  :member,         'c',    1, 2],
     '[\b]'            => [1, :set,  :backspace,      '\b',   1, 3],
 
     '[.]'             => [1, :set,  :member,         '.',    1, 2],

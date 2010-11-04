@@ -1,6 +1,7 @@
-# A very thin wrapper around the scanner that collects the tokens
-# into an array, calculates their nesting depth, and checks if
-# they are implemented by the given syntax flavor.
+# A very thin wrapper around the scanner that breaks quantified literal runs,
+# collects emitted tokens into an array, calculates their nesting depth, and
+# normalizes tokens for the parser, and checks if they are implemented by the
+# given syntax flavor.
 module Regexp::Lexer
 
   # TODO: complete, test token sets
@@ -24,6 +25,9 @@ module Regexp::Lexer
         last and last.type == :literal
 
       current = Regexp::Token.new(type, token, text, ts, te, @nesting)
+
+      current = self.merge_literal(current) if type == :literal and
+        last and last.type == :literal
 
       last.next(current) if last
       current.previous(last) if last
@@ -57,6 +61,15 @@ module Regexp::Lexer
                                    (token.ts + lead.length),
                                    token.te, @nesting)
     end
+  end
+
+  # called by scan to merge two consecutive literals. this happens when tokens
+  # get normalized (as in the case of posix/bre) and end up becoming literals.
+  def self.merge_literal(current)
+    last = @tokens.pop
+
+    replace = Regexp::Token.new(:literal, :literal, last.text + current.text,
+                                   last.ts, current.te, @nesting)
   end
 
 end # module Regexp::Lexer

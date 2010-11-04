@@ -8,16 +8,14 @@ module Regexp::Syntax
       def initialize
         super
 
-        implements :anchors, Anchor::Basic
-
+        implements :anchor, Anchor::Basic
+        implements :backref, [:digit]
+        implements :escape, [:literal]
+        implements :group, [:capture, :close]
+        implements :set, CharacterSet::Basic
         implements :meta, Meta::Basic
-
-        implements :group, [
-          :capture, :close,
-        ]
-
         implements :quantifier, [
-          :interval_bre
+          :zero_or_more, :interval_bre
         ]
       end
 
@@ -27,6 +25,8 @@ module Regexp::Syntax
           normalize_escape(type, token)
         when :group
           normalize_group(type, token)
+        when :quantifier
+          normalize_quantifier(type, token)
         else
           [type, token]
         end
@@ -34,6 +34,8 @@ module Regexp::Syntax
 
       def normalize_escape(type, token)
         case token
+        when *Escape::ASCII
+          [:escape, :literal]
         when :group_open
           [:group, :capture]
         when :group_close
@@ -46,6 +48,15 @@ module Regexp::Syntax
       def normalize_group(type, token)
         case token
         when :capture, :close
+          [:literal, :literal]
+        else
+          [type, token]
+        end
+      end
+
+      def normalize_quantifier(type, token)
+        case token
+        when :zero_or_one, :one_or_more
           [:literal, :literal]
         else
           [type, token]
