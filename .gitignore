@@ -5,4 +5,6 @@ lib/regexp_parser/scanner.rb
 coverage
 doc
 sandbox
+test/test_sandbox.rb
+IN-PROGRESS
 .yardoc
