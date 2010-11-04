@@ -200,8 +200,16 @@
       end
     };
 
-    any {
+    meta_char {
       self.emit(:set, :member, data[ts..te-1].pack('c*'), ts, te)
+    };
+
+    ascii_print    |
+    ascii_nonprint |
+    utf8_2_byte    |
+    utf8_3_byte    |
+    utf8_4_byte    {
+      self.emit(:set, :member, data[ts..te-1].pack('c*'), ts-1, te)
     };
   *|;
 
@@ -210,11 +218,6 @@
   set_escape_sequence := |*
     'b' {
       self.emit(:set, :backspace, data[ts-1..te-1].pack('c*'), ts-1, te)
-      fret;
-    };
-
-    [\\\]\-\,] {
-      self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
 
@@ -239,6 +242,25 @@
 
     hex_sequence {
       self.emit(:set, :member_hex, data[ts-1..te-1].pack('c*'), ts-1, te)
+      fret;
+    };
+
+    [\\\]\-\,] {
+      self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
+      fret;
+    };
+
+    meta_char {
+      self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
+      fret;
+    };
+
+    ascii_print    |
+    ascii_nonprint |
+    utf8_2_byte    |
+    utf8_3_byte    |
+    utf8_4_byte    {
+      self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
   *|;
