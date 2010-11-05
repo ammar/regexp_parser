@@ -15,8 +15,14 @@ module Regexp::Syntax
     module Group
       Basic     = [:capture, :close]
       Extended  = Basic + [:options]
-      Assertion = [:lookahead, :nlookahead, :lookbehind, :nlookbehind]
+      Named     = [:named]
+
+      module Assertion
+        Positive = [:lookahead, :lookbehind]
+        Negative = [:nlookahead, :nlookbehind]
+      end
     end
+
 
     module CharacterType
       Basic     = []
@@ -37,7 +43,7 @@ module Regexp::Syntax
                      :class_punct, :class_space, :class_upper, :class_xdigit]
 
         Extensions = [:class_ascii, :class_word]
-        All    = Standard + Extensions
+        All         = Standard + Extensions
       end
     end
 
