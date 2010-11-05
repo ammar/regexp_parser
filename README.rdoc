@@ -8,19 +8,20 @@
 A ruby library to help with lexing, parsing, and transforming regular expressions.
 
 * Multilayered
+
   * A scanner based on ragel[http://www.complang.org/ragel/]
   * A lexer that produces a "stream" of tokens
   * A parser that produces a "tree" of Regexp::Expression objects (OO API)
 
 * Lexes and parses several regular expression flavors
+
     # Initial focus
       # Ruby 1.8/1.9    ** In progress
       # POSIX BRE/ERE   ** In progress
 
-    # Probably mostly there, but there are no syntax specs in place yet.
-      # .NET
+    # Being considered for inclusion
       # ARE (Tcl)
-      # GNU (BRE/ERE)
+      # GNU (BRE/ERE with some extensions)
       # Java
       # JavaScript
       # PCRE
@@ -29,16 +30,17 @@ A ruby library to help with lexing, parsing, and transforming regular expression
       # Python
       # XML
       # XPath
+      # .NET
 
 * Supports ruby 1.8 and 1.9 runtime
 
 
 == Components
 === Scanner
-A ragel generated scanner that understands the cumulative syntax of all
-supported flavors (this might change soon). The scanner's job is to break
-the expression into the syntax elements (lexemes), including their type,
-token (id), text, and the start/end offsets within the original pattern.
+A ragel generated scanner that recognizes the cumulative syntax of all
+supported flavors (this might change soon). Breaks the expression's text
+into tokens, including their type, token (id), text, and start/end offsets
+within the original pattern.
 
 ==== Example
 The following scans the given pattern and prints out the type, token, text and
@@ -46,21 +48,25 @@ start/end offsets for each token found.
 
   require 'regexp_parser'
 
-  Regexp::Scanner.scan /(a?(b)*[c]+)/  do |type, token, text, ts, te|
+  Regexp::Scanner.scan /(ab?(cd)*[e-h]+)/  do |type, token, text, ts, te|
     puts "type: #{type}, token: #{token}, text: '#{text}' [#{ts}..#{te}]"
   end
 
 
 ==== Notes
-  * Currently does no error checking, but could/should be responsible for
-    detecting lexical errors like missing balancing punctuation and premature
-    end of pattern. Flavor validity checks are a responsibility for higher
-    layers.
+  * Does basic syntax error checking, like detecting missing balancing
+    punctuation and premature end of pattern. Flavor validity checks are
+    performed in the lexer.
+
+  * To keep the scanner simple(r) and fairly reusable for other uses, it
+    does not perform lexical analysis on the tokens, sticking to the task
+    of tokenizing and leaving lexical analysis upto to the lexer as well.
 
   * If the input is a ruby Regexp object, the scanner calls #source on it to
     get its string representation. #source does not include the options of
-    expression (m, i, etc.) To include the options, call #to_s on the Regexp
-    before passing it.
+    expression (m, i, etc.) To include the options the process, #to_s should
+    be called on the Regexp before passing it to the scanner, or any of the
+    higher layers. Obviously this only works for ruby regular expressions.
 
 ==== TODO
   * Consider extracting a "baseline" scanner common to all flavors, and layer
@@ -110,25 +116,27 @@ implementations features, and then does the same for Ruby 1.8:
 
 ---
 === Lexer
-A thin wrapper around the scanner module that collects the emissions from it,
-checks their validity against a given syntax flavor, and packages them into
-Token class objects. 
+Sits on top of the scanner, and performs lexical analysis on the tokens that
+it emits. Among its tasks are breaking quantified literal runs, collecting the
+emitted token structures into an array of Token objects, calculating their
+nesting depth, normalizing tokens for the parser, and checkng if the tokens
+are implemented by a given syntax flavor.
 
-Tokens are Struct objects, basically data objects, with a couple of helper
-methods. 
+Tokens objects are Structs, basically data objects, with a few helper methods,
+like #next, #previous, #offsets and #length.
 
 ==== Example
 The following example scans the given pattern, checks it against the ruby 1.8
-syntax, and dumps the token objects.
+syntax, and prints the token objects' text.
 
   Regexp::Lexer.scan /a?(b)*[c]+/, 'ruby/1.8'  do |token|
     puts "#{'  ' * token.depth}#{token.text}"
   end
 
-  # get the text "stream"
-  Regexp::Lexer.scan( /(cat?([b]at)+hat*){3,5}/ ).map {|token| token.text}
+A one-liner that returns an array of the textual parts of the given pattern:
 
-  => ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", "+", "ha", "t", "*", ")", "{3,5}"]
+  Regexp::Lexer.scan( /(cat?([b]at)){3,5}/ ).map {|token| token.text}
+  #=> ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", ")", "{3,5}"]
 
 ==== Notes
   * The lexer performs some basic parsing to determine the depth of a the
@@ -188,6 +196,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
   - Escape Sequences
     - Backreference: \1 thru \9 ** MISSING
     - Metacharacters: \\, \+, \?, etc.. ** NEEDS REVIEW/TESTS
+
   - Grouped Expressions
     - Atomic: (?>abc) ** SCANNER COMPLETE
     - Capturing: (abc) ** SCANNER COMPLETE
@@ -200,18 +209,21 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
       - Negative Lookahead: (?!abc) ** SCANNER COMPLETE
       - Lookabehind: (?<=abc) ** SCANNER COMPLETE
       - Negative Lookbehind: (?<\!abc) ** SCANNER COMPLETE
+
   - Literals: abc ** NEEDS TESTS 
   - POSIX classes: ** NEEDS REVIEW/TESTS
   - Quantifiers
     - Greedy: ** PARSER COMPLETE
     - Reluctant: ** PARSER COMPLETE  
     - Possessive: ** PARSER COMPLETE
+
   - String Escapes
     - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
     - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
     - Meta: \M-c, \M-\x23, \M-\C-C etc.. ** NEEDS REVIEW/TESTS
     - Octal: \012 ** SCANNER COMPLETE
     - Unicode: \uHHHH, \u{H+ H+} ** SCANNER COMPLETE
+
   - Unicode Properties: 
     - Classes: \p{Alpha}, \P{Space}, etc...  ** NEEDS REVIEW/TESTS
     - Derived Properties: \p{Math}, ** MISSING
@@ -239,7 +251,6 @@ Documentation and information being read while working on this project.
 ==== POSIX Flavors
 * BRE/ERE link[http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html#tag_09_05_01]
 
-
 ==== Other Flavors
 * GNU: link[http://www.delorie.com/gnu/docs/regex/regex_toc.html]
 * PCRE link[http://www.pcre.org/pcre.txt]
@@ -260,7 +271,6 @@ Documentation and information being read while working on this project.
 * Unicode Property Aliases link[http://www.unicode.org/Public/UNIDATA/PropertyAliases.txt]
 * Unicode Regular Expressions link[http://www.unicode.org/reports/tr18/]
 
-
 == Thanks
 This work is based on tnd inspired by the hard work and ideas of many people,
 directly or indirectly. The following are only some of those that should be 
@@ -271,8 +281,7 @@ thanked.
   and lots of cool code[http://github.com/coatl].
 * Jan Goyvaerts, for his excellent resource[http://www.regular-expressions.info] on regular expressions. I owe him a "steak dinner", at least.
 * Run Paint Run Run, for his work on Read[http://ruby.runpaint.org/] Ruby
-* Yukihiro Matsumoto, of course! For "The Ruby", of course! A joy to hack in.
-
+* Yukihiro Matsumoto, of course! For "The Ruby", of course!
 
 == Copyright
 Copyright (c) 2010 Ammar Ali. See LICENSE file for details.
