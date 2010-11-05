@@ -7,7 +7,7 @@ require File.expand_path("../../helpers", __FILE__)
   require File.expand_path("../test_#{tc}", __FILE__)
 end
 
-class TestRegexpParser < Test::Unit::TestCase
+class TestParser < Test::Unit::TestCase
 
   def test_parse_returns_a_root_expression
     assert_instance_of( Regexp::Expression::Root, RP.parse('abc'))
@@ -16,8 +16,9 @@ class TestRegexpParser < Test::Unit::TestCase
   def test_parse_root_contains_expressions
     root = RP.parse(/^a.c+[^one]{2,3}\b\d\\\C-C$/)
 
-    assert( root.expressions.all?{|exp| exp.kind_of?(Regexp::Expression::Base)},
-          "Not all tree nodes are parse nodes")
+    assert( root.expressions.all?{|exp|
+      exp.kind_of?(Regexp::Expression::Base)},
+      "Not all nodes are instances of Regexp::Expression")
   end
 
   # too much going on here, it's just for development

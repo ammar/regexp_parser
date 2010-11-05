@@ -291,8 +291,8 @@
       when '\}';  self.emit(:escape, :interval_close,    text, ts-1, te)
       when '\[';  self.emit(:escape, :set_open,          text, ts-1, te)
       when '\]';  self.emit(:escape, :set_close,         text, ts-1, te)
-      when '\\\\';
-        self.emit(:escape, :backslash, text, ts, te)
+      when "\\\\";
+        self.emit(:escape, :backslash, text, ts-1, te)
       end
       fret;
     };
@@ -315,37 +315,37 @@
     codepoint_sequence > (escaped_alpha, 7) {
       text = data[ts-1..te-1].pack('c*')
       if text[2].chr == '{'
-        self.emit(:escape, :codepoint_list, text, ts, te)
+        self.emit(:escape, :codepoint_list, text, ts-1, te)
       else
-        self.emit(:escape, :codepoint,      text, ts, te)
+        self.emit(:escape, :codepoint,      text, ts-1, te)
       end
       fret;
     };
 
     octal_sequence {
-      self.emit(:escape, :octal, data[ts-1..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :octal, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
 
     hex_sequence > (escaped_alpha, 6) {
-      self.emit(:escape, :hex, data[ts-1..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :hex, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
 
     # FIXME: scanner returns nil
     wide_hex_sequence > (escaped_alpha, 5) {
-      self.emit(:escape, :hex_wide, data[ts-1..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :hex_wide, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
 
     control_sequence > (escaped_alpha, 4) {
-      self.emit(:escape, :control, data[ts-1..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :control, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
 
     meta_sequence > (escaped_alpha, 3) {
       # TODO: add escapes
-      self.emit(:escape, :meta, data[ts-1..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :meta, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
 
@@ -354,7 +354,7 @@
     };
 
     any > (escaped_alpha, 1)  {
-      self.emit(:escape, :literal, data[ts-1..te-1].pack('c*'), ts, te)
+      self.emit(:escape, :literal, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
   *|;

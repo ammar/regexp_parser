@@ -3,25 +3,30 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerAnchors < Test::Unit::TestCase
 
   tests = {
-   '^abc'       => [:anchor,     :beginning_of_line,    '^',   0],
-   'abc$'       => [:anchor,     :end_of_line,          '$',   1],
+   '^abc'       => [0, :anchor,     :beginning_of_line,     '^',      0, 1],
+   'abc$'       => [1, :anchor,     :end_of_line,           '$',      3, 4],
 
-   '\Aabc'      => [:anchor,     :bos,                  '\A',  0],
-   'abc\z'      => [:anchor,     :eos,                  '\z',  1],
-   'abc\Z'      => [:anchor,     :eos_ob_eol,           '\Z',  1],
+   '\Aabc'      => [0, :anchor,     :bos,                   '\A',     0, 2],
+   'abc\z'      => [1, :anchor,     :eos,                   '\z',     3, 5],
+   'abc\Z'      => [1, :anchor,     :eos_ob_eol,            '\Z',     3, 5],
 
-   'a\bc'       => [:anchor,     :word_boundary,        '\b',  1],
-   'a\Bc'       => [:anchor,     :nonword_boundary,     '\B',  1],
+   'a\bc'       => [1, :anchor,     :word_boundary,         '\b',     1, 3],
+   'a\Bc'       => [1, :anchor,     :nonword_boundary,      '\B',     1, 3],
+
+   "\\\\Ac"     => [0, :escape,    :backslash,               '\\\\',  0, 2],
+   "a\\\\z"     => [1, :escape,    :backslash,               '\\\\',  1, 3],
+   "a\\\\Z"     => [1, :escape,    :backslash,               '\\\\',  1, 3],
+   "a\\\\bc"    => [1, :escape,    :backslash,               '\\\\',  1, 3],
+   "a\\\\Bc"    => [1, :escape,    :backslash,               '\\\\',  1, 3],
   }
 
+  count = 0
   tests.each do |pattern, test|
-    [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_scanner_#{test[0]}_#{test[1]}_#{member}" do
+    define_method "test_scanner_#{test[1]}_#{test[2]}_#{count+=1}" do
 
-        tokens = RS.scan(pattern)
-        assert_equal( test[i], tokens[test[3]][i] )
+      tokens = RS.scan(pattern)
+      assert_equal( test[1,5], tokens[test[0]] )
 
-      end
     end
   end
 

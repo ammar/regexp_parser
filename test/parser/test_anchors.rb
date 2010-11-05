@@ -1,27 +1,32 @@
 require File.expand_path("../../helpers", __FILE__)
 
-class TestRegexpParserAnchors < Test::Unit::TestCase
+class TestParserAnchors < Test::Unit::TestCase
 
   tests = {
-    '^a'   => [:beginning_of_line, :first],
-    'a$'   => [:end_of_line,       :last],
+    '^a'      => [0, :anchor,   :beginning_of_line,   Anchor],
+    'a$'      => [1, :anchor,   :end_of_line,         Anchor],
 
-    '\Aa'  => [:bos,               :first],
-    'a\z'  => [:eos,               :last],
-    'a\Z'   => [:eos_ob_eol,        :last],
+    '\Aa'     => [0, :anchor,   :bos,                 Anchor],
+    'a\z'     => [1, :anchor,   :eos,                 Anchor],
+    'a\Z'     => [1, :anchor,   :eos_ob_eol,          Anchor],
 
-    'a\b'  => [:word_boundary,     :last],
-    'a\B'  => [:nonword_boundary,  :last],
+    'a\b'     => [1, :anchor,   :word_boundary,       Anchor],
+    'a\B'     => [1, :anchor,   :nonword_boundary,    Anchor],
+
+    "\\\\Aa"  => [0, :literal,  :literal,             Literal],
   }
 
-  tests.each do |pattern, args|
-    define_method "test_parse_anchor_#{args.first}" do
-      t = RP.parse(pattern)
-      assert( t.expressions.send(args.last).is_a?(Anchor),
-             "Expected anchor, but got #{t.expressions.send(args.last).class.name}")
+  count = 0
+  tests.each do |pattern, test|
+    define_method "test_parse_anchor_#{test[2]}_#{count+=1}" do
+      root = RP.parse(pattern, 'ruby/1.9')
+      exp  = root.expressions[test[0]]
 
-      assert_equal( :anchor,    t.expressions.send(args.last).type )
-      assert_equal( args.first, t.expressions.send(args.last).token )
+      assert( exp.is_a?( test[3] ),
+             "Expected #{test[3]}, but got #{exp.class.name}")
+
+      assert_equal( test[1], exp.type )
+      assert_equal( test[2], exp.token )
     end
   end
 
