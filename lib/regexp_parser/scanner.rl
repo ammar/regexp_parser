@@ -298,9 +298,9 @@
     };
 
     escaped_char > (escaped_alpha, 8) {
+      # \b is a backspace only inside a character set
       case text = data[ts-1..te-1].pack('c*')
       when '\a'; self.emit(:escape, :bell,           text, ts-1, te)
-      #when '\b'; self.emit(:escape, :backspace,     text, ts-1, te) # a backspace only inside a set
       when '\e'; self.emit(:escape, :escape,         text, ts-1, te)
       when '\f'; self.emit(:escape, :form_feed,      text, ts-1, te)
       when '\n'; self.emit(:escape, :newline,        text, ts-1, te)

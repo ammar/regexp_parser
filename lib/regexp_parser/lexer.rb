@@ -67,7 +67,6 @@ module Regexp::Lexer
   # get normalized (as in the case of posix/bre) and end up becoming literals.
   def self.merge_literal(current)
     last = @tokens.pop
-
     replace = Regexp::Token.new(:literal, :literal, last.text + current.text,
                                    last.ts, current.te, @nesting)
   end
