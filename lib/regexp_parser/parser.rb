@@ -61,6 +61,8 @@ module Regexp::Parser
       self.append_set(type, token, text)
     when :close
       self.close_set
+    else
+      raise "Unsupported CharacterSet token #{token.inspect}"
     end
   end
 
@@ -83,6 +85,8 @@ module Regexp::Parser
         @node << alt
         @node = alt
       end
+    else
+      raise "Unsupported Meta token #{token.inspect}"
     end
   end
 
@@ -106,6 +110,8 @@ module Regexp::Parser
       @node << CharacterType::Word.new(type, token, text)
     when :nonword
       @node << CharacterType::NonWord.new(type, token, text)
+    else
+      raise "Unsupported CharacterType token #{token.inspect}"
     end
   end
 
@@ -172,6 +178,8 @@ module Regexp::Parser
     when :cp_surrogate;     @node << Codepoint::Surrogate.new(type, token, text)
     when :cp_private;       @node << Codepoint::PrivateUse.new(type, token, text)
     when :cp_unassigned;    @node << Codepoint::Unassigned.new(type, token, text)
+    else
+      raise "Unsupported UnicodeProperty token #{token.inspect}"
     end
   end
 
@@ -191,14 +199,39 @@ module Regexp::Parser
       @node << Anchor::WordBoundary.new(type, token, text)
     when :nonword_boundary
       @node << Anchor::NonWordBoundary.new(type, token, text)
+    else
+      raise "Unsupported Anchor token #{token.inspect}"
     end
   end
 
   def self.escape(type, token, text)
     case token
+
+    when :backspace
+      @node << EscapeSequence::Backspace.new(type, token, text)
+
+    when :escape
+      @node << EscapeSequence::AsciiEscape.new(type, token, text)
+    when :bell
+      @node << EscapeSequence::Bell.new(type, token, text)
+    when :form_feed
+      @node << EscapeSequence::FormFeed.new(type, token, text)
+    when :newline
+      @node << EscapeSequence::Newline.new(type, token, text)
+    when :carriage
+      @node << EscapeSequence::Return.new(type, token, text)
+    when :space
+      @node << EscapeSequence::Space.new(type, token, text)
+    when :tab
+      @node << EscapeSequence::Tab.new(type, token, text)
+    when :vertical_tab
+      @node << EscapeSequence::VerticalTab.new(type, token, text)
+
     when :control
       @node << EscapeSequence::Control.new(type, token, text)
-    when :literal
+
+    else
+      # treating everything else as a literal
       @node << EscapeSequence::Literal.new(type, token, text)
     end
   end
@@ -228,6 +261,9 @@ module Regexp::Parser
 
     when :interval
       self.interval(text)
+
+    else
+      raise "Unsupported Quantifier token #{token.inspect}"
     end
   end
 
@@ -290,8 +326,9 @@ module Regexp::Parser
       exp = Group::Named.new(type, token, text)
     when :capture
       exp = Group::Capture.new(type, token, text)
+
     else
-      raise "unexpected #{type.inspect}, #{token.inspect} #{text}"
+      raise "Unsupported Group type open token #{token.inspect}"
     end
 
     self.nest exp

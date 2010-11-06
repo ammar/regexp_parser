@@ -247,6 +247,11 @@
       fret;
     };
 
+    octal_sequence {
+      self.emit(:escape, :octal, data[ts-1..te-1].pack('c*'), ts-1, te)
+      fret;
+    };
+
     meta_char {
       case text = data[ts-1..te-1].pack('c*')
       when '\.';  self.emit(:escape, :dot,               text, ts-1, te)
@@ -269,7 +274,8 @@
     };
 
     escaped_char > (escaped_alpha, 8) {
-      # \b is a backspace only inside a character set
+      # \b is emitted as backspace only when inside a character set, otherwise
+      # it is a word boundary anchor. A syntax might "normalize" it if needed.
       case text = data[ts-1..te-1].pack('c*')
       when '\a'; self.emit(:escape, :bell,           text, ts-1, te)
       when '\e'; self.emit(:escape, :escape,         text, ts-1, te)
@@ -290,11 +296,6 @@
       else
         self.emit(:escape, :codepoint,      text, ts-1, te)
       end
-      fret;
-    };
-
-    octal_sequence {
-      self.emit(:escape, :octal, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
 
@@ -336,12 +337,34 @@
   main := |*
 
     # Meta characters
+    # ------------------------------------------------------------------------
     dot {
       self.emit(:meta, :dot, data[ts..te-1].pack('c*'), ts, te)
     };
 
     alternation {
       self.emit(:meta, :alternation, data[ts..te-1].pack('c*'), ts, te)
+    };
+
+    # Anchors
+    # ------------------------------------------------------------------------
+    beginning_of_line {
+      self.emit(:anchor, :beginning_of_line, data[ts..te-1].pack('c*'), ts, te)
+    };
+
+    end_of_line {
+      self.emit(:anchor, :end_of_line, data[ts..te-1].pack('c*'), ts, te)
+    };
+
+    backslash . anchor_char > (backslashed, 3) {
+      case text = data[ts..te-1].pack('c*')
+      when '\\A'; self.emit(:anchor, :bos,                text, ts, te)
+      when '\\z'; self.emit(:anchor, :eos,                text, ts, te)
+      when '\\Z'; self.emit(:anchor, :eos_ob_eol,         text, ts, te)
+      when '\\b'; self.emit(:anchor, :word_boundary,      text, ts, te)
+      when '\\B'; self.emit(:anchor, :nonword_boundary,   text, ts, te)
+      else raise "Unsupported anchor at #{text} (char #{ts})"
+      end
     };
 
     # Character types
@@ -363,32 +386,14 @@
       end
     };
 
-    # Anchors
-    beginning_of_line {
-      self.emit(:anchor, :beginning_of_line, data[ts..te-1].pack('c*'), ts, te)
-    };
-
-    end_of_line {
-      self.emit(:anchor, :end_of_line, data[ts..te-1].pack('c*'), ts, te)
-    };
-
-    backslash . anchor_char > (backslashed, 3) {
-      case text = data[ts..te-1].pack('c*')
-      when '\\A'; self.emit(:anchor, :bos,                text, ts, te)
-      when '\\z'; self.emit(:anchor, :eos,                text, ts, te)
-      when '\\Z'; self.emit(:anchor, :eos_ob_eol,         text, ts, te)
-      when '\\b'; self.emit(:anchor, :word_boundary,      text, ts, te)
-      when '\\B'; self.emit(:anchor, :nonword_boundary,   text, ts, te)
-      else raise "Unsupported anchor at #{text} (char #{ts})"
-      end
-    };
-
     # Escaped sequences
+    # ------------------------------------------------------------------------
     backslash > (backslashed, 1) {
       fcall escape_sequence;
     };
 
     # Character sets
+    # ------------------------------------------------------------------------
     set_open %set_opened  {
       self.emit(:set, :open, data[ts..te-1].pack('c*'), ts, te)
       fcall character_set;
@@ -396,18 +401,21 @@
 
     # (?#...) comments: parsed as a single expression, without introducing a
     # new nesting level. Comments may not include parentheses, escaped or not.
-    # special case for close, all transitions
+    # special case for close, action performed on all transitions to get the 
+    # correct closing count.
+    # ------------------------------------------------------------------------
     group_open . group_comment $group_closed {
       self.emit(:group, :comment, data[ts..te-1].pack('c*'), ts, te)
     };
 
-    # (?mix-mix...) expression options:
+    # Expression options:
     #   (?imx-imx)          option on/off
     #                         i: ignore case
     #                         m: multi-line (dot(.) match newline)
     #                         x: extended form
     #
     #   (?imx-imx:subexp)   option on/off for subexp
+    # ------------------------------------------------------------------------
     group_open . group_options >group_opened {
       self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
     };
@@ -482,9 +490,6 @@
       end
     };
 
-
-    # Intervals: min, max, and exact notations
-    # ------------------------------------------------------------------------
     quantifier_range  @err(premature_end_error) {
       self.emit(:quantifier, :interval, data[ts..te-1].pack('c*'), ts, te)
     };
@@ -514,11 +519,10 @@ module Regexp::Scanner
   %% write data;
 
   # Scans the given regular expression text, or Regexp object and collects the
-  # emitted token into an array that gets returns at the end. If a block is
+  # emitted token into an array that gets returned at the end. If a block is
   # given, it gets called for each emitted token.
   #
-  # This may raise an error if a syntax error is encountered. ** this is still
-  # in progress.
+  # This method may raise errors if a syntax error is encountered.
   # --------------------------------------------------------------------------
   def self.scan(input, &block)
     top, stack = 0, []

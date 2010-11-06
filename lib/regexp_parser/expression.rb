@@ -252,22 +252,28 @@ module Regexp::Expression
   end
 
   # TODO: split this into escape sequences and string escapes
-  class EscapeSequence < Regexp::Expression::Base
-    class Literal       < CharacterType; end
-    class Tab           < CharacterType; end
-    class VerticalTab   < CharacterType; end
-    class Newline       < CharacterType; end
-    class Return        < CharacterType; end
-    class Backspace     < CharacterType; end
-    class FormFeed      < CharacterType; end
-    class Bell          < CharacterType; end
-    class Escape        < CharacterType; end
-    class Octal         < CharacterType; end
-    class Hex           < CharacterType; end
-    class HexWide       < CharacterType; end
-    class Control       < CharacterType; end
-    class Meta          < CharacterType; end
-    class MetaControl   < CharacterType; end
+  module EscapeSequence
+    class Base          < Regexp::Expression::Base; end
+
+    class Literal       < EscapeSequence::Base; end
+
+    class AsciiEscape   < EscapeSequence::Base; end
+    class Backspace     < EscapeSequence::Base; end
+    class Bell          < EscapeSequence::Base; end
+    class FormFeed      < EscapeSequence::Base; end
+    class Newline       < EscapeSequence::Base; end
+    class Return        < EscapeSequence::Base; end
+    class Space         < EscapeSequence::Base; end
+    class Tab           < EscapeSequence::Base; end
+    class VerticalTab   < EscapeSequence::Base; end
+
+    class Octal         < EscapeSequence::Base; end
+    class Hex           < EscapeSequence::Base; end
+    class HexWide       < EscapeSequence::Base; end
+
+    class Control       < EscapeSequence::Base; end
+    class Meta          < EscapeSequence::Base; end
+    class MetaControl   < EscapeSequence::Base; end
   end
 
   class Alternation < Regexp::Expression::Base
