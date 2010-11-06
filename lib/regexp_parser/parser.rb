@@ -53,7 +53,7 @@ module Regexp::Parser
       self.open_set(type, token, text)
     when :negate
       self.negate_set
-    when :member
+    when :member, :escape
       self.append_set(type, token, text)
     when :range
       self.append_set(type, token, text)
@@ -68,6 +68,8 @@ module Regexp::Parser
 
   def self.meta(type, token, text)
     case token
+    when :dot
+      @node << CharacterType::Any.new(type, token, text)
     when :alternation
       unless @node.token == :alternation
         alt = Alternation.new(type, token, text)
@@ -92,8 +94,6 @@ module Regexp::Parser
 
   def self.type(type, token, text)
     case token
-    when :any
-      @node << CharacterType::Any.new(type, token, text)
     when :digit
       @node << CharacterType::Digit.new(type, token, text)
     when :nondigit

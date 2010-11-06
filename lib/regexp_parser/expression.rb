@@ -94,6 +94,8 @@ module Regexp::Expression
     def <<(member)
       if member.length == 1
         @members << member
+      elsif member =~ /\\./
+        @members << member
       elsif member =~ /\[:(\w+):\]/
         case $1
         when 'alnum';   CType::Alnum.each  {|c| @members << c }

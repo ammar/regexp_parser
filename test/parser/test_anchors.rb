@@ -13,7 +13,7 @@ class TestParserAnchors < Test::Unit::TestCase
     'a\b'     => [1, :anchor,   :word_boundary,       Anchor],
     'a\B'     => [1, :anchor,   :nonword_boundary,    Anchor],
 
-    "\\\\Aa"  => [0, :literal,  :literal,             Literal],
+    "\\\\Aa"  => [0, :escape,   :backslash,           EscapeSequence::Literal],
   }
 
   count = 0
