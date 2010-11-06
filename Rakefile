@@ -3,7 +3,7 @@ require 'rake/testtask'
 
 task :default => [:test]
 
-RAGEL_SOURCE_DIR = File.expand_path '../lib/regexp_parser', __FILE__
+RAGEL_SOURCE_DIR = File.expand_path '../lib/regexp_parser/scanner', __FILE__
 RAGEL_OUTPUT_DIR = File.expand_path '../lib/regexp_parser', __FILE__
 
 RAGEL_SOURCE_FILES = %w{scanner}
