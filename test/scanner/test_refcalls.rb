@@ -30,6 +30,7 @@ class ScannerRefCalls < Test::Unit::TestCase
 
       tokens = RS.scan(pattern)
       assert_equal( test[1,5], tokens[test[0]])
+      assert_equal( test[3],   pattern[tokens[test[0]][3], tokens[test[0]][4]])
 
     end
   end

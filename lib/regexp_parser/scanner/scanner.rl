@@ -76,7 +76,7 @@
   assertion_lookbehind  = '?<=';
   assertion_nlookbehind = '?<!';
 
-  group_options         = '?' . ([mix]{1,3})? . '-' . ([mix]{1,3})? . ':'?;
+  group_options         = '?' . ([mix]{1,3})? . '-'? . ([mix]{1,3})? . ':'?;
 
   group_ref             = [gk];
   group_name            = alpha . (alnum+)?;
