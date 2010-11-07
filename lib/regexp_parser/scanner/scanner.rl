@@ -34,7 +34,7 @@
   line_anchor           = beginning_of_line | end_of_line;
   anchor_char           = [AbBzZG];
 
-  escaped_char          = [abefnrstv];
+  escaped_ascii         = [abefnrstv];
   octal_sequence        = [0-7]{1,3};
 
   hex_sequence          = 'x' . xdigit{1,2};
@@ -78,8 +78,13 @@
 
   group_options         = '?' . ([mix]{1,3})? . '-' . ([mix]{1,3})? . ':'?;
 
-  group_name            = alpha . alnum+;
-  group_named           = ('?<' . group_name . '>') | ('?\'' . group_name . '\'');
+  group_ref             = [gk];
+  group_name            = alpha . (alnum+)?;
+  group_named           = ('?<' . group_name . '>') | ("?'" . group_name . "'");
+  group_name_ref        = group_ref . (('<' . group_name . '>') | ("'" . group_name . "'"));
+
+  group_number          = '-'? . [1-9] . ([0-9]+)?;
+  group_number_ref      = group_ref . (('<' . group_number . '>') | ("'" . group_number . "'"));
 
   group_type            = group_atomic | group_passive | group_named;
 
@@ -99,6 +104,8 @@
   utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf)+;
   utf8_byte_sequence    = utf8_2_byte | utf8_3_byte | utf8_4_byte;
 
+  non_literal_escape    = char_type | anchor_char | escaped_ascii |
+                          group_ref | [xucCM];
 
   # EOF error, used where it can be detected
   action premature_end_error { raise "Premature end of pattern" }
@@ -273,7 +280,7 @@
       fret;
     };
 
-    escaped_char > (escaped_alpha, 8) {
+    escaped_ascii > (escaped_alpha, 8) {
       # \b is emitted as backspace only when inside a character set, otherwise
       # it is a word boundary anchor. A syntax might "normalize" it if needed.
       case text = data[ts-1..te-1].pack('c*')
@@ -325,7 +332,7 @@
       fhold; fcall unicode_property; fret;
     };
 
-    any > (escaped_alpha, 1)  {
+    (any -- non_literal_escape) > (escaped_alpha, 1)  {
       self.emit(:escape, :literal, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
@@ -384,12 +391,6 @@
       when '\\w'; self.emit(:type, :word,       text, ts, te)
       when '\\W'; self.emit(:type, :nonword,    text, ts, te)
       end
-    };
-
-    # Escaped sequences
-    # ------------------------------------------------------------------------
-    backslash > (backslashed, 1) {
-      fcall escape_sequence;
     };
 
     # Character sets
@@ -464,6 +465,55 @@
     };
 
 
+    # Group back-reference, named and numbered
+    # ------------------------------------------------------------------------
+    backslash . (group_name_ref | group_number_ref) > (backslashed, 4) {
+      case text = data[ts..te-1].pack('c*')
+      when /\\([gk])<[^\d-](\w+)?>/ # angle-brackets
+        if $1 == 'k'
+          self.emit(:backref, :name_ref_ab,  text, ts, te)
+        else
+          self.emit(:backref, :name_call_ab,  text, ts, te)
+        end
+
+      when /\\([gk])'[^\d-](\w+)?'/ #single quotes
+        if $1 == 'k'
+          self.emit(:backref, :name_ref_sq,  text, ts, te)
+        else
+          self.emit(:backref, :name_call_sq,  text, ts, te)
+        end
+
+      when /\\([gk])<\d+>/ # angle-brackets
+        if $1 == 'k'
+          self.emit(:backref, :number_ref_ab,  text, ts, te)
+        else
+          self.emit(:backref, :number_call_ab,  text, ts, te)
+        end
+
+      when /\\([gk])'\d+'/ # single quotes
+        if $1 == 'k'
+          self.emit(:backref, :number_ref_sq,  text, ts, te)
+        else
+          self.emit(:backref, :number_call_sq,  text, ts, te)
+        end
+
+      when /\\([gk])<-\d+>/ # angle-brackets
+        if $1 == 'k'
+          self.emit(:backref, :number_rel_ref_ab,  text, ts, te)
+        else
+          self.emit(:backref, :number_rel_call_ab,  text, ts, te)
+        end
+
+      when /\\([gk])'-\d+'/ # single quotes
+        if $1 == 'k'
+          self.emit(:backref, :number_rel_ref_sq,  text, ts, te)
+        else
+          self.emit(:backref, :number_rel_call_sq,  text, ts, te)
+        end
+      end
+    };
+
+
     # Quantifiers
     # ------------------------------------------------------------------------
     zero_or_one {
@@ -499,6 +549,11 @@
       self.emit(:quantifier, :interval_bre, data[ts..te-1].pack('c*'), ts, te)
     };
 
+    # Escaped sequences
+    # ------------------------------------------------------------------------
+    backslash > (backslashed, 1) {
+      fcall escape_sequence;
+    };
 
     # Literal: any run of ASCII (pritable or non-printable), and/or UTF-8,
     # except meta characters.
