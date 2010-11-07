@@ -52,6 +52,11 @@ start/end offsets for each token found.
     puts "type: #{type}, token: #{token}, text: '#{text}' [#{ts}..#{te}]"
   end
 
+A one-liner that returns an array of the textual parts of the given pattern:
+
+  Regexp::Scanner.scan( /(cat?([b]at)){3,5}/ ).map {|token| token[2]}
+  #=> ["(", "cat", "?", "(", "[", "b", "]", "at", ")", ")", "{3,5}"]
+
 
 ==== Notes
   * Does basic syntax error checking, like detecting missing balancing
@@ -129,11 +134,13 @@ like #next, #previous, #offsets and #length.
 The following example scans the given pattern, checks it against the ruby 1.8
 syntax, and prints the token objects' text.
 
+  require 'regexp_parser'
+
   Regexp::Lexer.scan /a?(b)*[c]+/, 'ruby/1.8'  do |token|
     puts "#{'  ' * token.depth}#{token.text}"
   end
 
-A one-liner that returns an array of the textual parts of the given pattern:
+A one-liner that returns an array of the textual parts of the given pattern. Compare the output with that of the one-liner example of the Scanner.
 
   Regexp::Lexer.scan( /(cat?([b]at)){3,5}/ ).map {|token| token.text}
   #=> ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", ")", "{3,5}"]
@@ -162,6 +169,9 @@ by it into a tree of Expression objects represented by an instance of the
 Expression::Root class. See Expression below for more information.
 
 ==== Example
+
+  require 'regexp_parser'
+
   root = Regexp::Parser.parse /a?(b)*[c]+)/m, 'posix/ere'
 
   root.multiline?   # => true (aliased as m?)
@@ -189,55 +199,58 @@ functions of all expression classes.
 The following is targeted for support by the scanner. This should be a table,
 but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
 
-  - Alternation: a|b|c ** PARSER COMPLETE
-  - Anchors: ^, $, \b, etc... ** PARSER COMPLETE
-  - Character Classes (aka Sets): [abc], [^\]] ** MISSING PROPERTIES
-  - Character Types: \d, \H, \s, etc... ** PARSER COMPLETE
+  - Alternation: a|b|c                          ** PARSER
+  - Anchors: ^, $, \b, etc.                     ** PARSER
+  - Character Classes (aka Sets): [abc], [^\]]  ** SCANNER
+  - Character Types: \d, \H, \s, etc.           ** PARSER
   - Escape Sequences
-    - Backreference: \1 thru \9 ** MISSING
-    - Metacharacters: \\, \+, \?, etc.. ** NEEDS REVIEW/TESTS
+    - Backreference: \1 thru \9                 ** SCANNER
+    - Metacharacters: \\, \+, \?, etc.          ** SCANNER
 
   - Grouped Expressions
-    - Atomic: (?>abc) ** SCANNER COMPLETE
-    - Capturing: (abc) ** SCANNER COMPLETE
-    - Comment: (?# comment) ** SCANNER COMPLETE
-    - Named: (?<name>abc) ** SCANNER COMPLETE
-    - Options: (?mi-x:abc) ** SCANNER COMPLETE (missing some options, u, e, etc..)
-    - Passive: (?:abc) ** SCANNER COMPLETE
+    - Atomic: (?>abc)                           ** SCANNER
+    - Back-references: \k<name>, \k<1>, \k<-2>  ** SCANNER (missing \k<name-1>)
+    - Capturing: (abc)                          ** SCANNER
+    - Comment: (?# comment)                     ** SCANNER
+    - Named: (?<name>abc)                       ** SCANNER
+    - Options: (?mi-x:abc)                      ** SCANNER (missing u, e, etc)
+    - Passive: (?:abc)                          ** SCANNER
     - Assertions
-      - Lookahead: (?=abc) ** SCANNER COMPLETE
-      - Negative Lookahead: (?!abc) ** SCANNER COMPLETE
-      - Lookabehind: (?<=abc) ** SCANNER COMPLETE
-      - Negative Lookbehind: (?<\!abc) ** SCANNER COMPLETE
+      - Lookahead: (?=abc)                      ** SCANNER
+      - Negative Lookahead: (?!abc)             ** SCANNER
+      - Lookabehind: (?<=abc)                   ** SCANNER
+      - Negative Lookbehind: (?<\!abc)          ** SCANNER
+    - Sub-expression Calls: \g<name>, \g<1>     ** SCANNER
 
-  - Literals: abc ** NEEDS TESTS 
-  - POSIX classes: ** NEEDS REVIEW/TESTS
+  - Literals: abc, def?                         ** LEXER - REVIEW/TEST
+  - POSIX classes: [:alpha:], [:print:], etc.   ** SCANNER
   - Quantifiers
-    - Greedy: ** PARSER COMPLETE
-    - Reluctant: ** PARSER COMPLETE  
-    - Possessive: ** PARSER COMPLETE
+    - Greedy: ?, *, +, {m,M}                    ** PARSER
+    - Reluctant: ??, *?, +?, {m,M}?             ** PARSER
+    - Possessive: ?+, *+, ++, {m,M}+            ** PARSER
 
   - String Escapes
-    - Control: \C-C, \cD ** NEEDS REVIEW/TESTS
-    - Hex: \x20, \x{701230} ** NEEDS REVIEW/TESTS
-    - Meta: \M-c, \M-\x23, \M-\C-C etc.. ** NEEDS REVIEW/TESTS
-    - Octal: \012 ** SCANNER COMPLETE
-    - Unicode: \uHHHH, \u{H+ H+} ** SCANNER COMPLETE
+    - Control: \C-C, \cD                        ** SCANNER
+    - Hex: \x20, \x{701230}                     ** SCANNER
+    - Meta: \M-c, \M-\x23, \M-\C-C etc..        ** REVIEW/TEST
+    - Octal: \0, \01, \012                      ** SCANNER
+    - Unicode: \uHHHH, \u{H+ H+}                ** SCANNER
 
   - Unicode Properties: 
-    - Classes: \p{Alpha}, \P{Space}, etc...  ** NEEDS REVIEW/TESTS
-    - Derived Properties: \p{Math}, ** MISSING
-    - General Categories: \p{Lu}, \P{Cs}, etc... ** NEEDS REVIEW/TESTS
-    - Scripts: \p{Arabic}, \P{Hiragana} ** MISSING
-    - Simple Properties (aka Aliases):  ** MISSING
+    - Classes: \p{Alpha}, \P{Space}, etc.       ** SCANNER
+    - Derived Properties: \p{Math} etc.         ** MISSING
+    - General Categories: \p{Lu}, \P{Cs}, etc.  ** SCANNER
+    - Scripts: \p{Arabic}, \P{Hiragana}         ** MISSING
+    - Simple Properties (aka Aliases):          ** MISSING
 
 
   Notes with ** mean:
-
-    MISSING : nothing in place, or barely there
-    NEED REVIEW/TESTS: mostly there, but not varified
-    SCANNER COMPLETE: scanner support implemented, works, has tests
-    PARSER COMPLETE: parser support implemented, works, has tests
+    MISSING:      nothing in place, or barely there
+    REVIEW/TEST:  mostly there (scanner and/or lexer), but has no tests, or has problems
+    SCANNER:      implemented in scanner, works, has basic tests
+    LEXER:        implemented in lexer, works, has basic tests
+    PARSER:       implemented parser, works, has basic tests
+    COMPLETE:     Fully implemented in the scanner, lexer, and parser
 
 
 == References
@@ -272,8 +285,8 @@ Documentation and information being read while working on this project.
 * Unicode Regular Expressions link[http://www.unicode.org/reports/tr18/]
 
 == Thanks
-This work is based on tnd inspired by the hard work and ideas of many people,
-directly or indirectly. The following are only some of those that should be 
+This work is based on and inspired by the hard work and ideas of many people,
+directly or indirectly. The following are only a few of those that should be 
 thanked.
 
 * Adrian Thurston, for developing ragel[http://www.complang.org/ragel/].
