@@ -617,6 +617,9 @@ module Regexp::Scanner
   def self.emit_literal
     ts, te = @literal.first[1], @literal.last[2]
     text = @literal.map {|t| t[0]}.join
+
+    text.force_encoding('utf-8') if text.respond_to?(:force_encoding)
+
     self.emit(:literal, :literal, text, ts, te)
     @literal = nil
   end

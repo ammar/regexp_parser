@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require File.expand_path("../../helpers", __FILE__)
 
 class ScannerUTF8 < Test::Unit::TestCase
