@@ -16,7 +16,12 @@ class ScannerSets < Test::Unit::TestCase
     '[+]'             => [1, :set,  :member,         '+',    1, 2],
     '[{]'             => [1, :set,  :member,         '{',    1, 2],
     '[}]'             => [1, :set,  :member,         '}',    1, 2],
+    '[<]'             => [1, :set,  :member,         '<',    1, 2],
+    '[>]'             => [1, :set,  :member,         '>',    1, 2],
 
+    '[\.]'            => [1, :set,  :escape,         '\.',   1, 3],
+    '[\!]'            => [1, :set,  :escape,         '\!',   1, 3],
+    '[\#]'            => [1, :set,  :escape,         '\#',   1, 3],
     '[\]]'            => [1, :set,  :escape,         '\]',   1, 3],
     '[\\\]'           => [1, :set,  :escape,         '\\\\', 1, 3],
     '[a\-c]'          => [2, :set,  :escape,         '\-',   2, 4],
@@ -42,7 +47,10 @@ class ScannerSets < Test::Unit::TestCase
 
     '[\\x20-\\x28]'   => [1, :set,  :range_hex,      '\x20-\x28', 1, 10],
 
+    # TODO: tokens property negation (\P)
     '[a\p{digit}c]'   => [2, :set,  :digit,          '\p{digit}', 2, 11],
+    '[a\P{digit}c]'   => [2, :set,  :digit,          '\P{digit}', 2, 11],
+
     '[a\p{ALPHA}c]'   => [2, :set,  :alpha,          '\p{ALPHA}', 2, 11],
     '[a\p{P}c]'       => [2, :set,  :punct_any,      '\p{P}',     2, 7],
   }

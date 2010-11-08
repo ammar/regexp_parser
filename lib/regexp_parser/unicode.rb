@@ -1,8 +1,12 @@
 module Regexp::Scanner
   module Unicode
 
-    # for \p{Age=4.0}, \P{age=5.2}
-    # Not in Ruby, yet, but available in PERL
+    # for \p{Age=4.0}, \P{age=5.2} Not in Ruby, yet. A patch has been
+    # accepted, as experimental. This introduces a new twist to the
+    # way the syntax specified, with ruby 1.9 <= 1.9.2 without it, and
+    # possibly ruby 1.9.3 with. Anyway, the age property is available
+    # in PERL, using the \p{Age: \d.\d} syntax with a spcial alias as
+    # \p{Present_In: \d.\d}.
     Ages = [
       '1.1',
       '2.0',
