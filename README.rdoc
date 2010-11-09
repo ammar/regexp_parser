@@ -201,7 +201,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
 
   - Alternation: a|b|c                          ** PARSER
   - Anchors: ^, $, \b, etc.                     ** PARSER
-  - Character Classes (aka Sets): [abc], [^\]]  ** SCANNER
+  - Character Classes (aka Sets): [abc], [^\]]  ** SCANNER (missing nested sets)
   - Character Types: \d, \H, \s, etc.           ** PARSER
   - Escape Sequences
     - Backreference: \1 thru \9                 ** SCANNER
@@ -209,7 +209,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
 
   - Grouped Expressions
     - Atomic: (?>abc)                           ** SCANNER
-    - Back-references: \k<name>, \k<1>, \k<-2>  ** SCANNER (missing \k<name-1>)
+    - Back-references: \k<name>, \k<1>, \k<-2>  ** SCANNER (missing nested e.g. \k<name-1>)
     - Capturing: (abc)                          ** SCANNER
     - Comment: (?# comment)                     ** SCANNER
     - Named: (?<name>abc)                       ** SCANNER
