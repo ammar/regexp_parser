@@ -18,7 +18,19 @@ class ScannerErrors < Test::Unit::TestCase
     assert_raise( RuntimeError ) { RS.scan('a\{1') }
   end
 
-  def test_scanner_incomcplete_property
+  def test_scanner_incomplete_property
     assert_raise( RuntimeError ) { RS.scan('\p{ascii abc') }
+  end
+
+  def test_scanner_incomplete_options
+    assert_raise( RuntimeError ) { RS.scan('(?mix abc)') }
+  end
+
+  def test_scanner_eof_options
+    assert_raise( RuntimeError ) { RS.scan('(?mix') }
+  end
+
+  def test_scanner_incorrect_options
+    assert_raise( RuntimeError ) { RS.scan('(?mix^bc') }
   end
 end

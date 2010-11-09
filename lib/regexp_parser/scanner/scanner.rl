@@ -76,7 +76,7 @@
   assertion_lookbehind  = '?<=';
   assertion_nlookbehind = '?<!';
 
-  group_options         = '?' . ([mix]{1,3})? . '-'? . ([mix]{1,3})? . ':'?;
+  group_options         = '?' . ([mix]{1,3})? . '-'? . ([mix]{1,3})?;
 
   group_ref             = [gk];
   group_name            = alpha . (alnum+)?;
@@ -418,7 +418,20 @@
     #   (?imx-imx:subexp)   option on/off for subexp
     # ------------------------------------------------------------------------
     group_open . group_options >group_opened {
-      self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
+      # special handling to resolve ambiguity with passive groups
+      if data[te]
+        c = data[te].chr
+        if c == ':' # include the ':'
+          self.emit(:group, :options, data[ts..te].pack('c*'), ts, te+1)
+          p += 1
+        elsif c == ')' # just options by themselves
+          self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
+        else
+          raise "Unexpected '#{c}' in options sequene, expected ':' or ')'"
+        end
+      else
+        raise "Premature end of pattern" unless data[te]
+      end
     };
 
     # Assertions

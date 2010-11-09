@@ -3,11 +3,12 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerGroups < Test::Unit::TestCase
 
   tests = {
-    # Options
+   ## Options
     '(?-mix:abc)'     => [0, :group,     :options,      '(?-mix:',    0, 7],
     '(?m-ix:abc)'     => [0, :group,     :options,      '(?m-ix:',    0, 7],
     '(?mi-x:abc)'     => [0, :group,     :options,      '(?mi-x:',    0, 7],
     '(?mix:abc)'      => [0, :group,     :options,      '(?mix:',     0, 6],
+    '(?mix)'          => [0, :group,     :options,      '(?mix',      0, 5],
 
     # Group types
     '(?>abc)'         => [0, :group,     :atomic,       '(?>',        0, 3],
