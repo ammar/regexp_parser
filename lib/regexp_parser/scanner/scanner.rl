@@ -45,7 +45,7 @@
   codepoint_sequence    = codepoint_single | codepoint_list;
 
   control_sequence      = ('c' | 'C-') . alpha;
-  meta_sequence         = 'M-' . alpha; # FIXME: incorrect, and can include escapes
+  meta_sequence         = 'M-' . ((backslash . control_sequence) | alpha);
 
   zero_or_one           = '?' | '??' | '?+';
   zero_or_more          = '*' | '*?' | '*+';
@@ -280,7 +280,7 @@
       fret;
     };
 
-    escaped_ascii > (escaped_alpha, 8) {
+    escaped_ascii > (escaped_alpha, 7) {
       # \b is emitted as backspace only when inside a character set, otherwise
       # it is a word boundary anchor. A syntax might "normalize" it if needed.
       case text = data[ts-1..te-1].pack('c*')
@@ -296,7 +296,7 @@
       fret;
     };
 
-    codepoint_sequence > (escaped_alpha, 7) {
+    codepoint_sequence > (escaped_alpha, 6) {
       text = data[ts-1..te-1].pack('c*')
       if text[2].chr == '{'
         self.emit(:escape, :codepoint_list, text, ts-1, te)
@@ -306,7 +306,7 @@
       fret;
     };
 
-    hex_sequence > (escaped_alpha, 6) {
+    hex_sequence > (escaped_alpha, 5) {
       self.emit(:escape, :hex, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
@@ -322,10 +322,8 @@
       fret;
     };
 
-    meta_sequence > (escaped_alpha, 3) {
-      # TODO: add escapes
-      self.emit(:escape, :meta, data[ts-1..te-1].pack('c*'), ts-1, te)
-      fret;
+    meta_sequence > (backslashed, 3) {
+      self.emit(:escape, :meta_sequence, data[ts-1..te-1].pack('c*'), ts-1, te)
     };
 
     property_char > (escaped_alpha, 2) {
@@ -392,6 +390,7 @@
       when '\\W'; self.emit(:type, :nonword,    text, ts, te)
       end
     };
+
 
     # Character sets
     # ------------------------------------------------------------------------
