@@ -311,7 +311,6 @@
       fret;
     };
 
-    # FIXME: scanner returns nil
     wide_hex_sequence > (escaped_alpha, 5) {
       self.emit(:escape, :hex_wide, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
