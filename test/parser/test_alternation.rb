@@ -14,8 +14,8 @@ class ParserAlternation < Test::Unit::TestCase
   def test_parse_alternation_alts
     alts = @root.expressions[0].alternatives
 
-    assert_equal( true,   alts[0].is_a?(Group) )
-    assert_equal( true,   alts[1].is_a?(Group) )
+    assert_equal( true,   alts[0].is_a?(Group::Capture) )
+    assert_equal( true,   alts[1].is_a?(Group::Capture) )
     assert_equal( 2,      alts.length )
   end
 

@@ -140,17 +140,19 @@ module Regexp::Expression
     alias :negated? :negative?
   end
 
-  class Anchor < Regexp::Expression::Base
-    class BeginningOfLine               < Anchor; end
-    class EndOfLine                     < Anchor; end
+  module Anchor
+    class Base < Regexp::Expression::Base; end
 
-    class BeginningOfString             < Anchor; end
-    class EndOfString                   < Anchor; end
+    class BeginningOfLine               < Anchor::Base; end
+    class EndOfLine                     < Anchor::Base; end
 
-    class EndOfStringOrBeforeEndOfLine  < Anchor; end
+    class BeginningOfString             < Anchor::Base; end
+    class EndOfString                   < Anchor::Base; end
 
-    class WordBoundary                  < Anchor; end
-    class NonWordBoundary               < Anchor; end
+    class EndOfStringOrBeforeEndOfLine  < Anchor::Base; end
+
+    class WordBoundary                  < Anchor::Base; end
+    class NonWordBoundary               < Anchor::Base; end
 
     BOL      = BeginningOfLine 
     EOL      = EndOfLine 
@@ -159,16 +161,18 @@ module Regexp::Expression
     EOSobEOL = EndOfStringOrBeforeEndOfLine
   end
 
-  class CharacterType < Regexp::Expression::Base
-    class Any         < CharacterType; end
-    class Digit       < CharacterType; end
-    class NonDigit    < CharacterType; end
-    class Hex         < CharacterType; end
-    class NonHex      < CharacterType; end
-    class Word        < CharacterType; end
-    class NonWord     < CharacterType; end
-    class Space       < CharacterType; end
-    class NonSpace    < CharacterType; end
+  module CharacterType
+    class Base < Regexp::Expression::Base; end
+
+    class Any         < CharacterType::Base; end
+    class Digit       < CharacterType::Base; end
+    class NonDigit    < CharacterType::Base; end
+    class Hex         < CharacterType::Base; end
+    class NonHex      < CharacterType::Base; end
+    class Word        < CharacterType::Base; end
+    class NonWord     < CharacterType::Base; end
+    class Space       < CharacterType::Base; end
+    class NonSpace    < CharacterType::Base; end
   end
 
   module CharacterProperty 
@@ -194,62 +198,94 @@ module Regexp::Expression
     class Word          < Base; end
     class Xdigit        < Base; end
 
-    class Letter  < CharacterProperty::Base
-      class Any         < Letter; end
-      class Uppercase   < Letter; end
-      class Lowercase   < Letter; end
-      class Titlecase   < Letter; end
-      class Modifier    < Letter; end
-      class Other       < Letter; end
+    module Letter
+      class Base < CharacterProperty::Base; end
+
+      class Any         < Letter::Base; end
+      class Uppercase   < Letter::Base; end
+      class Lowercase   < Letter::Base; end
+      class Titlecase   < Letter::Base; end
+      class Modifier    < Letter::Base; end
+      class Other       < Letter::Base; end
     end
 
-    class Mark  < CharacterProperty::Base
-      class Any         < Mark; end
-      class Nonspacing  < Mark; end
-      class Spacing     < Mark; end
-      class Enclosing   < Mark; end
+    module Mark
+      class Base < CharacterProperty::Base; end
+
+      class Any         < Mark::Base; end
+      class Nonspacing  < Mark::Base; end
+      class Spacing     < Mark::Base; end
+      class Enclosing   < Mark::Base; end
     end
 
-    class Number  < CharacterProperty::Base
-      class Any         < Number; end
-      class Decimal     < Number; end
-      class Letter      < Number; end
-      class Other       < Number; end
+    module Number
+      class Base < CharacterProperty::Base; end
+
+      class Any         < Number::Base; end
+      class Decimal     < Number::Base; end
+      class Letter      < Number::Base; end
+      class Other       < Number::Base; end
     end
 
-    class Punctuation  < CharacterProperty::Base
-      class Any         < Punctuation; end
-      class Connector   < Punctuation; end
-      class Dash        < Punctuation; end
-      class Open        < Punctuation; end
-      class Close       < Punctuation; end
-      class Initial     < Punctuation; end
-      class Final       < Punctuation; end
-      class Other       < Punctuation; end
+    module Punctuation
+      class Base < CharacterProperty::Base; end
+
+      class Any         < Punctuation::Base; end
+      class Connector   < Punctuation::Base; end
+      class Dash        < Punctuation::Base; end
+      class Open        < Punctuation::Base; end
+      class Close       < Punctuation::Base; end
+      class Initial     < Punctuation::Base; end
+      class Final       < Punctuation::Base; end
+      class Other       < Punctuation::Base; end
     end
 
-    class Separator  < CharacterProperty::Base
-      class Any         < Separator; end
-      class Space       < Separator; end
-      class Line        < Separator; end
-      class Paragraph   < Separator; end
+    module Separator
+      class Base < CharacterProperty::Base; end
+
+      class Any         < Separator::Base; end
+      class Space       < Separator::Base; end
+      class Line        < Separator::Base; end
+      class Paragraph   < Separator::Base; end
     end
 
-    class Symbol  < CharacterProperty::Base
-      class Any         < Symbol; end
-      class Math        < Symbol; end
-      class Currency    < Symbol; end
-      class Modifier    < Symbol; end
-      class Other       < Symbol; end
+    module Symbol
+      class Base < CharacterProperty::Base; end
+
+      class Any         < Symbol::Base; end
+      class Math        < Symbol::Base; end
+      class Currency    < Symbol::Base; end
+      class Modifier    < Symbol::Base; end
+      class Other       < Symbol::Base; end
     end
 
-    class Codepoint  < CharacterProperty::Base
-      class Any         < Codepoint; end
-      class Control     < Codepoint; end
-      class Format      < Codepoint; end
-      class Surrogate   < Codepoint; end
-      class PrivateUse  < Codepoint; end
-      class Unassigned  < Codepoint; end
+    module Codepoint
+      class Base < CharacterProperty::Base; end
+
+      class Any         < Codepoint::Base; end
+      class Control     < Codepoint::Base; end
+      class Format      < Codepoint::Base; end
+      class Surrogate   < Codepoint::Base; end
+      class PrivateUse  < Codepoint::Base; end
+      class Unassigned  < Codepoint::Base; end
+    end
+
+    module Derived
+      class Base < CharacterProperty::Base; end
+
+      class Math                < Derived::Base; end
+      class Alphabetic          < Derived::Base; end
+      class Lowercase           < Derived::Base; end
+      class Uppercase           < Derived::Base; end
+
+      class IDStart             < Derived::Base; end
+      class IDContinue          < Derived::Base; end
+      class XIDStart            < Derived::Base; end
+      class XIDContinue         < Derived::Base; end
+
+      class GraphemeBase        < Derived::Base; end
+      class GraphemeExtend      < Derived::Base; end
+      class DefaultIgnorableCP  < Derived::Base; end
     end
   end
 
@@ -295,6 +331,7 @@ module Regexp::Expression
     end
   end
 
+  # a sequence of expressions, used by alternations
   class Sequence < Regexp::Expression::Base
     def initialize
       super(:expression, :sequence, '')
@@ -305,29 +342,35 @@ module Regexp::Expression
     end
   end
 
-  class Group < Regexp::Expression::Base
-    def capturing?
-      [:capture, :named].include? @token
+  module Group
+    class Base < Regexp::Expression::Base
+      def capturing?
+        [:capture, :named].include? @token
+      end
+
+      def comment?
+        @token == :comment
+      end
     end
 
-    def comment?
-      @token == :comment
-    end
+    class Comment   < Group::Base; end
 
-    class Comment   < Group; end
+    class Atomic    < Group::Base; end
+    class Capture   < Group::Base; end
+    class Named     < Group::Base; end
+    class Passive   < Group::Base; end
 
-    class Atomic    < Group; end
-    class Capture   < Group; end
-    class Named     < Group; end
-    class Passive   < Group; end
-    class Options   < Group; end
+    class Options   < Group::Base; end
   end
 
-  class Assertion < Regexp::Expression::Group
-    class Lookahead           < Assertion; end
-    class NegativeLookahead   < Assertion; end
-    class Lookbehind          < Assertion; end
-    class NegativeLookbehind  < Assertion; end
+  class Assertion
+    class Base < Regexp::Expression::Group::Base; end
+
+    class Lookahead           < Assertion::Base; end
+    class NegativeLookahead   < Assertion::Base; end
+
+    class Lookbehind          < Assertion::Base; end
+    class NegativeLookbehind  < Assertion::Base; end
   end
 
 end # module Regexp::Expression

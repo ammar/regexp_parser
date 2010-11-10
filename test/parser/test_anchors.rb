@@ -3,15 +3,15 @@ require File.expand_path("../../helpers", __FILE__)
 class TestParserAnchors < Test::Unit::TestCase
 
   tests = {
-    '^a'      => [0, :anchor,   :beginning_of_line,   Anchor],
-    'a$'      => [1, :anchor,   :end_of_line,         Anchor],
+    '^a'      => [0, :anchor,   :beginning_of_line,   Anchor::Base],
+    'a$'      => [1, :anchor,   :end_of_line,         Anchor::Base],
 
-    '\Aa'     => [0, :anchor,   :bos,                 Anchor],
-    'a\z'     => [1, :anchor,   :eos,                 Anchor],
-    'a\Z'     => [1, :anchor,   :eos_ob_eol,          Anchor],
+    '\Aa'     => [0, :anchor,   :bos,                 Anchor::Base],
+    'a\z'     => [1, :anchor,   :eos,                 Anchor::Base],
+    'a\Z'     => [1, :anchor,   :eos_ob_eol,          Anchor::Base],
 
-    'a\b'     => [1, :anchor,   :word_boundary,       Anchor],
-    'a\B'     => [1, :anchor,   :nonword_boundary,    Anchor],
+    'a\b'     => [1, :anchor,   :word_boundary,       Anchor::Base],
+    'a\B'     => [1, :anchor,   :nonword_boundary,    Anchor::Base],
 
     "\\\\Aa"  => [0, :escape,   :backslash,           EscapeSequence::Literal],
   }

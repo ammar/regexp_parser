@@ -35,7 +35,7 @@ class TestParser < Test::Unit::TestCase
 
     assert_equal( false, root.expressions[2].quantified? )
 
-    assert( root.expressions[3].is_a?(Group),
+    assert( root.expressions[3].is_a?(Group::Capture),
           "Not a group, but should be")
 
     assert_equal( true, root.expressions[3].quantified? )
