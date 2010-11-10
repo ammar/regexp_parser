@@ -219,12 +219,7 @@
       fret;
     };
 
-    [\\\]\-\,] {
-      self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
-      fret;
-    };
-
-    meta_char {
+    meta_char | [\\\]\-\,] {
       self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
