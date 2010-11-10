@@ -219,17 +219,20 @@
       fret;
     };
 
-    meta_char | [\\\]\-\,] {
+    meta_char | [\\\]\-\,] -- [}] {
       self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
 
-    backslash? . property_char > (escaped_set_alpha, 2) {
-      fhold; fcall unicode_property; fret;
+    property_char > (escaped_set_alpha, 2) {
+      fhold;
+      fnext character_set;
+      fcall unicode_property;
+      fret;
     };
 
     # special case exclusion of escaped dash, could be cleaner.
-    (ascii_print - char_type -- [\-]) > (escaped_set_alpha, 1) |
+    (ascii_print - char_type -- [\-}]) > (escaped_set_alpha, 1) |
     ascii_nonprint            |
     utf8_2_byte               |
     utf8_3_byte               |
