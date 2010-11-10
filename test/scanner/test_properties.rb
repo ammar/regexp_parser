@@ -70,6 +70,20 @@ class ScannerProperties < Test::Unit::TestCase
     'Default_Ignorable_Code_Point'  => :derived_default_ignorable_cp,
     'Grapheme_Base'                 => :derived_grapheme_base,
     'Grapheme_Extend'               => :derived_grapheme_extend,
+
+    # Age
+    'Age=1.1' => :age_1_1,
+    'Age=2.0' => :age_2_0,
+    'Age=2.1' => :age_2_1,
+    'Age=3.0' => :age_3_0,
+    'Age=3.1' => :age_3_1,
+    'Age=3.2' => :age_3_2,
+    'Age=4.0' => :age_4_0,
+    'Age=4.1' => :age_4_1,
+    'Age=5.0' => :age_5_0,
+    'Age=5.1' => :age_5_1,
+    'Age=5.2' => :age_5_2,
+    'Age=6.0' => :age_6_0,
   }
 
   count = 0

@@ -237,6 +237,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
     - Unicode: \uHHHH, \u{H+ H+}                ** SCANNER
 
   - Unicode Properties: 
+    - Age: \p{2.1}, \P{5.2}, etc.               ** SCANNER
     - Classes: \p{Alpha}, \P{Space}, etc.       ** SCANNER
     - Derived Properties: \p{Math} etc.         ** SCANNER
     - General Categories: \p{Lu}, \P{Cs}, etc.  ** SCANNER

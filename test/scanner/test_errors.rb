@@ -22,6 +22,10 @@ class ScannerErrors < Test::Unit::TestCase
     assert_raise( RuntimeError ) { RS.scan('\p{ascii abc') }
   end
 
+  def test_scanner_unknown_property
+    assert_raise( RuntimeError ) { RS.scan('\p{foobar}') }
+  end
+
   def test_scanner_incomplete_options
     assert_raise( RuntimeError ) { RS.scan('(?mix abc)') }
   end

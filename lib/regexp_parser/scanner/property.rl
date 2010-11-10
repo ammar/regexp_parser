@@ -36,8 +36,12 @@
                           'grapheme_base'i  | 'grapheme_extend'i  |
                           'default_ignorable_code_point'i; 
 
-  property_age          = digit+ . '.' . digit+;
-  property_script       = (alpha | space)+; # TODO: use this instead of all the above?
+  property_age          = 'age=1.1'i | 'age=2.0'i | 'age=2.1'i |
+                          'age=3.0'i | 'age=3.1'i | 'age=3.2'i |
+                          'age=4.0'i | 'age=4.1'i | 'age=5.0'i |
+                          'age=5.1'i | 'age=5.2'i | 'age=6.0'i;
+
+  property_script       = (alpha | space)+; # a bit too permissive
 
   property_sequence     = property_char.'{'.(
                             property_name | general_category |
@@ -54,7 +58,7 @@
   unicode_property := |*
 
     # TODO: break this into smaller states.
-    property_sequence < err(premature_property_end) {
+    property_sequence < eof(premature_property_end) {
       text = data[ts-1..te-1].pack('c*')
 
       if in_set # TODO: sets can have sub-sets, a boolean is not enough!
@@ -364,6 +368,9 @@
         self.emit(type, :script_common,                   text, ts-1, te)
       when 'zzzz', 'unknown'
         self.emit(type, :script_unknown,                  text, ts-1, te)
+
+      else
+        raise "Unknown unicode character property name #{name}"
 
       end
       fret;
