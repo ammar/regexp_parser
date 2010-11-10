@@ -14,9 +14,11 @@ module Regexp::Expression
       @expressions  = []
     end
 
-    #def to_s
-    #  @text
-    #end
+    def to_s
+      s = @text
+      s << @quantifier if quantified?
+      s
+    end
 
     def <<(exp)
       @expressions << exp
@@ -66,6 +68,10 @@ module Regexp::Expression
     def initialize
       super(:expression, :root, '')
     end
+
+    def to_s
+      @expressions.join
+    end
   end
 
   class Quantifier
@@ -78,6 +84,11 @@ module Regexp::Expression
       @min   = min
       @max   = max
     end
+
+    def to_s
+      @text
+    end
+    alias :to_str :to_s
   end
 
   class Literal < Regexp::Expression::Base; end
@@ -329,6 +340,18 @@ module Regexp::Expression
     def alternatives
       @expressions
     end
+
+    def quantify(token, text, min = nil, max = nil, mode = :greedy)
+      if @expressions.last.is_a?(Sequence)
+        @expressions.last.last.quantify(token, text, min, max, mode)
+      else
+        @expressions.last.quantify(token, text, min, max, mode)
+      end
+    end
+
+    def to_s
+      s = @expressions.map{|e| e.to_s}.join('|')
+    end
   end
 
   # a sequence of expressions, used by alternations
@@ -340,6 +363,10 @@ module Regexp::Expression
     def <<(exp)
       @expressions.insert 0, exp
     end
+
+    def to_s
+      s = @expressions.map{|e| e.to_s}.join('|')
+    end
   end
 
   module Group
@@ -348,12 +375,16 @@ module Regexp::Expression
         [:capture, :named].include? @token
       end
 
-      def comment?
-        @token == :comment
+      def comment?; false end
+
+      def to_s
+        s = @text
+        s << @expressions.join
+        s << ')'
+        s << @quantifier.to_s if quantified?
+        s
       end
     end
-
-    class Comment   < Group::Base; end
 
     class Atomic    < Group::Base; end
     class Capture   < Group::Base; end
@@ -361,6 +392,11 @@ module Regexp::Expression
     class Passive   < Group::Base; end
 
     class Options   < Group::Base; end
+
+    # special case inheritance, for to_s
+    class Comment   < Regexp::Expression::Base
+      def comment?; true end
+    end
   end
 
   class Assertion

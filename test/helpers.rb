@@ -8,7 +8,8 @@ RP = Regexp::Parser
 include Regexp::Expression
 
 def pr(re, d=0)
-  puts "[#{d}]#{'  ' * d}#{re.class.name}"
+  print "[#{d}]#{'  ' * d}#{re.class.name}"
+  puts " quantifier: #{re.quantifier.to_s}" if re.quantified?
   re.expressions.each do |e|
     if e.expressions.empty?
       if e.respond_to? :members
