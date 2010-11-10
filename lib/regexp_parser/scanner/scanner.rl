@@ -229,7 +229,7 @@
       fret;
     };
 
-    property_char > (escaped_set_alpha, 2) {
+    backslash? . property_char > (escaped_set_alpha, 2) {
       fhold; fcall unicode_property; fret;
     };
 
