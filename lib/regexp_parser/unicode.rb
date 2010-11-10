@@ -67,7 +67,7 @@ module Regexp::Scanner
       'Cari', 'Carian',
       'Cham', 
       'Cher', 'Cherokee',
-      'Copt', 'Coptic / Qaac',
+      'Copt', 'Coptic', 'Qaac',
       'Cprt', 'Cypriot',
       'Cyrl', 'Cyrillic',
       'Deva', 'Devanagari',
@@ -143,7 +143,7 @@ module Regexp::Scanner
       'Xpeo', 'Old Persian',
       'Xsux', 'Cuneiform',
       'Yiii', 'Yi',
-      'Zinh', 'Inherited', 'Qaa',
+      'Zinh', 'Inherited', 'Qaai',
       'Zyyy', 'Common',
       'Zzzz', 'Unknown',
     ].freeze

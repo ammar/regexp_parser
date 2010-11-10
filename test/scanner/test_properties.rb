@@ -57,6 +57,19 @@ class ScannerProperties < Test::Unit::TestCase
     'Cs'        => :cp_surrogate,
     'Co'        => :cp_private,
     'Cn'        => :cp_unassigned,
+
+    # derived
+    'Math'                          => :derived_math,
+    'Alphabetic'                    => :derived_alphabetic,
+    'Lowercase'                     => :derived_lowercase,
+    'Uppercase'                     => :derived_uppercase,
+    'ID_Start'                      => :derived_id_start,
+    'ID_Continue'                   => :derived_id_continue,
+    'XID_Start'                     => :derived_xid_start,
+    'XID_Continue'                  => :derived_xid_continue,
+    'Default_Ignorable_Code_Point'  => :derived_default_ignorable_cp,
+    'Grapheme_Base'                 => :derived_grapheme_base,
+    'Grapheme_Extend'               => :derived_grapheme_extend,
   }
 
   count = 0

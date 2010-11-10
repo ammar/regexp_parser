@@ -238,9 +238,9 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
 
   - Unicode Properties: 
     - Classes: \p{Alpha}, \P{Space}, etc.       ** SCANNER
-    - Derived Properties: \p{Math} etc.         ** MISSING
+    - Derived Properties: \p{Math} etc.         ** SCANNER
     - General Categories: \p{Lu}, \P{Cs}, etc.  ** SCANNER
-    - Scripts: \p{Arabic}, \P{Hiragana}         ** MISSING
+    - Scripts: \p{Arabic}, \P{Hiragana}         ** SCANNER
     - Simple Properties (aka Aliases):          ** MISSING
 
 
