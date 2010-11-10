@@ -149,6 +149,15 @@ module Regexp::Expression
       @negative
     end
     alias :negated? :negative?
+
+    def to_s
+      s = @text
+      s << '^' if negative?
+      s << @members.join
+      s << ']'
+      s << @quantifier.to_s if quantified?
+      s
+    end
   end
 
   module Anchor
