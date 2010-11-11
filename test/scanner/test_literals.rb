@@ -1,9 +1,20 @@
 # -*- encoding: utf-8 -*-
+
 require File.expand_path("../../helpers", __FILE__)
 
 class ScannerUTF8 < Test::Unit::TestCase
 
   tests = {
+    # ascii, single byte characters
+    'a' => {
+      0     => [:literal,     :literal,       'a',        0, 1],
+    },
+
+    'ab+' => {
+      0     => [:literal,     :literal,       'ab',       0, 2],
+      1     => [:quantifier,  :one_or_more,   '+',        2, 3],
+    },
+
     # 2 byte wide characters, Arabic
     'aاbبcت' => {
       0     => [:literal,     :literal,       'aاbبcت',   0, 9],

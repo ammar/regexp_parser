@@ -232,7 +232,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
   - String Escapes
     - Control: \C-C, \cD                        ** SCANNER
     - Hex: \x20, \x{701230}                     ** SCANNER
-    - Meta: \M-c, \M-\C-C etc..        ** REVIEW/TEST
+    - Meta: \M-c, \M-\C-C etc..                 ** REVIEW/TEST
     - Octal: \0, \01, \012                      ** SCANNER
     - Unicode: \uHHHH, \u{H+ H+}                ** SCANNER
 
