@@ -111,11 +111,11 @@
   action premature_end_error { raise "Premature end of pattern" }
 
   # group (nesting) and set open/close actions
-  action group_opened { in_group += 1 }
-  action group_closed { in_group -= 1 }
+  action group_opened { group_depth += 1; in_group = true }
+  action group_closed { group_depth -= 1; in_group = group_depth > 0 ? true : false }
 
-  action set_opened { in_set = true }
-  action set_closed { in_set = false }
+  action set_opened { set_depth += 1; in_set = true }
+  action set_closed { set_depth -= 1; in_set = set_depth > 0 ? true : false }
 
 
   # Character set scanner, continues consuming characters until it meets the
@@ -175,7 +175,13 @@
     };
 
     meta_char {
-      self.emit(:set, :member, data[ts..te-1].pack('c*'), ts, te)
+      # this is an ugly workaround. need to review/re-structure the
+      # unicode properties machine, which causes this to misbehave.
+      if in_set
+        self.emit(:set, :member, data[ts..te-1].pack('c*'), ts, te)
+      else
+        fhold; fgoto main;
+      end
     };
 
     any            |
@@ -219,7 +225,7 @@
       fret;
     };
 
-    meta_char | [\\\]\-\,] -- [}] {
+    meta_char | [\\\]\-\,] {
       self.emit(:set, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
       fret;
     };
@@ -598,15 +604,16 @@ module Regexp::Scanner
     @tokens = []
     @block  = block_given? ? block : nil
 
-    in_group = 0
-    in_set   = false
+    in_group, group_depth = false, 0
+    in_set,   set_depth   = false, 0
 
     %% write init;
     %% write exec;
 
-    raise "Premature end of pattern (missing group closing paranthesis) [#{in_group}]" if
-      in_group > 0
-    raise "Premature end of pattern (missing set closing bracket)" if in_set 
+    raise "Premature end of pattern (missing group closing paranthesis) "+
+      "[#{in_group}:#{group_depth}]" if in_group
+    raise "Premature end of pattern (missing set closing bracket) "+
+      "[#{in_set}:#{set_depth}]" if in_set
 
     # when the entire expression is a literal run
     self.emit_literal if @literal
