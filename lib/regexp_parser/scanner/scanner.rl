@@ -142,7 +142,7 @@
       end
     };
 
-    alnum . '-' . alnum { # TODO: add properties
+    alnum . '-' . alnum {
       self.emit(:set, :range, data[ts..te-1].pack('c*'), ts, te)
     };
 
@@ -174,14 +174,10 @@
       end
     };
 
-    meta_char {
-      # this is an ugly workaround. need to review/re-structure the
-      # unicode properties machine, which causes this to misbehave.
-      if in_set
-        self.emit(:set, :member, data[ts..te-1].pack('c*'), ts, te)
-      else
-        fhold; fgoto main;
-      end
+    # exclude the closing bracket as a cleaner workaround for dealing with the
+    # ambiguity caused upon exit from the unicode properties machine
+    meta_char -- ']' {
+     self.emit(:set, :member, data[ts..te-1].pack('c*'), ts, te)
     };
 
     any            |
