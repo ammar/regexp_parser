@@ -83,8 +83,22 @@ module Regexp::Syntax
     alias :check! :implements!
 
     def normalize(type, token)
-      [type, token]
+      case type
+      when :group
+        normalize_group(type, token)
+      else
+        [type, token]
+      end
     end
+
+      def normalize_group(type, token)
+        case token
+        when :named_ab, :named_sq
+          [:group, :named]
+        else
+          [type, token]
+        end
+      end
   end
 
   # A syntax that always returns true, passing all tokens as implemented. This

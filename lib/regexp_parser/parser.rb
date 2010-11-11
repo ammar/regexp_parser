@@ -32,6 +32,7 @@ module Regexp::Parser
     when :anchor;       self.anchor(type, token, text)
     when :escape;       self.escape(type, token, text)
     when :group;        self.group(type, token, text)
+    when :assertion;    self.group(type, token, text)
     when :set;          self.set(type, token, text)
     when :type;         self.type(type, token, text)
 
@@ -42,7 +43,7 @@ module Regexp::Parser
       @node << Literal.new(type, token, text)
 
     else
-      raise "EMIT: unexpected token type #{type.inspect}, #{token.inspect} #{text}"
+      raise "parse_token: unexpected token type #{type.inspect}, #{token.inspect} #{text}"
     end
   end
 
@@ -317,18 +318,19 @@ module Regexp::Parser
       exp = Group::Passive.new(type, token, text)
     when :atomic
       exp = Group::Atomic.new(type, token, text)
-    when :lookahead
-      exp = Group::Lookahead.new(type, token, text)
-    when :nlookahead
-      exp = Group::NegativeLookahead.new(type, token, text)
-    when :lookbehind
-      exp = Group::Lookbehind.new(type, token, text)
-    when :nlookbehind
-      exp = Group::NegativeLookbehind.new(type, token, text)
     when :named
       exp = Group::Named.new(type, token, text)
     when :capture
       exp = Group::Capture.new(type, token, text)
+
+    when :lookahead
+      exp = Assertion::Lookahead.new(type, token, text)
+    when :nlookahead
+      exp = Assertion::NegativeLookahead.new(type, token, text)
+    when :lookbehind
+      exp = Assertion::Lookbehind.new(type, token, text)
+    when :nlookbehind
+      exp = Assertion::NegativeLookbehind.new(type, token, text)
 
     else
       raise "Unsupported Group type open token #{token.inspect}"

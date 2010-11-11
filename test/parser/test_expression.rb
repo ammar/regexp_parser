@@ -17,4 +17,24 @@ class ParserExpression < Test::Unit::TestCase
     assert_equal( pattern, RP.parse(pattern).to_s )
   end
 
+  def test_parse_expression_to_s_groups
+    pattern = "(a(?>b(?:c(?<n>d(?'N'e)??f)+g)*+h)*i)++"
+    assert_equal( pattern, RP.parse(pattern).to_s )
+  end
+
+  def test_parse_expression_to_s_assertions
+    pattern = '(a+(?=b+(?!c+(?<=d+(?<!e+)?f+)?g+)?h+)?i+)?'
+    assert_equal( pattern, RP.parse(pattern).to_s )
+  end
+
+  def test_parse_expression_to_s_comments
+    pattern = '(?#start)a(?#middle)b(?#end)'
+    assert_equal( pattern, RP.parse(pattern).to_s )
+  end
+
+  def test_parse_expression_to_s_options
+    pattern = '(?mix:start)a(?-mix:middle)b(?i-mx:end)'
+    assert_equal( pattern, RP.parse(pattern).to_s )
+  end
+
 end

@@ -28,7 +28,7 @@ module Regexp::Syntax
         when :quantifier
           normalize_quantifier(type, token)
         else
-          [type, token]
+          super
         end
       end
 
