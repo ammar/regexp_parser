@@ -4,6 +4,7 @@ i.rb
 lib/regexp_parser/scanner.rb
 coverage
 doc
+test/run
 sandbox
 test/test_sandbox.rb
 IN-PROGRESS

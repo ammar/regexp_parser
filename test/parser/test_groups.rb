@@ -2,12 +2,48 @@ require File.expand_path("../../helpers", __FILE__)
 
 class TestParserGroups < Test::Unit::TestCase
 
-  def test_parse_options
+  def test_parse_options_xi
     t = RP.parse(/(?xi-m:a(?m-ix:b))/)
 
     assert_equal( false, t.expressions.first.m? )
-    assert_equal( true, t.expressions.first.i? )
-    assert_equal( true, t.expressions.first.x? )
+    assert_equal( true,  t.expressions.first.i? )
+    assert_equal( true,  t.expressions.first.x? )
+  end
+
+  def test_parse_options_xm
+    t = RP.parse(/(?xm-i:a(?m-ix:b))/)
+
+    assert_equal( true,  t.expressions.first.m? )
+    assert_equal( false, t.expressions.first.i? )
+    assert_equal( true,  t.expressions.first.x? )
+  end
+
+  def test_parse_options_im
+    t = RP.parse(/(?mi-x:a(?m-ix:b))/)
+
+    assert_equal( true,  t.expressions.first.m? )
+    assert_equal( true,  t.expressions.first.i? )
+    assert_equal( false, t.expressions.first.x? )
+  end
+
+  def test_parse_lookahead
+    t = RP.parse('(?=abc)(?!def)')
+
+    assert( t.expressions[0].is_a?(Assertion::Lookahead),
+           "Expected lookahead, but got #{t.expressions[0].class.name}")
+
+    assert( t.expressions[1].is_a?(Assertion::NegativeLookahead),
+           "Expected negative lookahead, but got #{t.expressions[0].class.name}")
+  end
+
+  def test_parse_lookbehind
+    t = RP.parse('(?<=abc)(?<!def)')
+
+    assert( t.expressions[0].is_a?(Assertion::Lookbehind),
+           "Expected lookbehind, but got #{t.expressions[0].class.name}")
+
+    assert( t.expressions[1].is_a?(Assertion::NegativeLookbehind),
+           "Expected negative lookbehind, but got #{t.expressions[0].class.name}")
   end
 
   def test_parse_comment

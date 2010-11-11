@@ -9,7 +9,9 @@ include Regexp::Expression
 
 def pr(re, d=0)
   print "[#{d}]#{'  ' * d}#{re.class.name}"
-  puts " quantifier: #{re.quantifier.to_s}" if re.quantified?
+  print " quantifier: #{re.quantifier.to_s}" if re.quantified?
+  puts
+
   re.expressions.each do |e|
     if e.expressions.empty?
       if e.respond_to? :members
