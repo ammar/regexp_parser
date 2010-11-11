@@ -154,7 +154,6 @@ module Regexp::Expression
       s = @text
       s << '^' if negative?
       s << @members.join
-      s << ']'
       s << @quantifier.to_s if quantified?
       s
     end

@@ -28,6 +28,8 @@ module Regexp::Syntax
       Basic     = []
       Extended  = [:digit, :nondigit, :hex, :nonhex, :space, :nonspace,
                    :word, :nonword]
+
+      All = Basic + Extended
     end
 
     module CharacterSet
@@ -45,6 +47,8 @@ module Regexp::Syntax
         Extensions = [:class_ascii, :class_word]
         All         = Standard + Extensions
       end
+
+      All = Basic + Extended + Types + POSIX::All
     end
 
     module Quantifier
@@ -65,6 +69,8 @@ module Regexp::Syntax
       Meta  = [:dot, :alternation, :zero_or_one, :zero_or_more, :one_or_more,
                :beginning_of_line, :end_of_line, :group_open, :group_close,
                :interval_open, :interval_close, :set_open, :set_close, :baclslash]
+
+      All   = Basic + Backreference + ASCII + Meta
     end
 
     module CharacterProperty

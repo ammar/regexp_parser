@@ -26,7 +26,6 @@ module Regexp::Parser
   end
 
   def self.parse_token(type, token, text, ts, te)
-    #puts "[#{type.inspect}, #{token.inspect}] #{text}"
     case type
     when :meta;         self.meta(type, token, text)
     when :quantifier;   self.quantifier(type, token, text)
@@ -57,10 +56,14 @@ module Regexp::Parser
       self.append_set(type, token, text)
     when :range
       self.append_set(type, token, text)
-    when *Token::CharacterSet::POSIX::All
+    when *Token::Escape::All
+      self.append_set(type, token, text)
+    when *Token::CharacterSet::All
       self.append_set(type, token, text)
     when :close
       self.close_set
+    when *Token::CharacterProperty::All
+      self.append_set(type, token, text)
     else
       raise "Unsupported CharacterSet token #{token.inspect}"
     end
