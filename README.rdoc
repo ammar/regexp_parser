@@ -284,6 +284,7 @@ Documentation and information being read while working on this project.
 * Unicode Explained, By Jukka K. Korpela. book[http://oreilly.com/catalog/9780596101213]
 * Unicode Property Aliases link[http://www.unicode.org/Public/UNIDATA/PropertyAliases.txt]
 * Unicode Regular Expressions link[http://www.unicode.org/reports/tr18/]
+* Unicode Standard Annex #44 link[http://www.unicode.org/reports/tr44/]
 
 == Thanks
 This work is based on and inspired by the hard work and ideas of many people,
