@@ -15,12 +15,21 @@ module Regexp::Syntax
     module Group
       Basic     = [:capture, :close]
       Extended  = Basic + [:options]
+
       Named     = [:named]
+      Atomic    = [:atomic]
+      Passive   = [:passive]
+      Comment   = [:comment]
 
       module Assertion
         Positive = [:lookahead, :lookbehind]
         Negative = [:nlookahead, :nlookbehind]
+
+        All = Positive + Negative
       end
+
+      All = Group::Extended + Group::Named + Group::Atomic +
+            Group::Passive + Group::Comment
     end
 
 

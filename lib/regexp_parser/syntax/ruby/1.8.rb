@@ -16,10 +16,9 @@ module Regexp::Syntax
           Escape::Basic + Escape::Backreference +
           Escape::ASCII + Escape::Meta
 
-        implements :group, Group::Extended
+        implements :group, Group::All
 
-        implements :assertion,
-          Group::Assertion::Positive + Group::Assertion::Negative
+        implements :assertion, Group::Assertion::All
 
         implements :set, 
           CharacterSet::Extended + CharacterSet::Types +
