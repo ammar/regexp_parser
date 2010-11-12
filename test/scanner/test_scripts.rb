@@ -21,11 +21,17 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
     'Bamu'                    => :script_bamum,
 	  'Bamum'                   => :script_bamum,
 
+    'Batk'                    => :script_batak,
+	  'Batak'                   => :script_batak,
+
     'Beng'                    => :script_bengali,
 	  'Bengali'                 => :script_bengali,
 
     'Bopo'                    => :script_bopomofo,
 	  'Bopomofo'                => :script_bopomofo,
+
+    'Brah'                    => :script_brahmi,
+	  'Brahmi'                  => :script_brahmi,
 
     'Brai'                    => :script_braille,
 	  'Braille'                 => :script_braille,
@@ -154,6 +160,9 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
 
     'Lydi'                    => :script_lydian,
 	  'Lydian'                  => :script_lydian,
+
+    'Mand'                    => :script_mandaic,
+	  'Mandaic'                 => :script_mandaic,
 
     'Mlym'                    => :script_malayalam,
 	  'Malayalam'               => :script_malayalam,
