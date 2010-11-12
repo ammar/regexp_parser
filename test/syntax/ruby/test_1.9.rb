@@ -26,7 +26,7 @@ class TestSyntaxRuby_V19 < Test::Unit::TestCase
   tests.each do |method, types|
     types.each do |type, tokens|
       tokens.each do |token|
-        define_method "test_syntax_v19_#{method}_#{type}_#{token}" do
+        define_method "test_syntax_ruby_v19_#{method}_#{type}_#{token}" do
           assert_equal(
             method == :excludes ? false : true,
             @syntax.implements?(type, token)
