@@ -4,8 +4,7 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
   include Regexp::Syntax::Token
 
   def setup
-    @name   = 'ruby/1.8'
-    @syntax = Regexp::Syntax.new @name
+    @syntax = Regexp::Syntax.new 'ruby/1.8'
   end
 
   tests = {
