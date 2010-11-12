@@ -5,7 +5,10 @@
 module Regexp::Lexer
 
   # TODO: complete, test token sets
-  OPENING_TOKENS = [:open, :capture, :options].freeze
+  OPENING_TOKENS = [:open, :capture, :options, :passive, :atomic, :named,
+                    :lookahead, :nlookahead, :lookbehind, :nlookbehind
+                   ].freeze
+
   CLOSING_TOKENS = [:close].freeze
 
   def self.scan(input, syntax = 'ruby/1.9', &block)

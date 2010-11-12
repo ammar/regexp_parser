@@ -425,7 +425,7 @@
         elsif c == ')' # just options by themselves
           self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
         else
-          raise "Unexpected '#{c}' in options sequene, expected ':' or ')'"
+          raise "Unexpected '#{c}' in options sequence, ':' or ')' expected"
         end
       else
         raise "Premature end of pattern" unless data[te]
@@ -460,7 +460,7 @@
       when '(?>';  self.emit(:group, :atomic,       text, ts, te)
 
       when /\(\?<\w+>/
-        self.emit(:group, :named,     text, ts, te)
+        self.emit(:group, :named_ab,  text, ts, te)
       when /\(\?'\w+'/
         self.emit(:group, :named_sq,  text, ts, te)
       end

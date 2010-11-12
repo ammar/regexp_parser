@@ -61,7 +61,7 @@
     property_sequence < eof(premature_property_end) {
       text = data[ts-1..te-1].pack('c*')
 
-      if in_set # TODO: sets can have sub-sets, a boolean is not enough!
+      if in_set
         type = :set
         pref = text[1,1] == 'p' ? :property : :nonproperty
       else

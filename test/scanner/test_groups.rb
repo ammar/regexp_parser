@@ -13,7 +13,7 @@ class ScannerGroups < Test::Unit::TestCase
     # Group types
     '(?>abc)'         => [0, :group,     :atomic,       '(?>',        0, 3],
     '(abc)'           => [0, :group,     :capture,      '(',          0, 1],
-    '(?<name>abc)'    => [0, :group,     :named,        '(?<name>',   0, 8],
+    '(?<name>abc)'    => [0, :group,     :named_ab,     '(?<name>',   0, 8],
     "(?'name'abc)"    => [0, :group,     :named_sq,     "(?'name'",   0, 8],
     '(?:abc)'         => [0, :group,     :passive,      '(?:',        0, 3],
 

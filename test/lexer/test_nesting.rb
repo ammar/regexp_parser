@@ -4,23 +4,60 @@ class LexerNesting < Test::Unit::TestCase
 
   tests = {
     '(((b)))' => {
-      0     => [:group,       :capture,       '(',    0, 1, 0],
-      1     => [:group,       :capture,       '(',    1, 2, 1],
-      2     => [:group,       :capture,       '(',    2, 3, 2],
-      3     => [:literal,     :literal,       'b',    3, 4, 3],
-      4     => [:group,       :close,         ')',    4, 5, 2],
-      5     => [:group,       :close,         ')',    5, 6, 1],
-      6     => [:group,       :close,         ')',    6, 7, 0],
+      0     => [:group,       :capture,       '(',      0,  1, 0],
+      1     => [:group,       :capture,       '(',      1,  2, 1],
+      2     => [:group,       :capture,       '(',      2,  3, 2],
+      3     => [:literal,     :literal,       'b',      3,  4, 3],
+      4     => [:group,       :close,         ')',      4,  5, 2],
+      5     => [:group,       :close,         ')',      5,  6, 1],
+      6     => [:group,       :close,         ')',      6,  7, 0],
     },
 
     '(\((b)\))' => {
-      0     => [:group,       :capture,       '(',    0, 1, 0],
-      1     => [:escape,      :group_open,    '\(',   1, 3, 1], # TODO: normalize in syntax
-      2     => [:group,       :capture,       '(',    3, 4, 1],
-      3     => [:literal,     :literal,       'b',    4, 5, 2],
-      4     => [:group,       :close,         ')',    5, 6, 1],
-      5     => [:escape,      :group_close,   '\)',   6, 8, 1], # TODO: normalize in syntax
-      6     => [:group,       :close,         ')',    8, 9, 0],
+      0     => [:group,       :capture,       '(',      0,  1, 0],
+      1     => [:escape,      :group_open,    '\(',     1,  3, 1],
+      2     => [:group,       :capture,       '(',      3,  4, 1],
+      3     => [:literal,     :literal,       'b',      4,  5, 2],
+      4     => [:group,       :close,         ')',      5,  6, 1],
+      5     => [:escape,      :group_close,   '\)',     6,  8, 1],
+      6     => [:group,       :close,         ')',      8,  9, 0],
+    },
+
+    '(?>a(?>b(?>c)))' => {
+      0     => [:group,       :atomic,        '(?>',    0,  3, 0],
+      2     => [:group,       :atomic,        '(?>',    4,  7, 1],
+      4     => [:group,       :atomic,        '(?>',    8, 11, 2],
+      6     => [:group,       :close,         ')',     12, 13, 2],
+      7     => [:group,       :close,         ')',     13, 14, 1],
+      8     => [:group,       :close,         ')',     14, 15, 0],
+    },
+
+    '(?:a(?:b(?:c)))' => {
+      0     => [:group,       :passive,       '(?:',    0,  3, 0],
+      2     => [:group,       :passive,       '(?:',    4,  7, 1],
+      4     => [:group,       :passive,       '(?:',    8, 11, 2],
+      6     => [:group,       :close,         ')',     12, 13, 2],
+      7     => [:group,       :close,         ')',     13, 14, 1],
+      8     => [:group,       :close,         ')',     14, 15, 0],
+    },
+
+    '(?=a(?!b(?<=c(?<!d))))' => {
+      0     => [:assertion,   :lookahead,     '(?=',    0,  3, 0],
+      2     => [:assertion,   :nlookahead,    '(?!',    4,  7, 1],
+      4     => [:assertion,   :lookbehind,    '(?<=',   8, 12, 2],
+      6     => [:assertion,   :nlookbehind,   '(?<!',  13, 17, 3],
+      8     => [:group,       :close,         ')',     18, 19, 3],
+      9     => [:group,       :close,         ')',     19, 20, 2],
+      10    => [:group,       :close,         ')',     20, 21, 1],
+      11    => [:group,       :close,         ')',     21, 22, 0],
+    },
+
+    '((?#a)b(?#c)d(?#e))' => {
+      0     => [:group,       :capture,       '(',      0,  1, 0],
+      1     => [:group,       :comment,       '(?#a)',  1,  6, 1],
+      3     => [:group,       :comment,       '(?#c)',  7, 12, 1],
+      5     => [:group,       :comment,       '(?#e)', 13, 18, 1],
+      6     => [:group,       :close,         ')',     18, 19, 0],
     },
   }
 
