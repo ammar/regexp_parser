@@ -4,8 +4,7 @@
 # given syntax flavor.
 module Regexp::Lexer
 
-  # Note: the :open token applies to character sets
-  OPENING_TOKENS = [:open, :capture, :options, :passive, :atomic, :named,
+  OPENING_TOKENS = [:capture, :options, :passive, :atomic, :named,
                     :lookahead, :nlookahead, :lookbehind, :nlookbehind
                    ].freeze
 
@@ -15,19 +14,20 @@ module Regexp::Lexer
     syntax = Regexp::Syntax.new(syntax)
 
     @tokens = []
-    @nesting = 0
+    @nesting, @set_nesting = 0, 0
 
     last = nil
     Regexp::Scanner.scan(input) do |type, token, text, ts, te|
       type, token = *syntax.normalize(type, token)
       syntax.check! type, token
 
-      @nesting -= 1 if CLOSING_TOKENS.include?(token)
+      self.ascend(type, token)
 
       self.break_literal(last) if type == :quantifier and
         last and last.type == :literal
 
-      current = Regexp::Token.new(type, token, text, ts, te, @nesting)
+      current = Regexp::Token.new(type, token, text, ts, te,
+                                  @nesting, @set_nesting)
 
       current = self.merge_literal(current) if type == :literal and
         last and last.type == :literal
@@ -38,13 +38,33 @@ module Regexp::Lexer
       @tokens << current
       last = current
 
-      @nesting += 1 if OPENING_TOKENS.include?(token)
+      self.descend(type, token)
     end
 
     if block_given?
       @tokens.each {|token| yield token}
     else
       @tokens
+    end
+  end
+
+  def self.ascend(type, token)
+    if type == :group or type == :assertion
+      @nesting -= 1 if CLOSING_TOKENS.include?(token)
+    end
+
+    if type == :set or type == :subset
+      @set_nesting -= 1 if token == :close
+    end
+  end
+
+  def self.descend(type, token)
+    if type == :group or type == :assertion
+      @nesting += 1 if OPENING_TOKENS.include?(token)
+    end
+
+    if type == :set or type == :subset
+      @set_nesting += 1 if token == :open
     end
   end
 
@@ -66,11 +86,11 @@ module Regexp::Lexer
 
       @tokens.pop
       @tokens << Regexp::Token.new(:literal, :literal, lead, token.ts,
-                                   (token.te - last_length), @nesting)
+                                   (token.te - last_length), @nesting, @set_nesting)
 
       @tokens << Regexp::Token.new(:literal, :literal, last,
                                    (token.ts + lead_length),
-                                   token.te, @nesting)
+                                   token.te, @nesting, @set_nesting)
     end
   end
 
@@ -79,7 +99,7 @@ module Regexp::Lexer
   def self.merge_literal(current)
     last = @tokens.pop
     replace = Regexp::Token.new(:literal, :literal, last.text + current.text,
-                                   last.ts, current.te, @nesting)
+                                   last.ts, current.te, @nesting, @set_nesting)
   end
 
 end # module Regexp::Lexer
