@@ -199,6 +199,10 @@ module Regexp::Expression
       def inverted?
         @type == :nonproperty
       end
+
+      def name
+        @text[/[^\\pP{}]+/]
+      end
     end
 
     class Alnum         < Base; end
@@ -210,6 +214,7 @@ module Regexp::Expression
     class Digit         < Base; end
     class Graph         < Base; end
     class Lower         < Base; end
+    class Newline       < Base; end
     class Print         < Base; end
     class Punct         < Base; end
     class Space         < Base; end
@@ -289,24 +294,9 @@ module Regexp::Expression
       class Unassigned  < Codepoint::Base; end
     end
 
-    module Derived
-      class Base < CharacterProperty::Base; end
-
-      class Math                < Derived::Base; end
-      class Alphabetic          < Derived::Base; end
-      class Lowercase           < Derived::Base; end
-      class Uppercase           < Derived::Base; end
-
-      class IDStart             < Derived::Base; end
-      class IDContinue          < Derived::Base; end
-
-      class GraphemeBase        < Derived::Base; end
-      class GraphemeExtend      < Derived::Base; end
-      class DefaultIgnorableCP  < Derived::Base; end
-
-      class XIDStart            < Derived::Base; end
-      class XIDContinue         < Derived::Base; end
-    end
+    class Age     < CharacterProperty::Base; end
+    class Derived < CharacterProperty::Base; end
+    class Script  < CharacterProperty::Base; end
   end
 
   # TODO: split this into escape sequences and string escapes

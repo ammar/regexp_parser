@@ -3,6 +3,11 @@ require File.expand_path("../../helpers", __FILE__)
 class ParserExpression < Test::Unit::TestCase
 
   def test_parse_expression_to_s_quantified_alternation
+    pattern = 'abcd|ghij'
+    assert_equal( pattern, RP.parse(pattern).to_s )
+  end
+
+  def test_parse_expression_to_s_quantified_alternation
     pattern = '(abc*?d+)+|(ghi++j?){3,6}'
     assert_equal( pattern, RP.parse(pattern).to_s )
   end

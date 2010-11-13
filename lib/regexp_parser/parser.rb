@@ -139,6 +139,7 @@ module Regexp::Parser
     when :upper;            @node << Upper.new(token)
     when :word;             @node << Word.new(token)
     when :xdigit;           @node << Xdigit.new(token)
+    when :newline;          @node << Newline.new(token)
 
     when :letter_any;       @node << Letter::Any.new(token)
     when :letter_uppercase; @node << Letter::Uppercase.new(token)
@@ -177,12 +178,22 @@ module Regexp::Parser
     when :symbol_modifier;  @node << Symbol::Modifier.new(token)
     when :symbol_other;     @node << Symbol::Other.new(token)
 
-    when :cp_any;           @node << Codepoint::Any.new(token)
+    when :other;            @node << Codepoint::Any.new(token)
     when :control;          @node << Codepoint::Control.new(token)
     when :format;           @node << Codepoint::Format.new(token)
     when :surrogate;        @node << Codepoint::Surrogate.new(token)
-    when :private;          @node << Codepoint::PrivateUse.new(token)
+    when :private_use;      @node << Codepoint::PrivateUse.new(token)
     when :unassigned;       @node << Codepoint::Unassigned.new(token)
+
+    when *Token::CharacterProperty::Age
+      @node << Age.new(token)
+
+    when *Token::CharacterProperty::Derived
+      @node << Derived.new(token)
+
+    when *Regexp::Syntax::Token::CharacterProperty::Script
+      @node << Script.new(token)
+
     else
       raise "Unsupported UnicodeProperty token #{token.inspect}"
     end
