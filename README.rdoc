@@ -199,50 +199,50 @@ functions of all expression classes.
 The following is targeted for support by the scanner. This should be a table,
 but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
 
-  - Alternation: a|b|c                          ** PARSER
-  - Anchors: ^, $, \b, etc.                     ** PARSER
-  - Character Classes (aka Sets): [abc], [^\]]  ** SCANNER (missing nested sets)
-  - Character Types: \d, \H, \s, etc.           ** PARSER
+  - Alternation: a|b|c                            ** PARSER
+  - Anchors: ^, $, \b, etc.                       ** PARSER
+  - Character Classes (aka Sets): [abc], [^\]]    ** SCANNER (missing nested sets)
+  - Character Types: \d, \H, \s, etc.             ** PARSER
   - Escape Sequences
-    - Backreference: \1 thru \9                 ** SCANNER
-    - Metacharacters: \\, \+, \?, etc.          ** SCANNER
+    - Backreference: \1 thru \9                   ** SCANNER
+    - Metacharacters: \\, \+, \?, etc.            ** SCANNER
 
   - Grouped Expressions
-    - Atomic: (?>abc)                           ** SCANNER
-    - Back-references: \k<name>, \k<1>, \k<-2>  ** SCANNER (missing nested e.g. \k<name-1> and \k<num-1>)
-    - Capturing: (abc)                          ** SCANNER
-    - Comment: (?# comment)                     ** SCANNER
-    - Named: (?<name>abc)                       ** SCANNER
-    - Options: (?mi-x:abc)                      ** SCANNER (missing u, e, etc)
-    - Passive: (?:abc)                          ** SCANNER
+    - Atomic: (?>abc)                             ** SCANNER
+    - Back-references: \k<name>, \k<1>, \k<-2>    ** SCANNER (missing nested e.g. \k<name-1> and \k<num-1>)
+    - Capturing: (abc)                            ** SCANNER
+    - Comment: (?# comment)                       ** SCANNER
+    - Named: (?<name>abc)                         ** SCANNER
+    - Options: (?mi-x:abc)                        ** SCANNER (missing u, e, etc)
+    - Passive: (?:abc)                            ** SCANNER
     - Assertions
-      - Lookahead: (?=abc)                      ** SCANNER
-      - Negative Lookahead: (?!abc)             ** SCANNER
-      - Lookabehind: (?<=abc)                   ** SCANNER
-      - Negative Lookbehind: (?<\!abc)          ** SCANNER
-    - Sub-expression Calls: \g<name>, \g<1>     ** SCANNER
+      - Lookahead: (?=abc)                        ** SCANNER
+      - Negative Lookahead: (?!abc)               ** SCANNER
+      - Lookabehind: (?<=abc)                     ** SCANNER
+      - Negative Lookbehind: (?<\!abc)            ** SCANNER
+    - Sub-expression Calls: \g<name>, \g<1>       ** SCANNER
 
-  - Literals: abc, def?                         ** LEXER - REVIEW/TEST
-  - POSIX classes: [:alpha:], [:print:], etc.   ** SCANNER
+  - Literals: abc, def?                           ** LEXER - REVIEW/TEST
+  - POSIX classes: [:alpha:], [:print:], etc.     ** SCANNER
   - Quantifiers
-    - Greedy: ?, *, +, {m,M}                    ** PARSER
-    - Reluctant: ??, *?, +?, {m,M}?             ** PARSER
-    - Possessive: ?+, *+, ++, {m,M}+            ** PARSER
+    - Greedy: ?, *, +, {m,M}                      ** PARSER
+    - Reluctant: ??, *?, +?, {m,M}?               ** PARSER
+    - Possessive: ?+, *+, ++, {m,M}+              ** PARSER
 
   - String Escapes
-    - Control: \C-C, \cD                        ** SCANNER
-    - Hex: \x20, \x{701230}                     ** SCANNER
-    - Meta: \M-c, \M-\C-C etc..                 ** REVIEW/TEST
-    - Octal: \0, \01, \012                      ** SCANNER
-    - Unicode: \uHHHH, \u{H+ H+}                ** SCANNER
+    - Control: \C-C, \cD                          ** SCANNER
+    - Hex: \x20, \x{701230}                       ** SCANNER
+    - Meta: \M-c, \M-\C-C etc..                   ** REVIEW/TEST
+    - Octal: \0, \01, \012                        ** SCANNER
+    - Unicode: \uHHHH, \u{H+ H+}                  ** SCANNER
 
   - Unicode Properties: 
-    - Age: \p{2.1}, \P{5.2}, etc.               ** SCANNER
-    - Classes: \p{Alpha}, \P{Space}, etc.       ** SCANNER
-    - Derived Properties: \p{Math} etc.         ** SCANNER
-    - General Categories: \p{Lu}, \P{Cs}, etc.  ** SCANNER
-    - Scripts: \p{Arabic}, \P{Hiragana}         ** SCANNER
-    - Simple Properties (aka Aliases):          ** MISSING
+    - Age: \p{2.1}, \P{5.2}, etc.                 ** SCANNER
+    - Classes: \p{Alpha}, \P{Space}, etc.         ** SCANNER
+    - Derived Properties: \p{Math}, \P{Lowercase} ** SCANNER
+    - General Categories: \p{Lu}, \P{Cs}, etc.    ** SCANNER
+    - Scripts: \p{Arabic}, \P{Hiragana}           ** SCANNER
+    - Simple Properties: \p{Dash}, \p{Extender}   ** SCANNER
 
 
   Notes with ** mean:
