@@ -8,7 +8,7 @@ module Regexp::Parser
     @nesting = [@root = @node = Root.new]
 
     Regexp::Lexer.scan(input, syntax) do |token|
-      self.parse_token( *token.to_a[0,5] )
+      self.parse_token token
     end
 
     if block_given?
@@ -25,58 +25,59 @@ module Regexp::Parser
     @node  = exp
   end
 
-  def self.parse_token(type, token, text, ts, te)
-    case type
-    when :meta;         self.meta(type, token, text)
-    when :quantifier;   self.quantifier(type, token, text)
-    when :anchor;       self.anchor(type, token, text)
-    when :escape;       self.escape(type, token, text)
-    when :group;        self.group(type, token, text)
-    when :assertion;    self.group(type, token, text)
-    when :set;          self.set(type, token, text)
-    when :type;         self.type(type, token, text)
+  def self.parse_token(token)
+    case token.type
+    when :meta;         self.meta(token)
+    when :quantifier;   self.quantifier(token)
+    when :anchor;       self.anchor(token)
+    when :escape;       self.escape(token)
+    when :group;        self.group(token)
+    when :assertion;    self.group(token)
+    when :set;          self.set(token)
+    when :type;         self.type(token)
 
     when :property, :nonproperty
-      self.property(type, token, text)
+      self.property(token)
 
     when :literal
-      @node << Literal.new(type, token, text)
+      @node << Literal.new(token)
 
     else
-      raise "parse_token: unexpected token type #{type.inspect}, #{token.inspect} #{text}"
+      raise "parse_token: unexpected token type "+
+        "#{token.type.inspect}, #{token.token.inspect} #{token.text}"
     end
   end
 
-  def self.set(type, token, text)
-    case token
+  def self.set(token)
+    case token.token
     when :open
-      self.open_set(type, token, text)
+      self.open_set(token)
     when :negate
       self.negate_set
     when :member, :escape
-      self.append_set(type, token, text)
+      self.append_set(token)
     when :range
-      self.append_set(type, token, text)
+      self.append_set(token)
     when *Token::Escape::All
-      self.append_set(type, token, text)
+      self.append_set(token)
     when *Token::CharacterSet::All
-      self.append_set(type, token, text)
+      self.append_set(token)
     when :close
       self.close_set
     when *Token::CharacterProperty::All
-      self.append_set(type, token, text)
+      self.append_set(token)
     else
       raise "Unsupported CharacterSet token #{token.inspect}"
     end
   end
 
-  def self.meta(type, token, text)
-    case token
+  def self.meta(token)
+    case token.token
     when :dot
-      @node << CharacterType::Any.new(type, token, text)
+      @node << CharacterType::Any.new(token)
     when :alternation
       unless @node.token == :alternation
-        alt = Alternation.new(type, token, text)
+        alt = Alternation.new(token)
 
         if @node.expressions.last.is_a?(Literal)
           seq = Sequence.new
@@ -96,175 +97,175 @@ module Regexp::Parser
     end
   end
 
-  def self.type(type, token, text)
-    case token
+  def self.type(token)
+    case token.token
     when :digit
-      @node << CharacterType::Digit.new(type, token, text)
+      @node << CharacterType::Digit.new(token)
     when :nondigit
-      @node << CharacterType::NonDigit.new(type, token, text)
+      @node << CharacterType::NonDigit.new(token)
     when :hex
-      @node << CharacterType::Hex.new(type, token, text)
+      @node << CharacterType::Hex.new(token)
     when :nonhex
-      @node << CharacterType::NonHex.new(type, token, text)
+      @node << CharacterType::NonHex.new(token)
     when :space
-      @node << CharacterType::Space.new(type, token, text)
+      @node << CharacterType::Space.new(token, text)
     when :nonspace
-      @node << CharacterType::NonSpace.new(type, token, text)
+      @node << CharacterType::NonSpace.new(token)
     when :word
-      @node << CharacterType::Word.new(type, token, text)
+      @node << CharacterType::Word.new(token)
     when :nonword
-      @node << CharacterType::NonWord.new(type, token, text)
+      @node << CharacterType::NonWord.new(token)
     else
       raise "Unsupported CharacterType token #{token.inspect}"
     end
   end
 
-  def self.property(type, token, text)
+  def self.property(token)
     include Regexp::Expression::CharacterProperty
 
-    case token
-    when :alnum;            @node << Alnum.new(type, token, text)
-    when :alpha;            @node << Alpha.new(type, token, text)
-    when :any;              @node << Any.new(type, token, text)
-    when :ascii;            @node << Ascii.new(type, token, text)
-    when :blank;            @node << Blank.new(type, token, text)
-    when :cntrl;            @node << Cntrl.new(type, token, text)
-    when :digit;            @node << Digit.new(type, token, text)
-    when :graph;            @node << Graph.new(type, token, text)
-    when :lower;            @node << Lower.new(type, token, text)
-    when :print;            @node << Print.new(type, token, text)
-    when :punct;            @node << Punct.new(type, token, text)
-    when :space;            @node << Space.new(type, token, text)
-    when :upper;            @node << Upper.new(type, token, text)
-    when :word;             @node << Word.new(type, token, text)
-    when :xdigit;           @node << Xdigit.new(type, token, text)
+    case token.token
+    when :alnum;            @node << Alnum.new(token)
+    when :alpha;            @node << Alpha.new(token)
+    when :any;              @node << Any.new(token)
+    when :ascii;            @node << Ascii.new(token)
+    when :blank;            @node << Blank.new(token)
+    when :cntrl;            @node << Cntrl.new(token)
+    when :digit;            @node << Digit.new(token)
+    when :graph;            @node << Graph.new(token)
+    when :lower;            @node << Lower.new(token)
+    when :print;            @node << Print.new(token)
+    when :punct;            @node << Punct.new(token)
+    when :space;            @node << Space.new(token)
+    when :upper;            @node << Upper.new(token)
+    when :word;             @node << Word.new(token)
+    when :xdigit;           @node << Xdigit.new(token)
 
-    when :letter_any;       @node << Letter::Any.new(type, token, text)
-    when :letter_uppercase; @node << Letter::Uppercase.new(type, token, text)
-    when :letter_lowercase; @node << Letter::Lowercase.new(type, token, text)
-    when :letter_titlecase; @node << Letter::Titlecase.new(type, token, text)
-    when :letter_modifier;  @node << Letter::Modifier.new(type, token, text)
-    when :letter_other;     @node << Letter::Other.new(type, token, text)
+    when :letter_any;       @node << Letter::Any.new(token)
+    when :letter_uppercase; @node << Letter::Uppercase.new(token)
+    when :letter_lowercase; @node << Letter::Lowercase.new(token)
+    when :letter_titlecase; @node << Letter::Titlecase.new(token)
+    when :letter_modifier;  @node << Letter::Modifier.new(token)
+    when :letter_other;     @node << Letter::Other.new(token)
 
-    when :mark_any;         @node << Mark::Any.new(type, token, text)
-    when :mark_nonspacing;  @node << Mark::Nonspacing.new(type, token, text)
-    when :mark_spacing;     @node << Mark::Spacing.new(type, token, text)
-    when :mark_enclosing;   @node << Mark::Enclosing.new(type, token, text)
+    when :mark_any;         @node << Mark::Any.new(token)
+    when :mark_nonspacing;  @node << Mark::Nonspacing.new(token)
+    when :mark_spacing;     @node << Mark::Spacing.new(token)
+    when :mark_enclosing;   @node << Mark::Enclosing.new(token)
 
-    when :number_any;       @node << Number::Any.new(type, token, text)
-    when :number_decimal;   @node << Number::Decimal.new(type, token, text)
-    when :number_letter;    @node << Number::Letter.new(type, token, text)
-    when :number_other;     @node << Number::Other.new(type, token, text)
+    when :number_any;       @node << Number::Any.new(token)
+    when :number_decimal;   @node << Number::Decimal.new(token)
+    when :number_letter;    @node << Number::Letter.new(token)
+    when :number_other;     @node << Number::Other.new(token)
 
-    when :punct_any;        @node << Punctuation::Any.new(type, token, text)
-    when :punct_connector;  @node << Punctuation::Connector.new(type, token, text)
-    when :punct_dash;       @node << Punctuation::Dash.new(type, token, text)
-    when :punct_open;       @node << Punctuation::Open.new(type, token, text)
-    when :punct_close;      @node << Punctuation::Close.new(type, token, text)
-    when :punct_initial;    @node << Punctuation::Initial.new(type, token, text)
-    when :punct_final;      @node << Punctuation::Final.new(type, token, text)
-    when :punct_other;      @node << Punctuation::Other.new(type, token, text)
+    when :punct_any;        @node << Punctuation::Any.new(token)
+    when :punct_connector;  @node << Punctuation::Connector.new(token)
+    when :punct_dash;       @node << Punctuation::Dash.new(token)
+    when :punct_open;       @node << Punctuation::Open.new(token)
+    when :punct_close;      @node << Punctuation::Close.new(token)
+    when :punct_initial;    @node << Punctuation::Initial.new(token)
+    when :punct_final;      @node << Punctuation::Final.new(token)
+    when :punct_other;      @node << Punctuation::Other.new(token)
 
-    when :separator_any;    @node << Separator::Any.new(type, token, text)
-    when :separator_space;  @node << Separator::Space.new(type, token, text)
-    when :separator_line;   @node << Separator::Line.new(type, token, text)
-    when :separator_para;   @node << Separator::Paragraph.new(type, token, text)
+    when :separator_any;    @node << Separator::Any.new(token)
+    when :separator_space;  @node << Separator::Space.new(token)
+    when :separator_line;   @node << Separator::Line.new(token)
+    when :separator_para;   @node << Separator::Paragraph.new(token)
 
-    when :symbol_any;       @node << Symbol::Any.new(type, token, text)
-    when :symbol_math;      @node << Symbol::Math.new(type, token, text)
-    when :symbol_currency;  @node << Symbol::Currency.new(type, token, text)
-    when :symbol_modifier;  @node << Symbol::Modifier.new(type, token, text)
-    when :symbol_other;     @node << Symbol::Other.new(type, token, text)
+    when :symbol_any;       @node << Symbol::Any.new(token)
+    when :symbol_math;      @node << Symbol::Math.new(token)
+    when :symbol_currency;  @node << Symbol::Currency.new(token)
+    when :symbol_modifier;  @node << Symbol::Modifier.new(token)
+    when :symbol_other;     @node << Symbol::Other.new(token)
 
-    when :cp_any;           @node << Codepoint::Any.new(type, token, text)
-    when :cp_control;       @node << Codepoint::Control.new(type, token, text)
-    when :cp_format;        @node << Codepoint::Format.new(type, token, text)
-    when :cp_surrogate;     @node << Codepoint::Surrogate.new(type, token, text)
-    when :cp_private;       @node << Codepoint::PrivateUse.new(type, token, text)
-    when :cp_unassigned;    @node << Codepoint::Unassigned.new(type, token, text)
+    when :cp_any;           @node << Codepoint::Any.new(token)
+    when :cp_control;       @node << Codepoint::Control.new(token)
+    when :cp_format;        @node << Codepoint::Format.new(token)
+    when :cp_surrogate;     @node << Codepoint::Surrogate.new(token)
+    when :cp_private;       @node << Codepoint::PrivateUse.new(token)
+    when :cp_unassigned;    @node << Codepoint::Unassigned.new(token)
     else
       raise "Unsupported UnicodeProperty token #{token.inspect}"
     end
   end
 
-  def self.anchor(type, token, text)
-    case token
+  def self.anchor(token)
+    case token.token
     when :beginning_of_line
-      @node << Anchor::BeginningOfLine.new(type, token, text)
+      @node << Anchor::BeginningOfLine.new(token)
     when :end_of_line
-      @node << Anchor::EndOfLine.new(type, token, text)
+      @node << Anchor::EndOfLine.new(token)
     when :bos
-      @node << Anchor::BOS.new(type, token, text)
+      @node << Anchor::BOS.new(token)
     when :eos
-      @node << Anchor::EOS.new(type, token, text)
+      @node << Anchor::EOS.new(token)
     when :eos_ob_eol
-      @node << Anchor::EOSobEOL.new(type, token, text)
+      @node << Anchor::EOSobEOL.new(token)
     when :word_boundary
-      @node << Anchor::WordBoundary.new(type, token, text)
+      @node << Anchor::WordBoundary.new(token)
     when :nonword_boundary
-      @node << Anchor::NonWordBoundary.new(type, token, text)
+      @node << Anchor::NonWordBoundary.new(token)
     else
       raise "Unsupported Anchor token #{token.inspect}"
     end
   end
 
-  def self.escape(type, token, text)
-    case token
+  def self.escape(token)
+    case token.token
 
     when :backspace
-      @node << EscapeSequence::Backspace.new(type, token, text)
+      @node << EscapeSequence::Backspace.new(token)
 
     when :escape
-      @node << EscapeSequence::AsciiEscape.new(type, token, text)
+      @node << EscapeSequence::AsciiEscape.new(token)
     when :bell
-      @node << EscapeSequence::Bell.new(type, token, text)
+      @node << EscapeSequence::Bell.new(token)
     when :form_feed
-      @node << EscapeSequence::FormFeed.new(type, token, text)
+      @node << EscapeSequence::FormFeed.new(token)
     when :newline
-      @node << EscapeSequence::Newline.new(type, token, text)
+      @node << EscapeSequence::Newline.new(token)
     when :carriage
-      @node << EscapeSequence::Return.new(type, token, text)
+      @node << EscapeSequence::Return.new(token)
     when :space
-      @node << EscapeSequence::Space.new(type, token, text)
+      @node << EscapeSequence::Space.new(token)
     when :tab
-      @node << EscapeSequence::Tab.new(type, token, text)
+      @node << EscapeSequence::Tab.new(token)
     when :vertical_tab
-      @node << EscapeSequence::VerticalTab.new(type, token, text)
+      @node << EscapeSequence::VerticalTab.new(token)
 
     when :control
-      @node << EscapeSequence::Control.new(type, token, text)
+      @node << EscapeSequence::Control.new(token)
 
     else
       # treating everything else as a literal
-      @node << EscapeSequence::Literal.new(type, token, text)
+      @node << EscapeSequence::Literal.new(token)
     end
   end
 
-  def self.quantifier(type, token, text)
-    case token
+  def self.quantifier(token)
+    case token.token
     when :zero_or_one
-      @node.expressions.last.quantify(:zero_or_one, text, 0, 1, :greedy)
+      @node.expressions.last.quantify(:zero_or_one, token.text, 0, 1, :greedy)
     when :zero_or_one_reluctant
-      @node.expressions.last.quantify(:zero_or_one, text, 0, 1, :reluctant)
+      @node.expressions.last.quantify(:zero_or_one, token.text, 0, 1, :reluctant)
     when :zero_or_one_possessive
-      @node.expressions.last.quantify(:zero_or_one, text, 0, 1, :possessive)
+      @node.expressions.last.quantify(:zero_or_one, token.text, 0, 1, :possessive)
 
     when :zero_or_more
-      @node.expressions.last.quantify(:zero_or_more, text, 0, -1, :greedy)
+      @node.expressions.last.quantify(:zero_or_more, token.text, 0, -1, :greedy)
     when :zero_or_more_reluctant
-      @node.expressions.last.quantify(:zero_or_more, text, 0, -1, :reluctant)
+      @node.expressions.last.quantify(:zero_or_more, token.text, 0, -1, :reluctant)
     when :zero_or_more_possessive
-      @node.expressions.last.quantify(:zero_or_more, text, 0, -1, :possessive)
+      @node.expressions.last.quantify(:zero_or_more, token.text, 0, -1, :possessive)
 
     when :one_or_more
-      @node.expressions.last.quantify(:one_or_more, text, 1, -1, :greedy)
+      @node.expressions.last.quantify(:one_or_more, token.text, 1, -1, :greedy)
     when :one_or_more_reluctant
-      @node.expressions.last.quantify(:one_or_more, text, 1, -1, :reluctant)
+      @node.expressions.last.quantify(:one_or_more, token.text, 1, -1, :reluctant)
     when :one_or_more_possessive
-      @node.expressions.last.quantify(:one_or_more, text, 1, -1, :possessive)
+      @node.expressions.last.quantify(:one_or_more, token.text, 1, -1, :possessive)
 
     when :interval
-      self.interval(text)
+      self.interval(token.text)
 
     else
       raise "Unsupported Quantifier token #{token.inspect}"
@@ -286,23 +287,23 @@ module Regexp::Parser
     @node.expressions.last.quantify(:interval, text, min.to_i, max.to_i, mode)
   end
 
-  def self.group(type, token, text)
-    case token
+  def self.group(token)
+    case token.token
     when :options
-      self.options(type, token, text)
+      self.options(token)
     when :close
       self.close_group
     when :comment
-      @node << Group::Comment.new(type, token, text)
+      @node << Group::Comment.new(token)
     else
-      self.open_group(type, token, text)
+      self.open_group(token)
     end
   end
 
-  def self.options(type, token, text)
-    opt = text.split('-', 2)
+  def self.options(token)
+    opt = token.text.split('-', 2)
 
-    exp = Group::Options.new(type, token, text)
+    exp = Group::Options.new(token)
     exp.options = {
       :m => opt[0].include?('m') ? true : false,
       :i => opt[0].include?('i') ? true : false,
@@ -312,25 +313,25 @@ module Regexp::Parser
     self.nest exp
   end
 
-  def self.open_group(type, token, text)
-    case token
+  def self.open_group(token)
+    case token.token
     when :passive
-      exp = Group::Passive.new(type, token, text)
+      exp = Group::Passive.new(token)
     when :atomic
-      exp = Group::Atomic.new(type, token, text)
+      exp = Group::Atomic.new(token)
     when :named
-      exp = Group::Named.new(type, token, text)
+      exp = Group::Named.new(token)
     when :capture
-      exp = Group::Capture.new(type, token, text)
+      exp = Group::Capture.new(token)
 
     when :lookahead
-      exp = Assertion::Lookahead.new(type, token, text)
+      exp = Assertion::Lookahead.new(token)
     when :nlookahead
-      exp = Assertion::NegativeLookahead.new(type, token, text)
+      exp = Assertion::NegativeLookahead.new(token)
     when :lookbehind
-      exp = Assertion::Lookbehind.new(type, token, text)
+      exp = Assertion::Lookbehind.new(token)
     when :nlookbehind
-      exp = Assertion::NegativeLookbehind.new(type, token, text)
+      exp = Assertion::NegativeLookbehind.new(token)
 
     else
       raise "Unsupported Group type open token #{token.inspect}"
@@ -344,23 +345,23 @@ module Regexp::Parser
     @node = @nesting.last
   end
 
-  def self.open_set(type, token, text)
-    @node << (@set = CharacterSet.new(type, token, text))
+  def self.open_set(token)
+    @node << (@set = CharacterSet.new(token))
   end
 
   def self.negate_set
     @set.negate
   end
 
-  def self.append_set(type, token, text)
-    case token
+  def self.append_set(token)
+    case token.token
     when :range
       # FIXME: this is naive
-      parts = text.split('-', 2)
+      parts = token.text.split('-', 2)
       range = (parts.first..parts.last).to_a
       range.each {|m| @set << m }
     else
-      @set << text
+      @set << token.text
     end
   end
 

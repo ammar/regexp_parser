@@ -50,7 +50,6 @@ class ScannerSets < Test::Unit::TestCase
 
     '[\\x20-\\x28]'         => [1, :set,  :range_hex,       '\x20-\x28',  1, 10],
 
-    # TODO: tokens property negation (\P)
     '[a\p{digit}c]'         => [2, :set,  :digit,           '\p{digit}',  2, 11],
     '[a\P{digit}c]'         => [2, :set,  :digit,           '\P{digit}',  2, 11],
 

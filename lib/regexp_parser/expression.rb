@@ -6,10 +6,10 @@ module Regexp::Expression
 
     attr_accessor :options
 
-    def initialize(type, token, text)
-      @type         = type
-      @token        = token
-      @text         = text
+    def initialize(token)
+      @type         = token.type
+      @token        = token.token
+      @text         = token.text
       @options      = nil
       @expressions  = []
     end
@@ -66,7 +66,7 @@ module Regexp::Expression
 
   class Root < Regexp::Expression::Base
     def initialize
-      super(:expression, :root, '')
+      super Regexp::Token.new(:expression, :root, '')
     end
 
     def to_s
@@ -96,7 +96,7 @@ module Regexp::Expression
   class CharacterSet < Regexp::Expression::Base
     attr_accessor :members
 
-    def initialize(type, token, text)
+    def initialize(token)
       @members = []
       @negative = false
       super
@@ -365,7 +365,7 @@ module Regexp::Expression
   # a sequence of expressions, used by alternations
   class Sequence < Regexp::Expression::Base
     def initialize
-      super(:expression, :sequence, '')
+      super Regexp::Token.new(:expression, :sequence, '')
     end
 
     def <<(exp)
