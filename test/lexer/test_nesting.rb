@@ -59,6 +59,22 @@ class LexerNesting < Test::Unit::TestCase
       5     => [:group,       :comment,       '(?#e)', 13, 18, 1],
       6     => [:group,       :close,         ')',     18, 19, 0],
     },
+
+    'a[b-e]f' => {
+      1     => [:set,         :open,          '[',      1,  2, 0],
+      2     => [:set,         :range,         'b-e',    2,  5, 1],
+      3     => [:set,         :close,         ']',      5,  6, 0],
+    },
+
+    '[a-w&&[^c-g]z]' => {
+      0     => [:set,         :open,          '[',      0,  1, 0],
+      2     => [:set,         :intersection,  '&&',     4,  6, 1],
+      3     => [:set,         :open,          '[',      6,  7, 1],
+      4     => [:set,         :negate,        '^',      7,  8, 2],
+      5     => [:set,         :range,         'c-g',    8, 11, 2],
+      6     => [:set,         :close,         ']',     11, 12, 1],
+      8     => [:set,         :close,         ']',     13, 14, 0],
+    },
   }
 
   count = 0

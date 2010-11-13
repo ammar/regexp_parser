@@ -4,7 +4,7 @@
 # given syntax flavor.
 module Regexp::Lexer
 
-  # TODO: complete, test token sets
+  # Note: the :open token applies to character sets
   OPENING_TOKENS = [:open, :capture, :options, :passive, :atomic, :named,
                     :lookahead, :nlookahead, :lookbehind, :nlookbehind
                    ].freeze

@@ -114,20 +114,20 @@
   action group_opened { group_depth += 1; in_group = true }
   action group_closed { group_depth -= 1; in_group = group_depth > 0 ? true : false }
 
-  action set_opened { set_depth += 1; in_set = true }
-  action set_closed { set_depth -= 1; in_set = set_depth > 0 ? true : false }
-
-
   # Character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
   # --------------------------------------------------------------------------
   character_set := |*
-    ']' %set_closed {
+    ']' {
+      set_depth -= 1; in_set = set_depth > 0 ? true : false
+
       self.emit(:set, :close, data[ts..te-1].pack('c*'), ts, te)
       fret;
     };
 
-    '-]' %set_closed { # special case, emits two tokens
+    '-]' { # special case, emits two tokens
+      set_depth -= 1; in_set = set_depth > 0 ? true : false
+
       self.emit(:set, :member, data[ts..te-2].pack('c*'), ts, te)
       self.emit(:set, :close,  data[ts+1..te-1].pack('c*'), ts, te)
       fret;
@@ -154,7 +154,13 @@
       fcall set_escape_sequence;
     };
 
-    class_posix @err(premature_end_error) {
+    '[' @(open_bracket, 1) {
+      set_depth += 1; in_set = true
+      self.emit(:set, :open, data[ts..te-1].pack('c*'), ts, te)
+      fcall character_set;
+    };
+
+    class_posix >(open_bracket, 1) @err(premature_end_error) {
       case text = data[ts..te-1].pack('c*')
       when '[:alnum:]';  self.emit(:set, :class_alnum,  text, ts, te)
       when '[:alpha:]';  self.emit(:set, :class_alpha,  text, ts, te)
@@ -393,7 +399,9 @@
 
     # Character sets
     # ------------------------------------------------------------------------
-    set_open %set_opened  {
+    set_open {
+      set_depth += 1; in_set = true
+
       self.emit(:set, :open, data[ts..te-1].pack('c*'), ts, te)
       fcall character_set;
     };
@@ -608,8 +616,8 @@ module Regexp::Scanner
 
     raise "Premature end of pattern (missing group closing paranthesis) "+
       "[#{in_group}:#{group_depth}]" if in_group
-    raise "Premature end of pattern (missing set closing bracket) "+
-      "[#{in_set}:#{set_depth}]" if in_set
+     raise "Premature end of pattern (missing set closing bracket) "+
+       "[#{in_set}:#{set_depth}]" if in_set
 
     # when the entire expression is a literal run
     self.emit_literal if @literal
