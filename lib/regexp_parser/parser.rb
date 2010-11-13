@@ -33,7 +33,7 @@ module Regexp::Parser
     when :escape;       self.escape(token)
     when :group;        self.group(token)
     when :assertion;    self.group(token)
-    when :set;          self.set(token)
+    when :set, :subset; self.set(token)
     when :type;         self.type(token)
 
     when :property, :nonproperty
@@ -178,11 +178,11 @@ module Regexp::Parser
     when :symbol_other;     @node << Symbol::Other.new(token)
 
     when :cp_any;           @node << Codepoint::Any.new(token)
-    when :cp_control;       @node << Codepoint::Control.new(token)
-    when :cp_format;        @node << Codepoint::Format.new(token)
-    when :cp_surrogate;     @node << Codepoint::Surrogate.new(token)
-    when :cp_private;       @node << Codepoint::PrivateUse.new(token)
-    when :cp_unassigned;    @node << Codepoint::Unassigned.new(token)
+    when :control;          @node << Codepoint::Control.new(token)
+    when :format;           @node << Codepoint::Format.new(token)
+    when :surrogate;        @node << Codepoint::Surrogate.new(token)
+    when :private;          @node << Codepoint::PrivateUse.new(token)
+    when :unassigned;       @node << Codepoint::Unassigned.new(token)
     else
       raise "Unsupported UnicodeProperty token #{token.inspect}"
     end

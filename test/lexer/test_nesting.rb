@@ -69,25 +69,25 @@ class LexerNesting < Test::Unit::TestCase
     '[a-w&&[^c-g]z]' => {
       0     => [:set,         :open,          '[',      0,  1, 0],
       2     => [:set,         :intersection,  '&&',     4,  6, 1],
-      3     => [:set,         :open,          '[',      6,  7, 1],
-      4     => [:set,         :negate,        '^',      7,  8, 2],
-      5     => [:set,         :range,         'c-g',    8, 11, 2],
-      6     => [:set,         :close,         ']',     11, 12, 1],
+      3     => [:subset,      :open,          '[',      6,  7, 1],
+      4     => [:subset,      :negate,        '^',      7,  8, 2],
+      5     => [:subset,      :range,         'c-g',    8, 11, 2],
+      6     => [:subset,      :close,         ']',     11, 12, 1],
       8     => [:set,         :close,         ']',     13, 14, 0],
     },
 
     '[a[b[c[d-g]]]]' => {
       0     => [:set,         :open,          '[',      0,  1, 0],
       1     => [:set,         :member,        'a',      1,  2, 1],
-      2     => [:set,         :open,          '[',      2,  3, 1],
-      3     => [:set,         :member,        'b',      3,  4, 2],
-      4     => [:set,         :open,          '[',      4,  5, 2],
-      5     => [:set,         :member,        'c',      5,  6, 3],
-      6     => [:set,         :open,          '[',      6,  7, 3],
-      7     => [:set,         :range,         'd-g',    7, 10, 4],
-      8     => [:set,         :close,         ']',     10, 11, 3],
-      9     => [:set,         :close,         ']',     11, 12, 2],
-     10     => [:set,         :close,         ']',     12, 13, 1],
+      2     => [:subset,      :open,          '[',      2,  3, 1],
+      3     => [:subset,      :member,        'b',      3,  4, 2],
+      4     => [:subset,      :open,          '[',      4,  5, 2],
+      5     => [:subset,      :member,        'c',      5,  6, 3],
+      6     => [:subset,      :open,          '[',      6,  7, 3],
+      7     => [:subset,      :range,         'd-g',    7, 10, 4],
+      8     => [:subset,      :close,         ']',     10, 11, 3],
+      9     => [:subset,      :close,         ']',     11, 12, 2],
+     10     => [:subset,      :close,         ']',     12, 13, 1],
      11     => [:set,         :close,         ']',     13, 14, 0],
     },
   }
@@ -96,7 +96,7 @@ class LexerNesting < Test::Unit::TestCase
   tests.each do |pattern, checks|
     define_method "test_lex_nesting_#{count+=1}" do
 
-      tokens = RL.scan(pattern, 'ruby/1.8')
+      tokens = RL.scan(pattern, 'ruby/1.9')
       checks.each do |offset, token|
         assert_equal( token, tokens[offset].to_a )
       end

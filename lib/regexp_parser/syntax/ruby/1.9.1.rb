@@ -14,6 +14,10 @@ module Regexp::Syntax
 
         implements :set, 
           CharacterSet::POSIX::Extensions 
+
+        implements :subset, 
+          CharacterSet::Extended + CharacterSet::Types +
+          CharacterSet::POSIX::Standard 
       end
     end
   end

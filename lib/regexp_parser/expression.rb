@@ -299,12 +299,13 @@ module Regexp::Expression
 
       class IDStart             < Derived::Base; end
       class IDContinue          < Derived::Base; end
-      class XIDStart            < Derived::Base; end
-      class XIDContinue         < Derived::Base; end
 
       class GraphemeBase        < Derived::Base; end
       class GraphemeExtend      < Derived::Base; end
       class DefaultIgnorableCP  < Derived::Base; end
+
+      class XIDStart            < Derived::Base; end
+      class XIDContinue         < Derived::Base; end
     end
   end
 
