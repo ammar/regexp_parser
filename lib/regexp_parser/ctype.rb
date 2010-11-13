@@ -12,10 +12,10 @@ module CType
   Blank   = [' ', "\t"].freeze
   Space   = [" ", "\t", "\r", "\n", "\v", "\f"].freeze
 
-  Cntrl   = ( 0..31 ).to_a.map {|c| c.chr}.freeze
-  Graph   = (33..126).to_a.map {|c| c.chr}.freeze
-  Print   = (32..126).to_a.map {|c| c.chr}.freeze
-  ASCII   = ( 0..127).to_a.map {|c| c.chr}.freeze
+  Cntrl   = ( 0..31 ).map {|c| c.chr}.freeze
+  Graph   = (33..126).map {|c| c.chr}.freeze
+  Print   = (32..126).map {|c| c.chr}.freeze
+  ASCII   = ( 0..127).map {|c| c.chr}.freeze
 
   Punct   = [
     ('!'..'/').to_a,
