@@ -214,23 +214,23 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
     - Metacharacters: \\, \+, \?, etc.            ** SCANNER
 
   - Grouped Expressions
-    - Atomic: (?>abc)                             ** SCANNER
+    - Atomic: (?>abc)                             ** LEXER
     - Back-references:
-      - Named: \k<name>                           ** SCANNER
-      - Nest Level: \k<name-1>                    ** SCANNER
-      - Numbered: \k<1>                           ** SCANNER
-      - Relative: \k<-2>                          ** SCANNER
-    - Capturing: (abc)                            ** SCANNER
-    - Comment: (?# comment)                       ** SCANNER
-    - Named: (?<name>abc)                         ** SCANNER
-    - Options: (?mi-x:abc)                        ** SCANNER (missing u, e, etc)
-    - Passive: (?:abc)                            ** SCANNER
+      - Named: \k<name>                           ** LEXER
+      - Nest Level: \k<n-1>                       ** LEXER
+      - Numbered: \k<1>                           ** LEXER
+      - Relative: \k<-2>                          ** LEXER
+    - Capturing: (abc)                            ** LEXER
+    - Comment: (?# comment)                       ** LEXER
+    - Named: (?<name>abc)                         ** LEXER
+    - Options: (?mi-x:abc)                        ** LEXER (missing u, e, etc)
+    - Passive: (?:abc)                            ** LEXER
     - Assertions
-      - Lookahead: (?=abc)                        ** SCANNER
-      - Negative Lookahead: (?!abc)               ** SCANNER
-      - Lookabehind: (?<=abc)                     ** SCANNER
-      - Negative Lookbehind: (?<\!abc)            ** SCANNER
-    - Sub-expression Calls: \g<name>, \g<1>       ** SCANNER
+      - Lookahead: (?=abc)                        ** LEXER
+      - Negative Lookahead: (?!abc)               ** LEXER
+      - Lookabehind: (?<=abc)                     ** LEXER
+      - Negative Lookbehind: (?<\!abc)            ** LEXER
+    - Sub-expression Calls: \g<name>, \g<1>       ** LEXER
 
   - Literals: abc, def?                           ** LEXER - REVIEW/TEST
   - POSIX classes: [:alpha:], [:print:], etc.     ** SCANNER
@@ -247,19 +247,19 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
     - Unicode: \uHHHH, \u{H+ H+}                  ** SCANNER
 
   - Unicode Properties: 
-    - Age: \p{2.1}, \P{5.2}, etc.                 ** SCANNER
-    - Classes: \p{Alpha}, \P{Space}, etc.         ** SCANNER
-    - Derived Properties: \p{Math}, \P{Lowercase} ** SCANNER
-    - General Categories: \p{Lu}, \P{Cs}, etc.    ** SCANNER
-    - Scripts: \p{Arabic}, \P{Hiragana}           ** SCANNER
-    - Simple Properties: \p{Dash}, \p{Extender}   ** SCANNER
+    - Age: \p{2.1}, \P{5.2}, etc.                 ** LEXER
+    - Classes: \p{Alpha}, \P{Space}, etc.         ** LEXER
+    - Derived Properties: \p{Math}, \P{Lowercase} ** LEXER
+    - General Categories: \p{Lu}, \P{Cs}, etc.    ** LEXER
+    - Scripts: \p{Arabic}, \P{Hiragana}           ** LEXER
+    - Simple Properties: \p{Dash}, \p{Extender}   ** LEXER
 
 
   Notes with ** mean:
     MISSING:      nothing in place, or barely there
     REVIEW/TEST:  mostly there (scanner and/or lexer), but has no tests, or has problems
     SCANNER:      implemented in scanner, works, has basic tests
-    LEXER:        implemented in lexer, works, has basic tests
+    LEXER:        implemented in lexer, works, has basic tests (implies scanner support, of course)
     PARSER:       implemented parser, works, has basic tests
     COMPLETE:     Fully implemented in the scanner, lexer, and parser
 
