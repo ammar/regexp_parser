@@ -114,7 +114,7 @@ class ScannerProperties < Test::Unit::TestCase
     'Paragraph_Separator'                 => :separator_para,
 
     'C'                                   => :other,
-    'Other'                               => :other,  # is this an Oniguruma extension?
+    'Other'                               => :other,
 
     'Cc'                                  => :control,
     'Control'                             => :control,

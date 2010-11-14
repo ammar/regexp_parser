@@ -9,6 +9,8 @@ module Regexp::Syntax
       def initialize
         super
 
+        implements :escape, CharacterType::Hex
+
         implements :quantifier, 
           Quantifier::Reluctant + Quantifier::Possessive
 

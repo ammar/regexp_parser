@@ -35,10 +35,10 @@ module Regexp::Syntax
 
     module CharacterType
       Basic     = []
-      Extended  = [:digit, :nondigit, :hex, :nonhex, :space, :nonspace,
-                   :word, :nonword]
+      Extended  = [:digit, :nondigit, :space, :nonspace, :word, :nonword]
+      Hex       = [:hex, :nonhex]
 
-      All = Basic + Extended
+      All = Basic + Extended + Hex
     end
 
     module CharacterSet
@@ -110,7 +110,7 @@ module Regexp::Syntax
         Separator     = [:separator_any, :separator_space, :separator_line,
                          :separator_para]
 
-        Codepoint     = [:cp_any, :control, :format,
+        Codepoint     = [:other, :control, :format,
                          :surrogate, :private_use, :unassigned]
 
         All = Letter + Mark + Number + Punctuation +
