@@ -215,7 +215,11 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
 
   - Grouped Expressions
     - Atomic: (?>abc)                             ** SCANNER
-    - Back-references: \k<name>, \k<1>, \k<-2>    ** SCANNER (missing nested e.g. \k<name-1> and \k<num-1>)
+    - Back-references:
+      - Named: \k<name>                           ** SCANNER
+      - Nest Level: \k<name-1>                    ** SCANNER
+      - Numbered: \k<1>                           ** SCANNER
+      - Relative: \k<-2>                          ** SCANNER
     - Capturing: (abc)                            ** SCANNER
     - Comment: (?# comment)                       ** SCANNER
     - Named: (?<name>abc)                         ** SCANNER

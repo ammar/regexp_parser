@@ -80,11 +80,16 @@
 
   group_ref             = [gk];
   group_name            = alpha . (alnum+)?;
-  group_named           = ('?<' . group_name . '>') | ("?'" . group_name . "'");
-  group_name_ref        = group_ref . (('<' . group_name . '>') | ("'" . group_name . "'"));
-
   group_number          = '-'? . [1-9] . ([0-9]+)?;
-  group_number_ref      = group_ref . (('<' . group_number . '>') | ("'" . group_number . "'"));
+  group_level           = [+\-] . [0-9]+;
+
+  group_named           = ('?<' . group_name . '>') | ("?'" . group_name . "'");
+
+  group_name_ref        = group_ref . (('<' . group_name . group_level? '>') |
+                                       ("'" . group_name . group_level? "'"));
+
+  group_number_ref      = group_ref . (('<' . group_number . group_level? '>') |
+                                       ("'" . group_number . group_level? "'"));
 
   group_type            = group_atomic | group_passive | group_named;
 
@@ -546,6 +551,13 @@
         else
           self.emit(:backref, :number_rel_call_sq,  text, ts, te)
         end
+
+      when /\\k<[^\d-](\w+)?[+\-]\d+>/ # angle-brackets
+        self.emit(:backref, :name_nest_ref_ab,  text, ts, te)
+
+      when /\\k'[^\d-](\w+)?[+\-]\d+'/ # single-quotes
+        self.emit(:backref, :name_nest_ref_sq,  text, ts, te)
+
       end
     };
 

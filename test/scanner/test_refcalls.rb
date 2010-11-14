@@ -22,6 +22,10 @@ class ScannerRefCalls < Test::Unit::TestCase
 
     '(abc)\g<-1>'     => [3, :backref, :number_rel_call_ab,  '\g<-1>',     5, 11],
     "(abc)\\g'-1'"    => [3, :backref, :number_rel_call_sq,  "\\g'-1'",    5, 11],
+
+    # Group back-references, with nesting level
+    '(?<X>abc)\k<X-0>'  => [3, :backref, :name_nest_ref_ab,        '\k<X-0>',      9, 16],
+    "(?<X>abc)\\k'X-0'" => [3, :backref, :name_nest_ref_sq,        "\\k'X-0'",     9, 16],
   }
 
   count = 0
