@@ -336,7 +336,9 @@
     };
 
     property_char > (escaped_alpha, 2) {
-      fhold; fcall unicode_property; fret;
+      fhold;
+      fnext main;
+      fcall unicode_property; fret;
     };
 
     (any -- non_literal_escape) > (escaped_alpha, 1)  {

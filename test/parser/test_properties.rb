@@ -4,290 +4,290 @@ class ParserProperties < Test::Unit::TestCase
 
   modes = ['p', 'P']
   props = [
-    'Alnum',
-    'Alpha',
-    'Any',
-    'Ascii',
-    'Blank',
-    'Cntrl',
-    'Digit',
-    'Graph',
-    'Lower',
-    'Newline',
-    'Print',
-    'Punct',
-    'Space',
-    'Upper',
-    'Word',
-    'Xdigit',
+   #'Alnum',
+   #'Alpha',
+   #'Any',
+   #'Ascii',
+   #'Blank',
+   #'Cntrl',
+   #'Digit',
+   #'Graph',
+   #'Lower',
+   #'Newline',
+   #'Print',
+   #'Punct',
+   #'Space',
+   #'Upper',
+   #'Word',
+   #'Xdigit',
 
-    'L',
-    'Letter',
+   #'L',
+   #'Letter',
 
-    'Lu',
-    'Uppercase_Letter',
+   #'Lu',
+   #'Uppercase_Letter',
 
-    'Ll',
-    'Lowercase_Letter',
+   #'Ll',
+   #'Lowercase_Letter',
 
-    'Lt',
-    'Titlecase_Letter',
+   #'Lt',
+   #'Titlecase_Letter',
 
-    'Lm',
-    'Modifier_Letter',
+   #'Lm',
+   #'Modifier_Letter',
 
-    'Lo',
-    'Other_Letter',
+   #'Lo',
+   #'Other_Letter',
 
-    'M',
-    'Mark',
+   #'M',
+   #'Mark',
 
-    'Mn',
-    'Nonspacing_Mark',
+   #'Mn',
+   #'Nonspacing_Mark',
 
-    'Mc',
-    'Spacing_Mark',
+   #'Mc',
+   #'Spacing_Mark',
 
-    'Me',
-    'Enclosing_Mark',
+   #'Me',
+   #'Enclosing_Mark',
 
-    'N',
-    'Number',
+   #'N',
+   #'Number',
 
-    'Nd',
-    'Decimal_Number',
+   #'Nd',
+   #'Decimal_Number',
 
-    'Nl',
-    'Letter_Number',
+   #'Nl',
+   #'Letter_Number',
 
-    'No',
-    'Other_Number',
+   #'No',
+   #'Other_Number',
 
-    'P',
-    'Punctuation',
+   #'P',
+   #'Punctuation',
 
-    'Pc',
-    'Connector_Punctuation',
+   #'Pc',
+   #'Connector_Punctuation',
 
-    'Pd',
-    'Dash_Punctuation',
+   #'Pd',
+   #'Dash_Punctuation',
 
-    'Ps',
-    'Open_Punctuation',
+   #'Ps',
+   #'Open_Punctuation',
 
-    'Pe',
-    'Close_Punctuation',
+   #'Pe',
+   #'Close_Punctuation',
 
-    'Pi',
-    'Initial_Punctuation',
+   #'Pi',
+   #'Initial_Punctuation',
 
-    'Pf',
-    'Final_Punctuation',
+   #'Pf',
+   #'Final_Punctuation',
 
-    'Po',
-    'Other_Punctuation',
+   #'Po',
+   #'Other_Punctuation',
 
-    'S',
-    'Symbol',
+   #'S',
+   #'Symbol',
 
-    'Sm',
-    'Math_Symbol',
+   #'Sm',
+   #'Math_Symbol',
 
-    'Sc',
-    'Currency_Symbol',
+   #'Sc',
+   #'Currency_Symbol',
 
-    'Sk',
-    'Modifier_Symbol',
+   #'Sk',
+   #'Modifier_Symbol',
 
-    'So',
-    'Other_Symbol',
+   #'So',
+   #'Other_Symbol',
 
-    'Z',
-    'Separator',
+   #'Z',
+   #'Separator',
 
-    'Zs',
-    'Space_Separator',
+   #'Zs',
+   #'Space_Separator',
 
-    'Zl',
-    'Line_Separator',
+   #'Zl',
+   #'Line_Separator',
 
-    'Zp',
-    'Paragraph_Separator',
+   #'Zp',
+   #'Paragraph_Separator',
 
-    'C',
-    'Other',
+   #'C',
+   #'Other',
 
-    'Cc',
-    'Control',
+   #'Cc',
+   #'Control',
 
-    'Cf',
-    'Format',
+   #'Cf',
+   #'Format',
 
-    'Cs',
-    'Surrogate',
+   #'Cs',
+   #'Surrogate',
 
-    'Co',
-    'Private_Use',
+   #'Co',
+   #'Private_Use',
 
-    'Cn',
-    'Unassigned',
+   #'Cn',
+   #'Unassigned',
 
-    'Age=1.1',
-    'Age=2.0',
-    'Age=2.1',
-    'Age=3.0',
-    'Age=3.1',
-    'Age=3.2',
-    'Age=4.0',
-    'Age=4.1',
-    'Age=5.0',
-    'Age=5.1',
-    'Age=5.2',
-    'Age=6.0',
+   #'Age=1.1',
+   #'Age=2.0',
+   #'Age=2.1',
+   #'Age=3.0',
+   #'Age=3.1',
+   #'Age=3.2',
+   #'Age=4.0',
+   #'Age=4.1',
+   #'Age=5.0',
+   #'Age=5.1',
+   #'Age=5.2',
+   #'Age=6.0',
 
-    'ahex',
-    'ASCII_Hex_Digit',
+   #'ahex',
+   #'ASCII_Hex_Digit',
 
-    'Alphabetic',
+   #'Alphabetic',
 
-    'Cased',
+   #'Cased',
 
-    'cwcf',
-    'Changes_When_Casefolded',
+   #'cwcf',
+   #'Changes_When_Casefolded',
 
-    'cwcm',
-    'Changes_When_Casemapped',
+   #'cwcm',
+   #'Changes_When_Casemapped',
 
-    'cwl',
-    'Changes_When_Lowercased',
+   #'cwl',
+   #'Changes_When_Lowercased',
 
-    'cwt',
-    'Changes_When_Titlecased',
+   #'cwt',
+   #'Changes_When_Titlecased',
 
-    'cwu',
-    'Changes_When_Uppercased',
+   #'cwu',
+   #'Changes_When_Uppercased',
 
-    'ci',
-    'Case_Ignorable',
+   #'ci',
+   #'Case_Ignorable',
 
-    'bidic',
-    'Bidi_Control',
+   #'bidic',
+   #'Bidi_Control',
 
-    'Dash',
+   #'Dash',
 
-    'dep',
-    'Deprecated',
+   #'dep',
+   #'Deprecated',
 
-    'di',
-    'Default_Ignorable_Code_Point',
+   #'di',
+   #'Default_Ignorable_Code_Point',
 
-    'dia',
-    'Diacritic',
+   #'dia',
+   #'Diacritic',
 
-    'ext',
-    'Extender',
+   #'ext',
+   #'Extender',
 
-    'grbase',
-    'Grapheme_Base',
+   #'grbase',
+   #'Grapheme_Base',
 
-    'grext',
-    'Grapheme_Extend',
+   #'grext',
+   #'Grapheme_Extend',
 
-    'grlink',
-    'Grapheme_Link',
+   #'grlink',
+   #'Grapheme_Link',
 
-    'hex',
-    'Hex_Digit',
+   #'hex',
+   #'Hex_Digit',
 
-    'Hyphen',
+   #'Hyphen',
 
-    'idc',
-    'ID_Continue',
+   #'idc',
+   #'ID_Continue',
 
-    'ideo',
-    'Ideographic',
+   #'ideo',
+   #'Ideographic',
 
-    'ids',
-    'ID_Start',
+   #'ids',
+   #'ID_Start',
 
-    'idsb',
-    'IDS_Binary_Operator',
+   #'idsb',
+   #'IDS_Binary_Operator',
 
-    'idst',
-    'IDS_Trinary_Operator',
+   #'idst',
+   #'IDS_Trinary_Operator',
 
-    'joinc',
-    'Join_Control',
+   #'joinc',
+   #'Join_Control',
 
-    'loe',
-    'Logical_Order_Exception',
+   #'loe',
+   #'Logical_Order_Exception',
 
-    'Lowercase',
+   #'Lowercase',
 
-    'Math',
+   #'Math',
 
-    'nchar',
-    'Noncharacter_Code_Point',
+   #'nchar',
+   #'Noncharacter_Code_Point',
 
-    'oalpha',
-    'Other_Alphabetic',
+   #'oalpha',
+   #'Other_Alphabetic',
 
-    'odi',
-    'Other_Default_Ignorable_Code_Point',
+   #'odi',
+   #'Other_Default_Ignorable_Code_Point',
 
-    'ogrext',
-    'Other_Grapheme_Extend',
+   #'ogrext',
+   #'Other_Grapheme_Extend',
 
-    'oidc',
-    'Other_ID_Continue',
+   #'oidc',
+   #'Other_ID_Continue',
 
-    'oids',
-    'Other_ID_Start',
+   #'oids',
+   #'Other_ID_Start',
 
-    'olower',
-    'Other_Lowercase',
+   #'olower',
+   #'Other_Lowercase',
 
-    'omath',
-    'Other_Math',
+   #'omath',
+   #'Other_Math',
 
-    'oupper',
-    'Other_Uppercase',
+   #'oupper',
+   #'Other_Uppercase',
 
-    'patsyn',
-    'Pattern_Syntax',
+   #'patsyn',
+   #'Pattern_Syntax',
 
-    'patws',
-    'Pattern_Whitespace',
+   #'patws',
+   #'Pattern_Whitespace',
 
-    'qmark',
-    'quotationmark',
+   #'qmark',
+   #'quotationmark',
 
-    'radical',
+   #'radical',
 
-    'sd',
-    'Soft_Dotted',
+   #'sd',
+   #'Soft_Dotted',
 
-    'sterm',
+   #'sterm',
 
-    'term',
-    'Terminal_Punctuation',
+   #'term',
+   #'Terminal_Punctuation',
 
-    'uideo',
-    'Unified_Ideograph',
+   #'uideo',
+   #'Unified_Ideograph',
 
-    'Uppercase',
+   #'Uppercase',
 
-    'vs',
-    'Variation_Selector',
+   #'vs',
+   #'Variation_Selector',
 
-    'wspace',
-    'whitespace',
+   #'wspace',
+   #'whitespace',
 
-    'xids',
-    'XID_Start',
+   #'xids',
+   #'XID_Start',
 
-    'xidc',
-    'XID_Continue',
+   #'xidc',
+   #'XID_Continue',
   ]
 
   modes.each do |mode|
@@ -295,7 +295,7 @@ class ParserProperties < Test::Unit::TestCase
 
     props.each do |property|
       define_method "test_parse_#{token_type}_#{property}" do
-        t = RP.parse "ab\\#{mode}{#{property.to_s.capitalize}}"
+        t = RP.parse "ab\\#{mode}{#{property}}"
 
         assert( t.expressions.last.is_a?(CharacterProperty::Base),
                "Expected property, but got #{t.expressions.last.class.name}")
@@ -303,5 +303,34 @@ class ParserProperties < Test::Unit::TestCase
         assert_equal( token_type, t.expressions.last.type )
       end
     end
+  end
+
+ #def test_parse_property_age
+ #  t = RP.parse 'ab\p{age=5.2}cd'
+
+ #  assert( t.expressions[1].is_a?(CharacterProperty::Age),
+ #         "Expected Age property, but got #{t.expressions[1].class.name}")
+ #end
+
+ #def test_parse_property_derived
+ #  t = RP.parse 'ab\p{Math}cd'
+
+ #  assert( t.expressions[1].is_a?(CharacterProperty::Derived),
+ #         "Expected Derived property, but got #{t.expressions[1].class.name}")
+ #end
+
+ #def test_parse_property_script
+ #  t = RP.parse 'ab\p{Hiragana}cd'
+
+ #  assert( t.expressions[1].is_a?(CharacterProperty::Script),
+ #         "Expected Script property, but got #{t.expressions[1].class.name}")
+ #end
+
+  def test_parse_property_following_literal
+    t = RP.parse 'ab\p{Lu}cd'
+    pr t
+
+    assert( t.expressions[2].is_a?(Literal),
+           "Expected Literal, but got #{t.expressions[2].class.name}")
   end
 end
