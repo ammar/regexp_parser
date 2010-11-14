@@ -301,6 +301,7 @@ class ParserProperties < Test::Unit::TestCase
                "Expected property, but got #{t.expressions.last.class.name}")
 
         assert_equal( token_type, t.expressions.last.type )
+        assert_equal( property,   t.expressions.last.name )
       end
     end
   end
@@ -328,7 +329,6 @@ class ParserProperties < Test::Unit::TestCase
 
   def test_parse_property_following_literal
     t = RP.parse 'ab\p{Lu}cd'
-    pr t
 
     assert( t.expressions[2].is_a?(Literal),
            "Expected Literal, but got #{t.expressions[2].class.name}")

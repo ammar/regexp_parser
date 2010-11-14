@@ -93,72 +93,6 @@ module Regexp::Expression
 
   class Literal < Regexp::Expression::Base; end
 
-  class CharacterSet < Regexp::Expression::Base
-    attr_accessor :members
-
-    def initialize(token)
-      @members = []
-      @negative = false
-      super
-    end
-
-    def <<(member)
-      if member.length == 1
-        @members << member
-      elsif member =~ /\\./
-        @members << member
-      elsif member =~ /\[:(\w+):\]/
-        case $1
-        when 'alnum';   CType::Alnum.each  {|c| @members << c }
-        when 'alpha';   CType::Alpha.each  {|c| @members << c }
-        when 'blank';   CType::Blank.each  {|c| @members << c }
-        when 'cntrl';   CType::Cntrl.each  {|c| @members << c }
-        when 'digit';   CType::Digit.each  {|c| @members << c }
-        when 'graph';   CType::Graph.each  {|c| @members << c }
-        when 'lower';   CType::Lower.each  {|c| @members << c }
-        when 'print';   CType::Print.each  {|c| @members << c }
-        when 'punct';   CType::Punct.each  {|c| @members << c }
-        when 'space';   CType::Space.each  {|c| @members << c }
-        when 'upper';   CType::Upper.each  {|c| @members << c }
-        when 'xdigit';  CType::XDigit.each {|c| @members << c }
-        when 'word';    CType::Word.each   {|c| @members << c }
-        when 'ascii';   CType::ASCII.each  {|c| @members << c }
-        else
-          raise "Unexpected posix class name '#{$1}' character set member"
-        end
-      elsif member =~ /\[.([\w-]+).\]/
-        # TODO: add collation sequences
-      elsif member =~ /\[=(\w+)=\]/
-        # TODO: add character equivalents
-      else
-        raise "Unexpected character set member '#{member}'"
-      end
-
-      @members.uniq!
-    end
-
-    def include?(member)
-      @members.include? member
-    end
-
-    def negate
-      @negative = true
-    end
-
-    def negative?
-      @negative
-    end
-    alias :negated? :negative?
-
-    def to_s
-      s = @text
-      s << '^' if negative?
-      s << @members.join
-      s << @quantifier.to_s if quantified?
-      s
-    end
-  end
-
   module Anchor
     class Base < Regexp::Expression::Base; end
 
@@ -192,111 +126,6 @@ module Regexp::Expression
     class NonWord     < CharacterType::Base; end
     class Space       < CharacterType::Base; end
     class NonSpace    < CharacterType::Base; end
-  end
-
-  module CharacterProperty 
-    class Base < Regexp::Expression::Base
-      def inverted?
-        @type == :nonproperty
-      end
-
-      def name
-        @text[/[^\\pP{}]+/]
-      end
-    end
-
-    class Alnum         < Base; end
-    class Alpha         < Base; end
-    class Any           < Base; end
-    class Ascii         < Base; end
-    class Blank         < Base; end
-    class Cntrl         < Base; end
-    class Digit         < Base; end
-    class Graph         < Base; end
-    class Lower         < Base; end
-    class Newline       < Base; end
-    class Print         < Base; end
-    class Punct         < Base; end
-    class Space         < Base; end
-    class Upper         < Base; end
-    class Word          < Base; end
-    class Xdigit        < Base; end
-
-    module Letter
-      class Base < CharacterProperty::Base; end
-
-      class Any         < Letter::Base; end
-      class Uppercase   < Letter::Base; end
-      class Lowercase   < Letter::Base; end
-      class Titlecase   < Letter::Base; end
-      class Modifier    < Letter::Base; end
-      class Other       < Letter::Base; end
-    end
-
-    module Mark
-      class Base < CharacterProperty::Base; end
-
-      class Any         < Mark::Base; end
-      class Nonspacing  < Mark::Base; end
-      class Spacing     < Mark::Base; end
-      class Enclosing   < Mark::Base; end
-    end
-
-    module Number
-      class Base < CharacterProperty::Base; end
-
-      class Any         < Number::Base; end
-      class Decimal     < Number::Base; end
-      class Letter      < Number::Base; end
-      class Other       < Number::Base; end
-    end
-
-    module Punctuation
-      class Base < CharacterProperty::Base; end
-
-      class Any         < Punctuation::Base; end
-      class Connector   < Punctuation::Base; end
-      class Dash        < Punctuation::Base; end
-      class Open        < Punctuation::Base; end
-      class Close       < Punctuation::Base; end
-      class Initial     < Punctuation::Base; end
-      class Final       < Punctuation::Base; end
-      class Other       < Punctuation::Base; end
-    end
-
-    module Separator
-      class Base < CharacterProperty::Base; end
-
-      class Any         < Separator::Base; end
-      class Space       < Separator::Base; end
-      class Line        < Separator::Base; end
-      class Paragraph   < Separator::Base; end
-    end
-
-    module Symbol
-      class Base < CharacterProperty::Base; end
-
-      class Any         < Symbol::Base; end
-      class Math        < Symbol::Base; end
-      class Currency    < Symbol::Base; end
-      class Modifier    < Symbol::Base; end
-      class Other       < Symbol::Base; end
-    end
-
-    module Codepoint
-      class Base < CharacterProperty::Base; end
-
-      class Any         < Codepoint::Base; end
-      class Control     < Codepoint::Base; end
-      class Format      < Codepoint::Base; end
-      class Surrogate   < Codepoint::Base; end
-      class PrivateUse  < Codepoint::Base; end
-      class Unassigned  < Codepoint::Base; end
-    end
-
-    class Age     < CharacterProperty::Base; end
-    class Derived < CharacterProperty::Base; end
-    class Script  < CharacterProperty::Base; end
   end
 
   # TODO: split this into escape sequences and string escapes
@@ -409,3 +238,7 @@ module Regexp::Expression
   end
 
 end # module Regexp::Expression
+
+%w{property set}.each do|file|
+  require File.expand_path("../expression/#{file}", __FILE__)
+end
