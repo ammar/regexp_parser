@@ -20,7 +20,7 @@ module Regexp::Syntax
 
         implements :assertion, Group::Assertion::All
 
-        implements :set, 
+        implements :set, CharacterSet::OpenClose +
           CharacterSet::Extended + CharacterSet::Types +
           CharacterSet::POSIX::Standard 
 

@@ -15,7 +15,7 @@ module Regexp::Syntax
         implements :set, 
           CharacterSet::POSIX::Extensions 
 
-        implements :subset, 
+        implements :subset, CharacterSet::OpenClose +
           CharacterSet::Extended + CharacterSet::Types +
           CharacterSet::POSIX::Standard 
       end

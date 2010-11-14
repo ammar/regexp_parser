@@ -21,6 +21,13 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal( true, exp.include?("\x48") )
   end
 
+  def test_parse_set_members
+    exp = RP.parse('[ac-eh]', :any)[0]
+
+    assert_equal( true,  exp.include?('d') )
+    assert_equal( false, exp.include?(']') )
+  end
+
   # TODO: complete sub-set parsing
  #def test_parse_set_nesting
  #  exp = RP.parse('[a[b[c]]]', 'ruby/1.9').expressions[0]

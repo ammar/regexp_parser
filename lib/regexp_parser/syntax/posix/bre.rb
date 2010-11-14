@@ -12,7 +12,7 @@ module Regexp::Syntax
         implements :backref, [:digit]
         implements :escape, [:literal]
         implements :group, [:capture, :close]
-        implements :set, CharacterSet::Basic
+        implements :set, CharacterSet::OpenClose + CharacterSet::Basic
         implements :meta, Meta::Basic
         implements :quantifier, [
           :zero_or_more, :interval_bre

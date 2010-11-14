@@ -123,7 +123,12 @@
       set_depth -= 1; in_set = set_depth > 0 ? true : false
 
       self.emit(set_type, :close, data[ts..te-1].pack('c*'), ts, te)
-      fret;
+
+      if set_depth == 0
+        fgoto main;
+      else
+        fret;
+      end
     };
 
     '-]' { # special case, emits two tokens
@@ -132,7 +137,12 @@
 
       self.emit(set_type, :member, data[ts..te-2].pack('c*'), ts, te)
       self.emit(set_type, :close,  data[ts+1..te-1].pack('c*'), ts, te)
-      fret;
+
+      if set_depth == 0
+        fgoto main;
+      else
+        fret;
+      end
     };
 
     '^' {

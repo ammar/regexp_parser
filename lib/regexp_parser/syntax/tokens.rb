@@ -42,7 +42,9 @@ module Regexp::Syntax
     end
 
     module CharacterSet
-      Basic     = [:open, :close, :negate, :member, :range]
+      OpenClose = [:open, :close]
+
+      Basic     = [:negate, :member, :range]
       Extended  = Basic + [:escape, :intersection, :range_hex, :backspace]
 
       Types     = [:type_digit, :type_nondigit, :type_hex, :type_nonhex,

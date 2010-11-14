@@ -62,6 +62,10 @@ module Regexp::Expression
       (@options and @options[:x]) ? true : false
     end
     alias :x? :free_spacing?
+
+    def [](index)
+      @expressions[index]
+    end
   end
 
   class Root < Regexp::Expression::Base
