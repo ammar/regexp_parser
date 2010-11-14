@@ -172,10 +172,10 @@ Expression::Root class. See Expression below for more information.
 
   require 'regexp_parser'
 
-  root = Regexp::Parser.parse /a?(b)*[c]+)/m, 'posix/ere'
+  root = Regexp::Parser.parse /(a?(b)*[c]+)/m, 'posix/ere'
 
-  root.multiline?   # => true (aliased as m?)
-  root.insensitive? # => false (aliased as i?)
+  root.multiline?         # => true (aliased as m?)
+  root.case_insensitive?  # => false (aliased as i?)
 
   root.expressions.each do |exp|
     if exp.quantified?

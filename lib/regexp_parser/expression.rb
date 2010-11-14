@@ -53,10 +53,10 @@ module Regexp::Expression
     end
     alias :m? :multiline?
 
-    def insensitive?
+    def case_insensitive?
       (@options and @options[:i]) ? true : false
     end
-    alias :i? :insensitive?
+    alias :i? :case_insensitive?
 
     def free_spacing?
       (@options and @options[:x]) ? true : false
@@ -72,6 +72,21 @@ module Regexp::Expression
     def to_s
       @expressions.join
     end
+
+    def multiline?
+      @expressions[0].m?
+    end
+    alias :m? :multiline?
+
+    def case_insensitive?
+      @expressions[0].i?
+    end
+    alias :i? :case_insensitive?
+
+    def free_spacing?
+      @expressions[0].x?
+    end
+    alias :x? :free_spacing?
   end
 
   class Quantifier
@@ -128,7 +143,6 @@ module Regexp::Expression
     class NonSpace    < CharacterType::Base; end
   end
 
-  # TODO: split this into escape sequences and string escapes
   module EscapeSequence
     class Base          < Regexp::Expression::Base; end
 
@@ -203,7 +217,7 @@ module Regexp::Expression
         [:capture, :named].include? @token
       end
 
-      def comment?; false end
+      def comment?; @type == :comment end
 
       def to_s
         s = @text
@@ -221,9 +235,8 @@ module Regexp::Expression
 
     class Options   < Group::Base; end
 
-    # special case inheritance, for to_s
-    class Comment   < Regexp::Expression::Base
-      def comment?; true end
+    class Comment   < Group::Base
+      def to_s; @text end
     end
   end
 

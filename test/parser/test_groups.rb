@@ -2,28 +2,36 @@ require File.expand_path("../../helpers", __FILE__)
 
 class TestParserGroups < Test::Unit::TestCase
 
-  def test_parse_options_xi
-    t = RP.parse(/(?xi-m:a(?m-ix:b))/)
+  def test_parse_root_options_mi
+    t = RP.parse((/[abc]/mi).to_s)
 
-    assert_equal( false, t.expressions.first.m? )
-    assert_equal( true,  t.expressions.first.i? )
-    assert_equal( true,  t.expressions.first.x? )
+    assert_equal( true,  t.m? )
+    assert_equal( true,  t.i? )
+    assert_equal( false, t.x? )
   end
 
-  def test_parse_options_xm
-    t = RP.parse(/(?xm-i:a(?m-ix:b))/)
+  def test_parse_nested_options_m
+    t = RP.parse('(?xi-m:a(?m-ix:b))')
 
-    assert_equal( true,  t.expressions.first.m? )
-    assert_equal( false, t.expressions.first.i? )
-    assert_equal( true,  t.expressions.first.x? )
+    assert_equal( true,  t.expressions[0].expressions[1].m? )
+    assert_equal( false, t.expressions[0].expressions[1].i? )
+    assert_equal( false, t.expressions[0].expressions[1].x? )
   end
 
-  def test_parse_options_im
-    t = RP.parse(/(?mi-x:a(?m-ix:b))/)
+  def test_parse_nested_options_xm
+    t = RP.parse(/(?i-xm:a(?mx-i:b))/)
 
-    assert_equal( true,  t.expressions.first.m? )
-    assert_equal( true,  t.expressions.first.i? )
-    assert_equal( false, t.expressions.first.x? )
+    assert_equal( true,  t.expressions[0].expressions[1].m? )
+    assert_equal( false, t.expressions[0].expressions[1].i? )
+    assert_equal( true,  t.expressions[0].expressions[1].x? )
+  end
+
+  def test_parse_nested_options_im
+    t = RP.parse(/(?x-mi:a(?mi-x:b))/)
+
+    assert_equal( true,  t.expressions[0].expressions[1].m? )
+    assert_equal( true,  t.expressions[0].expressions[1].i? )
+    assert_equal( false, t.expressions[0].expressions[1].x? )
   end
 
   def test_parse_lookahead

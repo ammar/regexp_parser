@@ -306,6 +306,16 @@ class ParserProperties < Test::Unit::TestCase
     end
   end
 
+  def test_parse_property_negative
+    t = RP.parse 'ab\p{L}cd'
+    assert_equal( false, t.expressions[1].negative? )
+  end
+
+  def test_parse_nonproperty_negative
+    t = RP.parse 'ab\P{L}cd'
+    assert_equal( true, t.expressions[1].negative? )
+  end
+
   def test_parse_property_age
     t = RP.parse 'ab\p{age=5.2}cd'
 

@@ -2,7 +2,7 @@ module Regexp::Expression
 
   module CharacterProperty 
     class Base < Regexp::Expression::Base
-      def inverted?
+      def negative?
         @type == :nonproperty
       end
 
