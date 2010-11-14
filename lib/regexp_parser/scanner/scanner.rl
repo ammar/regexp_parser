@@ -558,6 +558,12 @@
       when /\\k'[^\d-](\w+)?[+\-]\d+'/ # single-quotes
         self.emit(:backref, :name_nest_ref_sq,  text, ts, te)
 
+      when /\\([gk])<\d+[+\-]\d+>/ # angle-brackets
+        self.emit(:backref, :number_nest_ref_ab,  text, ts, te)
+
+      when /\\([gk])'\d+[+\-]\d+'/ # single-quotes
+        self.emit(:backref, :number_nest_ref_sq,  text, ts, te)
+
       end
     };
 

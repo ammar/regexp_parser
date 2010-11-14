@@ -28,6 +28,22 @@ module Regexp::Syntax
         All = Positive + Negative
       end
 
+      module Backreference
+        Name      = [:name_ref]
+        Number    = [:number_ref, :number_rel_ref]
+
+        NestLevel = [:name_nest_ref, :number_nest_ref]
+
+        All = Name + Number + NestLevel
+      end
+
+      module SubexpressionCall
+        Name      = [:name_call]
+        Number    = [:number_call, :number_rel_call]
+
+        All = Name + Number
+      end
+
       All = Group::Extended + Group::Named + Group::Atomic +
             Group::Passive + Group::Comment
     end
