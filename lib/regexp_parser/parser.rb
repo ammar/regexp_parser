@@ -66,7 +66,7 @@ module Regexp::Parser
       self.append_set(token)
     when :close
       self.close_set
-    when *Token::CharacterProperty::All
+    when *Token::UnicodeProperty::All
       self.append_set(token)
     else
       raise "Unsupported CharacterSet token #{token.inspect}"
@@ -123,7 +123,7 @@ module Regexp::Parser
   end
 
   def self.property(token)
-    include Regexp::Expression::CharacterProperty
+    include Regexp::Expression::UnicodeProperty
 
     case token.token
     when :alnum;            @node << Alnum.new(token)
@@ -187,13 +187,13 @@ module Regexp::Parser
     when :private_use;      @node << Codepoint::PrivateUse.new(token)
     when :unassigned;       @node << Codepoint::Unassigned.new(token)
 
-    when *Token::CharacterProperty::Age
+    when *Token::UnicodeProperty::Age
       @node << Age.new(token)
 
-    when *Token::CharacterProperty::Derived
+    when *Token::UnicodeProperty::Derived
       @node << Derived.new(token)
 
-    when *Regexp::Syntax::Token::CharacterProperty::Script
+    when *Regexp::Syntax::Token::UnicodeProperty::Script
       @node << Script.new(token)
 
     else

@@ -11,10 +11,12 @@ module Regexp::Syntax
 
         # these were added with update of Oniguruma to Unicode 6.0
         implements :property,
-          [:script_mandaic, :script_batak, :script_brahmi]
+          [:script_mandaic, :script_batak, :script_brahmi] +
+          UnicodeProperty::Age
 
         implements :nonproperty,
-          [:script_mandaic, :script_batak, :script_brahmi]
+          [:script_mandaic, :script_batak, :script_brahmi] +
+          UnicodeProperty::Age
       end
     end
   end

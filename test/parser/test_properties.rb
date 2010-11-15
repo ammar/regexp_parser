@@ -297,7 +297,7 @@ class ParserProperties < Test::Unit::TestCase
       define_method "test_parse_#{token_type}_#{property}" do
         t = RP.parse "ab\\#{mode}{#{property}}"
 
-        assert( t.expressions.last.is_a?(CharacterProperty::Base),
+        assert( t.expressions.last.is_a?(UnicodeProperty::Base),
                "Expected property, but got #{t.expressions.last.class.name}")
 
         assert_equal( token_type, t.expressions.last.type )
@@ -319,21 +319,21 @@ class ParserProperties < Test::Unit::TestCase
   def test_parse_property_age
     t = RP.parse 'ab\p{age=5.2}cd'
 
-    assert( t.expressions[1].is_a?(CharacterProperty::Age),
+    assert( t.expressions[1].is_a?(UnicodeProperty::Age),
            "Expected Age property, but got #{t.expressions[1].class.name}")
   end
 
   def test_parse_property_derived
     t = RP.parse 'ab\p{Math}cd'
 
-    assert( t.expressions[1].is_a?(CharacterProperty::Derived),
+    assert( t.expressions[1].is_a?(UnicodeProperty::Derived),
            "Expected Derived property, but got #{t.expressions[1].class.name}")
   end
 
   def test_parse_property_script
     t = RP.parse 'ab\p{Hiragana}cd'
 
-    assert( t.expressions[1].is_a?(CharacterProperty::Script),
+    assert( t.expressions[1].is_a?(UnicodeProperty::Script),
            "Expected Script property, but got #{t.expressions[1].class.name}")
   end
 
