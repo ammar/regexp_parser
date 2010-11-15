@@ -42,4 +42,10 @@ class ParserExpression < Test::Unit::TestCase
     assert_equal( pattern, RP.parse(pattern).to_s )
   end
 
+  def test_parse_expression_to_s_url
+    pattern = '(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*'+
+              '\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)'
+    assert_equal( pattern, RP.parse(pattern).to_s )
+  end
+
 end

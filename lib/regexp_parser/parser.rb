@@ -367,10 +367,7 @@ module Regexp::Parser
   def self.append_set(token)
     case token.token
     when :range
-      # FIXME: this is naive
-      parts = token.text.split('-', 2)
-      range = (parts.first..parts.last).to_a
-      range.each {|m| @set << m }
+      @set << token.text
     else
       @set << token.text
     end
