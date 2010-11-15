@@ -72,7 +72,8 @@ module Regexp::Syntax
     end
 
     def implements?(type, token)
-      @implements[type] and @implements[type].include?(token)
+      return true if @implements[type] and @implements[type].include?(token)
+      false
     end
     alias :check? :implements?
 

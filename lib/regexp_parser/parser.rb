@@ -26,6 +26,8 @@ module Regexp::Parser
   end
 
   def self.parse_token(token)
+    puts "token: #{token.inspect}" 
+
     case token.type
     when :meta;         self.meta(token)
     when :quantifier;   self.quantifier(token)

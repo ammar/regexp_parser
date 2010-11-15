@@ -76,6 +76,11 @@ module Regexp::Syntax
       end
 
       All = Basic + Extended + Types + POSIX::All
+
+      module SubSet
+        OpenClose = [:open, :close]
+        All       = CharacterSet::All
+      end
     end
 
     module Quantifier
