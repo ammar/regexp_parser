@@ -9,6 +9,7 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
 
   tests = {
     :implements => {
+      :backref      => [:number],
       :escape       => [Escape::All].flatten,
       :group        => [Group::All].flatten,
       :assertion    => [Group::Assertion::All].flatten,
@@ -16,7 +17,9 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
     },
 
     :excludes => {
-      :backref => nil,
+      :backref => [
+        Group::Backreference::All + Group::SubexpressionCall::All
+      ].flatten,
 
       :quantifier => [
         Quantifier::Reluctant + Quantifier::Possessive

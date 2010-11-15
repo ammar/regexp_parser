@@ -35,6 +35,7 @@ module Regexp::Parser
     when :assertion;    self.group(token)
     when :set, :subset; self.set(token)
     when :type;         self.type(token)
+    when :backref;      self.backref(token)
 
     when :property, :nonproperty
       self.property(token)
@@ -76,22 +77,43 @@ module Regexp::Parser
     when :alternation
       unless @node.token == :alternation
         alt = Alternation.new(token)
-
-        if @node.expressions.last.is_a?(Literal)
-          seq = Sequence.new
-          while @node.expressions.last.is_a?(Literal)
-            seq << @node.expressions.pop
-          end
-          alt << seq
-        else
-          alt << @node.expressions.pop
+        seq = Sequence.new
+        while @node.expressions.last
+          seq.insert @node.expressions.pop
         end
+        alt.alternative(seq)
 
         @node << alt
         @node = alt
+        @node.alternative
+      else
+        @node.alternative
       end
     else
       raise "Unsupported Meta token #{token.inspect}"
+    end
+  end
+
+  def self.backref(token)
+    case token.token
+    when :name_ref
+      @node << Backreference::Name.new(token)
+    when :name_nest_ref
+      @node << Backreference::NameNestLevel.new(token)
+    when :name_call
+      @node << Backreference::NameCall.new(token)
+    when :number, :number_ref
+      @node << Backreference::Number.new(token)
+    when :number_rel_ref
+      @node << Backreference::NumberRelative.new(token)
+    when :number_nest_ref
+      @node << Backreference::NumberNestLevel.new(token)
+    when :number_call
+      @node << Backreference::NumberCall.new(token)
+    when :number_rel_call
+      @node << Backreference::NumberCallRelative.new(token)
+    else
+      raise "Unsupported Backreference token #{token.inspect}"
     end
   end
 

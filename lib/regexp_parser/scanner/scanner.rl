@@ -287,7 +287,7 @@
   escape_sequence := |*
     [1-9] {
       text = data[ts-1..te-1].pack('c*')
-      self.emit(:backref, :digit, text, ts-1, te)
+      self.emit(:backref, :number, text, ts-1, te)
       fret;
     };
 

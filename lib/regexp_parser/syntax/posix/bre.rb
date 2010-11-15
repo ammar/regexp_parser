@@ -9,7 +9,7 @@ module Regexp::Syntax
         super
 
         implements :anchor, Anchor::Basic
-        implements :backref, [:digit]
+        implements :backref, [:number]
         implements :escape, [:literal]
         implements :group, [:capture, :close]
         implements :set, CharacterSet::OpenClose + CharacterSet::Basic

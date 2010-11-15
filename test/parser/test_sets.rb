@@ -43,6 +43,13 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal( false, exp.include?(']') )
   end
 
+  def test_parse_set_character_equivalents
+    exp = RP.parse('[a[=e=]h]', :any)[0]
+
+    assert_equal( true,  exp.include?('[=e=]') )
+    assert_equal( false, exp.include?(']') )
+  end
+
   # TODO: complete sub-set parsing
  #def test_parse_set_nesting
  #  root = RP.parse('[a[b[c]]]', 'ruby/1.9')

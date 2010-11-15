@@ -30,7 +30,7 @@ class TestSyntaxPosix_BRE < Test::Unit::TestCase
     # escapes and back-references
     '\a\(b\)\1' => {
       0     => [:escape,      :literal,             '\a',       0, 2, 0, 0],
-      4     => [:backref,     :digit,               '\1',       7, 9, 0, 0],
+      4     => [:backref,     :number,              '\1',       7, 9, 0, 0],
     },
 
     # character sets

@@ -2,13 +2,13 @@ require File.expand_path("../../helpers", __FILE__)
 
 class ParserExpression < Test::Unit::TestCase
 
-  def test_parse_expression_to_s_quantified_alternation
-    pattern = 'abcd|ghij'
+  def test_parse_expression_to_s_literal_alternation
+    pattern = 'abcd|ghij|klmn|pqur'
     assert_equal( pattern, RP.parse(pattern).to_s )
   end
 
-  def test_parse_expression_to_s_quantified_alternation
-    pattern = '(abc*?d+)+|(ghi++j?){3,6}'
+  def test_parse_expression_to_s_quantified_alternations
+    pattern = '(?:a?[b]+(c){2}|d+[e]*(f)?)|(?:g+[h]?(i){2,3}|j*[k]{3,5}(l)?)'
     assert_equal( pattern, RP.parse(pattern).to_s )
   end
 

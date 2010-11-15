@@ -9,6 +9,8 @@ module Regexp::Syntax
 
         implements :meta, Meta::Extended
 
+        implements :backref, [:number]
+
         implements :anchor,
           Anchor::Extended + Anchor::String
 

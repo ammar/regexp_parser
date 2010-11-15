@@ -2,7 +2,7 @@ require File.expand_path("../../helpers", __FILE__)
 
 %w{
   alternation anchors escapes expression groups properties
-  quantifiers sets
+  quantifiers refcalls sets
 }.each do|tc|
   require File.expand_path("../test_#{tc}", __FILE__)
 end

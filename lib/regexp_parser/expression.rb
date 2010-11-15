@@ -112,6 +112,21 @@ module Regexp::Expression
 
   class Literal < Regexp::Expression::Base; end
 
+  module Backreference
+    class Base < Regexp::Expression::Base; end
+
+    class Name                < Backreference::Base; end
+    class Number              < Backreference::Base; end
+    class NumberRelative      < Backreference::Base; end
+
+    class NameNestLevel       < Backreference::Base; end
+    class NumberNestLevel     < Backreference::Base; end
+
+    class NameCall            < Backreference::Base; end
+    class NumberCall          < Backreference::Base; end
+    class NumberCallRelative  < Backreference::Base; end
+  end
+
   module Anchor
     class Base < Regexp::Expression::Base; end
 
@@ -173,14 +188,11 @@ module Regexp::Expression
 
   class Alternation < Regexp::Expression::Base
     def <<(exp)
-      if @expressions.last.is_a?(Literal) and exp.is_a?(Literal)
-        seq = Regexp::Expression::Sequence.new
-        seq << exp
-        seq << @expressions.pop
-        @expressions << seq
-      else
-        @expressions << exp
-      end
+      @expressions.last << exp
+    end
+
+    def alternative(exp = nil)
+      @expressions << (exp ? exp : Sequence.new)
     end
 
     def alternatives
@@ -188,15 +200,11 @@ module Regexp::Expression
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
-      if @expressions.last.is_a?(Sequence)
-        @expressions.last.last.quantify(token, text, min, max, mode)
-      else
-        @expressions.last.quantify(token, text, min, max, mode)
-      end
+      @expressions.last.last.quantify(token, text, min, max, mode)
     end
 
     def to_s
-      s = @expressions.map{|e| e.to_s}.join('|')
+      @expressions.map{|e| e.to_s}.join('|')
     end
   end
 
@@ -207,11 +215,23 @@ module Regexp::Expression
     end
 
     def <<(exp)
+      @expressions << exp
+    end
+
+    def insert(exp)
       @expressions.insert 0, exp
     end
 
+    def last
+      @expressions.last
+    end
+
     def to_s
-      s = @expressions.map{|e| e.to_s}.join('|')
+      s = @expressions.map{|e| e.to_s}.join()
+    end
+
+    def quantify(token, text, min = nil, max = nil, mode = :greedy)
+      last.quantify(token, text, min, max, mode)
     end
   end
 
