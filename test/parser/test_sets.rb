@@ -36,6 +36,13 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal( false, exp.include?(']') )
   end
 
+  def test_parse_set_collating_sequence
+    exp = RP.parse('[a[.span-ll.]h]', :any)[0]
+
+    assert_equal( true,  exp.include?('[.span-ll.]') )
+    assert_equal( false, exp.include?(']') )
+  end
+
   # TODO: complete sub-set parsing
  #def test_parse_set_nesting
  #  root = RP.parse('[a[b[c]]]', 'ruby/1.9')

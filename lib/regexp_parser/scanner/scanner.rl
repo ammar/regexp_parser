@@ -29,6 +29,10 @@
 
   class_posix           = '[:' . class_name_posix . ':]';
 
+  # these are not supported in ruby, and need verification
+  collating_sequence    = '[.' . (alpha | [\-])+ . '.]';
+  character_equivalent  = '[=' . alpha . '=]';
+
   char_type             = [dDhHsSwW];
 
   line_anchor           = beginning_of_line | end_of_line;
@@ -197,6 +201,14 @@
       when '[:xdigit:]'; self.emit(set_type, :class_xdigit, text, ts, te)
       else raise "Unsupported character posixe class at #{text} (char #{ts})"
       end
+    };
+
+    collating_sequence >(open_bracket, 1) @err(premature_end_error) {
+      self.emit(set_type, :collation, data[ts..te-1].pack('c*'), ts, te)
+    };
+
+    character_equivalent >(open_bracket, 1) @err(premature_end_error) {
+      self.emit(set_type, :equivalent, data[ts..te-1].pack('c*'), ts, te)
     };
 
     # exclude the closing bracket as a cleaner workaround for dealing with the

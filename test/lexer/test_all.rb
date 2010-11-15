@@ -1,7 +1,7 @@
 require File.expand_path("../../helpers", __FILE__)
 
 %w{
-  literals nesting
+  literals nesting refcalls
 }.each do|tc|
   require File.expand_path("../test_#{tc}", __FILE__)
 end

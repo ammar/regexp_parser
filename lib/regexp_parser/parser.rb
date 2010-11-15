@@ -26,8 +26,6 @@ module Regexp::Parser
   end
 
   def self.parse_token(token)
-    puts "token: #{token.inspect}" 
-
     case token.type
     when :meta;         self.meta(token)
     when :quantifier;   self.quantifier(token)
@@ -54,18 +52,16 @@ module Regexp::Parser
     case token.token
     when :open
       self.open_set(token)
+    when :close
+      self.close_set
     when :negate
       self.negate_set
-    when :member, :escape
-      self.append_set(token)
-    when :range
+    when :member, :range, :escape, :collation, :equivalent
       self.append_set(token)
     when *Token::Escape::All
       self.append_set(token)
     when *Token::CharacterSet::All
       self.append_set(token)
-    when :close
-      self.close_set
     when *Token::UnicodeProperty::All
       self.append_set(token)
     else
