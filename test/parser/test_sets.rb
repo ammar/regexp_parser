@@ -24,7 +24,7 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal( true,  exp.matches?("6") )
 
     # TODO: figure out why this generate wrong string, but only after
-    # the assertion above (to_s "piles up"
+    # the assertion above (to_s "piles up")
     #assert_equal( true,  exp.matches?("v") )
     #assert_equal( false, exp.matches?("\x48") )
   end
@@ -75,7 +75,7 @@ class TestParserSets < Test::Unit::TestCase
       assert_equal( true,  exp.matches?("b") )
 
       # TODO: figure out why this generate wrong string, but only after
-      # the assertion above (to_s "piles up"
+      # the assertion above (to_s "piles up")
       #assert_equal( false, exp.matches?("c") )
     end
 

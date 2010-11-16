@@ -41,13 +41,13 @@
                           'age=4.0'i | 'age=4.1'i | 'age=5.0'i |
                           'age=5.1'i | 'age=5.2'i | 'age=6.0'i;
 
-  property_script       = (alpha | space | '_')+; # a bit too permissive
+  property_script       = (alpha | space | '_')+; # everything else
 
-  property_sequence     = property_char.'{'.(
+  property_sequence     = property_char . '{' . '^'? (
                             property_name | general_category |
                             property_age  | property_derived |
                             property_script
-                          ).'}';
+                          ) . '}';
 
   action premature_property_end {
     raise "Premature end of pattern (unicode property)"
@@ -57,21 +57,21 @@
   # --------------------------------------------------------------------------
   unicode_property := |*
 
-    # TODO: break this into smaller states.
     property_sequence < eof(premature_property_end) {
       text = data[ts-1..te-1].pack('c*')
-
       if in_set
         type = :set
-        pref = text[1,1] == 'p' ? :property : :nonproperty
       else
         type = text[1,1] == 'p' ? :property : :nonproperty
-        pref = ''
       end
-      # TODO: add ^ for property negation, :nonproperty_caret
 
-      case name = data[ts+2..te-2].pack('c*').gsub(/[\s_]/,'').downcase
+      name = data[ts+2..te-2].pack('c*').gsub(/[\s_]/,'').downcase
+      if name[0].chr == '^'
+        name = name[1..-1]
+        type = :nonproperty
+      end
 
+      case name
       # Named
       when 'alnum'
         self.emit(type, :alnum,       text, ts-1, te)

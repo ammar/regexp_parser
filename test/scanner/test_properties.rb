@@ -294,12 +294,19 @@ class ScannerProperties < Test::Unit::TestCase
     define_method "test_scan_property_#{test}_#{count+=1}" do
       token = RS.scan("a\\p{#{property}}c")[1]
 
-      assert_equal( :property,  token[0] )
-      assert_equal( test,       token[1] )
+      assert_equal( :property,      token[0] )
+      assert_equal( test,           token[1] )
     end
 
     define_method "test_scan_nonproperty_#{test}_#{count+=1}" do
       token = RS.scan("a\\P{#{property}}c")[1]
+
+      assert_equal( :nonproperty,   token[0] )
+      assert_equal( test,           token[1] )
+    end
+
+    define_method "test_scan_caret_nonproperty_#{test}_#{count+=1}" do
+      token = RS.scan("a\\p{^#{property}}c")[1]
 
       assert_equal( :nonproperty,   token[0] )
       assert_equal( test,           token[1] )
