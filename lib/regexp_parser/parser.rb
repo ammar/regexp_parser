@@ -377,7 +377,11 @@ module Regexp::Parser
   end
 
   def self.open_set(token)
-    @node << (@set = CharacterSet.new(token))
+    if token.type == :subset
+      @set << CharacterSubSet.new(token)
+    else
+      @node << (@set = CharacterSet.new(token))
+    end
   end
 
   def self.negate_set
@@ -385,12 +389,7 @@ module Regexp::Parser
   end
 
   def self.append_set(token)
-    case token.token
-    when :range
-      @set << token.text
-    else
-      @set << token.text
-    end
+    @set << token.text
   end
 
   def self.close_set

@@ -10,15 +10,29 @@ module Regexp::Expression
     end
 
     def <<(member)
-      @members << member
+      if @members.last.is_a?(CharacterSubSet)
+        @members.last << member
+      else
+        @members << member
+      end
     end
 
     def include?(member)
-      @members.include? member
+      @members.each do |m|
+        if m.is_a?(CharacterSubSet)
+          return true if m.include?(member)
+        else
+          return true if member == m.to_s
+        end
+      end; false
     end
 
     def negate
-      @negative = true
+      if @members.last.is_a?(CharacterSubSet)
+        @members.last.negate
+      else
+        @negative = true
+      end
     end
 
     def negative?
@@ -35,11 +49,11 @@ module Regexp::Expression
       s
     end
 
-    def matches?(s)
-      @members.each do |m|
-        return true if s =~ /[#{m}]/
-      end; false
+    def matches?(input)
+      input =~ /#{to_s}/ ? true : false
     end
   end
+
+  class CharacterSubSet < CharacterSet; end
 
 end # module Regexp::Expression

@@ -8,20 +8,18 @@ RP = Regexp::Parser
 include Regexp::Expression
 
 def pr(re, d=0)
-  print "[#{d}]#{'  ' * d}#{re.class.name}"
-  print " quantifier: #{re.quantifier.to_s}" if re.quantified?
-  puts
+  if d == 0
+    print "[#{d}]#{'  ' * d}#{re.class.name}"
+    print " quantifier: #{re.quantifier.to_s}" if re.quantified?
+    puts
+  end
 
   re.expressions.each do |e|
     if e.expressions.empty?
-      if e.respond_to? :members
-        puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name} : #{e.members.join(', ')}"
-      else
-        puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name} : #{e.text}"
-      end
+      puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name} : #{e.text}"
     else
-      puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name}"
-      pr(e, d+2)
+      puts "[#{d+1}]#{'  ' * (d+1)}#{e.class.name}: #{e.text}"
+      pr(e, d+1)
     end
   end
 end
