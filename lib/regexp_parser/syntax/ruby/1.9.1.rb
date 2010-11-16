@@ -18,7 +18,9 @@ module Regexp::Syntax
           Quantifier::Reluctant + Quantifier::Possessive
 
         implements :set, 
-          CharacterSet::POSIX::Extensions 
+          CharacterSet::POSIX::StandardNegative +
+          CharacterSet::POSIX::Extensions +
+          CharacterSet::POSIX::ExtensionsNegative
 
         implements :subset, CharacterSet::OpenClose +
           CharacterSet::Extended + CharacterSet::Types +

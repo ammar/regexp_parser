@@ -67,7 +67,7 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal( true, exp.include?('c') )
   end
 
-  # character subsets are not available in ruby 1.8.x
+  # character subsets and negated posix classes are not available in ruby 1.8
   if RUBY_VERSION =~ /1\.9/
     def test_parse_set_nesting_matches
       exp = RP.parse('[a[b[^c]]]', 'ruby/1.9')[0]
@@ -82,6 +82,17 @@ class TestParserSets < Test::Unit::TestCase
     def test_parse_set_nesting_not_matches
       exp = RP.parse('[a[b[^c]]]', 'ruby/1.9')[0]
       assert_equal( false, exp.matches?("c") )
+    end
+
+    def test_parse_set_negated_posix_class
+      exp = RP.parse('[[:^xdigit:][:^lower:]]+', 'ruby/1.9').expressions[0]
+
+      assert_equal( true,  exp.is_a?(CharacterSet) )
+
+      assert_equal( true,  exp.include?('[:^xdigit:]') )
+      assert_equal( true,  exp.include?('[:^lower:]') )
+
+      assert_equal( true,  exp.matches?("GT") )
     end
   end
 

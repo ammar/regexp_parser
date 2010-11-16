@@ -45,6 +45,7 @@ class ScannerSets < Test::Unit::TestCase
 
     '[a[:digit:]c]'         => [2, :set,    :class_digit,     '[:digit:]',  2, 11],
     '[[:digit:][:space:]]'  => [2, :set,    :class_space,     '[:space:]', 10, 19],
+    '[[:^digit:]]'          => [1, :set,    :class_nondigit,  '[:^digit:]', 1, 11],
 
     '[a[.a-b.]c]'           => [2, :set,    :collation,       '[.a-b.]',    2,  9],
     '[a[=e=]c]'             => [2, :set,    :equivalent,      '[=e=]',      2,  7],

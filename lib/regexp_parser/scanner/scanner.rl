@@ -26,8 +26,7 @@
                           'space' | 'upper' | 'xdigit' |
                           'word'  | 'ascii';
 
-
-  class_posix           = '[:' . class_name_posix . ':]';
+  class_posix           = ('[:' . '^'? . class_name_posix . ':]');
 
   # these are not supported in ruby, and need verification
   collating_sequence    = '[.' . (alpha | [\-])+ . '.]';
@@ -183,31 +182,23 @@
       fcall character_set;
     };
 
-    class_posix >(open_bracket, 1) @err(premature_end_error) {
-      case text = data[ts..te-1].pack('c*')
-      when '[:alnum:]';  self.emit(set_type, :class_alnum,  text, ts, te)
-      when '[:alpha:]';  self.emit(set_type, :class_alpha,  text, ts, te)
-      when '[:ascii:]';  self.emit(set_type, :class_ascii,  text, ts, te)
-      when '[:blank:]';  self.emit(set_type, :class_blank,  text, ts, te)
-      when '[:cntrl:]';  self.emit(set_type, :class_cntrl,  text, ts, te)
-      when '[:digit:]';  self.emit(set_type, :class_digit,  text, ts, te)
-      when '[:graph:]';  self.emit(set_type, :class_graph,  text, ts, te)
-      when '[:lower:]';  self.emit(set_type, :class_lower,  text, ts, te)
-      when '[:print:]';  self.emit(set_type, :class_print,  text, ts, te)
-      when '[:punct:]';  self.emit(set_type, :class_punct,  text, ts, te)
-      when '[:space:]';  self.emit(set_type, :class_space,  text, ts, te)
-      when '[:upper:]';  self.emit(set_type, :class_upper,  text, ts, te)
-      when '[:word:]';   self.emit(set_type, :class_word,   text, ts, te)
-      when '[:xdigit:]'; self.emit(set_type, :class_xdigit, text, ts, te)
-      else raise "Unsupported character posixe class at #{text} (char #{ts})"
+    class_posix >(open_bracket, 1) @eof(premature_end_error) {
+      text = data[ts..te-1].pack('c*')
+
+      class_name = text[2..-3]
+      if class_name[0].chr == '^'
+        class_name = "non#{class_name[1..-1]}"
       end
+
+      token_sym = "class_#{class_name}".to_sym
+      self.emit(set_type, token_sym, text, ts, te)
     };
 
-    collating_sequence >(open_bracket, 1) @err(premature_end_error) {
+    collating_sequence >(open_bracket, 1) @eof(premature_end_error) {
       self.emit(set_type, :collation, data[ts..te-1].pack('c*'), ts, te)
     };
 
-    character_equivalent >(open_bracket, 1) @err(premature_end_error) {
+    character_equivalent >(open_bracket, 1) @eof(premature_end_error) {
       self.emit(set_type, :equivalent, data[ts..te-1].pack('c*'), ts, te)
     };
 
