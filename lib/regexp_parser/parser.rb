@@ -128,7 +128,7 @@ module Regexp::Parser
     when :nonhex
       @node << CharacterType::NonHex.new(token)
     when :space
-      @node << CharacterType::Space.new(token, text)
+      @node << CharacterType::Space.new(token)
     when :nonspace
       @node << CharacterType::NonSpace.new(token)
     when :word

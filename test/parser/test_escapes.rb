@@ -16,8 +16,8 @@ class TestParserEscapes < Test::Unit::TestCase
     /a\vc/    => [1, :escape,   :vertical_tab,  EscapeSequence::VerticalTab],
 
     # special cases
-    #/a\bc/    => [1, :anchor,   :word_boundary,    Anchor::WordBoundary],
-    #/a\sc/    => [1, :type,     :space,            CHaracterType::Space],
+    /a\bc/    => [1, :anchor,   :word_boundary,    Anchor::WordBoundary],
+    /a\sc/    => [1, :type,     :space,            CharacterType::Space],
   }
 
   count = 0
