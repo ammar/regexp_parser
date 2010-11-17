@@ -13,16 +13,16 @@ A ruby library to help with lexing, parsing, and transforming regular expression
   * A lexer that produces a "stream" of tokens
   * A parser that produces a "tree" of Regexp::Expression objects (OO API)
 
-* Lexes and parses several both 1.8 and 1.9 regular expression flavors
+* Lexes and parses both 1.8 and 1.9 regular expression flavors
 * Supports ruby 1.8 and 1.9 runtime
 
 
 == Components
 === Scanner
 A ragel generated scanner that recognizes the cumulative syntax of both
-supported flavors (this might change soon). Breaks the expression's text
-into tokens, including their type, token (id), text, and start/end offsets
-within the original pattern.
+supported flavors. Breaks the expression's text into tokens, including
+their type, token (id), text, and start/end offsets within the original
+pattern.
 
 ==== Example
 The following scans the given pattern and prints out the type, token, text and
@@ -47,20 +47,20 @@ A one-liner that returns an array of the textual parts of the given pattern:
 
   * To keep the scanner simple(r) and fairly reusable for other uses, it
     does not perform lexical analysis on the tokens, sticking to the task
-    of tokenizing and leaving lexical analysis upto to the lexer as well.
+    of tokenizing and leaving lexical analysis upto to the lexer.
 
   * If the input is a ruby Regexp object, the scanner calls #source on it to
     get its string representation. #source does not include the options of
-    expression (m, i, etc.) To include the options the process, #to_s should
+    expression (m, i, and x) To include the options the scan, #to_s should
     be called on the Regexp before passing it to the scanner, or any of the
-    higher layers. Obviously this only works for ruby regular expressions.
+    higher layers.
 
 
 ---
 === Syntax
 Defines the supported tokens for a specific engine implementation (aka a
 flavor). Syntax classes act as lookup tables, and are layered to create
-flavor variations.
+flavor variations. Syntax only comes into play in the lexer.
 
 ==== Example
 The following instantiates the syntax for Ruby 1.9 and checks a couple of its
@@ -81,11 +81,9 @@ implementations features, and then does the same for Ruby 1.8:
 
 ==== Notes
   * Variatiions on a token, for example a named group with < and > vs one with a
-    pair of single quotes, *will be* specified as an underscore followed by two
+    pair of single quotes, are specified with an underscore followed by two
     characters appended to the base token. In the previous named group example,
     the tokens would be :named_ab (angle brackets) and :named_sq (single quotes).
-    This should simplify specifying syntax that includes multiple variations by
-    testing/removing the last 3 characters. 
 
 ==== TODO
   * Add flavor limits: like Ruby 1.8's maximum allowed number of grouped 
@@ -94,11 +92,11 @@ implementations features, and then does the same for Ruby 1.8:
 
 ---
 === Lexer
-Sits on top of the scanner, and performs lexical analysis on the tokens that
+Sits on top of the scanner and performs lexical analysis on the tokens that
 it emits. Among its tasks are breaking quantified literal runs, collecting the
 emitted token structures into an array of Token objects, calculating their
 nesting depth, normalizing tokens for the parser, and checkng if the tokens
-are implemented by a given syntax flavor.
+are implemented by the given syntax flavor.
 
 Tokens objects are Structs, basically data objects, with a few helper methods,
 like #next, #previous, #offsets and #length.
@@ -120,6 +118,8 @@ Compare the output with that of the one-liner example of the Scanner.
   #=> ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", ")", "{3,5}"]
 
 ==== Notes
+  * The default syntax is that of the latest released version of ruby.
+
   * The lexer performs some basic parsing to determine the depth of a the
     emitted tokens. This responsibility might be relegated to the scanner.
 
@@ -155,21 +155,16 @@ Expression::Root class. See Expression below for more information.
 ---
 === Expression
 The base class of all objects returned by the parser, implements most of the
-functions of all expression classes.
-
-==== TODO
-  * Implementing to_s and to_re requires saving open/close token text, including
-    quantifiers since the parser coalesces the two into a single object.
+functions that are common to all expression classes.
 
 
 
 == Scanner Syntax
-The following is targeted for support by the scanner. This should be a table,
-but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
+The following syntax elements are supported by the scanner. 
 
   - Alternation: a|b|c                            ** PARSER
   - Anchors: ^, $, \b, etc.                       ** PARSER
-  - Character Classes (aka Sets): [abc], [^\]]    ** SCANNER (missing nested sets)
+  - Character Classes (aka Sets): [abc], [^\]]    ** SCANNER
   - Character Types: \d, \H, \s, etc.             ** PARSER
   - Escape Sequences
     - Backreference: \1 thru \9                   ** SCANNER
@@ -185,7 +180,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
     - Capturing: (abc)                            ** LEXER
     - Comment: (?# comment)                       ** LEXER
     - Named: (?<name>abc)                         ** LEXER
-    - Options: (?mi-x:abc)                        ** LEXER (missing u, e, etc)
+    - Options: (?mi-x:abc)                        ** LEXER
     - Passive: (?:abc)                            ** LEXER
     - Assertions
       - Lookahead: (?=abc)                        ** LEXER
@@ -194,7 +189,7 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
       - Negative Lookbehind: (?<\!abc)            ** LEXER
     - Sub-expression Calls: \g<name>, \g<1>       ** LEXER
 
-  - Literals: abc, def?                           ** LEXER - REVIEW/TEST
+  - Literals: abc, def?                           ** LEXER
   - POSIX classes: [:alpha:], [:print:], etc.     ** SCANNER
   - Quantifiers
     - Greedy: ?, *, +, {m,M}                      ** PARSER
