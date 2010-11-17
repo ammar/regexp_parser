@@ -1,6 +1,30 @@
 module Regexp::Syntax
   require File.expand_path('../syntax/tokens', __FILE__)
 
+  class SyntaxError < StandardError
+    def initialize(what)
+      super what
+    end
+  end
+
+  class UnknownSyntaxNameError < SyntaxError
+    def initialize(name)
+      super "Unknown syntax name '#{name}'"
+    end
+  end
+
+  class MissingSyntaxSpecError < SyntaxError
+    def initialize(name)
+      super "Missing syntax specification file for '#{name}'"
+    end
+  end
+
+  class NotImplementedError < SyntaxError
+    def initialize(syntax, type, token)
+      super "#{syntax.class.name} does not implement: [#{type}:#{token}]"
+    end
+  end
+
   SYNTAX_SPEC_ROOT = File.expand_path('../syntax', __FILE__)
 
   # Loads, and instantiates an instance of the syntax specification class for
@@ -24,7 +48,7 @@ module Regexp::Syntax
       when 'ruby/1.9';    syntax = Regexp::Syntax::Ruby::V19.new
 
       else
-        raise "Unexpected syntax name #{name}"
+        raise UnknownSyntaxError.new(name)
     end
   end
 
@@ -34,8 +58,7 @@ module Regexp::Syntax
     full = "#{SYNTAX_SPEC_ROOT}/#{name.downcase}"
     full = (full[-1, 3] == '.rb') ? full : "#{full}.rb"
 
-    # TODO: define and use better exceptions
-    raise "Unsupported syntax #{name}" unless File.exist?(full)
+    raise MissingSyntaxSpecError.new(name) unless File.exist?(full)
     require full
   end
 
@@ -82,7 +105,7 @@ module Regexp::Syntax
     alias :check? :implements?
 
     def implements!(type, token)
-      raise "#{self.class.name} does not implement: [#{type}:#{token}]" unless
+      raise NotImplementedError.new(self, type, token) unless
         implements?(type, token)
     end
     alias :check! :implements!

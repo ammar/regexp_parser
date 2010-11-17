@@ -141,6 +141,8 @@ module Regexp::Expression
     class WordBoundary                  < Anchor::Base; end
     class NonWordBoundary               < Anchor::Base; end
 
+    class MatchStart                    < Anchor::Base; end
+
     BOL      = BeginningOfLine 
     EOL      = EndOfLine 
     BOS      = BeginningOfString

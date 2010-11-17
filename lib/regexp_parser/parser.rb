@@ -4,6 +4,24 @@ module Regexp::Parser
   include Regexp::Expression
   include Regexp::Syntax
 
+  class ParserError < StandardError
+    def initialize(what)
+      super what
+    end
+  end
+
+  class UnknownTokenTypeError < ParserError
+    def initialize(type, token)
+      super "Unknown #{type} type #{token.inspect}"
+    end
+  end
+
+  class UnknownTokenError < ParserError
+    def initialize(type, token)
+      super "Unknown #{type} token #{token.token}"
+    end
+  end
+
   def self.parse(input, syntax = :any, &block)
     @nesting = [@root = @node = Root.new]
 
@@ -44,8 +62,7 @@ module Regexp::Parser
       @node << Literal.new(token)
 
     else
-      raise "parse_token: unexpected token type "+
-        "#{token.type.inspect}, #{token.token.inspect} #{token.text}"
+      raise UnknownTokenTypeError.new(token.type, token)
     end
   end
 
@@ -66,7 +83,7 @@ module Regexp::Parser
     when *Token::UnicodeProperty::All
       self.append_set(token)
     else
-      raise "Unsupported CharacterSet token #{token.inspect}"
+      raise UnknownTokenError.new('CharacterSet', token)
     end
   end
 
@@ -90,7 +107,7 @@ module Regexp::Parser
         @node.alternative
       end
     else
-      raise "Unsupported Meta token #{token.inspect}"
+      raise UnknownTokenError.new('Meta', token)
     end
   end
 
@@ -113,7 +130,7 @@ module Regexp::Parser
     when :number_rel_call
       @node << Backreference::NumberCallRelative.new(token)
     else
-      raise "Unsupported Backreference token #{token.inspect}"
+      raise UnknownTokenError.new('Backreference', token)
     end
   end
 
@@ -136,7 +153,7 @@ module Regexp::Parser
     when :nonword
       @node << CharacterType::NonWord.new(token)
     else
-      raise "Unsupported CharacterType token #{token.inspect}"
+      raise UnknownTokenError.new('CharacterType', token)
     end
   end
 
@@ -215,7 +232,7 @@ module Regexp::Parser
       @node << Script.new(token)
 
     else
-      raise "Unsupported UnicodeProperty token #{token.inspect}"
+      raise UnknownTokenError.new('UnicodeProperty', token)
     end
   end
 
@@ -235,8 +252,10 @@ module Regexp::Parser
       @node << Anchor::WordBoundary.new(token)
     when :nonword_boundary
       @node << Anchor::NonWordBoundary.new(token)
+    when :match_start
+      @node << Anchor::MatchStart.new(token)
     else
-      raise "Unsupported Anchor token #{token.inspect}"
+      raise UnknownTokenError.new('Anchor', token)
     end
   end
 
@@ -299,7 +318,7 @@ module Regexp::Parser
       self.interval(token.text)
 
     else
-      raise "Unsupported Quantifier token #{token.inspect}"
+      raise UnknownTokenError.new('Quantifier', token)
     end
   end
 
@@ -365,7 +384,7 @@ module Regexp::Parser
       exp = Assertion::NegativeLookbehind.new(token)
 
     else
-      raise "Unsupported Group type open token #{token.inspect}"
+      raise UnknownTokenError.new('Group type open', token)
     end
 
     self.nest exp

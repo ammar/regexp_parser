@@ -116,7 +116,7 @@
                           group_ref | [xucCM];
 
   # EOF error, used where it can be detected
-  action premature_end_error { raise "Premature end of pattern" }
+  action premature_end_error { raise PrematureEndError }
 
   # group (nesting) and set open/close actions
   action group_opened { group_depth += 1; in_group = true }
@@ -397,7 +397,8 @@
       when '\\Z'; self.emit(:anchor, :eos_ob_eol,         text, ts, te)
       when '\\b'; self.emit(:anchor, :word_boundary,      text, ts, te)
       when '\\B'; self.emit(:anchor, :nonword_boundary,   text, ts, te)
-      else raise "Unsupported anchor at #{text} (char #{ts})"
+      when '\\G'; self.emit(:anchor, :match_start,        text, ts, te)
+      else raise ScannerError.new("Unsupported anchor at #{text} (char #{ts})")
       end
     };
 
@@ -458,10 +459,11 @@
         elsif c == ')' # just options by themselves
           self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
         else
-          raise "Unexpected '#{c}' in options sequence, ':' or ')' expected"
+          raise ScannerError.new(
+            "Unexpected '#{c}' in options sequence, ':' or ')' expected")
         end
       else
-        raise "Premature end of pattern" unless data[te]
+        raise PrematureEndError.new("options") unless data[te]
       end
     };
 
@@ -630,6 +632,25 @@
 module Regexp::Scanner
   %% write data;
 
+  class ScannerError < StandardError
+    def initialize(what)
+      super what
+    end
+  end
+
+  class PrematureEndError < ScannerError
+    def initialize(where = '')
+      super "Premature end of pattern: #{where}"
+    end
+  end
+
+  class UnknownUnicodePropertyError < ScannerError
+    def initialize(name)
+      super "Unknown unicode character property name #{name}"
+    end
+  end
+
+
   # Scans the given regular expression text, or Regexp object and collects the
   # emitted token into an array that gets returned at the end. If a block is
   # given, it gets called for each emitted token.
@@ -652,10 +673,10 @@ module Regexp::Scanner
     %% write init;
     %% write exec;
 
-    raise "Premature end of pattern (missing group closing paranthesis) "+
-      "[#{in_group}:#{group_depth}]" if in_group
-     raise "Premature end of pattern (missing set closing bracket) "+
-       "[#{in_set}:#{set_depth}]" if in_set
+    raise PrematureEndError.new("(missing group closing paranthesis) "+
+          "[#{in_group}:#{group_depth}]") if in_group
+    raise PrematureEndError.new("(missing set closing bracket) "+
+          "[#{in_set}:#{set_depth}]") if in_set
 
     # when the entire expression is a literal run
     self.emit_literal if @literal

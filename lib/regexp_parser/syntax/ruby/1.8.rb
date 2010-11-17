@@ -11,8 +11,7 @@ module Regexp::Syntax
 
         implements :backref, [:number]
 
-        implements :anchor,
-          Anchor::Extended + Anchor::String
+        implements :anchor, Anchor::All
 
         implements :escape, 
           Escape::Basic + Escape::Backreference +

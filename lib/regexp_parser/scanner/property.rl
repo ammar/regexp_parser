@@ -50,7 +50,7 @@
                           ) . '}';
 
   action premature_property_end {
-    raise "Premature end of pattern (unicode property)"
+    raise PrematureEndError.new('unicode property')
   }
 
   # Unicode properties scanner
@@ -525,7 +525,7 @@
         self.emit(type, :script_unknown,                  text, ts-1, te)
 
       else
-        raise "Unknown unicode character property name #{name}"
+        raise UnknownUnicodePropertyError.new(name)
 
       end
       fret;

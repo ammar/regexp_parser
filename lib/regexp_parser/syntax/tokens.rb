@@ -4,9 +4,12 @@ module Regexp::Syntax
 
     # -------------------------------------------------------------------------
     module Anchor
-      Basic     = [:beginning_of_line, :end_of_line]
-      Extended  = Basic + [:word_boundary, :nonword_boundary]
-      String    = [:bos, :eos, :eos_ob_eol]
+      Basic       = [:beginning_of_line, :end_of_line]
+      Extended    = Basic + [:word_boundary, :nonword_boundary]
+      String      = [:bos, :eos, :eos_ob_eol]
+      MatchStart  = [:match_start]
+
+      All = Extended + String + MatchStart
     end
 
 
