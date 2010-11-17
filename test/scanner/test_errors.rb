@@ -14,10 +14,6 @@ class ScannerErrors < Test::Unit::TestCase
     assert_raise( Regexp::Scanner::PrematureEndError ) { RS.scan('a{1,2') }
   end
 
-  def test_scanner_unbalanced_interval_bre
-    assert_raise( Regexp::Scanner::PrematureEndError ) { RS.scan('a\{1') }
-  end
-
   def test_scanner_incomplete_property
     assert_raise( Regexp::Scanner::PrematureEndError ) { RS.scan('\p{ascii abc') }
   end

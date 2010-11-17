@@ -13,31 +13,13 @@ A ruby library to help with lexing, parsing, and transforming regular expression
   * A lexer that produces a "stream" of tokens
   * A parser that produces a "tree" of Regexp::Expression objects (OO API)
 
-* Lexes and parses several regular expression flavors
-
-    # Initial focus
-      # Ruby 1.8/1.9    ** In progress
-      # POSIX BRE/ERE   ** In progress
-
-    # Being considered for inclusion
-      # ARE (Tcl)
-      # GNU (BRE/ERE with some extensions)
-      # Java
-      # JavaScript
-      # PCRE
-      # PERL
-      # PHP (ERE for ereg, PCRE for preg)
-      # Python
-      # XML
-      # XPath
-      # .NET
-
+* Lexes and parses several both 1.8 and 1.9 regular expression flavors
 * Supports ruby 1.8 and 1.9 runtime
 
 
 == Components
 === Scanner
-A ragel generated scanner that recognizes the cumulative syntax of all
+A ragel generated scanner that recognizes the cumulative syntax of both
 supported flavors (this might change soon). Breaks the expression's text
 into tokens, including their type, token (id), text, and start/end offsets
 within the original pattern.
@@ -73,19 +55,12 @@ A one-liner that returns an array of the textual parts of the given pattern:
     be called on the Regexp before passing it to the scanner, or any of the
     higher layers. Obviously this only works for ruby regular expressions.
 
-==== TODO
-  * Consider extracting a "baseline" scanner common to all flavors, and layer
-    subsets of syntax into individual ragel machines, like assertions, posix
-    classes and unicode properties.
-
-  * Add a machine for escaped strings, usable from other machines.
-
 
 ---
 === Syntax
-Defines the supported lexem types and tokens for specific engine implementation
-(aka a flavor). Syntax classes act as lookup tables, and can be layered to
-create flavor variations.
+Defines the supported tokens for a specific engine implementation (aka a
+flavor). Syntax classes act as lookup tables, and are layered to create
+flavor variations.
 
 ==== Example
 The following instantiates the syntax for Ruby 1.9 and checks a couple of its
@@ -113,8 +88,6 @@ implementations features, and then does the same for Ruby 1.8:
     testing/removing the last 3 characters. 
 
 ==== TODO
-  * A lot. Complete Ruby and POSIX flavors first.
-
   * Add flavor limits: like Ruby 1.8's maximum allowed number of grouped 
     expressions (253).
 
@@ -140,7 +113,8 @@ syntax, and prints the token objects' text.
     puts "#{'  ' * token.depth}#{token.text}"
   end
 
-A one-liner that returns an array of the textual parts of the given pattern. Compare the output with that of the one-liner example of the Scanner.
+A one-liner that returns an array of the textual parts of the given pattern.
+Compare the output with that of the one-liner example of the Scanner.
 
   Regexp::Lexer.scan( /(cat?([b]at)){3,5}/ ).map {|token| token.text}
   #=> ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", ")", "{3,5}"]
@@ -148,18 +122,6 @@ A one-liner that returns an array of the textual parts of the given pattern. Com
 ==== Notes
   * The lexer performs some basic parsing to determine the depth of a the
     emitted tokens. This responsibility might be relegated to the scanner.
-
-==== TODO
-  * Consider normalizing token variations in the lexer to simplify parser
-    layer's code, for example BRE's escaped groupings to abstract grouping
-    tokens.
-
-  * Consider breaking the interval quantifier into individual tokens as:
-    :open, :min, :min_default, :comma, :max, :max_default, :exact, :close. 
-    Adding :exact will require lookahead or a separate state in the scanner.
-
-  * If tokens are broken further, like interval, consider adding a "combine"
-    option in the lexer that can merge them into single strings.
 
 
 ---
@@ -267,23 +229,12 @@ but RDoc doesn't support such things. Will revisit properly in a wiki... soon.
 == References
 Documentation and information being read while working on this project.
 
-==== Ruby Flavor
+==== Ruby Flavors
 * Oniguruma Regular Expressions link[http://www.geocities.jp/kosako3/oniguruma/doc/RE.txt]
 * Read Ruby > Regexps link[http://ruby.runpaint.org/regexps]
-* TextMate (uses Oniguruma) Manual: Regular Expressions link[http://manual.macromates.com/en/regular_expressions]
 
-==== POSIX Flavors
-* BRE/ERE link[http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html#tag_09_05_01]
-
-==== Other Flavors
-* GNU: link[http://www.delorie.com/gnu/docs/regex/regex_toc.html]
-* PCRE link[http://www.pcre.org/pcre.txt]
-* PERL link[http://perldoc.perl.org/perlreref.html]
-* POSIX link[http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html]
-* TRE link[http://laurikari.net/tre/documentation/regex-syntax/]
 
 ==== General
-* GNU Comparisons link[http://www.greenend.org.uk/rjk/2002/06/regexp.html]
 * Enumerating the strings of regular languages link[http://www.cs.dartmouth.edu/~doug/nfa.ps.gz]
 * Mastering Regular Expressions, By Jeffrey E.F. Friedl (1st Edition) book[http://oreilly.com/catalog/9781565922570/]
 * Regular Expression Flavor Comparison link[http://www.regular-expressions.info/refflavors.html]

@@ -37,14 +37,13 @@ module Regexp::Syntax
     self.load(name)
 
     case name
-      when 'posix/bre';   syntax = Regexp::Syntax::POSIX::BRE.new
-      when 'posix/ere';   syntax = Regexp::Syntax::POSIX::ERE.new
-
       when 'ruby/1.8';    syntax = Regexp::Syntax::Ruby::V18.new
 
       when 'ruby/1.9.1';  syntax = Regexp::Syntax::Ruby::V191.new
       when 'ruby/1.9.2';  syntax = Regexp::Syntax::Ruby::V192.new
       when 'ruby/1.9.3';  syntax = Regexp::Syntax::Ruby::V193.new
+
+      # alias for the latest 1.9 implementation
       when 'ruby/1.9';    syntax = Regexp::Syntax::Ruby::V19.new
 
       else

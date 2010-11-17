@@ -62,9 +62,6 @@
   quantifier_range      = range_open . (digit+)? . ','? . (digit+)? .
                           range_close . quantifier_mode?;
 
-  quantifier_range_bre  = backslash . range_open . (digit+)? . ','? . (digit+)? .
-                          backslash . range_close;
-
   quantifiers           = quantifier_greedy | quantifier_reluctant |
                           quantifier_possessive | quantifier_range;
 
@@ -601,11 +598,6 @@
 
     quantifier_range  @err(premature_end_error) {
       self.emit(:quantifier, :interval, data[ts..te-1].pack('c*'), ts, te)
-    };
-
-    # BRE version
-    quantifier_range_bre  @err(premature_end_error) {
-      self.emit(:quantifier, :interval_bre, data[ts..te-1].pack('c*'), ts, te)
     };
 
     # Escaped sequences
