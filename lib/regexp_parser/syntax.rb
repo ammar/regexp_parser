@@ -37,6 +37,10 @@ module Regexp::Syntax
     self.load(name)
 
     case name
+      when 'ruby/1.8.6';  syntax = Regexp::Syntax::Ruby::V186.new
+      when 'ruby/1.8.7';  syntax = Regexp::Syntax::Ruby::V187.new
+
+      # alias for the latest 1.8 implementation
       when 'ruby/1.8';    syntax = Regexp::Syntax::Ruby::V18.new
 
       when 'ruby/1.9.1';  syntax = Regexp::Syntax::Ruby::V191.new

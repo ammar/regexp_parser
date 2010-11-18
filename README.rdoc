@@ -204,7 +204,7 @@ The following syntax elements are supported by the scanner.
     - Unicode: \uHHHH, \u{H+ H+}                  ** SCANNER
 
   - Unicode Properties: 
-    - Age: \p{2.1}, \P{5.2}, etc.                 ** LEXER
+    - Age: \p{Age=2.1}, \P{age=5.2}, etc.         ** LEXER
     - Classes: \p{Alpha}, \P{Space}, etc.         ** LEXER
     - Derived Properties: \p{Math}, \P{Lowercase} ** LEXER
     - General Categories: \p{Lu}, \P{Cs}, etc.    ** LEXER

@@ -58,3 +58,30 @@ end
 
 namespace :rcov do
 end
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |s|
+    s.name = %q{regexp_parser}
+
+    s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+    s.authors = ["Ammar Ali"]
+    s.date = %q{2010-10-01}
+    s.description = %q{Scanner, lexer, parser for ruby's regular expressions}
+    s.email = %q{ammarabuali@gmail.com}
+    s.has_rdoc = true
+    s.homepage = "http://github.com/ammar/regexp_parser/tree/master"
+    s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
+    s.require_paths = ["lib"]
+    s.bindir = "bin"
+    s.executables = ['re2en']
+    s.summary = %q{Command line time tracker}
+    s.add_dependency("sequel", ">= 3.9.0")
+    s.add_dependency("sqlite3-ruby", ">= 1.2.5")
+    s.add_dependency("chronic", "~> 0.3.0")
+    s.add_dependency("getopt-declare", ">= 1.28")
+    s.add_dependency("icalendar", ">= 1.1.2")
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
+end
