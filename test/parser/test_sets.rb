@@ -68,7 +68,7 @@ class TestParserSets < Test::Unit::TestCase
   end
 
   # character subsets and negated posix classes are not available in ruby 1.8
-  if RUBY_VERSION =~ /1\.9/
+  if RUBY_VERSION >= '1.9'
     def test_parse_set_nesting_matches
       exp = RP.parse('[a[b[^c]]]', 'ruby/1.9')[0]
 

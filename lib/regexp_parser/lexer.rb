@@ -76,7 +76,7 @@ module Regexp::Lexer
       lead = text.sub(/.\z/mu, "")
       last = text[/.\z/mu] || ''
 
-      if RUBY_VERSION =~ /1.9/
+      if RUBY_VERSION >= '1.9'
         lead_length = lead.bytesize
         last_length = last.bytesize
       else

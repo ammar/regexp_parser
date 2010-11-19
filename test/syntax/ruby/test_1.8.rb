@@ -13,7 +13,10 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
       :escape       => [Escape::All].flatten,
       :group        => [Group::All].flatten,
       :assertion    => [Group::Assertion::All].flatten,
-      :quantifier   => [Quantifier::Greedy].flatten,
+      :quantifier   => [
+          Quantifier::Greedy + Quantifier::Reluctant +
+          Quantifier::Interval + Quantifier::IntervalReluctant
+      ].flatten,
     },
 
     :excludes => {
@@ -22,7 +25,7 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
       ].flatten,
 
       :quantifier => [
-        Quantifier::Reluctant + Quantifier::Possessive
+        Quantifier::Possessive
       ].flatten,
 
       :subset => nil

@@ -29,7 +29,9 @@ module Regexp::Syntax
           CharacterType::Extended
 
         implements :quantifier, 
-          Quantifier::Greedy + Quantifier::Interval
+          Quantifier::Greedy + Quantifier::Reluctant +
+          Quantifier::Interval + Quantifier::IntervalReluctant
+           
       end
     end
   end

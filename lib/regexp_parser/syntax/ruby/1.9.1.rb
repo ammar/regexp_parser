@@ -15,7 +15,7 @@ module Regexp::Syntax
         implements :escape, CharacterType::Hex
 
         implements :quantifier, 
-          Quantifier::Reluctant + Quantifier::Possessive
+          Quantifier::Possessive + Quantifier::IntervalPossessive
 
         implements :set, 
           CharacterSet::POSIX::StandardNegative +
