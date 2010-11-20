@@ -1,9 +1,10 @@
 .*.swp
 .DS_Store
 i.rb
-lib/regexp_parser/scanner.rb
 coverage
+lib/regexp_parser/scanner.rb
 doc
+pkg
 test/run
 sandbox
 test/test_sandbox.rb

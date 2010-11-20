@@ -7,11 +7,10 @@ module Regexp::Syntax
       def initialize
         super
 
-        implements :meta, Meta::Extended
-
-        implements :backref, [:number]
 
         implements :anchor, Anchor::All
+        implements :assertion, Group::Assertion::All
+        implements :backref, [:number]
 
         implements :escape, 
           Escape::Basic + Escape::Backreference +
@@ -19,7 +18,11 @@ module Regexp::Syntax
 
         implements :group, Group::All
 
-        implements :assertion, Group::Assertion::All
+        implements :meta, Meta::Extended
+
+        implements :quantifier, 
+          Quantifier::Greedy + Quantifier::Reluctant +
+          Quantifier::Interval + Quantifier::IntervalReluctant
 
         implements :set, CharacterSet::OpenClose +
           CharacterSet::Extended + CharacterSet::Types +
@@ -28,9 +31,6 @@ module Regexp::Syntax
         implements :type,
           CharacterType::Extended
 
-        implements :quantifier, 
-          Quantifier::Greedy + Quantifier::Reluctant +
-          Quantifier::Interval + Quantifier::IntervalReluctant
            
       end
     end

@@ -46,11 +46,12 @@ namespace :ragel do
   desc "Process the ragel source files and output ruby code"
   task :rb do |t|
     RAGEL_SOURCE_FILES.each do |file|
-      sh "ragel -R #{RAGEL_SOURCE_DIR}/#{file}.rl -o #{RAGEL_OUTPUT_DIR}/#{file}.rb"
+      # using faster flat table driven FSM, about 25% larger code, but about 30% faster
+      sh "ragel -F1 -R #{RAGEL_SOURCE_DIR}/#{file}.rl -o #{RAGEL_OUTPUT_DIR}/#{file}.rb"
     end
   end
 
-  desc "Process the ragel source file(s) and output the ruby code"
+  desc "Delete the ragel generated source file(s)"
   task :clean do |t|
     RAGEL_SOURCE_FILES.each do |file|
       sh "rm -f #{RAGEL_OUTPUT_DIR}/#{file}.rb"
@@ -58,27 +59,23 @@ namespace :ragel do
   end
 end
 
-namespace :yard do
-end
-
-namespace :rcov do
-end
-
 begin
   require 'jeweler'
-  Jeweler::Tasks.new do |s|
-    s.name = %q{regexp_parser}
-    s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-    s.authors = ["Ammar Ali"]
-    s.date = %q{2010-10-01}
-    s.description = %q{Scanner, lexer, parser for ruby's regular expressions}
-    s.email = %q{ammarabuali@gmail.com}
-    s.has_rdoc = true
-    s.homepage = "http://github.com/ammar/regexp_parser/tree/master"
-    s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
-    s.require_paths = ["lib"]
-    s.summary = %q{A library for tokenizing, lexing, and parsing Ruby regular expressions.}
-    s.requirements << 'ragel, v6.6 or greater, for generating the scanner'
+  Jeweler::Tasks.new do |gem|
+    gem.name = %q{regexp_parser}
+    gem.summary = %q{A library for tokenizing, lexing, and parsing Ruby regular expressions.}
+    gem.date = %q{2010-10-01}
+    gem.authors = ["Ammar Ali"]
+    gem.description = %q{Scanner, lexer, parser for ruby's regular expressions}
+    gem.email = %q{ammarabuali@gmail.com}
+    gem.has_rdoc = true
+    gem.homepage = "http://github.com/ammar/regexp_parser"
+    gem.rdoc_options = ["--inline-source", "--charset=UTF-8"]
+    gem.require_paths = ["lib"]
+    gem.required_rubygems_version = Gem::Requirement.new(">= 0") if gem.respond_to? :required_rubygems_version=
+    gem.files.include 'lib/regexp_parser/scanner.rb'
+
+    Rake::Task['ragel:rb'].execute
   end
 rescue LoadError
   puts "Jeweler is not installed. Install it with: sudo gem install jeweler"
