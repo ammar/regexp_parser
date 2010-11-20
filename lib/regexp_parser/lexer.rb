@@ -42,7 +42,7 @@ module Regexp::Lexer
     end
 
     if block_given?
-      @tokens.each {|token| yield token}
+      @tokens.each {|t| block.call(t)}
     else
       @tokens
     end

@@ -16,12 +16,21 @@ module Regexp::Expression
 
     def to_s
       s = @text
+      s << @expressions.map{|e| e.to_s}.join unless @expressions.empty?
       s << @quantifier if quantified?
       s
     end
 
     def <<(exp)
       @expressions << exp
+    end
+
+    def each(&block)
+      @expressions.each {|e| yield e}
+    end
+
+    def [](index)
+      @expressions[index]
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
@@ -62,19 +71,11 @@ module Regexp::Expression
       (@options and @options[:x]) ? true : false
     end
     alias :x? :free_spacing?
-
-    def [](index)
-      @expressions[index]
-    end
   end
 
   class Root < Regexp::Expression::Base
     def initialize
       super Regexp::Token.new(:expression, :root, '')
-    end
-
-    def to_s
-      @expressions.join
     end
 
     def multiline?
@@ -224,12 +225,12 @@ module Regexp::Expression
       @expressions.insert 0, exp
     end
 
-    def last
-      @expressions.last
+    def first
+      @expressions.first
     end
 
-    def to_s
-      s = @expressions.map{|e| e.to_s}.join()
+    def last
+      @expressions.last
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)

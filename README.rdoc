@@ -107,7 +107,7 @@ syntax, and prints the token objects' text.
 
   require 'regexp_parser'
 
-  Regexp::Lexer.scan /a?(b)*[c]+/, 'ruby/1.8'  do |token|
+  Regexp::Lexer.scan(/a?(b)*[c]+/, 'ruby/1.8') do |token|
     puts "#{'  ' * token.depth}#{token.text}"
   end
 

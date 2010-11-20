@@ -14,6 +14,12 @@ module Regexp::Syntax
 
         implements :escape, CharacterType::Hex
 
+        implements :property, 
+          UnicodeProperty::All
+
+        implements :nonproperty, 
+          UnicodeProperty::All
+
         implements :quantifier, 
           Quantifier::Possessive + Quantifier::IntervalPossessive
 
