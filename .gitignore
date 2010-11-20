@@ -7,5 +7,6 @@ doc
 test/run
 sandbox
 test/test_sandbox.rb
+test/multitest.sh
 IN-PROGRESS
 .yardoc

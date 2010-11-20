@@ -1,9 +1,5 @@
 = Regexp::Parser
 
-  Note "This project is in its early stages of development."
-  Warn "Names and structures are still moving and changing."
-
-
 == What?
 A ruby library to help with lexing, parsing, and transforming regular expressions.
 
@@ -21,7 +17,7 @@ A ruby library to help with lexing, parsing, and transforming regular expression
 === Scanner
 A ragel generated scanner that recognizes the cumulative syntax of both
 supported flavors. Breaks the expression's text into tokens, including
-their type, token (id), text, and start/end offsets within the original
+their type, token, text, and start/end offsets within the original
 pattern.
 
 ==== Example
@@ -41,9 +37,9 @@ A one-liner that returns an array of the textual parts of the given pattern:
 
 
 ==== Notes
-  * Does basic syntax error checking, like detecting missing balancing
-    punctuation and premature end of pattern. Flavor validity checks are
-    performed in the lexer.
+  * The scanner performs basic syntax error checking, like detecting missing
+    balancing punctuation and premature end of pattern. Flavor validity checks
+    are performed in the lexer.
 
   * To keep the scanner simple(r) and fairly reusable for other uses, it
     does not perform lexical analysis on the tokens, sticking to the task
@@ -84,6 +80,7 @@ implementations features, and then does the same for Ruby 1.8:
     pair of single quotes, are specified with an underscore followed by two
     characters appended to the base token. In the previous named group example,
     the tokens would be :named_ab (angle brackets) and :named_sq (single quotes).
+    These variations are normalized by the syntax to :named.
 
 ==== TODO
   * Add flavor limits: like Ruby 1.8's maximum allowed number of grouped 
@@ -140,17 +137,33 @@ Expression::Root class. See Expression below for more information.
   root.multiline?         # => true (aliased as m?)
   root.case_insensitive?  # => false (aliased as i?)
 
-  root[0].expressions.each do |exp|
-    if exp.quantified?
-      puts "#{exp}: is quantified, min/max: #{exp.quantity.inspect}"
+  # simple tree walking method
+  def walk(e, depth = 0)
+    puts "#{'  ' * depth}> #{e.class}"
+    unless e.expressions.empty?
+      e.each {|s| walk(s, depth+1) }
     end
   end
 
-  # output
-  a?: is quantified, min/max: [0, 1]
-  (b)*: is quantified, min/max: [0, -1]
-  [c]+: is quantified, min/max: [1, -1]
+  walk(root)
 
+  # output
+  > Regexp::Expression::Root
+    > Regexp::Expression::Group::Capture
+      > Regexp::Expression::Alternation
+        > Regexp::Expression::Sequence
+          > Regexp::Expression::Literal
+          > Regexp::Expression::CharacterSet
+          > Regexp::Expression::Literal
+          > Regexp::Expression::Literal
+        > Regexp::Expression::Sequence
+          > Regexp::Expression::Group::Passive
+            > Regexp::Expression::Group::Capture
+              > Regexp::Expression::UnicodeProperty::Alpha
+              > Regexp::Expression::Literal
+              > Regexp::Expression::Literal
+
+Note: quantifiers do not appear in the ouput because they are members of the Expression class. See the next section for more details.
 
 ---
 === Expression
@@ -159,67 +172,54 @@ functions that are common to all expression classes.
 
 
 
+
+
 == Scanner Syntax
 The following syntax elements are supported by the scanner. 
 
-  - Alternation: a|b|c                            ** PARSER
-  - Anchors: ^, $, \b, etc.                       ** PARSER
-  - Character Classes (aka Sets): [abc], [^\]]    ** SCANNER
-  - Character Types: \d, \H, \s, etc.             ** PARSER
-  - Escape Sequences
-    - Backreference: \1 thru \9                   ** SCANNER
-    - Metacharacters: \\, \+, \?, etc.            ** SCANNER
-
+  - Alternation: a|b|c, etc.
+  - Anchors: ^, $, \b, etc.
+  - Character Classes (aka Sets): [abc], [^\]]
+  - Character Types: \d, \H, \s, etc.
+  - Escape Sequences: \t, \+, \?, etc.
   - Grouped Expressions
-    - Atomic: (?>abc)                             ** LEXER
-    - Back-references:
-      - Named: \k<name>                           ** LEXER
-      - Nest Level: \k<n-1>                       ** LEXER
-      - Numbered: \k<1>                           ** LEXER
-      - Relative: \k<-2>                          ** LEXER
-    - Capturing: (abc)                            ** LEXER
-    - Comment: (?# comment)                       ** LEXER
-    - Named: (?<name>abc)                         ** LEXER
-    - Options: (?mi-x:abc)                        ** LEXER
-    - Passive: (?:abc)                            ** LEXER
     - Assertions
-      - Lookahead: (?=abc)                        ** LEXER
-      - Negative Lookahead: (?!abc)               ** LEXER
-      - Lookabehind: (?<=abc)                     ** LEXER
-      - Negative Lookbehind: (?<\!abc)            ** LEXER
-    - Sub-expression Calls: \g<name>, \g<1>       ** LEXER
-
-  - Literals: abc, def?                           ** LEXER
-  - POSIX classes: [:alpha:], [:print:], etc.     ** SCANNER
+      - Lookahead: (?=abc)
+      - Negative Lookahead: (?!abc)
+      - Lookabehind: (?<=abc)
+      - Negative Lookbehind: (?<\!abc)
+    - Atomic: (?>abc)
+    - Back-references:
+      - Named: \k<name>
+      - Nest Level: \k<n-1>
+      - Numbered: \k<1>
+      - Relative: \k<-2>
+    - Capturing: (abc)
+    - Comment: (?# comment)
+    - Named: (?<name>abc)
+    - Options: (?mi-x:abc)
+    - Passive: (?:abc)
+    - Sub-expression Calls: \g<name>, \g<1>
+  - Literals: abc, def?, etc.
+  - POSIX classes: [:alpha:], [:print:], etc.
   - Quantifiers
-    - Greedy: ?, *, +, {m,M}                      ** PARSER
-    - Reluctant: ??, *?, +?, {m,M}?               ** PARSER
-    - Possessive: ?+, *+, ++, {m,M}+              ** PARSER
-
+    - Greedy: ?, *, +, {m,M}
+    - Reluctant: ??, *?, +?, {m,M}?
+    - Possessive: ?+, *+, ++, {m,M}+
   - String Escapes
-    - Control: \C-C, \cD                          ** SCANNER
-    - Hex: \x20, \x{701230}                       ** SCANNER
-    - Meta: \M-c, \M-\C-C etc..                   ** REVIEW/TEST
-    - Octal: \0, \01, \012                        ** SCANNER
-    - Unicode: \uHHHH, \u{H+ H+}                  ** SCANNER
-
+    - Control: \C-C, \cD, etc.
+    - Hex: \x20, \x{701230}, etc.
+    - Meta: \M-c, \M-\C-C etc.
+    - Octal: \0, \01, \012
+    - Unicode: \uHHHH, \u{H+ H+}
+  - Traditional Back-references: \1 thru \9
   - Unicode Properties: 
-    - Age: \p{Age=2.1}, \P{age=5.2}, etc.         ** LEXER
-    - Classes: \p{Alpha}, \P{Space}, etc.         ** LEXER
-    - Derived Properties: \p{Math}, \P{Lowercase} ** LEXER
-    - General Categories: \p{Lu}, \P{Cs}, etc.    ** LEXER
-    - Scripts: \p{Arabic}, \P{Hiragana}           ** LEXER
-    - Simple Properties: \p{Dash}, \p{Extender}   ** LEXER
-
-
-  Notes with ** mean:
-    MISSING:      nothing in place, or barely there
-    REVIEW/TEST:  mostly there (scanner and/or lexer), but has no tests, or has problems
-    SCANNER:      implemented in scanner, works, has basic tests
-    LEXER:        implemented in lexer, works, has basic tests (implies scanner support, of course)
-    PARSER:       implemented parser, works, has basic tests
-    COMPLETE:     Fully implemented in the scanner, lexer, and parser
-
+    - Age: \p{Age=2.1}, \P{age=5.2}, etc.
+    - Classes: \p{Alpha}, \P{Space}, etc.
+    - Derived Properties: \p{Math}, \P{Lowercase}, etc.
+    - General Categories: \p{Lu}, \P{Cs}, etc.
+    - Scripts: \p{Arabic}, \P{Hiragana}, etc.
+    - Simple Properties: \p{Dash}, \p{Extender}, etc.
 
 == References
 Documentation and information being read while working on this project.
@@ -231,9 +231,9 @@ Documentation and information being read while working on this project.
 
 ==== General
 * Enumerating the strings of regular languages link[http://www.cs.dartmouth.edu/~doug/nfa.ps.gz]
-* Mastering Regular Expressions, By Jeffrey E.F. Friedl (1st Edition) book[http://oreilly.com/catalog/9781565922570/]
+* Mastering Regular Expressions, By Jeffrey E.F. Friedl (2nd Edition) book[http://oreilly.com/catalog/9781565922570/]
 * Regular Expression Flavor Comparison link[http://www.regular-expressions.info/refflavors.html]
-* Regular Expression Matching: the Virtual Machine Approach link[http://swtch.com/~rsc/regexp/regexp2.html]
+
 
 ==== Unicode
 * Unicode Derived Properties link[http://www.unicode.org/Public/UNIDATA/DerivedCoreProperties.txt]
