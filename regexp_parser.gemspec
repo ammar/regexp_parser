@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ammar Ali"]
-  s.date = %q{2010-11-20}
+  s.date = %q{2010-10-01}
   s.description = %q{Scanner, lexer, parser for ruby's regular expressions}
   s.email = %q{ammarabuali@gmail.com}
   s.extra_rdoc_files = [
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     "lib/regexp_parser/expression/set.rb",
     "lib/regexp_parser/lexer.rb",
     "lib/regexp_parser/parser.rb",
+    "lib/regexp_parser/scanner.rb",
     "lib/regexp_parser/scanner/property.rl",
     "lib/regexp_parser/scanner/scanner.rl",
     "lib/regexp_parser/syntax.rb",
@@ -41,6 +42,7 @@ Gem::Specification.new do |s|
     "lib/regexp_parser/syntax/ruby/1.9.3.rb",
     "lib/regexp_parser/syntax/ruby/1.9.rb",
     "lib/regexp_parser/syntax/tokens.rb",
+    "regexp_parser.gemspec",
     "test/helpers.rb",
     "test/lexer/test_all.rb",
     "test/lexer/test_literals.rb",
