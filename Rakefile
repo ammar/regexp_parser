@@ -64,6 +64,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = %q{regexp_parser}
     gem.summary = %q{A library for tokenizing, lexing, and parsing Ruby regular expressions.}
+    gem.version = "0.1.0"
     gem.date = %q{2010-10-01}
     gem.authors = ["Ammar Ali"]
     gem.description = %q{Scanner, lexer, parser for ruby's regular expressions}
