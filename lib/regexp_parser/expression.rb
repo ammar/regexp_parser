@@ -1,7 +1,7 @@
 module Regexp::Expression
   class Base
     attr_reader :type, :token, :text
-    attr_reader :quantifier, :min, :max
+    attr_reader :quantifier
     attr_reader :expressions
 
     attr_accessor :options
@@ -52,6 +52,7 @@ module Regexp::Expression
     def reluctant?
       @quantifier.mode == :reluctant
     end
+    alias :lazy? :reluctant?
 
     def possessive?
       @quantifier.mode == :possessive
@@ -66,11 +67,13 @@ module Regexp::Expression
       (@options and @options[:i]) ? true : false
     end
     alias :i? :case_insensitive?
+    alias :ignore_case? :case_insensitive?
 
     def free_spacing?
       (@options and @options[:x]) ? true : false
     end
     alias :x? :free_spacing?
+    alias :extended? :free_spacing?
   end
 
   class Root < Regexp::Expression::Base

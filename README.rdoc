@@ -71,7 +71,7 @@ implementations features, and then does the same for Ruby 1.8:
 
   ruby_18 = Regexp::Syntax.new 'ruby/1.8'
   ruby_18.implements? :quantifier, :zero_or_one             # => true
-  ruby_18.implements? :quantifier, :zero_or_one_reluctant   # => false
+  ruby_18.implements? :quantifier, :zero_or_one_reluctant   # => true
   ruby_18.implements? :quantifier, :zero_or_one_possessive  # => false
 
 
@@ -132,6 +132,8 @@ Expression::Root class. See Expression below for more information.
   require 'regexp_parser'
 
   regex = /a?(b)*[c]+/m
+
+  # using #to_s on the Regexp object to include options
   root = Regexp::Parser.parse( regex.to_s, 'ruby/1.8')
 
   root.multiline?         # => true (aliased as m?)
@@ -149,19 +151,10 @@ Expression::Root class. See Expression below for more information.
 
   # output
   > Regexp::Expression::Root
+    > Regexp::Expression::Literal
     > Regexp::Expression::Group::Capture
-      > Regexp::Expression::Alternation
-        > Regexp::Expression::Sequence
-          > Regexp::Expression::Literal
-          > Regexp::Expression::CharacterSet
-          > Regexp::Expression::Literal
-          > Regexp::Expression::Literal
-        > Regexp::Expression::Sequence
-          > Regexp::Expression::Group::Passive
-            > Regexp::Expression::Group::Capture
-              > Regexp::Expression::UnicodeProperty::Alpha
-              > Regexp::Expression::Literal
-              > Regexp::Expression::Literal
+      > Regexp::Expression::Literal
+    > Regexp::Expression::CharacterSet
 
 Note: quantifiers do not appear in the ouput because they are members of the Expression class. See the next section for more details.
 
@@ -170,8 +163,44 @@ Note: quantifiers do not appear in the ouput because they are members of the Exp
 The base class of all objects returned by the parser, implements most of the
 functions that are common to all expression classes.
 
+Each Expression object contains the following members:
 
+  * quantifier: an instance of Expression::Quantifier that holds the details
+    of repetition for the Expression. Has a nil value if the expressions is not
+    quantified.
 
+  * expressions: an array, holds the sub-expressions for the expression if it
+    is a group or alternation expression. Empty if the expression doesn't have
+    sub-expressions.
+
+  * options: a hash, holds the keys :i, :m, and :x with a boolean value that
+    indicates if the expression has a given option.
+
+Expressions also contain the following "lower level" members (from the scanner/lexer)
+
+  * type: a symbol, denoting the expression type, such as :group, :quantifier
+  * token: a symbol, for the object's token, or opening token (in the case of groups and sets)
+  * text: a string, the text of the expression (same as token for nesting expressions)
+
+Every expressions also has the following methods:
+
+  * to_s: returns the string representation of the expression.
+  * <<: adds sub-expresions to the expression.
+  * each: iterates over the expressions sub-expressions, if any.
+  * []: access sub-expressions by index.
+  * quantified?: return true if the expressions was followed by a quantifier.
+  * quantity: returns an array of the expression's min and max repetitions.
+  * greedy?: returns true if the expression's quantifier is greedy.
+  * reluctant? or lazy?: returns true if the expression's quantifier is reluctant.
+  * possessive?: returns true if the expression's quantifier is possessive.
+  * multiline? or m?: returns true if the expression has the m option
+  * case_insensitive? or ignore_case? or i?: returns true if the expression
+    has the i option
+  * free_spacing? or extended? or x?: returns true if the expression has the x
+    option
+
+A special expression class Expression::Sequence is used to hold the array of
+possible alternatives within an Expression::Alternation expression.
 
 
 == Scanner Syntax
@@ -220,6 +249,8 @@ The following syntax elements are supported by the scanner.
     - General Categories: \p{Lu}, \P{Cs}, etc.
     - Scripts: \p{Arabic}, \P{Hiragana}, etc.
     - Simple Properties: \p{Dash}, \p{Extender}, etc.
+
+See something missing? Please submit an issue[https://github.com/ammar/regexp_parser/issues]
 
 == References
 Documentation and information being read while working on this project.
