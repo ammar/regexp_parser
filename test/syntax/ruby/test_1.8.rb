@@ -9,10 +9,10 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
 
   tests = {
     :implements => {
+      :assertion    => [Group::Assertion::Lookahead].flatten,
       :backref      => [:number],
       :escape       => [Escape::All].flatten,
       :group        => [Group::All].flatten,
-      :assertion    => [Group::Assertion::All].flatten,
       :quantifier   => [
           Quantifier::Greedy + Quantifier::Reluctant +
           Quantifier::Interval + Quantifier::IntervalReluctant
@@ -20,6 +20,8 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
     },
 
     :excludes => {
+      :assertion    => [Group::Assertion::Lookbehind].flatten,
+
       :backref => [
         Group::Backreference::All + Group::SubexpressionCall::All
       ].flatten,

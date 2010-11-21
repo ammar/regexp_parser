@@ -9,6 +9,9 @@ module Regexp::Syntax
       def initialize
         super
 
+        implements :assertion, Group::Assertion::Lookbehind +
+          Group::SubexpressionCall::All
+
         implements :backref, Group::Backreference::All +
           Group::SubexpressionCall::All
 

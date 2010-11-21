@@ -1,11 +1,34 @@
-require File.expand_path('../1.8', __FILE__)
-
 module Regexp::Syntax
 
   module Ruby
-    class V186 < Regexp::Syntax::Ruby::V18
+    class V186 < Regexp::Syntax::Base
+      include Regexp::Syntax::Token
+
       def initialize
         super
+
+        implements :anchor, Anchor::All
+        implements :assertion, Group::Assertion::Lookahead
+        implements :backref, [:number]
+
+        implements :escape, 
+          Escape::Basic + Escape::Backreference +
+          Escape::ASCII + Escape::Meta
+
+        implements :group, Group::All
+
+        implements :meta, Meta::Extended
+
+        implements :quantifier, 
+          Quantifier::Greedy + Quantifier::Reluctant +
+          Quantifier::Interval + Quantifier::IntervalReluctant
+
+        implements :set, CharacterSet::OpenClose +
+          CharacterSet::Extended + CharacterSet::Types +
+          CharacterSet::POSIX::Standard 
+
+        implements :type,
+          CharacterType::Extended
       end
 
     end

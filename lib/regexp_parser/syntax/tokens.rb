@@ -88,10 +88,10 @@ module Regexp::Syntax
       Comment   = [:comment]
 
       module Assertion
-        Positive = [:lookahead, :lookbehind]
-        Negative = [:nlookahead, :nlookbehind]
+        Lookahead = [:lookahead, :nlookahead]
+        Lookbehind = [:lookbehind, :nlookbehind]
 
-        All = Positive + Negative
+        All = Lookahead + Lookbehind
       end
 
       module Backreference
