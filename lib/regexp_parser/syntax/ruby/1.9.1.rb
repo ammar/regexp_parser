@@ -29,7 +29,8 @@ module Regexp::Syntax
         implements :set, 
           CharacterSet::POSIX::StandardNegative +
           CharacterSet::POSIX::Extensions +
-          CharacterSet::POSIX::ExtensionsNegative
+          CharacterSet::POSIX::ExtensionsNegative +
+          UnicodeProperty::All
 
         implements :subset, CharacterSet::OpenClose +
           CharacterSet::Extended + CharacterSet::Types +

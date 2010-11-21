@@ -6,7 +6,7 @@ class ParserAlternation < Test::Unit::TestCase
   # to navigate
 
   def setup
-    @root = RP.parse('(ab??|cd*+|ef+)*|(gh|ij|kl)?')
+    @root = RP.parse('(ab??|cd*|ef+)*|(gh|ij|kl)?')
   end
 
   def test_parse_alternation_root

@@ -35,7 +35,7 @@ class LexerRefCalls < Test::Unit::TestCase
   tests.each do |pattern, test|
     define_method "test_lexer_#{test[1]}_#{test[2]}_#{count+=1}" do
 
-      tokens = RL.scan(pattern)
+      tokens = RL.scan(pattern, 'ruby/1.9')
       assert_equal( test[1,7], tokens[test[0]].to_a)
       assert_equal( test[3],   pattern[tokens[test[0]][3], tokens[test[0]][4]])
 

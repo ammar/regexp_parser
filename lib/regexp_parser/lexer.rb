@@ -10,7 +10,7 @@ module Regexp::Lexer
 
   CLOSING_TOKENS = [:close].freeze
 
-  def self.scan(input, syntax = 'ruby/1.9', &block)
+  def self.scan(input, syntax = "ruby/#{RUBY_VERSION}", &block)
     syntax = Regexp::Syntax.new(syntax)
 
     @tokens = []

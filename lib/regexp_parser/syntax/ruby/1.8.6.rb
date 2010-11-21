@@ -13,7 +13,7 @@ module Regexp::Syntax
 
         implements :escape, 
           Escape::Basic + Escape::Backreference +
-          Escape::ASCII + Escape::Meta
+          Escape::ASCII + Escape::Meta + Escape::Control
 
         implements :group, Group::All
 

@@ -295,7 +295,7 @@ class ParserProperties < Test::Unit::TestCase
 
     props.each do |property|
       define_method "test_parse_#{token_type}_#{property}" do
-        t = RP.parse "ab\\#{mode}{#{property}}"
+        t = RP.parse "ab\\#{mode}{#{property}}", 'ruby/1.9'
 
         assert( t.expressions.last.is_a?(UnicodeProperty::Base),
                "Expected property, but got #{t.expressions.last.class.name}")
@@ -307,38 +307,38 @@ class ParserProperties < Test::Unit::TestCase
   end
 
   def test_parse_property_negative
-    t = RP.parse 'ab\p{L}cd'
+    t = RP.parse 'ab\p{L}cd', 'ruby/1.9'
     assert_equal( false, t.expressions[1].negative? )
   end
 
   def test_parse_nonproperty_negative
-    t = RP.parse 'ab\P{L}cd'
+    t = RP.parse 'ab\P{L}cd', 'ruby/1.9'
     assert_equal( true, t.expressions[1].negative? )
   end
 
   def test_parse_property_age
-    t = RP.parse 'ab\p{age=5.2}cd'
+    t = RP.parse 'ab\p{age=5.2}cd', 'ruby/1.9'
 
     assert( t.expressions[1].is_a?(UnicodeProperty::Age),
            "Expected Age property, but got #{t.expressions[1].class.name}")
   end
 
   def test_parse_property_derived
-    t = RP.parse 'ab\p{Math}cd'
+    t = RP.parse 'ab\p{Math}cd', 'ruby/1.9'
 
     assert( t.expressions[1].is_a?(UnicodeProperty::Derived),
            "Expected Derived property, but got #{t.expressions[1].class.name}")
   end
 
   def test_parse_property_script
-    t = RP.parse 'ab\p{Hiragana}cd'
+    t = RP.parse 'ab\p{Hiragana}cd', 'ruby/1.9'
 
     assert( t.expressions[1].is_a?(UnicodeProperty::Script),
            "Expected Script property, but got #{t.expressions[1].class.name}")
   end
 
   def test_parse_property_following_literal
-    t = RP.parse 'ab\p{Lu}cd'
+    t = RP.parse 'ab\p{Lu}cd', 'ruby/1.9'
 
     assert( t.expressions[2].is_a?(Literal),
            "Expected Literal, but got #{t.expressions[2].class.name}")
