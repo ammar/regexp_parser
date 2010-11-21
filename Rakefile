@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/testtask'
+require 'rake/gempackagetask'
 
 task :default => [:test]
 
@@ -59,25 +60,32 @@ namespace :ragel do
   end
 end
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = %q{regexp_parser}
-    gem.summary = %q{A library for tokenizing, lexing, and parsing Ruby regular expressions.}
-    gem.version = "0.1.0"
-    gem.date = %q{2010-10-01}
-    gem.authors = ["Ammar Ali"]
-    gem.description = %q{Scanner, lexer, parser for ruby's regular expressions}
-    gem.email = %q{ammarabuali@gmail.com}
-    gem.has_rdoc = true
-    gem.homepage = "http://github.com/ammar/regexp_parser"
-    gem.rdoc_options = ["--inline-source", "--charset=UTF-8"]
-    gem.require_paths = ["lib"]
-    gem.required_rubygems_version = Gem::Requirement.new(">= 0") if gem.respond_to? :required_rubygems_version=
-    gem.files.include 'lib/regexp_parser/scanner.rb'
+spec = Gem::Specification.new do |s|
+  s.name = 'regexp_parser'
+  s.version = '0.1.0'
+  s.summary = %q{Scanner, lexer, parser for ruby's regular expressions}
+  s.description = %q{A library for tokenizing, lexing, and parsing Ruby regular expressions.}
+  s.date = '2010-10-01'
+  s.authors = ["Ammar Ali"]
+  s.email = 'ammarabuali@gmail.com'
+  s.homepage = %q{http://github.com/ammar/regexp_parser}
+  s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = %q{1.3.7}
 
-    Rake::Task['ragel:rb'].execute
-  end
-rescue LoadError
-  puts "Jeweler is not installed. Install it with: sudo gem install jeweler"
+  s.files = Dir.glob("{lib,test}/**/*.rb") + Dir.glob("lib/**/*.rl") +
+            %w(Rakefile LICENSE README.rdoc ChangeLog)
+
+  s.test_files = Dir.glob("test/**/*.rb")
+  s.extra_rdoc_files = ["ChangeLog", "LICENSE", "README.rdoc"]
+  s.required_rubygems_version = ">= 1.3.7"
+  s.rubyforge_project = "regexp_parser"
+  s.require_path = 'lib'
+end
+
+Rake::GemPackageTask.new(spec) do |pkg|
+  Rake::Task['ragel:rb'].execute
+
+  pkg.need_zip = true
+  pkg.need_tar = true
 end
