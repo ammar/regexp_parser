@@ -60,27 +60,31 @@ namespace :ragel do
   end
 end
 
-spec = Gem::Specification.new do |s|
-  s.name = 'regexp_parser'
-  s.version = '0.1.1'
-  s.summary = %q{Scanner, lexer, parser for ruby's regular expressions}
-  s.description = %q{A library for tokenizing, lexing, and parsing Ruby regular expressions.}
-  s.date = '2010-10-01'
-  s.authors = ["Ammar Ali"]
-  s.email = 'ammarabuali@gmail.com'
-  s.homepage = %q{http://github.com/ammar/regexp_parser}
-  s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+spec = Gem::Specification.new do |gem|
+  gem.name = 'regexp_parser'
+  gem.version = '0.1.1'
+  gem.date = '2010-11-23'
 
-  s.files = Dir.glob("{lib,test}/**/*.rb") + Dir.glob("lib/**/*.rl") +
-            %w(Rakefile LICENSE README.rdoc ChangeLog)
+  gem.license = 'MIT'
+  gem.summary = %q{Scanner, lexer, parser for ruby's regular expressions}
+  gem.description = %q{A library for tokenizing, lexing, and parsing Ruby regular expressions.}
+  gem.homepage = %q{http://github.com/ammar/regexp_parser}
 
-  s.test_files = Dir.glob("test/**/*.rb")
-  s.extra_rdoc_files = ["ChangeLog", "LICENSE", "README.rdoc"]
-  s.required_rubygems_version = ">= 1.3.7"
-  s.rubyforge_project = "regexp_parser"
-  s.require_path = 'lib'
+  gem.authors = ["Ammar Ali"]
+  gem.email = 'ammarabuali@gmail.com'
+
+  gem.rdoc_options = ["--inline-source", "--charset=UTF-8"]
+  gem.extra_rdoc_files = ["ChangeLog", "LICENSE", "README.rdoc"]
+
+  gem.require_paths = ["lib"]
+
+  gem.files = Dir.glob("{lib,test}/**/*.rb") + Dir.glob("lib/**/*.rl") +
+              %w(Rakefile LICENSE README.rdoc ChangeLog)
+
+  gem.test_files = Dir.glob("test/**/*.rb")
+
+  gem.required_rubygems_version = Gem::Requirement.new(">= 0") if
+    gem.respond_to? :required_rubygems_version=
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
@@ -92,6 +96,7 @@ namespace :gem do
   desc "Release the gem to rubygems.org"
   task :release do |t|
     Rake::Task['ragel:rb'].execute
+    Rake::Task['repackage'].execute
     sh "gem push"
   end
 end
