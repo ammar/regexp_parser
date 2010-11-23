@@ -1,7 +1,19 @@
-Sun Nov 21 03:36:42 EET 2010 Ammar Ali <ammarabuali@gmail.com>
+Tue Nov 23 11:35:56 2010 Ammar Ali <ammarabuali@gmail.com>
+
+	* Made ruby 1.8.6 the base for all 1.8 syntax, and the 1.8 name a pointer
+		to the latest (1.8.7 at this time)
+
+	* Removed look-behind assertions (positive and negative) from 1.8 syntax
+
+	* Added control (\cc and \C-c) and meta (\M-c) escapes to 1.8 syntax
+
+	* The default syntax is now the one of the running ruby version in both the
+    lexer and the parser.
+
+Sun Nov 21 03:36:42 2010 Ammar Ali <ammarabuali@gmail.com>
 
 	* Released version 0.1.0
 
-Sat Nov 20 16:40:10 EET 2010 Ammar Ali <ammarabuali@gmail.com>
+Sat Nov 20 16:40:10 2010 Ammar Ali <ammarabuali@gmail.com>
 
 	* Initial version bump to 0.1.0
