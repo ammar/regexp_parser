@@ -62,7 +62,7 @@ end
 
 spec = Gem::Specification.new do |s|
   s.name = 'regexp_parser'
-  s.version = '0.1.0'
+  s.version = '0.1.1'
   s.summary = %q{Scanner, lexer, parser for ruby's regular expressions}
   s.description = %q{A library for tokenizing, lexing, and parsing Ruby regular expressions.}
   s.date = '2010-10-01'
@@ -84,8 +84,14 @@ spec = Gem::Specification.new do |s|
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
-  Rake::Task['ragel:rb'].execute
-
   pkg.need_zip = true
   pkg.need_tar = true
+end
+
+namespace :gem do
+  desc "Release the gem to rubygems.org"
+  task :release do |t|
+    Rake::Task['ragel:rb'].execute
+    sh "gem push"
+  end
 end
