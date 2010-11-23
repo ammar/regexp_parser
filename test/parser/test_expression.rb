@@ -19,17 +19,17 @@ class ParserExpression < Test::Unit::TestCase
 
   def test_parse_expression_to_s_property_sets
     pattern = '[\a\b\p{Lu}\P{Z}\c\d]+'
-    assert_equal( pattern, RP.parse(pattern).to_s )
+    assert_equal( pattern, RP.parse(pattern, 'ruby/1.9').to_s )
   end
 
   def test_parse_expression_to_s_groups
     pattern = "(a(?>b(?:c(?<n>d(?'N'e)??f)+g)*+h)*i)++"
-    assert_equal( pattern, RP.parse(pattern).to_s )
+    assert_equal( pattern, RP.parse(pattern, 'ruby/1.9').to_s )
   end
 
   def test_parse_expression_to_s_assertions
     pattern = '(a+(?=b+(?!c+(?<=d+(?<!e+)?f+)?g+)?h+)?i+)?'
-    assert_equal( pattern, RP.parse(pattern).to_s )
+    assert_equal( pattern, RP.parse(pattern, 'ruby/1.9').to_s )
   end
 
   def test_parse_expression_to_s_comments

@@ -66,6 +66,8 @@ module Regexp::Syntax
 
       Backreference = [:digit]
 
+      Control = [:control, :meta_sequence]
+
       ASCII = [:bell, :backspace, :escape, :form_feed, :newline, :carriage,
                :space, :tab, :vertical_tab]
 

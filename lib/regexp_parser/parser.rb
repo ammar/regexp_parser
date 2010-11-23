@@ -22,7 +22,7 @@ module Regexp::Parser
     end
   end
 
-  def self.parse(input, syntax = :any, &block)
+  def self.parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
     @nesting = [@root = @node = Root.new]
 
     Regexp::Lexer.scan(input, syntax) do |token|

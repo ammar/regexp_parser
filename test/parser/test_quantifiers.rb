@@ -25,7 +25,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
   end
 
   def test_parse_zero_or_one_possessive
-    t = RP.parse('a?+bc')
+    t = RP.parse('a?+bc', 'ruby/1.9')
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :zero_or_one, t.expressions.first.quantifier.token )
@@ -58,7 +58,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
   end
 
   def test_parse_zero_or_more_possessive
-    t = RP.parse('a*+bc')
+    t = RP.parse('a*+bc', 'ruby/1.9')
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :zero_or_more, t.expressions.first.quantifier.token )
@@ -91,7 +91,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
   end
 
   def test_parse_one_or_more_possessive
-    t = RP.parse('a++bc')
+    t = RP.parse('a++bc', 'ruby/1.9')
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :one_or_more, t.expressions.first.quantifier.token )
@@ -124,7 +124,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
   end
 
   def test_parse_intervals_min_max_possessive
-    t = RP.parse('a{2,4}+bc')
+    t = RP.parse('a{2,4}+bc', 'ruby/1.9')
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :interval, t.expressions.first.quantifier.token )
@@ -157,7 +157,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
   end
 
   def test_parse_intervals_min_only_possessive
-    t = RP.parse('a{3,}+bc')
+    t = RP.parse('a{3,}+bc', 'ruby/1.9')
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :interval, t.expressions.first.quantifier.token )
@@ -190,7 +190,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
   end
 
   def test_parse_intervals_max_only_possessive
-    t = RP.parse('a{,3}+bc')
+    t = RP.parse('a{,3}+bc', 'ruby/1.9')
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :interval, t.expressions.first.quantifier.token )
@@ -223,7 +223,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
   end
 
   def test_parse_intervals_exact_possessive
-    t = RP.parse('a{3}+bc')
+    t = RP.parse('a{3}+bc', 'ruby/1.9')
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :interval, t.expressions.first.quantifier.token )

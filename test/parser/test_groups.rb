@@ -3,7 +3,7 @@ require File.expand_path("../../helpers", __FILE__)
 class TestParserGroups < Test::Unit::TestCase
 
   def test_parse_root_options_mi
-    t = RP.parse((/[abc]/mi).to_s)
+    t = RP.parse((/[abc]/mi).to_s, 'ruby/1.8')
 
     assert_equal( true,  t.m? )
     assert_equal( true,  t.i? )
@@ -11,7 +11,7 @@ class TestParserGroups < Test::Unit::TestCase
   end
 
   def test_parse_nested_options_m
-    t = RP.parse('(?xi-m:a(?m-ix:b))')
+    t = RP.parse('(?xi-m:a(?m-ix:b))', 'ruby/1.8')
 
     assert_equal( true,  t.expressions[0].expressions[1].m? )
     assert_equal( false, t.expressions[0].expressions[1].i? )
@@ -19,7 +19,7 @@ class TestParserGroups < Test::Unit::TestCase
   end
 
   def test_parse_nested_options_xm
-    t = RP.parse(/(?i-xm:a(?mx-i:b))/)
+    t = RP.parse(/(?i-xm:a(?mx-i:b))/, 'ruby/1.8')
 
     assert_equal( true,  t.expressions[0].expressions[1].m? )
     assert_equal( false, t.expressions[0].expressions[1].i? )
@@ -27,7 +27,7 @@ class TestParserGroups < Test::Unit::TestCase
   end
 
   def test_parse_nested_options_im
-    t = RP.parse(/(?x-mi:a(?mi-x:b))/)
+    t = RP.parse(/(?x-mi:a(?mi-x:b))/, 'ruby/1.8')
 
     assert_equal( true,  t.expressions[0].expressions[1].m? )
     assert_equal( true,  t.expressions[0].expressions[1].i? )
@@ -35,7 +35,7 @@ class TestParserGroups < Test::Unit::TestCase
   end
 
   def test_parse_lookahead
-    t = RP.parse('(?=abc)(?!def)')
+    t = RP.parse('(?=abc)(?!def)', 'ruby/1.8')
 
     assert( t.expressions[0].is_a?(Assertion::Lookahead),
            "Expected lookahead, but got #{t.expressions[0].class.name}")
@@ -45,7 +45,7 @@ class TestParserGroups < Test::Unit::TestCase
   end
 
   def test_parse_lookbehind
-    t = RP.parse('(?<=abc)(?<!def)')
+    t = RP.parse('(?<=abc)(?<!def)', 'ruby/1.9')
 
     assert( t.expressions[0].is_a?(Assertion::Lookbehind),
            "Expected lookbehind, but got #{t.expressions[0].class.name}")
