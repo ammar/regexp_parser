@@ -15,7 +15,7 @@ module Regexp::Expression
     end
 
     def to_s
-      s = @text
+      s = @text.dup
       s << @expressions.map{|e| e.to_s}.join unless @expressions.empty?
       s << @quantifier if quantified?
       s
@@ -109,7 +109,7 @@ module Regexp::Expression
     end
 
     def to_s
-      @text
+      @text.dup
     end
     alias :to_str :to_s
   end
@@ -250,7 +250,7 @@ module Regexp::Expression
       def comment?; @type == :comment end
 
       def to_s
-        s = @text
+        s = @text.dup
         s << @expressions.join
         s << ')'
         s << @quantifier.to_s if quantified?
@@ -266,7 +266,7 @@ module Regexp::Expression
     class Options   < Group::Base; end
 
     class Comment   < Group::Base
-      def to_s; @text end
+      def to_s; @text.dup end
     end
   end
 
