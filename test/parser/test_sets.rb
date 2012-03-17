@@ -23,10 +23,8 @@ class TestParserSets < Test::Unit::TestCase
 
     assert_equal( true,  exp.matches?("6") )
 
-    # TODO: figure out why this generate wrong string, but only after
-    # the assertion above (to_s "piles up")
-    #assert_equal( true,  exp.matches?("v") )
-    #assert_equal( false, exp.matches?("\x48") )
+    assert_equal( true,  exp.matches?("v") )
+    assert_equal( false, exp.matches?("\x48") )
   end
 
   def test_parse_set_members
@@ -73,10 +71,7 @@ class TestParserSets < Test::Unit::TestCase
       exp = RP.parse('[a[b[^c]]]', 'ruby/1.9')[0]
 
       assert_equal( true,  exp.matches?("b") )
-
-      # TODO: figure out why this generate wrong string, but only after
-      # the assertion above (to_s "piles up")
-      #assert_equal( false, exp.matches?("c") )
+      assert_equal( false, exp.matches?("c") )
     end
 
     def test_parse_set_nesting_not_matches

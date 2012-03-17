@@ -41,7 +41,7 @@ module Regexp::Expression
     alias :negated? :negative?
 
     def to_s
-      s = @text
+      s = @text.dup
       s << '^' if negative?
       s << @members.join
       s << ']'
