@@ -28,6 +28,7 @@
 
   class_posix           = ('[:' . '^'? . class_name_posix . ':]');
 
+
   # these are not supported in ruby, and need verification
   collating_sequence    = '[.' . (alpha | [\-])+ . '.]';
   character_equivalent  = '[=' . alpha . '=]';
@@ -41,14 +42,21 @@
   octal_sequence        = [0-7]{1,3};
 
   hex_sequence          = 'x' . xdigit{1,2};
+  hex_sequence_err      = 'x' . [^0-9a-fA-F{];
   wide_hex_sequence     = 'x' . '{' . xdigit{1,8} . '}';
+
+  hex_or_not            = (xdigit|[^0-9a-fA-F}]); # note closing curly at end
+
+  wide_hex_seq_invalid  = 'x' . '{' . hex_or_not{1,9};
+  wide_hex_seq_empty    = 'x' . '{' . (space+)? . '}';
 
   codepoint_single      = 'u' . xdigit{4};
   codepoint_list        = 'u{' . (xdigit{4} . space?)+'}';
   codepoint_sequence    = codepoint_single | codepoint_list;
 
-  control_sequence      = ('c' | 'C-') . alpha;
-  meta_sequence         = 'M-' . ((backslash . control_sequence) | alpha);
+  control_sequence      = ('c' | 'C-');
+
+  meta_sequence         = 'M-' . (backslash . control_sequence)?;
 
   zero_or_one           = '?' | '??' | '?+';
   zero_or_more          = '*' | '*?' | '*+';
@@ -59,11 +67,11 @@
   quantifier_possessive = '?+' | '*+' | '++';
   quantifier_mode       = '?'  | '+';
 
-  quantifier_range      = range_open . (digit+)? . ','? . (digit+)? .
+  quantifier_interval   = range_open . (digit+)? . ','? . (digit+)? .
                           range_close . quantifier_mode?;
 
   quantifiers           = quantifier_greedy | quantifier_reluctant |
-                          quantifier_possessive | quantifier_range;
+                          quantifier_possessive | quantifier_interval;
 
 
   group_comment         = '?#' . [^)]+ . group_close;
@@ -113,7 +121,16 @@
                           group_ref | [xucCM];
 
   # EOF error, used where it can be detected
-  action premature_end_error { raise PrematureEndError }
+  action premature_end_error {
+    text = ts ? copy(data, ts-1..-1) : data.pack('c*')
+    raise PrematureEndError.new( text )
+  }
+
+  # Invalid sequence error, used from sequences, like escapes and sets
+  action invalid_sequence_error {
+    text = ts ? copy(data, ts-1..-1) : data.pack('c*')
+    raise InvalidSequenceError.new('sequence', text)
+  }
 
   # group (nesting) and set open/close actions
   action group_opened { group_depth += 1; in_group = true }
@@ -127,7 +144,7 @@
       set_type  = set_depth > 1 ? :subset : :set
       set_depth -= 1; in_set = set_depth > 0 ? true : false
 
-      self.emit(set_type, :close, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :close, *text(data, ts, te))
 
       if set_depth == 0
         fgoto main;
@@ -140,8 +157,8 @@
       set_type  = set_depth > 1 ? :subset : :set
       set_depth -= 1; in_set = set_depth > 0 ? true : false
 
-      self.emit(set_type, :member, data[ts..te-2].pack('c*'), ts, te)
-      self.emit(set_type, :close,  data[ts+1..te-1].pack('c*'), ts, te)
+      emit(set_type, :member, copy(data, ts..te-2), ts, te)
+      emit(set_type, :close,  copy(data, ts+1..te-1), ts, te)
 
       if set_depth == 0
         fgoto main;
@@ -151,20 +168,20 @@
     };
 
     '^' {
-      text = data[ts..te-1].pack('c*')
+      text = text(data, ts, te).first
       if @tokens.last[1] == :open
-        self.emit(set_type, :negate, text, ts, te)
+        emit(set_type, :negate, text, ts, te)
       else
-        self.emit(set_type, :member, text, ts, te)
+        emit(set_type, :member, text, ts, te)
       end
     };
 
     alnum . '-' . alnum {
-      self.emit(set_type, :range, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :range, *text(data, ts, te))
     };
 
     '&&' {
-      self.emit(set_type, :intersection, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :intersection, *text(data, ts, te))
     };
 
     '\\' {
@@ -175,12 +192,12 @@
       set_depth += 1; in_set = true
       set_type  = set_depth > 1 ? :subset : :set
 
-      self.emit(set_type, :open, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :open, *text(data, ts, te))
       fcall character_set;
     };
 
     class_posix >(open_bracket, 1) @eof(premature_end_error) {
-      text = data[ts..te-1].pack('c*')
+      text = text(data, ts, te).first
 
       class_name = text[2..-3]
       if class_name[0].chr == '^'
@@ -188,21 +205,21 @@
       end
 
       token_sym = "class_#{class_name}".to_sym
-      self.emit(set_type, token_sym, text, ts, te)
+      emit(set_type, token_sym, text, ts, te)
     };
 
     collating_sequence >(open_bracket, 1) @eof(premature_end_error) {
-      self.emit(set_type, :collation, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :collation, *text(data, ts, te))
     };
 
     character_equivalent >(open_bracket, 1) @eof(premature_end_error) {
-      self.emit(set_type, :equivalent, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :equivalent, *text(data, ts, te))
     };
 
     # exclude the closing bracket as a cleaner workaround for dealing with the
     # ambiguity caused upon exit from the unicode properties machine
     meta_char -- ']' {
-     self.emit(set_type, :member, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :member, *text(data, ts, te))
     };
 
     any            |
@@ -210,48 +227,48 @@
     utf8_2_byte    |
     utf8_3_byte    |
     utf8_4_byte    {
-      self.emit(set_type, :member, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :member, *text(data, ts, te))
     };
   *|;
 
   # set escapes scanner
   # --------------------------------------------------------------------------
   set_escape_sequence := |*
-    'b' {
-      self.emit(set_type, :backspace, data[ts-1..te-1].pack('c*'), ts-1, te)
+    'b' > (escaped_set_alpha, 2) {
+      emit(set_type, :backspace, *text(data, ts, te, 1))
       fret;
     };
 
     char_type {
-      case text = data[ts-1..te-1].pack('c*')
-      when '\d'; self.emit(set_type, :type_digit,     text, ts-1, te)
-      when '\D'; self.emit(set_type, :type_nondigit,  text, ts-1, te)
-      when '\h'; self.emit(set_type, :type_hex,       text, ts-1, te)
-      when '\H'; self.emit(set_type, :type_nonhex,    text, ts-1, te)
-      when '\s'; self.emit(set_type, :type_space,     text, ts-1, te)
-      when '\S'; self.emit(set_type, :type_nonspace,  text, ts-1, te)
-      when '\w'; self.emit(set_type, :type_word,      text, ts-1, te)
-      when '\W'; self.emit(set_type, :type_nonword,   text, ts-1, te)
+      case text = text(data, ts, te, 1).first
+      when '\d'; emit(set_type, :type_digit,     text, ts-1, te)
+      when '\D'; emit(set_type, :type_nondigit,  text, ts-1, te)
+      when '\h'; emit(set_type, :type_hex,       text, ts-1, te)
+      when '\H'; emit(set_type, :type_nonhex,    text, ts-1, te)
+      when '\s'; emit(set_type, :type_space,     text, ts-1, te)
+      when '\S'; emit(set_type, :type_nonspace,  text, ts-1, te)
+      when '\w'; emit(set_type, :type_word,      text, ts-1, te)
+      when '\W'; emit(set_type, :type_nonword,   text, ts-1, te)
       end
       fret;
     };
 
     hex_sequence . '-\\' . hex_sequence {
-      self.emit(set_type, :range_hex, data[ts-1..te-1].pack('c*'), ts-1, te)
+      emit(set_type, :range_hex, *text(data, ts, te, 1))
       fret;
     };
 
     hex_sequence {
-      self.emit(set_type, :member_hex, data[ts-1..te-1].pack('c*'), ts-1, te)
+      emit(set_type, :member_hex, *text(data, ts, te, 1))
       fret;
     };
 
     meta_char | [\\\]\-\,] {
-      self.emit(set_type, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
+      emit(set_type, :escape, *text(data, ts, te, 1))
       fret;
     };
 
-    property_char > (escaped_set_alpha, 2) {
+    property_char > (escaped_set_alpha, 3) {
       fhold;
       fnext character_set;
       fcall unicode_property;
@@ -264,7 +281,7 @@
     utf8_2_byte               |
     utf8_3_byte               |
     utf8_4_byte               {
-      self.emit(set_type, :escape, data[ts-1..te-1].pack('c*'), ts-1, te)
+      emit(set_type, :escape, *text(data, ts, te, 1))
       fret;
     };
   *|;
@@ -274,33 +291,33 @@
   # --------------------------------------------------------------------------
   escape_sequence := |*
     [1-9] {
-      text = data[ts-1..te-1].pack('c*')
-      self.emit(:backref, :number, text, ts-1, te)
+      text = text(data, ts, te, 1).first
+      emit(:backref, :number, text, ts-1, te)
       fret;
     };
 
     octal_sequence {
-      self.emit(:escape, :octal, data[ts-1..te-1].pack('c*'), ts-1, te)
+      emit(:escape, :octal, *text(data, ts, te, 1))
       fret;
     };
 
     meta_char {
-      case text = data[ts-1..te-1].pack('c*')
-      when '\.';  self.emit(:escape, :dot,               text, ts-1, te)
-      when '\|';  self.emit(:escape, :alternation,       text, ts-1, te)
-      when '\^';  self.emit(:escape, :beginning_of_line, text, ts-1, te)
-      when '\$';  self.emit(:escape, :end_of_line,       text, ts-1, te)
-      when '\?';  self.emit(:escape, :zero_or_one,       text, ts-1, te)
-      when '\*';  self.emit(:escape, :zero_or_more,      text, ts-1, te)
-      when '\+';  self.emit(:escape, :one_or_more,       text, ts-1, te)
-      when '\(';  self.emit(:escape, :group_open,        text, ts-1, te)
-      when '\)';  self.emit(:escape, :group_close,       text, ts-1, te)
-      when '\{';  self.emit(:escape, :interval_open,     text, ts-1, te)
-      when '\}';  self.emit(:escape, :interval_close,    text, ts-1, te)
-      when '\[';  self.emit(:escape, :set_open,          text, ts-1, te)
-      when '\]';  self.emit(:escape, :set_close,         text, ts-1, te)
+      case text = text(data, ts, te, 1).first
+      when '\.';  emit(:escape, :dot,               text, ts-1, te)
+      when '\|';  emit(:escape, :alternation,       text, ts-1, te)
+      when '\^';  emit(:escape, :beginning_of_line, text, ts-1, te)
+      when '\$';  emit(:escape, :end_of_line,       text, ts-1, te)
+      when '\?';  emit(:escape, :zero_or_one,       text, ts-1, te)
+      when '\*';  emit(:escape, :zero_or_more,      text, ts-1, te)
+      when '\+';  emit(:escape, :one_or_more,       text, ts-1, te)
+      when '\(';  emit(:escape, :group_open,        text, ts-1, te)
+      when '\)';  emit(:escape, :group_close,       text, ts-1, te)
+      when '\{';  emit(:escape, :interval_open,     text, ts-1, te)
+      when '\}';  emit(:escape, :interval_close,    text, ts-1, te)
+      when '\[';  emit(:escape, :set_open,          text, ts-1, te)
+      when '\]';  emit(:escape, :set_close,         text, ts-1, te)
       when "\\\\";
-        self.emit(:escape, :backslash, text, ts-1, te)
+        emit(:escape, :backslash, text, ts-1, te)
       end
       fret;
     };
@@ -308,46 +325,76 @@
     escaped_ascii > (escaped_alpha, 7) {
       # \b is emitted as backspace only when inside a character set, otherwise
       # it is a word boundary anchor. A syntax might "normalize" it if needed.
-      case text = data[ts-1..te-1].pack('c*')
-      when '\a'; self.emit(:escape, :bell,           text, ts-1, te)
-      when '\e'; self.emit(:escape, :escape,         text, ts-1, te)
-      when '\f'; self.emit(:escape, :form_feed,      text, ts-1, te)
-      when '\n'; self.emit(:escape, :newline,        text, ts-1, te)
-      when '\r'; self.emit(:escape, :carriage,       text, ts-1, te)
-      when '\s'; self.emit(:escape, :space,          text, ts-1, te)
-      when '\t'; self.emit(:escape, :tab,            text, ts-1, te)
-      when '\v'; self.emit(:escape, :vertical_tab,   text, ts-1, te)
+      case text = text(data, ts, te, 1).first
+      when '\a'; emit(:escape, :bell,           text, ts-1, te)
+      when '\e'; emit(:escape, :escape,         text, ts-1, te)
+      when '\f'; emit(:escape, :form_feed,      text, ts-1, te)
+      when '\n'; emit(:escape, :newline,        text, ts-1, te)
+      when '\r'; emit(:escape, :carriage,       text, ts-1, te)
+      when '\s'; emit(:escape, :space,          text, ts-1, te)
+      when '\t'; emit(:escape, :tab,            text, ts-1, te)
+      when '\v'; emit(:escape, :vertical_tab,   text, ts-1, te)
       end
       fret;
     };
 
-    codepoint_sequence > (escaped_alpha, 6) {
-      text = data[ts-1..te-1].pack('c*')
+    codepoint_sequence > (escaped_alpha, 6) $eof(premature_end_error) {
+      text = text(data, ts, te, 1).first
       if text[2].chr == '{'
-        self.emit(:escape, :codepoint_list, text, ts-1, te)
+        emit(:escape, :codepoint_list, text, ts-1, te)
       else
-        self.emit(:escape, :codepoint,      text, ts-1, te)
+        emit(:escape, :codepoint,      text, ts-1, te)
       end
       fret;
     };
 
-    hex_sequence > (escaped_alpha, 5) {
-      self.emit(:escape, :hex, data[ts-1..te-1].pack('c*'), ts-1, te)
+    hex_sequence > (escaped_alpha, 5) $eof(premature_end_error) {
+      emit(:escape, :hex, *text(data, ts, te, 1))
       fret;
     };
 
-    wide_hex_sequence > (escaped_alpha, 5) {
-      self.emit(:escape, :hex_wide, data[ts-1..te-1].pack('c*'), ts-1, te)
+    wide_hex_sequence > (escaped_alpha, 5) $eof(premature_end_error) {
+      emit(:escape, :hex_wide, *text(data, ts, te, 1))
       fret;
     };
 
-    control_sequence > (escaped_alpha, 4) {
-      self.emit(:escape, :control, data[ts-1..te-1].pack('c*'), ts-1, te)
+    hex_sequence_err @invalid_sequence_error {
       fret;
     };
 
-    meta_sequence > (backslashed, 3) {
-      self.emit(:escape, :meta_sequence, data[ts-1..te-1].pack('c*'), ts-1, te)
+    (wide_hex_seq_invalid | wide_hex_seq_empty) {
+      raise InvalidSequenceError.new("wide hex sequence")
+      fret;
+    };
+
+    control_sequence >(escaped_alpha, 4) $eof(premature_end_error) {
+      if data[te]
+        c = data[te].chr
+        if c =~ /[\x00-\x7F]/
+          emit(:escape, :control, copy(data, ts-1..te), ts-1, te+1)
+          p += 1
+        else
+          raise InvalidSequenceError.new("control sequence")
+        end
+      else
+        raise PrematureEndError.new("control sequence")
+      end
+      fret;
+    };
+
+    meta_sequence >(backslashed, 3) $eof(premature_end_error) {
+      if data[te]
+        c = data[te].chr
+        if c =~ /[\x00-\x7F]/
+          emit(:escape, :meta_sequence, copy(data, ts-1..te), ts-1, te+1)
+          p += 1
+        else
+          raise InvalidSequenceError.new("meta sequence")
+        end
+      else
+        raise PrematureEndError.new("meta sequence")
+      end
+      fret;
     };
 
     property_char > (escaped_alpha, 2) {
@@ -357,7 +404,7 @@
     };
 
     (any -- non_literal_escape) > (escaped_alpha, 1)  {
-      self.emit(:escape, :literal, data[ts-1..te-1].pack('c*'), ts-1, te)
+      emit(:escape, :literal, *text(data, ts, te, 1))
       fret;
     };
   *|;
@@ -370,31 +417,31 @@
     # Meta characters
     # ------------------------------------------------------------------------
     dot {
-      self.emit(:meta, :dot, data[ts..te-1].pack('c*'), ts, te)
+      emit(:meta, :dot, *text(data, ts, te))
     };
 
     alternation {
-      self.emit(:meta, :alternation, data[ts..te-1].pack('c*'), ts, te)
+      emit(:meta, :alternation, *text(data, ts, te))
     };
 
     # Anchors
     # ------------------------------------------------------------------------
     beginning_of_line {
-      self.emit(:anchor, :beginning_of_line, data[ts..te-1].pack('c*'), ts, te)
+      emit(:anchor, :beginning_of_line, *text(data, ts, te))
     };
 
     end_of_line {
-      self.emit(:anchor, :end_of_line, data[ts..te-1].pack('c*'), ts, te)
+      emit(:anchor, :end_of_line, *text(data, ts, te))
     };
 
     backslash . anchor_char > (backslashed, 3) {
-      case text = data[ts..te-1].pack('c*')
-      when '\\A'; self.emit(:anchor, :bos,                text, ts, te)
-      when '\\z'; self.emit(:anchor, :eos,                text, ts, te)
-      when '\\Z'; self.emit(:anchor, :eos_ob_eol,         text, ts, te)
-      when '\\b'; self.emit(:anchor, :word_boundary,      text, ts, te)
-      when '\\B'; self.emit(:anchor, :nonword_boundary,   text, ts, te)
-      when '\\G'; self.emit(:anchor, :match_start,        text, ts, te)
+      case text = text(data, ts, te).first
+      when '\\A'; emit(:anchor, :bos,                text, ts, te)
+      when '\\z'; emit(:anchor, :eos,                text, ts, te)
+      when '\\Z'; emit(:anchor, :eos_ob_eol,         text, ts, te)
+      when '\\b'; emit(:anchor, :word_boundary,      text, ts, te)
+      when '\\B'; emit(:anchor, :nonword_boundary,   text, ts, te)
+      when '\\G'; emit(:anchor, :match_start,        text, ts, te)
       else raise ScannerError.new("Unsupported anchor at #{text} (char #{ts})")
       end
     };
@@ -406,15 +453,15 @@
     #   \w, \W    word, non-word
     # ------------------------------------------------------------------------
     backslash . char_type > (backslashed, 2) {
-      case text = data[ts..te-1].pack('c*')
-      when '\\d'; self.emit(:type, :digit,      text, ts, te)
-      when '\\D'; self.emit(:type, :nondigit,   text, ts, te)
-      when '\\h'; self.emit(:type, :hex,        text, ts, te)
-      when '\\H'; self.emit(:type, :nonhex,     text, ts, te)
-      when '\\s'; self.emit(:type, :space,      text, ts, te)
-      when '\\S'; self.emit(:type, :nonspace,   text, ts, te)
-      when '\\w'; self.emit(:type, :word,       text, ts, te)
-      when '\\W'; self.emit(:type, :nonword,    text, ts, te)
+      case text = text(data, ts, te).first
+      when '\\d'; emit(:type, :digit,      text, ts, te)
+      when '\\D'; emit(:type, :nondigit,   text, ts, te)
+      when '\\h'; emit(:type, :hex,        text, ts, te)
+      when '\\H'; emit(:type, :nonhex,     text, ts, te)
+      when '\\s'; emit(:type, :space,      text, ts, te)
+      when '\\S'; emit(:type, :nonspace,   text, ts, te)
+      when '\\w'; emit(:type, :word,       text, ts, te)
+      when '\\W'; emit(:type, :nonword,    text, ts, te)
       end
     };
 
@@ -425,7 +472,7 @@
       set_depth += 1; in_set = true
       set_type  = set_depth > 1 ? :subset : :set
 
-      self.emit(set_type, :open, data[ts..te-1].pack('c*'), ts, te)
+      emit(set_type, :open, *text(data, ts, te))
       fcall character_set;
     };
 
@@ -435,7 +482,7 @@
     # correct closing count.
     # ------------------------------------------------------------------------
     group_open . group_comment $group_closed {
-      self.emit(:group, :comment, data[ts..te-1].pack('c*'), ts, te)
+      emit(:group, :comment, *text(data, ts, te))
     };
 
     # Expression options:
@@ -451,10 +498,10 @@
       if data[te]
         c = data[te].chr
         if c == ':' # include the ':'
-          self.emit(:group, :options, data[ts..te].pack('c*'), ts, te+1)
+          emit(:group, :options, copy(data, ts..te), ts, te+1)
           p += 1
         elsif c == ')' # just options by themselves
-          self.emit(:group, :options, data[ts..te-1].pack('c*'), ts, te)
+          emit(:group, :options, *text(data, ts, te))
         else
           raise ScannerError.new(
             "Unexpected '#{c}' in options sequence, ':' or ')' expected")
@@ -471,11 +518,11 @@
     #   (?<!subexp)         negative look-behind
     # ------------------------------------------------------------------------
     group_open . assertion_type >group_opened {
-      case text =  data[ts..te-1].pack('c*')
-      when '(?=';  self.emit(:assertion, :lookahead,    text, ts, te)
-      when '(?!';  self.emit(:assertion, :nlookahead,   text, ts, te)
-      when '(?<='; self.emit(:assertion, :lookbehind,   text, ts, te)
-      when '(?<!'; self.emit(:assertion, :nlookbehind,  text, ts, te)
+      case text = text(data, ts, te).first
+      when '(?=';  emit(:assertion, :lookahead,    text, ts, te)
+      when '(?!';  emit(:assertion, :nlookahead,   text, ts, te)
+      when '(?<='; emit(:assertion, :lookbehind,   text, ts, te)
+      when '(?<!'; emit(:assertion, :nlookbehind,  text, ts, te)
       end
     };
 
@@ -487,84 +534,84 @@
     #   (subexp)            captured group
     # ------------------------------------------------------------------------
     group_open . group_type >group_opened {
-      case text =  data[ts..te-1].pack('c*')
-      when '(?:';  self.emit(:group, :passive,      text, ts, te)
-      when '(?>';  self.emit(:group, :atomic,       text, ts, te)
+      case text = text(data, ts, te).first
+      when '(?:';  emit(:group, :passive,      text, ts, te)
+      when '(?>';  emit(:group, :atomic,       text, ts, te)
 
       when /\(\?<\w+>/
-        self.emit(:group, :named_ab,  text, ts, te)
+        emit(:group, :named_ab,  text, ts, te)
       when /\(\?'\w+'/
-        self.emit(:group, :named_sq,  text, ts, te)
+        emit(:group, :named_sq,  text, ts, te)
       end
     };
 
     group_open @group_opened {
-      text =  data[ts..te-1].pack('c*')
-      self.emit(:group, :capture, text, ts, te)
+      text = text(data, ts, te).first
+      emit(:group, :capture, text, ts, te)
     };
 
     group_close @group_closed {
-      self.emit(:group, :close, data[ts..te-1].pack('c*'), ts, te)
+      emit(:group, :close, *text(data, ts, te))
     };
 
 
     # Group back-reference, named and numbered
     # ------------------------------------------------------------------------
     backslash . (group_name_ref | group_number_ref) > (backslashed, 4) {
-      case text = data[ts..te-1].pack('c*')
+      case text = text(data, ts, te).first
       when /\\([gk])<[^\d-](\w+)?>/ # angle-brackets
         if $1 == 'k'
-          self.emit(:backref, :name_ref_ab,  text, ts, te)
+          emit(:backref, :name_ref_ab,  text, ts, te)
         else
-          self.emit(:backref, :name_call_ab,  text, ts, te)
+          emit(:backref, :name_call_ab,  text, ts, te)
         end
 
       when /\\([gk])'[^\d-](\w+)?'/ #single quotes
         if $1 == 'k'
-          self.emit(:backref, :name_ref_sq,  text, ts, te)
+          emit(:backref, :name_ref_sq,  text, ts, te)
         else
-          self.emit(:backref, :name_call_sq,  text, ts, te)
+          emit(:backref, :name_call_sq,  text, ts, te)
         end
 
       when /\\([gk])<\d+>/ # angle-brackets
         if $1 == 'k'
-          self.emit(:backref, :number_ref_ab,  text, ts, te)
+          emit(:backref, :number_ref_ab,  text, ts, te)
         else
-          self.emit(:backref, :number_call_ab,  text, ts, te)
+          emit(:backref, :number_call_ab,  text, ts, te)
         end
 
       when /\\([gk])'\d+'/ # single quotes
         if $1 == 'k'
-          self.emit(:backref, :number_ref_sq,  text, ts, te)
+          emit(:backref, :number_ref_sq,  text, ts, te)
         else
-          self.emit(:backref, :number_call_sq,  text, ts, te)
+          emit(:backref, :number_call_sq,  text, ts, te)
         end
 
       when /\\([gk])<-\d+>/ # angle-brackets
         if $1 == 'k'
-          self.emit(:backref, :number_rel_ref_ab,  text, ts, te)
+          emit(:backref, :number_rel_ref_ab,  text, ts, te)
         else
-          self.emit(:backref, :number_rel_call_ab,  text, ts, te)
+          emit(:backref, :number_rel_call_ab,  text, ts, te)
         end
 
       when /\\([gk])'-\d+'/ # single quotes
         if $1 == 'k'
-          self.emit(:backref, :number_rel_ref_sq,  text, ts, te)
+          emit(:backref, :number_rel_ref_sq,  text, ts, te)
         else
-          self.emit(:backref, :number_rel_call_sq,  text, ts, te)
+          emit(:backref, :number_rel_call_sq,  text, ts, te)
         end
 
       when /\\k<[^\d-](\w+)?[+\-]\d+>/ # angle-brackets
-        self.emit(:backref, :name_nest_ref_ab,  text, ts, te)
+        emit(:backref, :name_nest_ref_ab,  text, ts, te)
 
       when /\\k'[^\d-](\w+)?[+\-]\d+'/ # single-quotes
-        self.emit(:backref, :name_nest_ref_sq,  text, ts, te)
+        emit(:backref, :name_nest_ref_sq,  text, ts, te)
 
       when /\\([gk])<\d+[+\-]\d+>/ # angle-brackets
-        self.emit(:backref, :number_nest_ref_ab,  text, ts, te)
+        emit(:backref, :number_nest_ref_ab,  text, ts, te)
 
       when /\\([gk])'\d+[+\-]\d+'/ # single-quotes
-        self.emit(:backref, :number_nest_ref_sq,  text, ts, te)
+        emit(:backref, :number_nest_ref_sq,  text, ts, te)
 
       end
     };
@@ -573,31 +620,31 @@
     # Quantifiers
     # ------------------------------------------------------------------------
     zero_or_one {
-      case text =  data[ts..te-1].pack('c*')
-      when '?' ;  self.emit(:quantifier, :zero_or_one,            text, ts, te)
-      when '??';  self.emit(:quantifier, :zero_or_one_reluctant,  text, ts, te)
-      when '?+';  self.emit(:quantifier, :zero_or_one_possessive, text, ts, te)
-      end
-    };
-  
-    zero_or_more {
-      case text =  data[ts..te-1].pack('c*')
-      when '*' ;  self.emit(:quantifier, :zero_or_more,            text, ts, te)
-      when '*?';  self.emit(:quantifier, :zero_or_more_reluctant,  text, ts, te)
-      when '*+';  self.emit(:quantifier, :zero_or_more_possessive, text, ts, te)
-      end
-    };
-  
-    one_or_more {
-      case text =  data[ts..te-1].pack('c*')
-      when '+' ;  self.emit(:quantifier, :one_or_more,            text, ts, te)
-      when '+?';  self.emit(:quantifier, :one_or_more_reluctant,  text, ts, te)
-      when '++';  self.emit(:quantifier, :one_or_more_possessive, text, ts, te)
+      case text = text(data, ts, te).first
+      when '?' ;  emit(:quantifier, :zero_or_one,            text, ts, te)
+      when '??';  emit(:quantifier, :zero_or_one_reluctant,  text, ts, te)
+      when '?+';  emit(:quantifier, :zero_or_one_possessive, text, ts, te)
       end
     };
 
-    quantifier_range  @err(premature_end_error) {
-      self.emit(:quantifier, :interval, data[ts..te-1].pack('c*'), ts, te)
+    zero_or_more {
+      case text = text(data, ts, te).first
+      when '*' ;  emit(:quantifier, :zero_or_more,            text, ts, te)
+      when '*?';  emit(:quantifier, :zero_or_more_reluctant,  text, ts, te)
+      when '*+';  emit(:quantifier, :zero_or_more_possessive, text, ts, te)
+      end
+    };
+
+    one_or_more {
+      case text = text(data, ts, te).first
+      when '+' ;  emit(:quantifier, :one_or_more,            text, ts, te)
+      when '+?';  emit(:quantifier, :one_or_more_reluctant,  text, ts, te)
+      when '++';  emit(:quantifier, :one_or_more_possessive, text, ts, te)
+      end
+    };
+
+    quantifier_interval  @err(premature_end_error) {
+      emit(:quantifier, :interval, *text(data, ts, te))
     };
 
     # Escaped sequences
@@ -614,34 +661,45 @@
     utf8_2_byte+    |
     utf8_3_byte+    |
     utf8_4_byte+    {
-      self.append_literal(data, ts, te)
+      append_literal(data, ts, te)
     };
 
   *|;
 }%%
 
+# THIS IS A GENERATED FILE, DO NOT EDIT DIRECTLY
+# This file was generated from scanner.rl
 
 module Regexp::Scanner
   %% write data;
 
+  # General scanner error (catch all)
   class ScannerError < StandardError
     def initialize(what)
       super what
     end
   end
 
+  # Unexpected end of pattern
   class PrematureEndError < ScannerError
     def initialize(where = '')
-      super "Premature end of pattern: #{where}"
+      super "Premature end of pattern at #{where}"
     end
   end
 
+  # Invalid sequence format. Used for escape sequences, mainly.
+  class InvalidSequenceError < ScannerError
+    def initialize(what = 'sequence', where = '')
+      super "Invalid #{what} at #{where}"
+    end
+  end
+
+  # 
   class UnknownUnicodePropertyError < ScannerError
     def initialize(name)
       super "Unknown unicode character property name #{name}"
     end
   end
-
 
   # Scans the given regular expression text, or Regexp object and collects the
   # emitted token into an array that gets returned at the end. If a block is
@@ -665,42 +723,57 @@ module Regexp::Scanner
     %% write init;
     %% write exec;
 
+    if cs == re_scanner_error
+      text = ts ? copy(data, ts-1..-1) : data.pack('c*')
+      raise ScannerError.new("Scan error at '#{text}'")
+    end
+
     raise PrematureEndError.new("(missing group closing paranthesis) "+
           "[#{in_group}:#{group_depth}]") if in_group
     raise PrematureEndError.new("(missing set closing bracket) "+
           "[#{in_set}:#{set_depth}]") if in_set
 
     # when the entire expression is a literal run
-    self.emit_literal if @literal
+    emit_literal if @literal
 
     @tokens
   end
 
-  # appends one or more characters to the literal buffer, to be emitted later
-  # by a call to emit_literal. contents a mix of ASCII and UTF-8
-  def self.append_literal(data, ts, te)
-    @literal ||= []
-    @literal << [data[ts..te-1].pack('c*'), ts, te]
+  private
+
+  # Copy from ts to te from data as text
+  def self.copy(data, range)
+    data[range].pack('c*')
   end
 
-  # emits the collected literal run collected by one or more calls to the 
-  # append_literal method
+  # Copy from ts to te from data as text, returning an array with the text
+  # the offsets used to copy it.
+  def self.text(data, ts, te, soff = 0)
+    [copy(data, ts-soff..te-1), ts-soff, te]
+  end
+
+  # Appends one or more characters to the literal buffer, to be emitted later
+  # by a call to emit_literal. Contents can be a mix of ASCII and UTF-8.
+  def self.append_literal(data, ts, te)
+    @literal ||= []
+    @literal << text(data, ts, te)
+  end
+
+  # Emits the literal run collected by calls to the append_literal method,
+  # using the total start (ts) and end (te) offsets of the run.
   def self.emit_literal
     ts, te = @literal.first[1], @literal.last[2]
     text = @literal.map {|t| t[0]}.join
 
     text.force_encoding('utf-8') if text.respond_to?(:force_encoding)
 
-    self.emit(:literal, :literal, text, ts, te)
     @literal = nil
+    emit(:literal, :literal, text, ts, te)
   end
 
+  # Emits an array with the details of the scanned pattern
   def self.emit(type, token, text, ts, te)
-    #puts " > emit: #{type}:#{token} '#{text}' [#{ts}..#{te}]"
-
-    if @literal and type != :literal
-      self.emit_literal
-    end
+    emit_literal if @literal
 
     if @block
       @block.call type, token, text, ts, te

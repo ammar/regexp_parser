@@ -27,12 +27,12 @@ class ScannerEscapes < Test::Unit::TestCase
     'a\u0640c'        => [1, :escape,  :codepoint,        '\u0640',         1,  7],
     'a\u{0640 0641}c' => [1, :escape,  :codepoint_list,   '\u{0640 0641}',  1,  14],
 
-    'a\cCc'           => [1, :escape,  :control,          '\cC',            1,  4],
-    'a\C-cc'          => [1, :escape,  :control,          '\C-c',           1,  5],
+    'a\cBc'           => [1, :escape,  :control,          '\cB',            1,  4],
+    'a\C-bc'          => [1, :escape,  :control,          '\C-b',           1,  5],
 
     # TODO: verify these escapes
-    'a\M-Cc'          => [1, :escape,  :meta_sequence,    '\M-C',           1,  5],
-    'a\M-\C-cc'       => [1, :escape,  :meta_sequence,    '\M-\C-c',        1,  8],
+    'a\M-Bc'          => [1, :escape,  :meta_sequence,    '\M-B',           1,  5],
+    'a\M-\C-Bc'       => [1, :escape,  :meta_sequence,    '\M-\C-B',        1,  8],
   }
 
   count = 0

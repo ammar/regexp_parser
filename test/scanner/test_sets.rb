@@ -9,6 +9,7 @@ class ScannerSets < Test::Unit::TestCase
 
     '[c]'                   => [1, :set,    :member,          'c',          1, 2],
     '[\b]'                  => [1, :set,    :backspace,       '\b',         1, 3],
+    '[A\bX]'                => [2, :set,    :backspace,       '\b',         2, 4],
 
     '[.]'                   => [1, :set,    :member,          '.',          1, 2],
     '[?]'                   => [1, :set,    :member,          '?',          1, 2],

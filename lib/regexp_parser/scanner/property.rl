@@ -58,7 +58,7 @@
   unicode_property := |*
 
     property_sequence < eof(premature_property_end) {
-      text = data[ts-1..te-1].pack('c*')
+      text = text(data, ts, te, 1).first
       if in_set
         type = :set
       else
@@ -525,9 +525,14 @@
         self.emit(type, :script_unknown,                  text, ts-1, te)
 
       else
-        raise UnknownUnicodePropertyError.new(name)
+        # Should this really be an error? Or would emitting
+        # an :unknown for the property be better?
+        #
+        # self.emit(type, :unknown, text, ts-1, te)
 
+        raise UnknownUnicodePropertyError.new(name)
       end
+
       fret;
     };
   *|;

@@ -3,34 +3,107 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerErrors < Test::Unit::TestCase
 
   def test_scanner_unbalanced_set
-    assert_raise( Regexp::Scanner::PrematureEndError ) { RS.scan('[[:alpha:]') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('[[:alpha:]') }
   end
 
   def test_scanner_unbalanced_group
-    assert_raise( Regexp::Scanner::PrematureEndError ) { RS.scan('(abc') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('(abc') }
   end
 
   def test_scanner_unbalanced_interval
-    assert_raise( Regexp::Scanner::PrematureEndError ) { RS.scan('a{1,2') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('a{1,2') }
+  end
+
+  def test_scanner_eof_in_property
+    assert_raise( RS::PrematureEndError ) { RS.scan('\p{asci') }
   end
 
   def test_scanner_incomplete_property
-    assert_raise( Regexp::Scanner::PrematureEndError ) { RS.scan('\p{ascii abc') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\p{ascii abc') }
   end
 
   def test_scanner_unknown_property
-    assert_raise( Regexp::Scanner::UnknownUnicodePropertyError ) { RS.scan('\p{foobar}') }
+    assert_raise( RS::UnknownUnicodePropertyError ) { RS.scan('\p{foobar}') }
   end
 
   def test_scanner_incomplete_options
-    assert_raise( Regexp::Scanner::ScannerError ) { RS.scan('(?mix abc)') }
+    assert_raise( RS::ScannerError ) { RS.scan('(?mix abc)') }
   end
 
   def test_scanner_eof_options
-    assert_raise( Regexp::Scanner::PrematureEndError ) { RS.scan('(?mix') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('(?mix') }
   end
 
   def test_scanner_incorrect_options
-    assert_raise( Regexp::Scanner::ScannerError ) { RS.scan('(?mix^bc') }
+    assert_raise( RS::ScannerError ) { RS.scan('(?mix^bc') }
+  end
+
+  def test_scanner_eof_escape
+    assert_raise( RS::PrematureEndError ) { RS.scan('\\') }
+  end
+
+  def test_scanner_eof_in_hex_escape
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x') }
+  end
+
+  def test_scanner_eof_in_wide_hex_escape
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{0') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{024') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{0246') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02468') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02468A') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02468AC') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02468ACE') }
+  end
+
+  def test_scanner_eof_in_codepoint_escape
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u0') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u00') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u000') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u{') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u{00') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u{0000') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u{0000 ') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\u{0000 0000') }
+  end
+
+  def test_scanner_eof_in_control_sequence
+    assert_raise( RS::PrematureEndError ) { RS.scan('\c') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\C') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\C-') }
+  end
+
+  def test_scanner_eof_in_meta_sequence
+    assert_raise( RS::PrematureEndError ) { RS.scan('\M') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\M-') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\M-\\') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\M-\C') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\M-\C-') }
+  end
+
+  def test_scanner_invalid_hex_escape
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\xZ') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\xZ0') }
+  end
+
+  def test_scanner_invalid_wide_hex_escape
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{}') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{ }') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{ A }') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0-}') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{Z00}') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{000Z}') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{00ZZ}') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0000ZZ}') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0000ZZ0}') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0000ZZ0X}') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{00X') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{00XYZ') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0000XYZ') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{02468ACED') }
+    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{02468ACE]') }
   end
 end
