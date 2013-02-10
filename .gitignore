@@ -11,3 +11,4 @@ test/test_sandbox.rb
 test/multitest.sh
 IN-PROGRESS
 .yardoc
+*.run
