@@ -9,7 +9,7 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
 
   tests = {
     :implements => {
-      :assertion    => [Group::Assertion::Lookahead].flatten,
+      :assertion    => [Assertion::Lookahead].flatten,
       :backref      => [:number],
       :escape       => [Escape::All].flatten,
       :group        => [Group::All].flatten,
@@ -20,10 +20,10 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
     },
 
     :excludes => {
-      :assertion    => [Group::Assertion::Lookbehind].flatten,
+      :assertion    => [Assertion::Lookbehind].flatten,
 
       :backref => [
-        Group::Backreference::All + Group::SubexpressionCall::All
+        Backreference::All + SubexpressionCall::All
       ].flatten,
 
       :quantifier => [

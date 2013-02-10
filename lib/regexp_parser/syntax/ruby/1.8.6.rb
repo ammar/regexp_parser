@@ -8,10 +8,10 @@ module Regexp::Syntax
         super
 
         implements :anchor, Anchor::All
-        implements :assertion, Group::Assertion::Lookahead
+        implements :assertion, Assertion::Lookahead
         implements :backref, [:number]
 
-        implements :escape, 
+        implements :escape,
           Escape::Basic + Escape::Backreference +
           Escape::ASCII + Escape::Meta + Escape::Control
 
@@ -19,13 +19,13 @@ module Regexp::Syntax
 
         implements :meta, Meta::Extended
 
-        implements :quantifier, 
+        implements :quantifier,
           Quantifier::Greedy + Quantifier::Reluctant +
           Quantifier::Interval + Quantifier::IntervalReluctant
 
         implements :set, CharacterSet::OpenClose +
           CharacterSet::Extended + CharacterSet::Types +
-          CharacterSet::POSIX::Standard 
+          CharacterSet::POSIX::Standard
 
         implements :type,
           CharacterType::Extended

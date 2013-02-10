@@ -9,24 +9,24 @@ module Regexp::Syntax
       def initialize
         super
 
-        implements :assertion, Group::Assertion::Lookbehind +
-          Group::SubexpressionCall::All
+        implements :assertion, Assertion::Lookbehind +
+          SubexpressionCall::All
 
-        implements :backref, Group::Backreference::All +
-          Group::SubexpressionCall::All
+        implements :backref, Backreference::All +
+          SubexpressionCall::All
 
         implements :escape, CharacterType::Hex
 
-        implements :property, 
+        implements :property,
           UnicodeProperty::All
 
-        implements :nonproperty, 
+        implements :nonproperty,
           UnicodeProperty::All
 
-        implements :quantifier, 
+        implements :quantifier,
           Quantifier::Possessive + Quantifier::IntervalPossessive
 
-        implements :set, 
+        implements :set,
           CharacterSet::POSIX::StandardNegative +
           CharacterSet::POSIX::Extensions +
           CharacterSet::POSIX::ExtensionsNegative +
@@ -34,7 +34,7 @@ module Regexp::Syntax
 
         implements :subset, CharacterSet::OpenClose +
           CharacterSet::Extended + CharacterSet::Types +
-          CharacterSet::POSIX::Standard 
+          CharacterSet::POSIX::Standard
       end
 
     end
