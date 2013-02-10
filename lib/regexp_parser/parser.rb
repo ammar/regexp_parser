@@ -71,7 +71,7 @@ module Regexp::Parser
     when :open
       self.open_set(token)
     when :close
-      self.close_set
+      self.close_set(token)
     when :negate
       self.negate_set
     when :member, :range, :escape, :collation, :equivalent
@@ -411,7 +411,8 @@ module Regexp::Parser
     @set << token.text
   end
 
-  def self.close_set
+  def self.close_set(token)
+    @set.close
   end
 
 end # module Regexp::Parser

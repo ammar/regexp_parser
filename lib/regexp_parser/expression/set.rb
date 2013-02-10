@@ -4,27 +4,40 @@ module Regexp::Expression
     attr_accessor :members
 
     def initialize(token)
-      @members = []
+      @members  = []
       @negative = false
+      @closed   = false
       super
     end
 
     def <<(member)
-      if @members.last.is_a?(CharacterSubSet)
+      if @members.last.is_a?(CharacterSubSet) and not @members.last.closed?
         @members.last << member
       else
         @members << member
       end
     end
 
-    def include?(member)
+    def include?(member, directly = false)
       @members.each do |m|
-        if m.is_a?(CharacterSubSet)
+        if m.is_a?(CharacterSubSet) and not directly
           return true if m.include?(member)
         else
           return true if member == m.to_s
         end
       end; false
+    end
+
+    def each(&block)
+      @members.each {|m| yield m}
+    end
+
+    def each_with_index(&block)
+      @members.each_with_index {|m, i| yield m, i}
+    end
+
+    def length
+      @members.length
     end
 
     def negate
@@ -40,6 +53,18 @@ module Regexp::Expression
     end
     alias :negated? :negative?
 
+    def close
+      if @members.last.is_a?(CharacterSubSet) and not @members.last.closed?
+        @members.last.close
+      else
+        @closed = true
+      end
+    end
+
+    def closed?
+      @closed
+    end
+
     def to_s
       s = @text.dup
       s << '^' if negative?
@@ -54,6 +79,7 @@ module Regexp::Expression
     end
   end
 
-  class CharacterSubSet < CharacterSet; end
+  class CharacterSubSet < CharacterSet
+  end
 
 end # module Regexp::Expression

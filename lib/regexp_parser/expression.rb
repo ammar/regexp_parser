@@ -29,8 +29,16 @@ module Regexp::Expression
       @expressions.each {|e| yield e}
     end
 
+    def each_with_index(&block)
+      @expressions.each_with_index {|e, i| yield e, i}
+    end
+
     def [](index)
       @expressions[index]
+    end
+
+    def length
+      @expressions.length
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
@@ -42,20 +50,21 @@ module Regexp::Expression
     end
 
     def quantity
+      return [nil,nil] unless quantified?
       [@quantifier.min, @quantifier.max]
     end
 
     def greedy?
-      @quantifier.mode == :greedy
+      quantified? and @quantifier.mode == :greedy
     end
 
     def reluctant?
-      @quantifier.mode == :reluctant
+      quantified? and @quantifier.mode == :reluctant
     end
     alias :lazy? :reluctant?
 
     def possessive?
-      @quantifier.mode == :possessive
+      quantified? and @quantifier.mode == :possessive
     end
 
     def multiline?
@@ -90,11 +99,13 @@ module Regexp::Expression
       @expressions[0].i?
     end
     alias :i? :case_insensitive?
+    alias :ignore_case? :case_insensitive?
 
     def free_spacing?
       @expressions[0].x?
     end
     alias :x? :free_spacing?
+    alias :extended? :free_spacing?
   end
 
   class Quantifier
@@ -147,8 +158,8 @@ module Regexp::Expression
 
     class MatchStart                    < Anchor::Base; end
 
-    BOL      = BeginningOfLine 
-    EOL      = EndOfLine 
+    BOL      = BeginningOfLine
+    EOL      = EndOfLine
     BOS      = BeginningOfString
     EOS      = EndOfString
     EOSobEOL = EndOfStringOrBeforeEndOfLine
@@ -260,10 +271,17 @@ module Regexp::Expression
 
     class Atomic    < Group::Base; end
     class Capture   < Group::Base; end
-    class Named     < Group::Base; end
     class Passive   < Group::Base; end
-
     class Options   < Group::Base; end
+
+    class Named     < Group::Base
+      attr_reader :name
+
+      def initialize(token)
+        @name = token.text[3..-2]
+        super(token)
+      end
+    end
 
     class Comment   < Group::Base
       def to_s; @text.dup end
