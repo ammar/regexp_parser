@@ -21,15 +21,15 @@ module Regexp::Lexer
       type, token = *syntax.normalize(type, token)
       syntax.check! type, token
 
-      self.ascend(type, token)
+      ascend(type, token)
 
-      self.break_literal(last) if type == :quantifier and
+      break_literal(last) if type == :quantifier and
         last and last.type == :literal
 
       current = Regexp::Token.new(type, token, text, ts, te,
                                   @nesting, @set_nesting)
 
-      current = self.merge_literal(current) if type == :literal and
+      current = merge_literal(current) if type == :literal and
         last and last.type == :literal
 
       last.next(current) if last
@@ -38,7 +38,7 @@ module Regexp::Lexer
       @tokens << current
       last = current
 
-      self.descend(type, token)
+      descend(type, token)
     end
 
     if block_given?
