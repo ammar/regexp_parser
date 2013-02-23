@@ -10,6 +10,13 @@ module Regexp::Expression
       super
     end
 
+    # Override base method to clone set members as well.
+    def clone
+      copy = super
+      copy.members = @members.map {|m| m.clone }
+      copy
+    end
+
     def <<(member)
       if @members.last.is_a?(CharacterSubSet) and not @members.last.closed?
         @members.last << member
@@ -65,12 +72,20 @@ module Regexp::Expression
       @closed
     end
 
-    def to_s
-      s = @text.dup
+    def to_s(format = :full)
+      s = ''
+
+      s << @text.dup
       s << '^' if negative?
       s << @members.join
       s << ']'
-      s << @quantifier.to_s if quantified?
+
+      case format
+      when :base
+      else
+        s << @quantifier.to_s if quantified?
+      end
+
       s
     end
 

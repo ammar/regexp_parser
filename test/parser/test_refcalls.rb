@@ -1,6 +1,6 @@
 require File.expand_path("../../helpers", __FILE__)
 
-class TestParserGroups < Test::Unit::TestCase
+class TestParserRefcalls < Test::Unit::TestCase
 
   def test_parse_backref_named_ab
     t = RP.parse('(?<X>abc)\k<X>', 'ruby/1.9')[1]

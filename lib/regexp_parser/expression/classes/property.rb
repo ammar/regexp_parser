@@ -1,6 +1,6 @@
 module Regexp::Expression
 
-  module UnicodeProperty 
+  module UnicodeProperty
     class Base < Regexp::Expression::Base
       def negative?
         @type == :nonproperty
