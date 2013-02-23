@@ -43,4 +43,39 @@ class ParserAlternation < Test::Unit::TestCase
     assert_equal( 2,      nested.expressions.length )
   end
 
+  def test_parse_alternation_nested_groups
+    root = RP.parse('(i|ey|([ougfd]+)|(ney))')
+
+    alts = root.expressions[0][0].alternatives
+    assert_equal( 4,  alts.length )
+  end
+
+  def test_parse_alternation_grouped_alts
+    root = RP.parse('ca((n)|(t)|(ll)|(b))')
+
+    alts = root.expressions[1][0].alternatives
+
+    assert_equal( 4,  alts.length )
+    assert_equal( true,   alts[0].is_a?(Sequence) )
+    assert_equal( true,   alts[1].is_a?(Sequence) )
+    assert_equal( true,   alts[2].is_a?(Sequence) )
+    assert_equal( true,   alts[3].is_a?(Sequence) )
+  end
+
+  def test_parse_alternation_nested_grouped_alts
+    root = RP.parse('ca((n|t)|(ll|b))')
+
+    alts = root.expressions[1][0].alternatives
+
+    assert_equal( 2,  alts.length )
+    assert_equal( true,   alts[0].is_a?(Sequence) )
+    assert_equal( true,   alts[1].is_a?(Sequence) )
+
+    subalts = root.expressions[1][0][0][0][0].alternatives
+
+    assert_equal( 2,  alts.length )
+    assert_equal( true,   subalts[0].is_a?(Sequence) )
+    assert_equal( true,   subalts[1].is_a?(Sequence) )
+  end
+
 end

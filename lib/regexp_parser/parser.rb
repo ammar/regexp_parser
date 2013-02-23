@@ -93,16 +93,22 @@ module Regexp::Parser
       @node << CharacterType::Any.new(token)
     when :alternation
       unless @node.token == :alternation
-        alt = Alternation.new(token)
-        seq = Sequence.new
-        while @node.expressions.last
-          seq.insert @node.expressions.pop
-        end
-        alt.alternative(seq)
+        unless @node.last.is_a?(Alternation)
+          alt = Alternation.new(token)
+          seq = Sequence.new
 
-        @node << alt
-        @node = alt
-        @node.alternative
+          while @node.expressions.last
+            seq.insert @node.expressions.pop
+          end
+          alt.alternative(seq)
+
+          @node << alt
+          @node = alt
+          @node.alternative
+        else
+          @node = @node.last
+          @node.alternative
+        end
       else
         @node.alternative
       end
