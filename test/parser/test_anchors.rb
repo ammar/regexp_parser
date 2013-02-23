@@ -3,8 +3,8 @@ require File.expand_path("../../helpers", __FILE__)
 class TestParserAnchors < Test::Unit::TestCase
 
   tests = {
-    '^a'      => [0, :anchor,   :beginning_of_line,   Anchor::BOL],
-    'a$'      => [1, :anchor,   :end_of_line,         Anchor::EOL],
+    '^a'      => [0, :anchor,   :bol,                 Anchor::BOL],
+    'a$'      => [1, :anchor,   :eol,                 Anchor::EOL],
 
     '\Aa'     => [0, :anchor,   :bos,                 Anchor::BOS],
     'a\z'     => [1, :anchor,   :eos,                 Anchor::EOS],

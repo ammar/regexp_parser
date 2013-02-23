@@ -87,7 +87,7 @@
   group_options         = '?' . ([mix]{1,3})? . '-'? . ([mix]{1,3})?;
 
   group_ref             = [gk];
-  group_name            = alpha . (alnum+)?;
+  group_name            = (alnum . (alnum+)?)?;
   group_number          = '-'? . [1-9] . ([0-9]+)?;
   group_level           = [+\-] . [0-9]+;
 
@@ -305,8 +305,8 @@
       case text = text(data, ts, te, 1).first
       when '\.';  emit(:escape, :dot,               text, ts-1, te)
       when '\|';  emit(:escape, :alternation,       text, ts-1, te)
-      when '\^';  emit(:escape, :beginning_of_line, text, ts-1, te)
-      when '\$';  emit(:escape, :end_of_line,       text, ts-1, te)
+      when '\^';  emit(:escape, :bol,               text, ts-1, te)
+      when '\$';  emit(:escape, :eol,               text, ts-1, te)
       when '\?';  emit(:escape, :zero_or_one,       text, ts-1, te)
       when '\*';  emit(:escape, :zero_or_more,      text, ts-1, te)
       when '\+';  emit(:escape, :one_or_more,       text, ts-1, te)
@@ -427,11 +427,11 @@
     # Anchors
     # ------------------------------------------------------------------------
     beginning_of_line {
-      emit(:anchor, :beginning_of_line, *text(data, ts, te))
+      emit(:anchor, :bol, *text(data, ts, te))
     };
 
     end_of_line {
-      emit(:anchor, :end_of_line, *text(data, ts, te))
+      emit(:anchor, :eol, *text(data, ts, te))
     };
 
     backslash . anchor_char > (backslashed, 3) {
@@ -442,7 +442,9 @@
       when '\\b'; emit(:anchor, :word_boundary,      text, ts, te)
       when '\\B'; emit(:anchor, :nonword_boundary,   text, ts, te)
       when '\\G'; emit(:anchor, :match_start,        text, ts, te)
-      else raise ScannerError.new("Unsupported anchor at #{text} (char #{ts})")
+      else
+        raise ScannerError.new(
+          "Unexpected character in anchor at #{text} (char #{ts})")
       end
     };
 
@@ -462,6 +464,9 @@
       when '\\S'; emit(:type, :nonspace,   text, ts, te)
       when '\\w'; emit(:type, :word,       text, ts, te)
       when '\\W'; emit(:type, :nonword,    text, ts, te)
+      else
+        raise ScannerError.new(
+          "Unexpected character in type at #{text} (char #{ts})")
       end
     };
 
@@ -538,10 +543,19 @@
       when '(?:';  emit(:group, :passive,      text, ts, te)
       when '(?>';  emit(:group, :atomic,       text, ts, te)
 
-      when /\(\?<\w+>/
+      when /^\(\?<(\w*)>/
+        empty_name_error(:group, 'named group (ab)') if $1.empty?
+
         emit(:group, :named_ab,  text, ts, te)
-      when /\(\?'\w+'/
+
+      when /^\(\?'(\w*)'/
+        empty_name_error(:group, 'named group (sq)') if $1.empty?
+
         emit(:group, :named_sq,  text, ts, te)
+
+      else
+        raise ScannerError.new(
+          "Unknown subexpression group format '#{text}'")
       end
     };
 
@@ -555,64 +569,73 @@
     };
 
 
-    # Group back-reference, named and numbered
+    # Group backreference, named and numbered
     # ------------------------------------------------------------------------
     backslash . (group_name_ref | group_number_ref) > (backslashed, 4) {
       case text = text(data, ts, te).first
-      when /\\([gk])<[^\d-](\w+)?>/ # angle-brackets
+      when /^\\([gk])<>/ # angle brackets
+        empty_backref_error("ref/call (ab)")
+
+      when /^\\([gk])''/ # single quotes
+        empty_backref_error("ref/call (sq)")
+
+      when /^\\([gk])<[^\d-](\w+)?>/ # angle-brackets
         if $1 == 'k'
           emit(:backref, :name_ref_ab,  text, ts, te)
         else
           emit(:backref, :name_call_ab,  text, ts, te)
         end
 
-      when /\\([gk])'[^\d-](\w+)?'/ #single quotes
+      when /^\\([gk])'[^\d-](\w+)?'/ #single quotes
         if $1 == 'k'
           emit(:backref, :name_ref_sq,  text, ts, te)
         else
           emit(:backref, :name_call_sq,  text, ts, te)
         end
 
-      when /\\([gk])<\d+>/ # angle-brackets
+      when /^\\([gk])<\d+>/ # angle-brackets
         if $1 == 'k'
           emit(:backref, :number_ref_ab,  text, ts, te)
         else
           emit(:backref, :number_call_ab,  text, ts, te)
         end
 
-      when /\\([gk])'\d+'/ # single quotes
+      when /^\\([gk])'\d+'/ # single quotes
         if $1 == 'k'
           emit(:backref, :number_ref_sq,  text, ts, te)
         else
           emit(:backref, :number_call_sq,  text, ts, te)
         end
 
-      when /\\([gk])<-\d+>/ # angle-brackets
+      when /^\\([gk])<-\d+>/ # angle-brackets
         if $1 == 'k'
           emit(:backref, :number_rel_ref_ab,  text, ts, te)
         else
           emit(:backref, :number_rel_call_ab,  text, ts, te)
         end
 
-      when /\\([gk])'-\d+'/ # single quotes
+      when /^\\([gk])'-\d+'/ # single quotes
         if $1 == 'k'
           emit(:backref, :number_rel_ref_sq,  text, ts, te)
         else
           emit(:backref, :number_rel_call_sq,  text, ts, te)
         end
 
-      when /\\k<[^\d-](\w+)?[+\-]\d+>/ # angle-brackets
+      when /^\\k<[^\d-](\w+)?[+\-]\d+>/ # angle-brackets
         emit(:backref, :name_nest_ref_ab,  text, ts, te)
 
-      when /\\k'[^\d-](\w+)?[+\-]\d+'/ # single-quotes
+      when /^\\k'[^\d-](\w+)?[+\-]\d+'/ # single-quotes
         emit(:backref, :name_nest_ref_sq,  text, ts, te)
 
-      when /\\([gk])<\d+[+\-]\d+>/ # angle-brackets
+      when /^\\([gk])<\d+[+\-]\d+>/ # angle-brackets
         emit(:backref, :number_nest_ref_ab,  text, ts, te)
 
-      when /\\([gk])'\d+[+\-]\d+'/ # single-quotes
+      when /^\\([gk])'\d+[+\-]\d+'/ # single-quotes
         emit(:backref, :number_nest_ref_sq,  text, ts, te)
 
+      else
+        raise ScannerError.new(
+          "Unknown backreference format '#{text}'")
       end
     };
 
@@ -680,6 +703,13 @@ module Regexp::Scanner
     end
   end
 
+  # Base for all scanner validation errors
+  class ValidationError < StandardError
+    def initialize(reason)
+      super reason
+    end
+  end
+
   # Unexpected end of pattern
   class PrematureEndError < ScannerError
     def initialize(where = '')
@@ -688,14 +718,28 @@ module Regexp::Scanner
   end
 
   # Invalid sequence format. Used for escape sequences, mainly.
-  class InvalidSequenceError < ScannerError
+  class InvalidSequenceError < ValidationError
     def initialize(what = 'sequence', where = '')
       super "Invalid #{what} at #{where}"
     end
   end
 
-  # 
-  class UnknownUnicodePropertyError < ScannerError
+  # Invalid group. Used for named groups.
+  class InvalidGroupError < ValidationError
+    def initialize(what, reason)
+      super "Invalid #{what}, #{reason}."
+    end
+  end
+
+  # Invalid back reference. Used for name a number refs/calls.
+  class InvalidBackrefError < ValidationError
+    def initialize(what, reason)
+      super "Invalid back reference #{what}, #{reason}"
+    end
+  end
+
+  # The property name was not recognized by the scanner.
+  class UnknownUnicodePropertyError < ValidationError
     def initialize(name)
       super "Unknown unicode character property name #{name}"
     end
@@ -747,7 +791,7 @@ module Regexp::Scanner
   end
 
   # Copy from ts to te from data as text, returning an array with the text
-  # the offsets used to copy it.
+  #  and the offsets used to copy it.
   def self.text(data, ts, te, soff = 0)
     [copy(data, ts-soff..te-1), ts-soff, te]
   end
@@ -780,6 +824,39 @@ module Regexp::Scanner
     end
 
     @tokens << [type, token, text, ts, te]
+  end
+
+  # Centralizes and unifies the handling of validation related
+  # errors.
+  def self.validation_error(type, what, reason)
+    case type
+    when :group
+      error = InvalidGroupError.new(what, reason)
+    when :backref
+      error = InvalidBackrefError.new(what, reason)
+    when :sequence
+      error = InvalidSequenceError.new(what, reason)
+    else
+      error = ValidationError.new('unknown')
+    end
+
+    # TODO: configuration option to treat scanner level validation
+    # errors as warnings or ignore them
+    if false # @@config.validation_warn
+      $stderr.puts error.to_s # unless @@config.validation_ignore
+    else
+      raise error # unless @@config.validation_ignore
+    end
+  end
+
+  # Used for references with an empty name or number
+  def self.empty_backref_error(type, what)
+    validation_error(:backref, what, 'ref ID is empty')
+  end
+
+  # Used for named expressions with an empty name
+  def self.empty_name_error(type, what)
+    validation_error(type, what, 'name is empty')
   end
 
 end # module Regexp::Scanner

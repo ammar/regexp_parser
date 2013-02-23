@@ -1,3 +1,4 @@
+# Define the base module and the simplest of tokens.
 module Regexp::Syntax
   module Token
     Map = {}
@@ -11,13 +12,13 @@ module Regexp::Syntax
   end
 end
 
-%w{
- anchor assertion backref character_set character_type
- escape group meta quantifier unicode_property
-}.each do |file|
-  require File.expand_path("../tokens/#{file}", __FILE__)
-end
 
+# Load all the token files, they will populate the Map constant.
+Dir[File.dirname(__FILE__) + '/tokens/*.rb'].each {|f| require f }
+
+
+# After loading all the tokens the map is full. Extract all tokens and types
+# into the All and Types constants.
 module Regexp::Syntax
   module Token
     if RUBY_VERSION >= '1.9'

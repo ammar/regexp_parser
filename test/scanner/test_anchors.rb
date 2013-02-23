@@ -3,8 +3,8 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerAnchors < Test::Unit::TestCase
 
   tests = {
-   '^abc'       => [0, :anchor,     :beginning_of_line,     '^',    0, 1],
-   'abc$'       => [1, :anchor,     :end_of_line,           '$',    3, 4],
+   '^abc'       => [0, :anchor,     :bol,                   '^',    0, 1],
+   'abc$'       => [1, :anchor,     :eol,                   '$',    3, 4],
 
    '\Aabc'      => [0, :anchor,     :bos,                   '\A',   0, 2],
    'abc\z'      => [1, :anchor,     :eos,                   '\z',   3, 5],

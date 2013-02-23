@@ -2,7 +2,7 @@ module Regexp::Syntax
   module Token
 
     module Anchor
-      Basic       = [:beginning_of_line, :end_of_line]
+      Basic       = [:bol, :eol]
       Extended    = Basic + [:word_boundary, :nonword_boundary]
       String      = [:bos, :eos, :eos_ob_eol]
       MatchStart  = [:match_start]

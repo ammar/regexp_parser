@@ -106,4 +106,11 @@ class ScannerErrors < Test::Unit::TestCase
     assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{02468ACED') }
     assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{02468ACE]') }
   end
+
+  def test_scanner_invalid_named_group
+    assert_raise( RS::InvalidGroupError ) { RS.scan("(?'')") }
+    assert_raise( RS::InvalidGroupError ) { RS.scan("(?''empty-name)") }
+    assert_raise( RS::InvalidGroupError ) { RS.scan("(?<>)") }
+    assert_raise( RS::InvalidGroupError ) { RS.scan("(?<>empty-name)") }
+  end
 end

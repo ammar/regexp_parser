@@ -238,9 +238,9 @@ module Regexp::Parser
 
   def self.anchor(token)
     case token.token
-    when :beginning_of_line
+    when :bol
       @node << Anchor::BeginningOfLine.new(token)
-    when :end_of_line
+    when :eol
       @node << Anchor::EndOfLine.new(token)
     when :bos
       @node << Anchor::BOS.new(token)
@@ -396,6 +396,8 @@ module Regexp::Parser
   end
 
   def self.open_set(token)
+    token.token = :character
+
     if token.type == :subset
       @set << CharacterSubSet.new(token)
     else

@@ -9,13 +9,23 @@ class ScannerGroups < Test::Unit::TestCase
     '(?mi-x:abc)'     => [0, :group,     :options,      '(?mi-x:',    0, 7],
     '(?mix:abc)'      => [0, :group,     :options,      '(?mix:',     0, 6],
     '(?mix)'          => [0, :group,     :options,      '(?mix',      0, 5],
+    '(?m:)'           => [0, :group,     :options,      '(?m:',       0, 4],
+    '(?i:)'           => [0, :group,     :options,      '(?i:',       0, 4],
+    '(?x:)'           => [0, :group,     :options,      '(?x:',       0, 4],
+
+    # This one is not correct, but it's not wrong either, right?
+    '(?)'             => [0, :group,     :options,      '(?',         0, 2],
 
     # Group types
     '(?>abc)'         => [0, :group,     :atomic,       '(?>',        0, 3],
     '(abc)'           => [0, :group,     :capture,      '(',          0, 1],
+
     '(?<name>abc)'    => [0, :group,     :named_ab,     '(?<name>',   0, 8],
     "(?'name'abc)"    => [0, :group,     :named_sq,     "(?'name'",   0, 8],
+
     '(?:abc)'         => [0, :group,     :passive,      '(?:',        0, 3],
+    '(?:)'            => [0, :group,     :passive,      '(?:',        0, 3],
+    '(?::)'           => [0, :group,     :passive,      '(?:',        0, 3],
 
     # Comments
     '(?#abc)'         => [0, :group,     :comment,      '(?#abc)',    0, 7],
