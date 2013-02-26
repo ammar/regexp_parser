@@ -13,9 +13,6 @@ class ScannerGroups < Test::Unit::TestCase
     '(?i:)'           => [0, :group,     :options,      '(?i:',       0, 4],
     '(?x:)'           => [0, :group,     :options,      '(?x:',       0, 4],
 
-    # This one is not correct, but it's not wrong either, right?
-    '(?)'             => [0, :group,     :options,      '(?',         0, 2],
-
     # Group types
     '(?>abc)'         => [0, :group,     :atomic,       '(?>',        0, 3],
     '(abc)'           => [0, :group,     :capture,      '(',          0, 1],
