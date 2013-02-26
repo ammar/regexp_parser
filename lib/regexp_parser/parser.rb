@@ -298,6 +298,15 @@ module Regexp::Parser
   end
 
   def self.quantifier(token)
+    unless @node.expressions.last
+      if token.token == :zero_or_one
+        raise "Quantifier given without a target, or the syntax of the group " +
+              "or its options is incorrect"
+      else
+        raise "Quantifier `#{token.text}' given without a target"
+      end
+    end
+
     case token.token
     when :zero_or_one
       @node.expressions.last.quantify(:zero_or_one, token.text, 0, 1, :greedy)
