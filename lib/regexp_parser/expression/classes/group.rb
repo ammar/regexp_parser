@@ -16,8 +16,6 @@ module Regexp::Expression
           s << @text.dup
           s << @expressions.join
           s << ')'
-        when :content
-          s << @expressions.join
         else
           s << @text.dup
           s << @expressions.join
@@ -34,7 +32,7 @@ module Regexp::Expression
     class Passive   < Group::Base; end
     class Options   < Group::Base; end
 
-    class Named     < Group::Base
+    class Named     < Group::Capture
       attr_reader :name
 
       def initialize(token)
