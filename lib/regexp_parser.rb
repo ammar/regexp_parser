@@ -1,6 +1,9 @@
+require 'yaml'
+
 class Regexp
   module Parser
-    VERSION = '0.0.1'
+    VERFILE = File.expand_path('../../VERSION.yml', __FILE__)
+    VERSION = YAML.load(File.read(VERFILE)).values.compact.join('.')
   end
 end
 

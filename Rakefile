@@ -1,6 +1,6 @@
 require 'rake'
 require 'rake/testtask'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 task :default => [:test]
 
@@ -18,28 +18,11 @@ end
 task :test
 
 namespace :test do
-  desc "Run all scanner tests"
-  Rake::TestTask.new("scanner") do |t|
-    t.libs << "test"
-    t.test_files = ['test/scanner/test_all.rb']
-  end
-
-  desc "Run all lexer tests"
-  Rake::TestTask.new("lexer") do |t|
-    t.libs << "test"
-    t.test_files = ['test/lexer/test_all.rb']
-  end
-
-  desc "Run all parser tests"
-  Rake::TestTask.new("parser") do |t|
-    t.libs << "test"
-    t.test_files = ['test/parser/test_all.rb']
-  end
-
-  desc "Run all syntax tests"
-  Rake::TestTask.new("syntax") do |t|
-    t.libs << "test"
-    t.test_files = ['test/syntax/test_all.rb']
+  %w{scanner lexer parser expression syntax}.each do |component|
+    Rake::TestTask.new(component) do |t|
+      t.libs << "test"
+      t.test_files = ["test/#{component}/test_all.rb"]
+    end
   end
 end
 
@@ -62,7 +45,7 @@ end
 
 spec = Gem::Specification.new do |gem|
   gem.name = 'regexp_parser'
-  gem.version = '0.1.1'
+  gem.version = YAML.load(File.read('VERSION.yml')).values.compact.join('.')
   gem.date = '2010-11-23'
 
   gem.license = 'MIT'
@@ -87,7 +70,7 @@ spec = Gem::Specification.new do |gem|
     gem.respond_to? :required_rubygems_version=
 end
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.need_zip = true
   pkg.need_tar = true
 end
@@ -97,6 +80,6 @@ namespace :gem do
   task :release do |t|
     Rake::Task['ragel:rb'].execute
     Rake::Task['repackage'].execute
-    sh "gem push"
+    #sh "gem push"
   end
 end
