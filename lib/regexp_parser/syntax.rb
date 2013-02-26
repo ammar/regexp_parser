@@ -50,6 +50,11 @@ module Regexp::Syntax
       # alias for the latest 1.9 implementation
       when 'ruby/1.9';    syntax = Regexp::Syntax::Ruby::V19.new
 
+      when 'ruby/2.0.0';  syntax = Regexp::Syntax::Ruby::V20.new
+
+      # alias for the latest 2.0 implementation
+      when 'ruby/2.0';    syntax = Regexp::Syntax::Ruby::V20.new
+
       else
         raise UnknownSyntaxError.new(name)
     end
