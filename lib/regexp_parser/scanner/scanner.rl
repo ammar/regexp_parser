@@ -84,7 +84,7 @@
   assertion_lookbehind  = '?<=';
   assertion_nlookbehind = '?<!';
 
-  group_options         = '?' . ([mix]{1,3})? . '-'? . ([mix]{1,3})?;
+  group_options         = '?' . [\-mix];
 
   group_ref             = [gk];
   group_name            = (alnum . (alnum+)?)?;
@@ -499,21 +499,7 @@
     #   (?imx-imx:subexp)   option on/off for subexp
     # ------------------------------------------------------------------------
     group_open . group_options >group_opened {
-      # special handling to resolve ambiguity with passive groups
-      if data[te]
-        c = data[te].chr
-        if c == ':' # include the ':'
-          emit(:group, :options, copy(data, ts..te), ts, te+1)
-          p += 1
-        elsif c == ')' # just options by themselves
-          emit(:group, :options, *text(data, ts, te))
-        else
-          raise ScannerError.new(
-            "Unexpected '#{c}' in options sequence, ':' or ')' expected")
-        end
-      else
-        raise PrematureEndError.new("options") unless data[te]
-      end
+      p = scan_options(p, data, ts, te)
     };
 
     # Assertions
@@ -785,6 +771,49 @@ module Regexp::Scanner
 
   private
 
+  def self.scan_options(p, data, ts, te)
+    text = text(data, ts, te).first
+
+    in_options = true
+    in_count = 0
+
+    while in_options
+      if data[te + in_count]
+        c = data[te + in_count].chr
+
+        if c =~ /[-mix]/
+          text << c
+          p += 1
+          in_count += 1
+        else
+          in_options = false
+        end
+      else
+        raise PrematureEndError.new("expression options `#{text}'")
+      end
+    end
+
+    if data[te + in_count]
+      c = data[te + in_count].chr
+
+      if c == ':'
+        text << c
+        p += 1
+        in_count += 1
+        emit(:group, :options, text, ts, te + in_count)
+      elsif c == ')'
+        emit(:group, :options, text, ts, te + in_count)
+      else
+        raise ScannerError.new(
+          "Unexpected `#{c}' in options sequence, ':' or ')' expected")
+      end
+    else
+      raise PrematureEndError.new("expression options `#{text}'")
+    end
+
+    p
+  end
+
   # Copy from ts to te from data as text
   def self.copy(data, range)
     data[range].pack('c*')
@@ -817,6 +846,8 @@ module Regexp::Scanner
 
   # Emits an array with the details of the scanned pattern
   def self.emit(type, token, text, ts, te)
+    #puts "EMIT: type: #{type}, token: #{token}, text: #{text}, ts: #{ts}, te: #{te}"
+
     emit_literal if @literal
 
     if @block
