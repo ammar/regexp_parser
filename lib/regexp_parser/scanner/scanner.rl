@@ -771,39 +771,44 @@ module Regexp::Scanner
 
   private
 
+  # Ragel's regex-based scan of the group options introduced a lot of
+  # ambiguity, so we just ask it to find the beginning of what looks
+  # like an options run and handle the rest in here.
   def self.scan_options(p, data, ts, te)
     text = text(data, ts, te).first
 
-    in_options = true
-    in_count = 0
+    options_char, options_length = true, 0
 
-    while in_options
-      if data[te + in_count]
-        c = data[te + in_count].chr
+    # Copy while we have option characters, the maximum is 7, for (?mix-mix,
+    # even though it doesn't make sense it is possible.
+    while options_char and options_length < 7
+      if data[te + options_length]
+        c = data[te + options_length].chr
 
         if c =~ /[-mix]/
-          text << c
-          p += 1
-          in_count += 1
+          text << c ; p += 1 ; options_length += 1
         else
-          in_options = false
+          options_char = false
         end
       else
         raise PrematureEndError.new("expression options `#{text}'")
       end
     end
 
-    if data[te + in_count]
-      c = data[te + in_count].chr
+    if data[te + options_length]
+      c = data[te + options_length].chr
 
       if c == ':'
-        text << c
-        p += 1
-        in_count += 1
-        emit(:group, :options, text, ts, te + in_count)
+        # Include the ':' in the options text
+        text << c ; p += 1 ; options_length += 1
+        emit(:group, :options, text, ts, te + options_length)
+
       elsif c == ')'
-        emit(:group, :options, text, ts, te + in_count)
+        # Don't include the closing ')', let group_close handle it.
+        emit(:group, :options, text, ts, te + options_length)
+
       else
+        # Plain Regexp reports this as 'undefined group option'
         raise ScannerError.new(
           "Unexpected `#{c}' in options sequence, ':' or ')' expected")
       end
@@ -811,7 +816,7 @@ module Regexp::Scanner
       raise PrematureEndError.new("expression options `#{text}'")
     end
 
-    p
+    p # return the new value of the data pointer
   end
 
   # Copy from ts to te from data as text
@@ -868,7 +873,7 @@ module Regexp::Scanner
     when :sequence
       error = InvalidSequenceError.new(what, reason)
     else
-      error = ValidationError.new('unknown')
+      error = ValidationError.new('expression')
     end
 
     # TODO: configuration option to treat scanner level validation
