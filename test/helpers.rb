@@ -1,3 +1,9 @@
 require "test/unit"
 require File.expand_path("../../lib/regexp_parser", __FILE__)
-require File.expand_path("../expression_helpers", __FILE__)
+
+RS = Regexp::Scanner
+RL = Regexp::Lexer
+RP = Regexp::Parser
+RE = Regexp::Expression
+
+include Regexp::Expression
