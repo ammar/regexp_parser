@@ -1,3 +1,50 @@
+Tue Jan 14 12:41:52 2014 Ammar Ali <ammarabuali@gmail.com>
+
+	* Released version 0.1.2
+
+	* Added syntax stubs for ruby versions 2.0 and 2.1
+
+Sat Feb 9 12:27:13 2010 Ammar Ali <ammarabuali@gmail.com>
+
+	* Added clone methods for deep copying expressions.
+
+	* Added optional format argument for to_s on expressions to return the
+	  text of the expression with (:full, the default) or without (:base)
+		its quantifier.
+
+	* Renamed the :beginning_of_line and :end_of_line tokens to :bol and
+		:eol.
+
+	* Renamed the :open token for CharacterSet (and subset) to :characater.
+
+	* Fixed a bug where alternations with more than two alternatives and
+	  one of them ending in a group were being incorrectly nested.
+
+	* Improved EOF handling in general and especially from sequences like
+	  hex and control escapes.
+
+	* Fixed a bug where named groups with an empty name would return a
+	  blank token [].
+
+	* Fixed a bug where member of a parent set where being added to its
+	  last subset.
+
+	* Added generic walk and map methods to the base Expression class.
+
+		See regexp_parser/experssion/walk.rb for more on these methods.
+
+	* Added convenience test methods to the base Expression class:
+
+		- is?(:token [, :type]) : true when tokens, and optionally types, match
+		- type?(:type)					: true when types match
+		- in?(scope)						: true when token and/or type are in scope
+
+		See regexp_parser/experssion.rb for more on these methods.
+
+	* Various code cleanups in scanner.rl
+
+	* Fixed a few mutable string bugs by calling dup on the originals.
+
 Tue Nov 23 11:35:56 2010 Ammar Ali <ammarabuali@gmail.com>
 
 	* Made ruby 1.8.6 the base for all 1.8 syntax, and the 1.8 name a pointer
