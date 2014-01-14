@@ -47,7 +47,7 @@ end
 spec = Gem::Specification.new do |gem|
   gem.name = 'regexp_parser'
   gem.version = YAML.load(File.read('VERSION.yml')).values.compact.join('.')
-  gem.date = '2010-11-23'
+  gem.date = '2014-01-14'
 
   gem.license = 'MIT'
   gem.summary = %q{Scanner, lexer, parser for ruby's regular expressions}
