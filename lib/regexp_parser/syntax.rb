@@ -53,8 +53,9 @@ module Regexp::Syntax
       when 'ruby/2.0.0';  syntax = Regexp::Syntax::Ruby::V20.new
       when 'ruby/2.1.0';  syntax = Regexp::Syntax::Ruby::V21.new
 
-      # alias for the latest 2.0 implementation
+      # aliases for the latest 2.x implementations
       when 'ruby/2.0';    syntax = Regexp::Syntax::Ruby::V20.new
+      when 'ruby/2.1';    syntax = Regexp::Syntax::Ruby::V21.new
 
       else
         raise UnknownSyntaxError.new(name)
