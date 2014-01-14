@@ -1,6 +1,7 @@
 require 'rake'
 require 'rake/testtask'
 require 'rubygems/package_task'
+require 'yaml'
 
 task :default => [:test]
 
