@@ -63,7 +63,7 @@ spec = Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.files = Dir.glob("{lib,test}/**/*.rb") + Dir.glob("lib/**/*.rl") +
-              %w(Rakefile LICENSE README.rdoc ChangeLog)
+              %w(VERSION.yml Rakefile LICENSE README.rdoc ChangeLog)
 
   gem.test_files = Dir.glob("test/**/*.rb")
 
