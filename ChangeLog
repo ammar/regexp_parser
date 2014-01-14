@@ -23,8 +23,6 @@ Sat Feb 9 12:27:13 2010 Ammar Ali <ammarabuali@gmail.com>
 	* Renamed the :beginning_of_line and :end_of_line tokens to :bol and
 		:eol.
 
-	* Renamed the :open token for CharacterSet (and subset) to :characater.
-
 	* Fixed a bug where alternations with more than two alternatives and
 	  one of them ending in a group were being incorrectly nested.
 
@@ -36,18 +34,6 @@ Sat Feb 9 12:27:13 2010 Ammar Ali <ammarabuali@gmail.com>
 
 	* Fixed a bug where member of a parent set where being added to its
 	  last subset.
-
-	* Added generic walk and map methods to the base Expression class.
-
-		See regexp_parser/experssion/walk.rb for more on these methods.
-
-	* Added convenience test methods to the base Expression class:
-
-		- is?(:token [, :type]) : true when tokens, and optionally types, match
-		- type?(:type)					: true when types match
-		- in?(scope)						: true when token and/or type are in scope
-
-		See regexp_parser/experssion.rb for more on these methods.
 
 	* Various code cleanups in scanner.rl
 
