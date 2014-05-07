@@ -239,7 +239,7 @@
       fret;
     };
 
-    char_type {
+    char_type > (escaped_set_alpha, 4) {
       case text = text(data, ts, te, 1).first
       when '\d'; emit(set_type, :type_digit,     text, ts-1, te)
       when '\D'; emit(set_type, :type_nondigit,  text, ts-1, te)

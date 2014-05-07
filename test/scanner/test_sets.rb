@@ -28,6 +28,7 @@ class ScannerSets < Test::Unit::TestCase
     '[a\-c]'                => [2, :set,    :escape,          '\-',         2, 4],
 
     '[\d]'                  => [1, :set,    :type_digit,      '\d',         1, 3],
+    '[\da-z]'               => [1, :set,    :type_digit,      '\d',         1, 3],
     '[\D]'                  => [1, :set,    :type_nondigit,   '\D',         1, 3],
 
     '[\h]'                  => [1, :set,    :type_hex,        '\h',         1, 3],

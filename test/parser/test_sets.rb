@@ -36,6 +36,13 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal( false, exp.include?(']') )
   end
 
+  def test_parse_chat_type_set_members
+    exp = RP.parse('[\da-z]', :any)[0]
+
+    assert_equal( true,  exp.include?('\d') )
+    assert_equal( true,  exp.include?('a-z') )
+  end
+
   def test_parse_set_collating_sequence
     exp = RP.parse('[a[.span-ll.]h]', :any)[0]
 
