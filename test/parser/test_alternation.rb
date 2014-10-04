@@ -78,4 +78,15 @@ class ParserAlternation < Test::Unit::TestCase
     assert_equal( true,   subalts[1].is_a?(Sequence) )
   end
 
+  def test_parse_alternation_continues_after_nesting
+    root = RP.parse(/a|(b)c/)
+
+    seq = root.expressions[0][1].expressions
+
+    assert_equal( 2,  seq.length )
+
+    assert_equal( true,   seq[0].is_a?(Group::Capture) )
+    assert_equal( true,   seq[1].is_a?(Literal) )
+  end
+
 end

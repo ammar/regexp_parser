@@ -406,8 +406,10 @@ module Regexp::Parser
   end
 
   def self.close_group
-    last_group = @nesting.pop
+    @nesting.pop
+
     @node = @nesting.last
+    @node = @node.last if @node.last and @node.last.is_a?(Alternation)
   end
 
   def self.open_set(token)
