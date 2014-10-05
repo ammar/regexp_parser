@@ -37,12 +37,15 @@ module Regexp::Syntax
     self.load(name)
 
     case name
+      # Ruby 1.8.x (NOTE: 1.8.6 is no longer a supported runtime,
+      # but its regex features are still recognized.)
       when 'ruby/1.8.6';  syntax = Regexp::Syntax::Ruby::V186.new
       when 'ruby/1.8.7';  syntax = Regexp::Syntax::Ruby::V187.new
 
       # alias for the latest 1.8 implementation
       when 'ruby/1.8';    syntax = Regexp::Syntax::Ruby::V18.new
 
+      # Ruby 1.9.x
       when 'ruby/1.9.1';  syntax = Regexp::Syntax::Ruby::V191.new
       when 'ruby/1.9.2';  syntax = Regexp::Syntax::Ruby::V192.new
       when 'ruby/1.9.3';  syntax = Regexp::Syntax::Ruby::V193.new
@@ -50,11 +53,18 @@ module Regexp::Syntax
       # alias for the latest 1.9 implementation
       when 'ruby/1.9';    syntax = Regexp::Syntax::Ruby::V19.new
 
-      when 'ruby/2.0.0';  syntax = Regexp::Syntax::Ruby::V20.new
-      when 'ruby/2.1.0';  syntax = Regexp::Syntax::Ruby::V21.new
+      # Ruby 2.0.x
+      when 'ruby/2.0.0';  syntax = Regexp::Syntax::Ruby::V200.new
 
-      # aliases for the latest 2.x implementations
+      # aliases for the latest 2.0 implementations
       when 'ruby/2.0';    syntax = Regexp::Syntax::Ruby::V20.new
+
+      # Ruby 2.1.x
+      when 'ruby/2.1.0';  syntax = Regexp::Syntax::Ruby::V210.new
+      when 'ruby/2.1.2';  syntax = Regexp::Syntax::Ruby::V212.new
+      when 'ruby/2.1.3';  syntax = Regexp::Syntax::Ruby::V213.new
+
+      # aliases for the latest 2.1 implementations
       when 'ruby/2.1';    syntax = Regexp::Syntax::Ruby::V21.new
 
       else
