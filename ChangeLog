@@ -1,3 +1,40 @@
+Sun Oct 5 19:58:17 2014 Ammar Ali <ammarabuali@gmail.com>
+
+	* Fixed test and gem building rake tasks and extracted the gem
+	  specification from the Rakefile into a .gemspec file.
+
+	* Added syntax files for missing ruby 2.x versions. These do not add
+	  extra syntax support, they just make the gem work with the newer
+		ruby versions.
+
+	* Added .travis.yml to project root.
+
+	* README:
+
+		* Removed note purporting runtime support for ruby 1.8.6.
+
+		* Added a section identifying the main unsupported syntax features.
+
+		* Added sections for Testing and Building
+
+		* Added badges for gem version, Travis CI, and code climate.
+
+Sat Oct 4 13:46:24 2014 Ammar Ali <ammarabuali@gmail.com>
+
+	* Updated README, fixing broken examples, and converting it from
+	  a rdoc file to Github's flavor of Markdown.
+
+	* Fixed a parser bug where an alternation sequence that contained
+	  nested expressions was incorrectly being appended to the parent
+		expression when the nesting was exited. e.g. in /a|(b)c/, c was
+		appended to the root.
+
+Wed May 7 5:52:37 2014 Ammar Ali <ammarabuali@gmail.com>
+
+	* Fixed a bug where character types were not being correctly scanned
+	  within character sets. e.g. in [\d], two tokens were scanned; one
+		for the backslash '\' and one for the 'd'
+
 Tue Jan 14 13:14:24 2014 Ammar Ali <ammarabuali@gmail.com>
 
 	* Released version 0.1.5, with a correct ChangeLog.
