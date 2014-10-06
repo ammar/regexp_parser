@@ -1,3 +1,7 @@
+Mon Oct 6 04:30:24 2014 Ammar Ali <ammarabuali@gmail.com>
+
+	* Released version 0.1.6
+
 Sun Oct 5 19:58:17 2014 Ammar Ali <ammarabuali@gmail.com>
 
 	* Fixed test and gem building rake tasks and extracted the gem
