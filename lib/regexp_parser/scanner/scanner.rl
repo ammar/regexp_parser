@@ -677,7 +677,7 @@
 }%%
 
 # THIS IS A GENERATED FILE, DO NOT EDIT DIRECTLY
-# This file was generated from scanner.rl
+# This file was generated from lib/regexp_parser/scanner/scanner.rl
 
 module Regexp::Scanner
   %% write data;
