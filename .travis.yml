@@ -22,5 +22,5 @@ rvm:
   - '2.1.3'
   - 'jruby-1.7.13'
 
-script: 'rake test'
+script: 'rake test:full'
 
