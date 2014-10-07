@@ -312,7 +312,7 @@ The following syntax elements are supported by the scanner.
   - Passive: (?:abc)
   - Sub-expression Calls: \g<name>, \g<1>
 - Literals: abc, def?, etc.
-- POSIX classes: [:alpha:], [:print:], etc.
+- POSIX classes: [:alpha:], [:print:], [:^digit:], etc.
 - Quantifiers
   - Greedy: ?, *, +, {m,M}
   - Reluctant: ??, *?, +?, {m,M}?
@@ -340,7 +340,6 @@ ruby 2.x and are not currently recognized by the scanner:
 
 - Planned for support
   - Conditional Expressions: (?(cond)yes-subexp), (?(cond)yes-subexp|no-subexp)
-  - Negative POSIX Brackets: [:^alpha:], [:^digit:]
   - New Character Set Options: d, a, and u _[see](https://github.com/k-takata/Onigmo/blob/master/doc/RE#L234)_
 - Not planned for support
   - Keep: \K _(not enabled for ruby syntax)_
