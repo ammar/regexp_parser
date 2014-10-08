@@ -74,6 +74,8 @@
                           quantifier_possessive | quantifier_interval;
 
 
+  conditional           = '(?(';
+
   group_comment         = '?#' . [^)]+ . group_close;
 
   group_atomic          = '?>';
@@ -87,19 +89,23 @@
   group_options         = '?' . [\-mix];
 
   group_ref             = [gk];
-  group_name            = (alnum . (alnum+)?)?;
+  group_name_id         = (alnum . (alnum+)?)?;
   group_number          = '-'? . [1-9] . ([0-9]+)?;
   group_level           = [+\-] . [0-9]+;
 
-  group_named           = ('?<' . group_name . '>') | ("?'" . group_name . "'");
+  group_name            = ('<' . group_name_id . '>') | ("'" . group_name_id . "'");
+  group_lookup          = group_name | group_number;
 
-  group_name_ref        = group_ref . (('<' . group_name . group_level? '>') |
-                                       ("'" . group_name . group_level? "'"));
+  group_named           = ('?' . group_name );
+
+  group_name_ref        = group_ref . (('<' . group_name_id . group_level? '>') |
+                                       ("'" . group_name_id . group_level? "'"));
 
   group_number_ref      = group_ref . (('<' . group_number . group_level? '>') |
                                        ("'" . group_number . group_level? "'"));
 
   group_type            = group_atomic | group_passive | group_named;
+
 
   assertion_type        = assertion_lookahead  | assertion_nlookahead |
                           assertion_lookbehind | assertion_nlookbehind;
@@ -410,6 +416,23 @@
   *|;
 
 
+  # conditional expressions scanner
+  # --------------------------------------------------------------------------
+  conditional_expression := |*
+    group_lookup . ')' {
+      text = text(data, ts, te-1).first
+      emit(:conditional, :condition, text, ts, te-1)
+      emit(:conditional, :condition_close, ')', te-1, te)
+    };
+
+    any {
+      fhold;
+      fnext conditional_expression;
+      fcall main;
+    };
+  *|;
+
+
   # Main scanner
   # --------------------------------------------------------------------------
   main := |*
@@ -421,7 +444,12 @@
     };
 
     alternation {
-      emit(:meta, :alternation, *text(data, ts, te))
+      if in_conditional and conditional_stack.length > 0 and 
+         conditional_stack.last[1] == group_depth
+        emit(:conditional, :separator, *text(data, ts, te))
+      else
+        emit(:meta, :alternation, *text(data, ts, te))
+      end
     };
 
     # Anchors
@@ -480,6 +508,23 @@
       emit(set_type, :open, *text(data, ts, te))
       fcall character_set;
     };
+
+
+    # Conditional expression
+    #   (?(condition)Y|N)   conditional expression
+    # ------------------------------------------------------------------------
+    conditional {
+      text = text(data, ts, te).first
+
+      in_conditional = true unless in_conditional
+      conditional_depth += 1
+      conditional_stack << [conditional_depth, group_depth]
+
+      emit(:conditional, :open, text[0..-2], ts, te-1)
+      emit(:conditional, :condition_open, '(', te-1, te)
+      fcall conditional_expression;
+    };
+
 
     # (?#...) comments: parsed as a single expression, without introducing a
     # new nesting level. Comments may not include parentheses, escaped or not.
@@ -551,7 +596,18 @@
     };
 
     group_close @group_closed {
-      emit(:group, :close, *text(data, ts, te))
+      if in_conditional and conditional_stack.last and
+         conditional_stack.last[1] == (group_depth + 1)
+
+        emit(:conditional, :close, *text(data, ts, te))
+        conditional_stack.pop
+
+        if conditional_stack.length == 0
+          in_conditional = false
+        end
+      else
+        emit(:group, :close, *text(data, ts, te))
+      end
     };
 
 
@@ -749,6 +805,7 @@ module Regexp::Scanner
 
     in_group, group_depth = false, 0
     in_set,   set_depth, set_type   = false, 0, :set
+    in_conditional, conditional_depth, conditional_stack = false, 0, []
 
     %% write init;
     %% write exec;
