@@ -3,6 +3,9 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerUnicodeScripts < Test::Unit::TestCase
 
   tests = {
+    'Aghb'		                => :script_caucasian_albanian,
+    'Caucasian Albanian'		  => :script_caucasian_albanian,
+
     'Arab'		                => :script_arabic,
     'Arabic'		              => :script_arabic,
 
@@ -20,6 +23,9 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
 
     'Bamu'                    => :script_bamum,
 	  'Bamum'                   => :script_bamum,
+
+    'Bass'                    => :script_bassa_vah,
+	  'Bassa Vah'               => :script_bassa_vah,
 
     'Batk'                    => :script_batak,
 	  'Batak'                   => :script_batak,
@@ -69,8 +75,16 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
     'Dsrt'                    => :script_deseret,
 	  'Deseret'                 => :script_deseret,
 
+
+    'Dupl'                    => :script_duployan,
+	  'Duployan'                => :script_duployan,
+
+
     'Egyp'                    => :script_egyptian_hieroglyphs,
 	  'Egyptian Hieroglyphs'    => :script_egyptian_hieroglyphs,
+
+    'Elba'                    => :script_elbasan,
+	  'Elbasan'                 => :script_elbasan,
 
     'Ethi'                    => :script_ethiopic,
 	  'Ethiopic'                => :script_ethiopic,
@@ -83,6 +97,9 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
 
     'Goth'                    => :script_gothic,
 	  'Gothic'                  => :script_gothic,
+
+    'Gran'                    => :script_grantha,
+	  'Grantha'                 => :script_grantha,
 
     'Grek'                    => :script_greek,
 	  'Greek'                   => :script_greek,
@@ -108,6 +125,9 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
     'Hira'                    => :script_hiragana,
 	  'Hiragana'                => :script_hiragana,
 
+    'Hmng'                    => :script_pahawh_hmong,
+	  'Pahawh Hmong'            => :script_pahawh_hmong,
+
     'Hrkt'                    => :script_katakana_or_hiragana,
 	  'Katakana or Hiragana'    => :script_katakana_or_hiragana,
 
@@ -128,6 +148,9 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
 
     'Khmr'                    => :script_khmer,
 	  'Khmer'                   => :script_khmer,
+
+    'Khoj'                    => :script_khojki,
+	  'Khojki'                  => :script_khojki,
 
     'Knda'                    => :script_kannada,
 	  'Kannada'                 => :script_kannada,
@@ -150,6 +173,9 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
     'Limb'                    => :script_limbu,
 	  'Limbu'                   => :script_limbu,
 
+    'Lina'                    => :script_linear_a,
+	  'Linear A'                => :script_linear_a,
+
     'Linb'                    => :script_linear_b,
 	  'Linear B'                => :script_linear_b,
 
@@ -167,14 +193,34 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
     'Mlym'                    => :script_malayalam,
 	  'Malayalam'               => :script_malayalam,
 
+    'Mahj'                    => :script_mahajani,
+	  'Mahajani'                => :script_mahajani,
+
+    'Mani'                    => :script_manichaean,
+	  'Manichaean'              => :script_manichaean,
+
+    'Mend'                    => :script_mende_kikakui,
+	  'Mende Kikakui'           => :script_mende_kikakui,
+
+    'Modi'                    => :script_modi,
+
     'Mong'                    => :script_mongolian,
 	  'Mongolian'               => :script_mongolian,
+
+    'Mroo'                    => :script_mro,
+	  'Mro'                     => :script_mro,
 
     'Mtei'                    => :script_meetei_mayek,
 	  'Meetei Mayek'            => :script_meetei_mayek,
 
     'Mymr'                    => :script_myanmar,
 	  'Myanmar'                 => :script_myanmar,
+
+    'Narb'                    => :script_old_north_arabian,
+	  'Old North Arabian'       => :script_old_north_arabian,
+
+    'Nbat'                    => :script_nabataean,
+	  'Nabataean'               => :script_nabataean,
 
     'Nkoo'                    => :script_nko,
 	  'Nko'                     => :script_nko,
@@ -194,11 +240,23 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
     'Osma'                    => :script_osmanya,
 	  'Osmanya'                 => :script_osmanya,
 
+    'Palm'                    => :script_palmyrene,
+	  'Palmyrene'               => :script_palmyrene,
+
+    'Pauc'                    => :script_pau_cin_hau,
+	  'Pau Cin Hau'             => :script_pau_cin_hau,
+
+    'Perm'                    => :script_old_permic,
+	  'Old Permic'              => :script_old_permic,
+
     'Phag'                    => :script_phags_pa,
 	  'Phags Pa'                => :script_phags_pa,
 
     'Phli'                    => :script_inscriptional_pahlavi,
 	  'Inscriptional Pahlavi'   => :script_inscriptional_pahlavi,
+
+    'Phlp'                    => :script_psalter_pahlavi,
+	  'Psalter Pahlavi'         => :script_psalter_pahlavi,
 
     'Phnx'		                => :script_phoenician,
 	  'Phoenician'		          => :script_phoenician,
@@ -223,6 +281,12 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
 
     'Shaw'                    => :script_shavian,
 	  'Shavian'                 => :script_shavian,
+
+    'Sidd'                    => :script_siddham,
+	  'Siddham'                 => :script_siddham,
+
+    'Sind'                    => :script_khudawadi,
+	  'Khudawadi'               => :script_khudawadi,
 
     'Sinh'                    => :script_sinhala,
 	  'Sinhala'                 => :script_sinhala,
@@ -263,16 +327,22 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
     'Thaa'                    => :script_thaana,
 	  'Thaana'                  => :script_thaana,
 
-    'Thai'                    => :script_thai, 
+    'Thai'                    => :script_thai,
 
     'Tibt'                    => :script_tibetan,
 	  'Tibetan'                 => :script_tibetan,
+
+    'Tirh'                    => :script_tirhuta,
+	  'Tirhuta'                 => :script_tirhuta,
 
     'Ugar'                    => :script_ugaritic,
 	  'Ugaritic'                => :script_ugaritic,
 
     'Vaii'                    => :script_vai,
 	  'Vai'                     => :script_vai,
+
+    'Wara'                    => :script_warang_citi,
+	  'Warang Citi'             => :script_warang_citi,
 
     'Xpeo'                    => :script_old_persian,
 	  'Old Persian'             => :script_old_persian,
