@@ -8,7 +8,8 @@ module Regexp::Syntax
       def initialize
         super
 
-        #implements :escape, CharacterType::Hex
+        implements :property,    UnicodeProperty::V200
+        implements :nonproperty, UnicodeProperty::V200
       end
     end
 
