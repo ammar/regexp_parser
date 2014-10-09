@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
 
   gem.files         = Dir.glob('{lib,test}/**/*.rb') +
                       Dir.glob('lib/**/*.rl') +
-                      %w(VERSION.yml Rakefile LICENSE README.md ChangeLog regexp_parser.gemspec)
+                      %w(VERSION.yml Gemfile Rakefile LICENSE README.md ChangeLog regexp_parser.gemspec)
 
   gem.test_files    = Dir.glob('test/**/*.rb')
 
