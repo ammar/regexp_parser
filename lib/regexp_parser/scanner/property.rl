@@ -39,7 +39,9 @@
   property_age          = 'age=1.1'i | 'age=2.0'i | 'age=2.1'i |
                           'age=3.0'i | 'age=3.1'i | 'age=3.2'i |
                           'age=4.0'i | 'age=4.1'i | 'age=5.0'i |
-                          'age=5.1'i | 'age=5.2'i | 'age=6.0'i;
+                          'age=5.1'i | 'age=5.2'i | 'age=6.0'i |
+                          'age=6.1'i | 'age=6.2'i | 'age=6.3'i |
+                          'age=7.0'i;
 
   property_script       = (alpha | space | '_')+; # everything else
 
@@ -222,6 +224,14 @@
         self.emit(type, :age_5_2,     text, ts-1, te)
       when 'age=6.0'
         self.emit(type, :age_6_0,     text, ts-1, te)
+      when 'age=6.1'
+        self.emit(type, :age_6_1,     text, ts-1, te)
+      when 'age=6.2'
+        self.emit(type, :age_6_2,     text, ts-1, te)
+      when 'age=6.3'
+        self.emit(type, :age_6_3,     text, ts-1, te)
+      when 'age=7.0'
+        self.emit(type, :age_7_0,     text, ts-1, te)
 
       # Derived Properties
       when 'ahex', 'asciihexdigit'
