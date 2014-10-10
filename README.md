@@ -6,7 +6,8 @@ A ruby library to help with lexing, parsing, and transforming regular expression
   * A scanner based on [ragel](http://www.complang.org/ragel/)
   * A lexer that produces a "stream" of tokens
   * A parser that produces a "tree" of Regexp::Expression objects (OO API)
-* Supports ruby 1.8, 1.9, and all but one of the 2.x expressions [See Scanner Syntax](#scanner-syntax)
+* Recognizes ruby 1.8, 1.9, and 2.x regular expressions [See Scanner Syntax](#scanner-syntax)
+* Recognizes Unicode properties and scripts, ([Unicode 7.0.0](http://www.unicode.org/versions/Unicode7.0.0/))
 * Supports ruby 1.8, 1.9, 2.0, and 2.1 runtimes.
 
 _For an example of regexp_parser in use, see the [meta_re project](https://github.com/ammar/meta_re)_
@@ -116,15 +117,23 @@ implementations features, and then does the same for Ruby 1.8:
 ```ruby
 require 'regexp_parser'
 
+ruby_20 = Regexp::Syntax.new 'ruby/2.0'
+ruby_20.implements? :quantifier,  :zero_or_one             # => true
+ruby_20.implements? :quantifier,  :zero_or_one_reluctant   # => true
+ruby_20.implements? :quantifier,  :zero_or_one_possessive  # => true
+ruby_20.implements? :conditional, :condition               # => true
+
 ruby_19 = Regexp::Syntax.new 'ruby/1.9'
-ruby_19.implements? :quantifier, :zero_or_one             # => true
-ruby_19.implements? :quantifier, :zero_or_one_reluctant   # => true
-ruby_19.implements? :quantifier, :zero_or_one_possessive  # => true
+ruby_19.implements? :quantifier,  :zero_or_one             # => true
+ruby_19.implements? :quantifier,  :zero_or_one_reluctant   # => true
+ruby_19.implements? :quantifier,  :zero_or_one_possessive  # => true
+ruby_19.implements? :conditional, :condition               # => false
 
 ruby_18 = Regexp::Syntax.new 'ruby/1.8'
-ruby_18.implements? :quantifier, :zero_or_one             # => true
-ruby_18.implements? :quantifier, :zero_or_one_reluctant   # => true
-ruby_18.implements? :quantifier, :zero_or_one_possessive  # => false
+ruby_18.implements? :quantifier,  :zero_or_one             # => true
+ruby_18.implements? :quantifier,  :zero_or_one_reluctant   # => true
+ruby_18.implements? :quantifier,  :zero_or_one_possessive  # => false
+ruby_18.implements? :conditional, :condition               # => false
 ```
 
 
@@ -145,7 +154,16 @@ nesting depth, normalizing tokens for the parser, and checkng if the tokens
 are implemented by the given syntax flavor.
 
 Tokens are Struct objects, with a few helper methods; #next, #previous, #offsets
-and #length.
+and #length. Each token has the following members:
+
+- **type**:  a symbol, specifies the category of the token, such as :anchor, :set, :meta.
+- **token**: a symbol, the specific token for the type, such as :eol, :range, :alternation.
+- **text**: a string, the text of token, such as '$', 'a-z', '|'.
+- **ts**: an integer, the start offset within the entire expression.
+- **te**: an integer, the end offset within the entire expression.
+- **level**: an integer, the group nesting level at which the token appears.
+- **set_level**: an integer, the character set nesting level at which the token appears.
+- **conditional_level**: an integer, the conditional expression nesting level at which the token appears.
 
 #### Example
 The following example scans the given pattern, checks it against the ruby 1.8
@@ -184,7 +202,9 @@ Regexp::Lexer.scan( /(cat?([b]at)){3,5}/ ).map {|token| token.text}
 ```
 
 #### Notes
-  * The default syntax is that of the latest released version of ruby.
+  * The default syntax is that of the ruby interpreter in use, as returned
+    by RUBY_VERSION. The syntax can be specified in the second argument to
+    the scan method.
 
   * The lexer performs some basic parsing to determine the depth of the
     emitted tokens. This responsibility might be relegated to the scanner
@@ -292,6 +312,7 @@ The following syntax elements are supported by the scanner.
 - Anchors: ^, $, \b, etc.
 - Character Classes _(aka Sets)_: [abc], [^\]]
 - Character Types: \d, \H, \s, etc.
+- Conditional Expressions: (?(cond)yes-subexp), (?(cond)yes-subexp|no-subexp) _[in progress]_
 - Escape Sequences: \t, \+, \?, etc.
 - Grouped Expressions
   - Assertions
@@ -339,12 +360,11 @@ The following were added by the Onigmo regular expression library used by
 ruby 2.x and are not currently recognized by the scanner:
 
 - Planned for support
-  - Conditional Expressions: (?(cond)yes-subexp), (?(cond)yes-subexp|no-subexp)
   - New Character Set Options: d, a, and u _[see](https://github.com/k-takata/Onigmo/blob/master/doc/RE#L234)_
 - Not planned for support
-  - Keep: \K _(not enabled for ruby syntax)_
-  - Quotes: \Q...\E _(perl and java syntax only) [see](https://github.com/k-takata/Onigmo/blob/master/doc/RE#L452)_
-  - Capture History: (?@...), (?@<name>...) _(not enabled for ruby syntax) [see](https://github.com/k-takata/Onigmo/blob/master/doc/RE#L499)_
+  - Keep: \K _(not enabled for ruby syntax)_ **[TODO: verify this]**
+  - Quotes: \Q...\E _(perl and java syntax only) <a href="https://github.com/k-takata/Onigmo/blob/master/doc/RE#L452/" title="Links to master branch, may change">see</a>_
+  - Capture History: (?@...), (?@<name>...) _(not enabled for ruby syntax) <a href="https://github.com/k-takata/Onigmo/blob/master/doc/RE#L499" title="Links to master branch, may change">see</a>_
 
 
 See something else missing? Please submit an [issue](https://github.com/ammar/regexp_parser/issues)
