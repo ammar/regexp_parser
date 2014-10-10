@@ -1,6 +1,16 @@
 class Regexp
 
-  TOKEN_KEYS = [:type, :token, :text, :ts, :te, :level, :set_level].freeze
+  TOKEN_KEYS = [
+    :type,
+    :token,
+    :text,
+    :ts,
+    :te,
+    :level,
+    :set_level,
+    :conditional_level
+  ].freeze
+
   Token = Struct.new(*TOKEN_KEYS) do
     def offset
       [self.ts, self.te]

@@ -14,7 +14,7 @@ module Regexp::Lexer
     syntax = Regexp::Syntax.new(syntax)
 
     @tokens = []
-    @nesting, @set_nesting = 0, 0
+    @nesting, @set_nesting, @conditional_nesting = 0, 0, 0
 
     last = nil
     Regexp::Scanner.scan(input) do |type, token, text, ts, te|
@@ -27,7 +27,7 @@ module Regexp::Lexer
         last and last.type == :literal
 
       current = Regexp::Token.new(type, token, text, ts, te,
-                                  @nesting, @set_nesting)
+                  @nesting, @set_nesting, @conditional_nesting)
 
       current = merge_literal(current) if type == :literal and
         last and last.type == :literal
@@ -56,6 +56,10 @@ module Regexp::Lexer
     if type == :set or type == :subset
       @set_nesting -= 1 if token == :close
     end
+
+    if type == :conditional
+      @conditional_nesting -= 1 if token == :close
+    end
   end
 
   def self.descend(type, token)
@@ -65,6 +69,10 @@ module Regexp::Lexer
 
     if type == :set or type == :subset
       @set_nesting += 1 if token == :open
+    end
+
+    if type == :conditional
+      @conditional_nesting += 1 if token == :open
     end
   end
 
@@ -86,11 +94,11 @@ module Regexp::Lexer
 
       @tokens.pop
       @tokens << Regexp::Token.new(:literal, :literal, lead, token.ts,
-                                   (token.te - last_length), @nesting, @set_nesting)
+                  (token.te - last_length), @nesting, @set_nesting, @conditional_nesting)
 
       @tokens << Regexp::Token.new(:literal, :literal, last,
-                                   (token.ts + lead_length),
-                                   token.te, @nesting, @set_nesting)
+                  (token.ts + lead_length),
+                  token.te, @nesting, @set_nesting, @conditional_nesting)
     end
   end
 
@@ -99,7 +107,7 @@ module Regexp::Lexer
   def self.merge_literal(current)
     last = @tokens.pop
     replace = Regexp::Token.new(:literal, :literal, last.text + current.text,
-                                   last.ts, current.te, @nesting, @set_nesting)
+                last.ts, current.te, @nesting, @set_nesting, @conditional_nesting)
   end
 
 end # module Regexp::Lexer

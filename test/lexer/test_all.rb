@@ -1,7 +1,7 @@
 require File.expand_path("../../helpers", __FILE__)
 
 %w{
-  literals nesting refcalls
+  conditionals literals nesting refcalls
 }.each do|tc|
   require File.expand_path("../test_#{tc}", __FILE__)
 end
@@ -16,6 +16,9 @@ class TestRegexpLexer < Test::Unit::TestCase
     tokens = RL.scan('^abc+[^one]{2,3}\b\d\\\C-C$')
     assert( tokens.all?{|token| token.kind_of?(Regexp::Token)},
           "Not all array members are tokens")
+
+    assert( tokens.all?{|token| token.to_a.length == 8},
+          "Not all tokens have a length of 8")
   end
 
   def test_lexer_token_count
