@@ -67,6 +67,12 @@ module Regexp::Syntax
       # aliases for the latest 2.1 implementations
       when 'ruby/2.1';    syntax = Regexp::Syntax::Ruby::V21.new
 
+      # Ruby 2.2.x
+      when 'ruby/2.2.0';  syntax = Regexp::Syntax::Ruby::V220.new
+
+      # aliases for the latest 2.2 implementations
+      when 'ruby/2.2';    syntax = Regexp::Syntax::Ruby::V22.new
+
       else
         raise UnknownSyntaxError.new(name)
     end

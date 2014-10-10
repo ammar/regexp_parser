@@ -9,6 +9,8 @@ module Regexp::Syntax
         super
 
         implements :conditional, Conditional::All
+        implements :property,    UnicodeProperty::V200
+        implements :nonproperty, UnicodeProperty::V200
       end
     end
 

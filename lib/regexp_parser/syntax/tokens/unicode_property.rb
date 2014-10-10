@@ -34,9 +34,17 @@ module Regexp::Syntax
               Symbol + Separator + Codepoint
       end
 
-      Age = [:age_1_1, :age_2_0, :age_2_1, :age_3_0, :age_3_1,
-             :age_3_2, :age_4_0, :age_4_1, :age_5_0, :age_5_1,
-             :age_5_2, :age_6_0]
+      # As of ruby version 1.9.3
+      Age_V193 = [:age_1_1, :age_2_0, :age_2_1, :age_3_0, :age_3_1,
+                  :age_3_2, :age_4_0, :age_4_1, :age_5_0, :age_5_1,
+                  :age_5_2, :age_6_0]
+
+      Age_V200 = [:age_6_1]
+
+      # These were merged (from Onigmo) in the branch for 2.2.0
+      Age_V220 = [:age_6_2, :age_6_3, :age_7_0]
+
+      Age = Age_V193 + Age_V200 + Age_V220
 
       Derived = [
         :ascii_hex,
@@ -191,7 +199,40 @@ module Regexp::Syntax
 
       Script_6_0 = [:script_brahmi, :script_batak, :script_mandaic]
 
-      All = CharType + POSIX + Category::All + Age + Derived + Script
+      Script_7_0 = [
+        :script_caucasian_albanian,
+        :script_bassa_vah,
+        :script_duployan,
+        :script_elbasan,
+        :script_grantha,
+        :script_pahawh_hmong,
+        :script_khojki,
+        :script_linear_a,
+        :script_mahajani,
+        :script_manichaean,
+        :script_mende_kikakui,
+        :script_modi,
+        :script_mro,
+        :script_old_north_arabian,
+        :script_nabataean,
+        :script_palmyrene,
+        :script_pau_cin_hau,
+        :script_old_permic,
+        :script_psalter_pahlavi,
+        :script_siddham,
+        :script_khudawadi,
+        :script_tirhuta,
+        :script_warang_citi
+      ]
+
+      V190 = CharType + POSIX + Category::All + Derived + Script
+      V193 = Age_V193 + Script_6_0
+
+      V200 = Age_V200
+
+      V220 = Age_V220 + Script_7_0
+
+      All  = V190 + V193 + V200 + V220
 
       Type = :property
       NonType = :nonproperty

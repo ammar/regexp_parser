@@ -2,6 +2,8 @@ require File.expand_path("../../helpers", __FILE__)
 
 class LexerConditionals < Test::Unit::TestCase
 
+  if RUBY_VERSION >= '2.0'
+
   # Basic lexer output and nesting tests
   tests = {
     '(?<A>a)(?(<A>)b|c)'  => [ 3, :conditional, :open,             '(?',    7,  9, 0, 0, 0],
@@ -98,6 +100,8 @@ class LexerConditionals < Test::Unit::TestCase
     ].each do |test|
       assert_equal( test[1,8], tokens[test[0]].to_a)
     end
+  end
+
   end
 
 end

@@ -143,6 +143,10 @@ class ScannerProperties < Test::Unit::TestCase
     'Age=5.1'                             => :age_5_1,
     'Age=5.2'                             => :age_5_2,
     'Age=6.0'                             => :age_6_0,
+    'Age=6.1'                             => :age_6_1,
+    'Age=6.2'                             => :age_6_2,
+    'Age=6.3'                             => :age_6_3,
+    'Age=7.0'                             => :age_7_0,
 
     'ahex'                                => :ascii_hex,
     'ASCII_Hex_Digit'                     => :ascii_hex,

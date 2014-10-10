@@ -18,10 +18,10 @@ module Regexp::Syntax
         implements :escape, CharacterType::Hex
 
         implements :property,
-          UnicodeProperty::All
+          UnicodeProperty::V190
 
         implements :nonproperty,
-          UnicodeProperty::All
+          UnicodeProperty::V190
 
         implements :quantifier,
           Quantifier::Possessive + Quantifier::IntervalPossessive
@@ -30,7 +30,7 @@ module Regexp::Syntax
           CharacterSet::POSIX::StandardNegative +
           CharacterSet::POSIX::Extensions +
           CharacterSet::POSIX::ExtensionsNegative +
-          UnicodeProperty::All
+          UnicodeProperty::V190
 
         implements :subset, CharacterSet::OpenClose +
           CharacterSet::Extended + CharacterSet::Types +

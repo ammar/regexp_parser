@@ -39,7 +39,9 @@
   property_age          = 'age=1.1'i | 'age=2.0'i | 'age=2.1'i |
                           'age=3.0'i | 'age=3.1'i | 'age=3.2'i |
                           'age=4.0'i | 'age=4.1'i | 'age=5.0'i |
-                          'age=5.1'i | 'age=5.2'i | 'age=6.0'i;
+                          'age=5.1'i | 'age=5.2'i | 'age=6.0'i |
+                          'age=6.1'i | 'age=6.2'i | 'age=6.3'i |
+                          'age=7.0'i;
 
   property_script       = (alpha | space | '_')+; # everything else
 
@@ -222,6 +224,14 @@
         self.emit(type, :age_5_2,     text, ts-1, te)
       when 'age=6.0'
         self.emit(type, :age_6_0,     text, ts-1, te)
+      when 'age=6.1'
+        self.emit(type, :age_6_1,     text, ts-1, te)
+      when 'age=6.2'
+        self.emit(type, :age_6_2,     text, ts-1, te)
+      when 'age=6.3'
+        self.emit(type, :age_6_3,     text, ts-1, te)
+      when 'age=7.0'
+        self.emit(type, :age_7_0,     text, ts-1, te)
 
       # Derived Properties
       when 'ahex', 'asciihexdigit'
@@ -327,8 +337,9 @@
       when 'xidc', 'xidcontinue'
         self.emit(type, :xid_continue,                    text, ts-1, te)
 
-
       # Scripts
+      when 'aghb', 'caucasianalbanian'
+        self.emit(type, :script_caucasian_albanian,       text, ts-1, te)
       when 'arab', 'arabic'
         self.emit(type, :script_arabic,                   text, ts-1, te)
       when 'armi', 'imperialaramaic'
@@ -341,6 +352,8 @@
         self.emit(type, :script_balinese,                 text, ts-1, te)
       when 'bamu', 'bamum'
         self.emit(type, :script_bamum,                    text, ts-1, te)
+      when 'bass', 'bassavah'
+        self.emit(type, :script_bassa_vah,                text, ts-1, te)
       when 'batk', 'batak'
         self.emit(type, :script_batak,                    text, ts-1, te)
       when 'beng', 'bengali'
@@ -373,8 +386,12 @@
         self.emit(type, :script_devanagari,               text, ts-1, te)
       when 'dsrt', 'deseret'
         self.emit(type, :script_deseret,                  text, ts-1, te)
+      when 'dupl', 'duployan'
+        self.emit(type, :script_duployan,                 text, ts-1, te)
       when 'egyp', 'egyptianhieroglyphs'
         self.emit(type, :script_egyptian_hieroglyphs,     text, ts-1, te)
+      when 'elba', 'elbasan'
+        self.emit(type, :script_elbasan,                  text, ts-1, te)
       when 'ethi', 'ethiopic'
         self.emit(type, :script_ethiopic,                 text, ts-1, te)
       when 'geor', 'georgian'
@@ -383,6 +400,8 @@
         self.emit(type, :script_glagolitic,               text, ts-1, te)
       when 'goth', 'gothic'
         self.emit(type, :script_gothic,                   text, ts-1, te)
+      when 'gran', 'grantha'
+        self.emit(type, :script_grantha,                  text, ts-1, te)
       when 'grek', 'greek'
         self.emit(type, :script_greek,                    text, ts-1, te)
       when 'gujr', 'gujarati'
@@ -399,6 +418,8 @@
         self.emit(type, :script_hebrew,                   text, ts-1, te)
       when 'hira', 'hiragana'
         self.emit(type, :script_hiragana,                 text, ts-1, te)
+      when 'hmng', 'pahawhhmong'
+        self.emit(type, :script_pahawh_hmong,             text, ts-1, te)
       when 'hrkt', 'katakanaorhiragana'
         self.emit(type, :script_katakana_or_hiragana,     text, ts-1, te)
       when 'ital', 'olditalic'
@@ -413,6 +434,8 @@
         self.emit(type, :script_kharoshthi,               text, ts-1, te)
       when 'khmr', 'khmer'
         self.emit(type, :script_khmer,                    text, ts-1, te)
+      when 'khoj', 'khojki'
+        self.emit(type, :script_khojki,                   text, ts-1, te)
       when 'knda', 'kannada'
         self.emit(type, :script_kannada,                  text, ts-1, te)
       when 'kthi', 'kaithi'
@@ -427,6 +450,8 @@
         self.emit(type, :script_lepcha,                   text, ts-1, te)
       when 'limb', 'limbu'
         self.emit(type, :script_limbu,                    text, ts-1, te)
+      when 'lina', 'lineara'
+        self.emit(type, :script_linear_a,                 text, ts-1, te)
       when 'linb', 'linearb'
         self.emit(type, :script_linear_b,                 text, ts-1, te)
       when 'lisu'
@@ -437,14 +462,28 @@
         self.emit(type, :script_lydian,                   text, ts-1, te)
       when 'mlym', 'malayalam'
         self.emit(type, :script_malayalam,                text, ts-1, te)
+      when 'mahj', 'mahajani'
+        self.emit(type, :script_mahajani,                 text, ts-1, te)
       when 'mand', 'mandaic'
         self.emit(type, :script_mandaic,                  text, ts-1, te)
+      when 'mani', 'manichaean'
+        self.emit(type, :script_manichaean,               text, ts-1, te)
+      when 'mend', 'mendekikakui'
+        self.emit(type, :script_mende_kikakui,            text, ts-1, te)
+      when 'modi'
+        self.emit(type, :script_modi,                     text, ts-1, te)
       when 'mong', 'mongolian'
         self.emit(type, :script_mongolian,                text, ts-1, te)
+      when 'mroo', 'mro'
+        self.emit(type, :script_mro,                      text, ts-1, te)
       when 'mtei', 'meeteimayek'
         self.emit(type, :script_meetei_mayek,             text, ts-1, te)
       when 'mymr', 'myanmar'
         self.emit(type, :script_myanmar,                  text, ts-1, te)
+      when 'narb', 'oldnortharabian'
+        self.emit(type, :script_old_north_arabian,        text, ts-1, te)
+      when 'nbat', 'nabataean'
+        self.emit(type, :script_nabataean,                text, ts-1, te)
       when 'nkoo', 'nko'
         self.emit(type, :script_nko,                      text, ts-1, te)
       when 'ogam', 'ogham'
@@ -457,10 +496,18 @@
         self.emit(type, :script_oriya,                    text, ts-1, te)
       when 'osma', 'osmanya'
         self.emit(type, :script_osmanya,                  text, ts-1, te)
+      when 'palm', 'palmyrene'
+        self.emit(type, :script_palmyrene,                text, ts-1, te)
+      when 'pauc', 'paucinhau'
+        self.emit(type, :script_pau_cin_hau,              text, ts-1, te)
+      when 'perm', 'oldpermic'
+        self.emit(type, :script_old_permic,               text, ts-1, te)
       when 'phag', 'phagspa'
         self.emit(type, :script_phags_pa,                 text, ts-1, te)
       when 'phli', 'inscriptionalpahlavi'
         self.emit(type, :script_inscriptional_pahlavi,    text, ts-1, te)
+      when 'phlp', 'psalterpahlavi'
+        self.emit(type, :script_psalter_pahlavi,          text, ts-1, te)
       when 'phnx', 'phoenician'
         self.emit(type, :script_phoenician,               text, ts-1, te)
       when 'prti', 'inscriptionalparthian'
@@ -477,6 +524,10 @@
         self.emit(type, :script_saurashtra,               text, ts-1, te)
       when 'shaw', 'shavian'
         self.emit(type, :script_shavian,                  text, ts-1, te)
+      when 'sidd', 'siddham'
+        self.emit(type, :script_siddham,                  text, ts-1, te)
+      when 'sind', 'khudawadi'
+        self.emit(type, :script_khudawadi,                text, ts-1, te)
       when 'sinh', 'sinhala'
         self.emit(type, :script_sinhala,                  text, ts-1, te)
       when 'sund', 'sundanese'
@@ -507,10 +558,14 @@
         self.emit(type, :script_thai,                     text, ts-1, te)
       when 'tibt', 'tibetan'
         self.emit(type, :script_tibetan,                  text, ts-1, te)
+      when 'tirh', 'tirhuta'
+        self.emit(type, :script_tirhuta,                  text, ts-1, te)
       when 'ugar', 'ugaritic'
         self.emit(type, :script_ugaritic,                 text, ts-1, te)
       when 'vaii', 'vai'
         self.emit(type, :script_vai,                      text, ts-1, te)
+      when 'wara', 'warangciti'
+        self.emit(type, :script_warang_citi,              text, ts-1, te)
       when 'xpeo', 'oldpersian'
         self.emit(type, :script_old_persian,              text, ts-1, te)
       when 'xsux', 'cuneiform'

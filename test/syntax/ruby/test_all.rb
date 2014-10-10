@@ -1,12 +1,5 @@
 require File.expand_path("../../../helpers", __FILE__)
 
-%w{1.8 1.9.1 1.9.3 2.x}.each do|tc|
+%w{files 1.8 1.9.1 1.9.3 2.0.0 2.2.0}.each do|tc|
   require File.expand_path("../test_#{tc}", __FILE__)
-end
-
-class TestSyntaxRuby < Test::Unit::TestCase
-
-  def test_lexer_ruby_syntax
-  end
-
 end
