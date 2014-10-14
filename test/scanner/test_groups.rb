@@ -20,6 +20,9 @@ class ScannerGroups < Test::Unit::TestCase
     '(?<name>abc)'    => [0, :group,     :named_ab,     '(?<name>',   0, 8],
     "(?'name'abc)"    => [0, :group,     :named_sq,     "(?'name'",   0, 8],
 
+    '(?<name_1>abc)'  => [0, :group,     :named_ab,     '(?<name_1>', 0,10],
+    "(?'name_1'abc)"  => [0, :group,     :named_sq,     "(?'name_1'", 0,10],
+
     '(?:abc)'         => [0, :group,     :passive,      '(?:',        0, 3],
     '(?:)'            => [0, :group,     :passive,      '(?:',        0, 3],
     '(?::)'           => [0, :group,     :passive,      '(?:',        0, 3],

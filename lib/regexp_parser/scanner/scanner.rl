@@ -89,7 +89,8 @@
   group_options         = '?' . [\-mix];
 
   group_ref             = [gk];
-  group_name_id         = (alnum . (alnum+)?)?;
+  group_name_char       = [0-9a-zA-Z_];
+  group_name_id         = (group_name_char . (group_name_char+)?)?;
   group_number          = '-'? . [1-9] . ([0-9]+)?;
   group_level           = [+\-] . [0-9]+;
 
@@ -427,7 +428,6 @@
 
     any {
       fhold;
-      fnext conditional_expression;
       fcall main;
     };
   *|;
