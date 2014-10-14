@@ -27,10 +27,13 @@ module Regexp::Lexer
         last and last.type == :literal
 
       current = Regexp::Token.new(type, token, text, ts, te,
-                  @nesting, @set_nesting, @conditional_nesting)
+                @nesting, @set_nesting, @conditional_nesting)
 
       current = merge_literal(current) if type == :literal and
         last and last.type == :literal
+
+      current = merge_condition(current) if type == :conditional and
+        [:condition, :condition_close].include?(token)
 
       last.next(current) if last
       current.previous(last) if last
@@ -108,6 +111,12 @@ module Regexp::Lexer
     last = @tokens.pop
     replace = Regexp::Token.new(:literal, :literal, last.text + current.text,
                 last.ts, current.te, @nesting, @set_nesting, @conditional_nesting)
+  end
+
+  def self.merge_condition(current)
+    last = @tokens.pop
+    Regexp::Token.new(:conditional, :condition, last.text + current.text,
+      last.ts, current.te, @nesting, @set_nesting, @conditional_nesting)
   end
 
 end # module Regexp::Lexer
