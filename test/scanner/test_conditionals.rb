@@ -15,6 +15,9 @@ class ScannerConditionals < Test::Unit::TestCase
 
     /(?(1)TRUE)/          => [5, :conditional,  :close,             ')',    9, 10],
 
+    /(?(1)TRUE|)/         => [5, :conditional,  :separator,         '|',    9, 10],
+    /(?(2)TRUE|)/         => [6, :conditional,  :close,             ')',   10, 11],
+
     /(?<N>A)(?(<N>)T|F)/  => [5, :conditional,  :condition,         '<N>', 10, 13],
     /(?'N'A)(?('N')T|F)/  => [5, :conditional,  :condition,         "'N'", 10, 13],
   }
