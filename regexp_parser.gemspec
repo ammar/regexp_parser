@@ -1,8 +1,9 @@
-require 'yaml'
+$:.unshift File.join(File.dirname(__FILE__), 'lib')
+require 'regexp_parser/version'
 
 Gem::Specification.new do |gem|
   gem.name          = 'regexp_parser'
-  gem.version       = YAML.load(File.read('VERSION.yml')).values.compact.join('.')
+  gem.version       = ::Regexp::Parser::VERSION
 
   gem.summary       = "Scanner, lexer, parser for ruby's regular expressions"
   gem.description   = 'A library for tokenizing, lexing, and parsing Ruby regular expressions.'
@@ -21,7 +22,7 @@ Gem::Specification.new do |gem|
 
   gem.files         = Dir.glob('{lib,test}/**/*.rb') +
                       Dir.glob('lib/**/*.rl') +
-                      %w(VERSION.yml Gemfile Rakefile LICENSE README.md ChangeLog regexp_parser.gemspec)
+                      %w(Gemfile Rakefile LICENSE README.md ChangeLog regexp_parser.gemspec)
 
   gem.test_files    = Dir.glob('test/**/*.rb')
 
