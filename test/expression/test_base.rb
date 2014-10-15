@@ -13,6 +13,25 @@ class ExpressionBase < Test::Unit::TestCase
     assert_equal( re.source, re_text )
   end
 
+  def test_expression_level
+    regexp = /^a(b(c(d)))e$/
+    root = RP.parse(regexp)
+
+    %w{^ a (b(c(d))) e $}.each_with_index do |t, i|
+      assert_equal( t, root[i].to_s )
+      assert_equal( 0, root[i].level )
+    end
+
+    assert_equal( 'b', root[2][0].to_s )
+    assert_equal( 1,   root[2][0].level )
+
+    assert_equal( 'c', root[2][1][0].to_s )
+    assert_equal( 2,   root[2][1][0].level )
+
+    assert_equal( 'd', root[2][1][1][0].to_s )
+    assert_equal( 3,   root[2][1][1][0].level )
+  end
+
   def test_expression_terminal?
     root = RP.parse('^a([b]+)c$')
 

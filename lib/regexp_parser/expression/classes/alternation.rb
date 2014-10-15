@@ -12,7 +12,7 @@ module Regexp::Expression
     end
 
     def alternative(exp = nil)
-      @expressions << (exp ? exp : Sequence.new)
+      @expressions << (exp ? exp : Sequence.new(level, set_level, conditional_level))
     end
 
     def alternatives
@@ -31,8 +31,21 @@ module Regexp::Expression
   # A sequence of expressions, used by alternations as one alternative.
   # TODO: perhaps rename this to Alternative?
   class Sequence < Regexp::Expression::Subexpression
-    def initialize
-      super Regexp::Token.new(:expression, :sequence, '')
+    def initialize(level, set_level, conditional_level)
+      super Regexp::Token.new(
+        :expression,
+        :sequence,
+        '',
+        nil, # ts
+        nil, # te
+        level,
+        set_level,
+        conditional_level
+      )
+    end
+
+    def text
+      to_s
     end
 
     def starts_at

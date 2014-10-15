@@ -7,6 +7,10 @@ require File.expand_path("../../helpers", __FILE__)
   require File.expand_path("../test_#{tc}", __FILE__)
 end
 
+if RUBY_VERSION >= '2.0.0'
+  require File.expand_path("../test_conditionals", __FILE__)
+end
+
 class TestParser < Test::Unit::TestCase
 
   def test_parse_returns_a_root_expression

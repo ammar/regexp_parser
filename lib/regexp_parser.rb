@@ -7,6 +7,9 @@ class Regexp
   end
 end
 
-%w{token ctype scanner syntax lexer parser}.each do |file|
-  require File.expand_path("../regexp_parser/#{file}", __FILE__)
-end
+require 'regexp_parser/ctype'
+require 'regexp_parser/token'
+require 'regexp_parser/scanner'
+require 'regexp_parser/syntax'
+require 'regexp_parser/lexer'
+require 'regexp_parser/parser'

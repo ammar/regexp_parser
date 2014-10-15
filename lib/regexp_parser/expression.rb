@@ -2,18 +2,21 @@ module Regexp::Expression
 
   class Base
     attr_accessor :type, :token
-    attr_accessor :level, :text, :ts
+    attr_accessor :text, :ts
+    attr_accessor :level, :set_level, :conditional_level
 
     attr_accessor :quantifier
     attr_accessor :options
 
     def initialize(token)
-      @type         = token.type
-      @token        = token.token
-      @text         = token.text
-      @ts           = token.ts
-      @level        = token.level
-      @options      = nil
+      @type               = token.type
+      @token              = token.token
+      @text               = token.text
+      @ts                 = token.ts
+      @level              = token.level
+      @set_level          = token.set_level
+      @conditional_level  = token.conditional_level
+      @options            = nil
     end
 
     def clone
@@ -125,10 +128,17 @@ module Regexp::Expression
 
 end # module Regexp::Expression
 
+require 'regexp_parser/expression/quantifier'
+require 'regexp_parser/expression/subexpression'
 
-[ # Order is important
-  '/expression/*.rb',
-  '/expression/classes/*.rb',
-].each do |path|
-  Dir[File.join(File.dirname(__FILE__), path)].each {|f| require f }
-end
+require 'regexp_parser/expression/classes/alternation'
+require 'regexp_parser/expression/classes/anchor'
+require 'regexp_parser/expression/classes/backref'
+require 'regexp_parser/expression/classes/conditional'
+require 'regexp_parser/expression/classes/escape'
+require 'regexp_parser/expression/classes/group'
+require 'regexp_parser/expression/classes/literal'
+require 'regexp_parser/expression/classes/property'
+require 'regexp_parser/expression/classes/root'
+require 'regexp_parser/expression/classes/set'
+require 'regexp_parser/expression/classes/type'

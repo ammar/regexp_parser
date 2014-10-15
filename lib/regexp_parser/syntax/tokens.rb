@@ -14,7 +14,17 @@ end
 
 
 # Load all the token files, they will populate the Map constant.
-Dir[File.dirname(__FILE__) + '/tokens/*.rb'].each {|f| require f }
+require 'regexp_parser/syntax/tokens/anchor'
+require 'regexp_parser/syntax/tokens/assertion'
+require 'regexp_parser/syntax/tokens/backref'
+require 'regexp_parser/syntax/tokens/character_set'
+require 'regexp_parser/syntax/tokens/character_type'
+require 'regexp_parser/syntax/tokens/conditional'
+require 'regexp_parser/syntax/tokens/escape'
+require 'regexp_parser/syntax/tokens/group'
+require 'regexp_parser/syntax/tokens/meta'
+require 'regexp_parser/syntax/tokens/quantifier'
+require 'regexp_parser/syntax/tokens/unicode_property'
 
 
 # After loading all the tokens the map is full. Extract all tokens and types

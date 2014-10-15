@@ -48,6 +48,22 @@ module Regexp::Expression
       @expressions.length
     end
 
+    def empty?
+      @expressions.empty?
+    end
+
+    def all?(&block)
+      @expressions.all? {|exp| yield(exp) }
+    end
+
+    def ts
+      starts_at
+    end
+
+    def te
+      ts + to_s.length
+    end
+
     def to_s(format = :full)
       s = ''
 

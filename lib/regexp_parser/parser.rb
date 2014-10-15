@@ -1,4 +1,4 @@
-require File.expand_path('../expression', __FILE__)
+require 'regexp_parser/expression'
 
 module Regexp::Parser
   include Regexp::Expression
@@ -25,8 +25,10 @@ module Regexp::Parser
   def self.parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
     @nesting = [@root = @node = Root.new]
 
+    @conditional_nesting = []
+
     Regexp::Lexer.scan(input, syntax) do |token|
-      self.parse_token token
+      parse_token token
     end
 
     if block_given?
@@ -43,20 +45,28 @@ module Regexp::Parser
     @node  = exp
   end
 
+  def self.nest_conditional(exp)
+    @conditional_nesting.push exp
+
+    @node << exp
+    @node  = exp
+  end
+
   def self.parse_token(token)
     case token.type
-    when :meta;         self.meta(token)
-    when :quantifier;   self.quantifier(token)
-    when :anchor;       self.anchor(token)
-    when :escape;       self.escape(token)
-    when :group;        self.group(token)
-    when :assertion;    self.group(token)
-    when :set, :subset; self.set(token)
-    when :type;         self.type(token)
-    when :backref;      self.backref(token)
+    when :meta;         meta(token)
+    when :quantifier;   quantifier(token)
+    when :anchor;       anchor(token)
+    when :escape;       escape(token)
+    when :group;        group(token)
+    when :assertion;    group(token)
+    when :set, :subset; set(token)
+    when :type;         type(token)
+    when :backref;      backref(token)
+    when :conditional;  conditional(token)
 
     when :property, :nonproperty
-      self.property(token)
+      property(token)
 
     when :literal
       @node << Literal.new(token)
@@ -69,19 +79,19 @@ module Regexp::Parser
   def self.set(token)
     case token.token
     when :open
-      self.open_set(token)
+      open_set(token)
     when :close
-      self.close_set(token)
+      close_set(token)
     when :negate
-      self.negate_set
+      negate_set
     when :member, :range, :escape, :collation, :equivalent
-      self.append_set(token)
+      append_set(token)
     when *Token::Escape::All
-      self.append_set(token)
+      append_set(token)
     when *Token::CharacterSet::All
-      self.append_set(token)
+      append_set(token)
     when *Token::UnicodeProperty::All
-      self.append_set(token)
+      append_set(token)
     else
       raise UnknownTokenError.new('CharacterSet', token)
     end
@@ -95,7 +105,7 @@ module Regexp::Parser
       unless @node.token == :alternation
         unless @node.last.is_a?(Alternation)
           alt = Alternation.new(token)
-          seq = Sequence.new
+          seq = Sequence.new(alt.level, alt.set_level, alt.conditional_level)
 
           while @node.expressions.last
             seq.insert @node.expressions.pop
@@ -160,6 +170,30 @@ module Regexp::Parser
       @node << CharacterType::NonWord.new(token)
     else
       raise UnknownTokenError.new('CharacterType', token)
+    end
+  end
+
+  def self.conditional(token)
+    case token.token
+    when :open
+      nest_conditional(Conditional::Expression.new(token))
+    when :condition
+      @conditional_nesting.last.condition(Conditional::Condition.new(token))
+      @conditional_nesting.last.branch
+    when :separator
+      @conditional_nesting.last.branch
+      @node = @conditional_nesting.last.branches.last
+    when :close
+      @conditional_nesting.pop
+
+      @node = if @conditional_nesting.empty?
+        @nesting.last
+      else
+        @conditional_nesting.last
+      end
+
+    else
+      raise UnknownTokenError.new('Conditional', token)
     end
   end
 
@@ -330,7 +364,7 @@ module Regexp::Parser
       @node.expressions.last.quantify(:one_or_more, token.text, 1, -1, :possessive)
 
     when :interval
-      self.interval(token.text)
+      interval(token.text)
 
     else
       raise UnknownTokenError.new('Quantifier', token)
@@ -355,13 +389,13 @@ module Regexp::Parser
   def self.group(token)
     case token.token
     when :options
-      self.options(token)
+      options(token)
     when :close
-      self.close_group
+      close_group
     when :comment
       @node << Group::Comment.new(token)
     else
-      self.open_group(token)
+      open_group(token)
     end
   end
 
@@ -375,7 +409,7 @@ module Regexp::Parser
       :x => opt[0].include?('x') ? true : false
     }
 
-    self.nest exp
+    nest(exp)
   end
 
   def self.open_group(token)
@@ -402,7 +436,7 @@ module Regexp::Parser
       raise UnknownTokenError.new('Group type open', token)
     end
 
-    self.nest exp
+    nest(exp)
   end
 
   def self.close_group
