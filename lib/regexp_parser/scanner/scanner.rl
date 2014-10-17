@@ -462,6 +462,10 @@
       emit(:anchor, :eol, *text(data, ts, te))
     };
 
+    backslash . 'K' > (backslashed, 4) {
+      emit(:keep, :mark, *text(data, ts, te))
+    };
+
     backslash . anchor_char > (backslashed, 3) {
       case text = text(data, ts, te).first
       when '\\A'; emit(:anchor, :bos,                text, ts, te)

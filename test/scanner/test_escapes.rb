@@ -33,6 +33,10 @@ class ScannerEscapes < Test::Unit::TestCase
     # TODO: verify these escapes
     'a\M-Bc'          => [1, :escape,  :meta_sequence,    '\M-B',           1,  5],
     'a\M-\C-Bc'       => [1, :escape,  :meta_sequence,    '\M-\C-B',        1,  8],
+
+    'ab\\\xcd'        => [1, :escape,  :backslash,        '\\\\',           2,  4],
+    'ab\\\0cd'        => [1, :escape,  :backslash,        '\\\\',           2,  4],
+    'ab\\\Kcd'        => [1, :escape,  :backslash,        '\\\\',           2,  4],
   }
 
   count = 0
