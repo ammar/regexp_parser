@@ -15,14 +15,14 @@ class LexerConditionals < Test::Unit::TestCase
   count = 0
   tests.each do |pattern, test|
     define_method "test_lexer_#{test[1]}_#{test[2]}_#{count+=1}" do
-      tokens = RL.scan(pattern, 'ruby/2.0')
+      tokens = RL.lex(pattern)
       assert_equal( test[1,8], tokens[test[0]].to_a)
     end
   end
 
   def test_lexer_conditional_mixed_nesting
     regexp = /((?<A>a)(?<B>(?(<A>)b|((?(<B>)[e-g]|[h-j])))))/
-    tokens = RL.scan(regexp, 'ruby/2.0')
+    tokens = RL.lex(regexp)
 
     expected = [
       [ 0, :group,       :capture,          '(',       0,  1, 0, 0, 0],
@@ -52,7 +52,7 @@ class LexerConditionals < Test::Unit::TestCase
 
   def test_lexer_conditional_deep_nesting
     regexp = /(a(b(c)))(?(1)(?(2)(?(3)d|e))|(?(3)(?(2)f|g)|(?(1)f|g)))/
-    tokens = RL.scan(regexp, 'ruby/2.0')
+    tokens = RL.lex(regexp)
 
     expected = [
       [ 9, :conditional, :open,       '(?',    9, 11, 0, 0, 0],

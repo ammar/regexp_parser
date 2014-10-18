@@ -96,7 +96,7 @@ class LexerNesting < Test::Unit::TestCase
   tests.each do |pattern, checks|
     define_method "test_lex_nesting_#{count+=1}" do
 
-      tokens = RL.scan(pattern, 'ruby/1.9')
+      tokens = RL.lex(pattern, 'ruby/1.9')
       checks.each do |offset, token|
         assert_equal( token, tokens[offset].to_a )
       end

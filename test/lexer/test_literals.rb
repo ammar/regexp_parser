@@ -94,7 +94,7 @@ class LexerLiterals < Test::Unit::TestCase
   tests.each do |pattern, checks|
     define_method "test_lex_literal_runs_#{count+=1}" do
 
-      tokens = RL.scan(pattern)
+      tokens = RL.lex(pattern)
       checks.each do |offset, token|
         assert_equal( token, tokens[offset].to_a )
       end
@@ -103,17 +103,17 @@ class LexerLiterals < Test::Unit::TestCase
   end
 
   def test_lex_single_2_byte_char
-    tokens = RL.scan('ا+')
+    tokens = RL.lex('ا+')
     assert_equal( 2, tokens.length )
   end
 
   def test_lex_single_3_byte_char
-    tokens = RL.scan('れ+')
+    tokens = RL.lex('れ+')
     assert_equal( 2, tokens.length )
   end
 
   def test_lex_single_4_byte_char
-    tokens = RL.scan('𝄞+')
+    tokens = RL.lex('𝄞+')
     assert_equal( 2, tokens.length )
   end
 

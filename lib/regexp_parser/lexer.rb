@@ -10,7 +10,7 @@ module Regexp::Lexer
 
   CLOSING_TOKENS = [:close].freeze
 
-  def self.scan(input, syntax = "ruby/#{RUBY_VERSION}", &block)
+  def self.lex(input, syntax = "ruby/#{RUBY_VERSION}", &block)
     syntax = Regexp::Syntax.new(syntax)
 
     @tokens = []
@@ -45,11 +45,17 @@ module Regexp::Lexer
     end
 
     if block_given?
-      @tokens.each {|t| block.call(t)}
+      @tokens.map {|t| block.call(t)}
     else
       @tokens
     end
   end
+
+  class << self
+    alias :scan :lex
+  end
+
+  protected
 
   def self.ascend(type, token)
     if type == :group or type == :assertion
