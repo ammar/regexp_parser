@@ -156,6 +156,7 @@ end # module Regexp::Expression
 
 require 'regexp_parser/expression/quantifier'
 require 'regexp_parser/expression/subexpression'
+require 'regexp_parser/expression/sequence'
 
 require 'regexp_parser/expression/classes/alternation'
 require 'regexp_parser/expression/classes/anchor'

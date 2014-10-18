@@ -7,6 +7,9 @@ module Regexp::Expression
       end
     end
 
+    class Condition < Regexp::Expression::Base; end
+    class Branch    < Regexp::Expression::Sequence; end
+
     class Expression < Regexp::Expression::Subexpression
       def initialize(token)
         super(token)
@@ -28,7 +31,7 @@ module Regexp::Expression
       def branch(exp = nil)
         raise TooManyBranches.new if @branches.length == 2
 
-        sequence = Sequence.new(level, set_level, conditional_level + 1)
+        sequence = Branch.new(level, set_level, conditional_level + 1)
 
         @expressions << sequence
         @branches << @expressions.last
@@ -49,8 +52,6 @@ module Regexp::Expression
         s << ')'
       end
     end
-
-    class Condition < Regexp::Expression::Base; end
   end
 
 end

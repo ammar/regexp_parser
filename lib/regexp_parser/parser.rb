@@ -106,7 +106,7 @@ module Regexp::Parser
       unless @node.token == :alternation
         unless @node.last.is_a?(Alternation)
           alt = Alternation.new(token)
-          seq = Sequence.new(alt.level, alt.set_level, alt.conditional_level)
+          seq = Alternative.new(alt.level, alt.set_level, alt.conditional_level)
 
           while @node.expressions.last
             seq.insert @node.expressions.pop

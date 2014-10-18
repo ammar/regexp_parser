@@ -2,9 +2,6 @@ require File.expand_path("../../helpers", __FILE__)
 
 class ParserAlternation < Test::Unit::TestCase
 
-  # TODO: these tests pass, but they show how hard and messy the tree is
-  # to navigate
-
   def setup
     @root = RP.parse('(ab??|cd*|ef+)*|(gh|ij|kl)?')
   end
@@ -17,8 +14,8 @@ class ParserAlternation < Test::Unit::TestCase
   def test_parse_alternation_alts
     alts = @root.expressions[0].alternatives
 
-    assert_equal( true,   alts[0].is_a?(Sequence) )
-    assert_equal( true,   alts[1].is_a?(Sequence) )
+    assert_equal( true,   alts[0].is_a?(Alternative) )
+    assert_equal( true,   alts[1].is_a?(Alternative) )
 
     assert_equal( true,   alts[0][0].is_a?(Group::Capture) )
     assert_equal( true,   alts[1][0].is_a?(Group::Capture) )
@@ -36,7 +33,7 @@ class ParserAlternation < Test::Unit::TestCase
     alts    = @root.expressions[0][0]
     nested  = alts.expressions[0][0][0]
 
-    assert_equal( true,   nested.is_a?(Sequence) )
+    assert_equal( true,   nested.is_a?(Alternative) )
 
     assert_equal( true,   nested.expressions[0].is_a?(Literal) )
     assert_equal( true,   nested.expressions[1].is_a?(Literal) )
@@ -56,10 +53,10 @@ class ParserAlternation < Test::Unit::TestCase
     alts = root.expressions[1][0].alternatives
 
     assert_equal( 4,  alts.length )
-    assert_equal( true,   alts[0].is_a?(Sequence) )
-    assert_equal( true,   alts[1].is_a?(Sequence) )
-    assert_equal( true,   alts[2].is_a?(Sequence) )
-    assert_equal( true,   alts[3].is_a?(Sequence) )
+    assert_equal( true,   alts[0].is_a?(Alternative) )
+    assert_equal( true,   alts[1].is_a?(Alternative) )
+    assert_equal( true,   alts[2].is_a?(Alternative) )
+    assert_equal( true,   alts[3].is_a?(Alternative) )
   end
 
   def test_parse_alternation_nested_grouped_alts
@@ -68,14 +65,14 @@ class ParserAlternation < Test::Unit::TestCase
     alts = root.expressions[1][0].alternatives
 
     assert_equal( 2,  alts.length )
-    assert_equal( true,   alts[0].is_a?(Sequence) )
-    assert_equal( true,   alts[1].is_a?(Sequence) )
+    assert_equal( true,   alts[0].is_a?(Alternative) )
+    assert_equal( true,   alts[1].is_a?(Alternative) )
 
     subalts = root.expressions[1][0][0][0][0].alternatives
 
     assert_equal( 2,  alts.length )
-    assert_equal( true,   subalts[0].is_a?(Sequence) )
-    assert_equal( true,   subalts[1].is_a?(Sequence) )
+    assert_equal( true,   subalts[0].is_a?(Alternative) )
+    assert_equal( true,   subalts[1].is_a?(Alternative) )
   end
 
   def test_parse_alternation_continues_after_nesting
