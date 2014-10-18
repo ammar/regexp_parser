@@ -86,7 +86,7 @@
   assertion_lookbehind  = '?<=';
   assertion_nlookbehind = '?<!';
 
-  group_options         = '?' . [\-mix];
+  group_options         = '?' . [\-mixdau];
 
   group_ref             = [gk];
   group_name_char       = (alnum | '_');
@@ -540,12 +540,15 @@
     };
 
     # Expression options:
-    #   (?imx-imx)          option on/off
+    #   (?imxdau-imx)         option on/off
     #                         i: ignore case
     #                         m: multi-line (dot(.) match newline)
     #                         x: extended form
+    #                         d: default class rules (1.9 compatible)
+    #                         a: ASCII class rules (\s, \w, etc.)
+    #                         u: Unicode class rules (\s, \w, etc.)
     #
-    #   (?imx-imx:subexp)   option on/off for subexp
+    #   (?imxdau-imx:subexp)  option on/off for subexp
     # ------------------------------------------------------------------------
     group_open . group_options >group_opened {
       p = scan_options(p, data, ts, te)
@@ -846,7 +849,7 @@ module Regexp::Scanner
       if data[te + options_length]
         c = data[te + options_length].chr
 
-        if c =~ /[-mix]/
+        if c =~ /[-mixdau]/
           text << c ; p += 1 ; options_length += 1
         else
           options_char = false

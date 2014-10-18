@@ -48,4 +48,29 @@ class ScannerGroups < Test::Unit::TestCase
     end
   end
 
+  if RUBY_VERSION >= '2.0'
+    option_tests = {
+      '(?m-dau:abc)'    => [0, :group,     :options,      '(?m-dau:',   0, 8],
+      '(?x-dmu:abc)'    => [0, :group,     :options,      '(?x-dmu:',   0, 8],
+      '(?-dau:abc)'     => [0, :group,     :options,      '(?-dau:',    0, 7],
+      '(?d-au:abc)'     => [0, :group,     :options,      '(?d-au:',    0, 7],
+      '(?da-u:abc)'     => [0, :group,     :options,      '(?da-u:',    0, 7],
+      '(?dau:abc)'      => [0, :group,     :options,      '(?dau:',     0, 6],
+      '(?dau)'          => [0, :group,     :options,      '(?dau',      0, 5],
+      '(?d:)'           => [0, :group,     :options,      '(?d:',       0, 4],
+      '(?a:)'           => [0, :group,     :options,      '(?a:',       0, 4],
+      '(?u:)'           => [0, :group,     :options,      '(?u:',       0, 4],
+    }
+
+    tests.each do |pattern, test|
+      define_method "test_scan_#{test[1]}_#{test[2]}_#{count+=1}" do
+
+        tokens = RS.scan(pattern)
+        assert_equal( test[1,5], tokens[test[0]])
+        assert_equal( test[3],   pattern[tokens[test[0]][3], tokens[test[0]][4]])
+
+      end
+    end
+  end
+
 end
