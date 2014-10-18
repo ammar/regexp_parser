@@ -68,11 +68,7 @@ module Regexp::Expression
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
-      if @quantifier
-        @quantifier.merge(token, text, min, max, mode)
-      else
-        @quantifier = Quantifier.new(token, text, min, max, mode)
-      end
+      @quantifier = Quantifier.new(token, text, min, max, mode)
     end
 
     def quantified?
