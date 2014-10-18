@@ -2,10 +2,6 @@ require File.expand_path("../../helpers", __FILE__)
 
 class TestParserEscapes < Test::Unit::TestCase
 
-  def test_parse_control_sequence_short
-    #root = RP.parse(/\b\d\\\c2\C-C\M-\C-2/)
-  end
-
   tests = {
     /a\ac/    => [1, :escape,   :bell,              EscapeSequence::Bell],
     /a\ec/    => [1, :escape,   :escape,            EscapeSequence::AsciiEscape],
@@ -33,7 +29,7 @@ class TestParserEscapes < Test::Unit::TestCase
 
   count = 0
   tests.each do |pattern, test|
-    define_method "test_parse_anchor_#{test[2]}_#{count+=1}" do
+    define_method "test_parse_escape_#{test[2]}_#{count+=1}" do
       root = RP.parse(pattern, 'ruby/1.9')
       exp  = root.expressions[test[0]]
 
@@ -43,6 +39,34 @@ class TestParserEscapes < Test::Unit::TestCase
       assert_equal( test[1], exp.type )
       assert_equal( test[2], exp.token )
     end
+  end
+
+  def test_parse_escape_control_sequence_lower
+    root = RP.parse(/a\\\c2b/)
+
+    assert_equal( EscapeSequence::Control,  root[2].class )
+    assert_equal( '\\c2',                   root[2].text )
+  end
+
+  def test_parse_escape_control_sequence_upper
+    root = RP.parse(/\d\\\C-C\w/)
+
+    assert_equal( EscapeSequence::Control,  root[2].class )
+    assert_equal( '\\C-C',                  root[2].text )
+  end
+
+  def test_parse_escape_meta_sequence
+    root = RP.parse(/\Z\\\M-Z/n)
+
+    assert_equal( EscapeSequence::Meta,  root[2].class )
+    assert_equal( '\\M-Z',               root[2].text )
+  end
+
+  def test_parse_escape_meta_control_sequence
+    root = RP.parse(/\A\\\M-\C-X/n)
+
+    assert_equal( EscapeSequence::MetaControl,  root[2].class )
+    assert_equal( '\\M-\\C-X',                  root[2].text )
   end
 
 end

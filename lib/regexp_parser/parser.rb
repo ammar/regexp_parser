@@ -64,6 +64,7 @@ module Regexp::Parser
     when :type;         type(token)
     when :backref;      backref(token)
     when :conditional;  conditional(token)
+    when :keep;         keep(token)
 
     when :property, :nonproperty
       property(token)
@@ -325,10 +326,22 @@ module Regexp::Parser
     when :control
       @node << EscapeSequence::Control.new(token)
 
+    when :meta_sequence
+      if token.text =~ /\A\\M-\\C/
+        @node << EscapeSequence::MetaControl.new(token)
+      else
+        @node << EscapeSequence::Meta.new(token)
+      end
+
     else
       # treating everything else as a literal
       @node << EscapeSequence::Literal.new(token)
     end
+  end
+
+
+  def self.keep(token)
+    @node << Keep::Mark.new(token)
   end
 
   def self.quantifier(token)
@@ -406,7 +419,10 @@ module Regexp::Parser
     exp.options = {
       :m => opt[0].include?('m') ? true : false,
       :i => opt[0].include?('i') ? true : false,
-      :x => opt[0].include?('x') ? true : false
+      :x => opt[0].include?('x') ? true : false,
+      :d => opt[0].include?('d') ? true : false,
+      :a => opt[0].include?('a') ? true : false,
+      :u => opt[0].include?('u') ? true : false
     }
 
     nest(exp)

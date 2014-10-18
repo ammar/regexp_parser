@@ -8,7 +8,9 @@ require File.expand_path("../../helpers", __FILE__)
 end
 
 if RUBY_VERSION >= '2.0.0'
-  require File.expand_path("../test_conditionals", __FILE__)
+  %w{conditionals keep}.each do|tc|
+    require File.expand_path("../test_#{tc}", __FILE__)
+  end
 end
 
 class TestParser < Test::Unit::TestCase
@@ -16,6 +18,7 @@ class TestParser < Test::Unit::TestCase
   def test_parse_returns_a_root_expression
     assert_instance_of( Regexp::Expression::Root, RP.parse('abc'))
   end
+
 
   def test_parse_root_contains_expressions
     root = RP.parse(/^a.c+[^one]{2,3}\b\d\\\C-C$/)
@@ -25,7 +28,7 @@ class TestParser < Test::Unit::TestCase
       "Not all nodes are instances of Regexp::Expression")
   end
 
-  # too much going on here, it's just for development
+
   def test_parse_node_types
     root = RP.parse('^(one){2,3}([^d\]efm-qz\,\-]*)(ghi)+$')
 

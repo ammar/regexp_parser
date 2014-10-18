@@ -88,10 +88,6 @@ module Regexp::Expression
 
       s
     end
-
-    def matches?(input)
-      input =~ /#{to_s}/ ? true : false
-    end
   end
 
   class CharacterSubSet < CharacterSet

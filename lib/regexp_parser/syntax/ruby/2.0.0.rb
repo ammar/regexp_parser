@@ -8,6 +8,7 @@ module Regexp::Syntax
       def initialize
         super
 
+        implements :keep,        Keep::All
         implements :conditional, Conditional::All
         implements :property,    UnicodeProperty::V200
         implements :nonproperty, UnicodeProperty::V200

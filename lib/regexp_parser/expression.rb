@@ -68,7 +68,11 @@ module Regexp::Expression
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
-      @quantifier = Quantifier.new(token, text, min, max, mode)
+      if @quantifier
+        @quantifier.merge(token, text, min, max, mode)
+      else
+        @quantifier = Quantifier.new(token, text, min, max, mode)
+      end
     end
 
     def quantified?
@@ -109,6 +113,32 @@ module Regexp::Expression
     end
     alias :x? :free_spacing?
     alias :extended? :free_spacing?
+
+    if RUBY_VERSION >= '2.0'
+      def default_classes?
+        (@options and @options[:d]) ? true : false
+      end
+      alias :d? :default_classes?
+
+      def ascii_classes?
+        (@options and @options[:a]) ? true : false
+      end
+      alias :a? :ascii_classes?
+
+      def unicode_classes?
+        (@options and @options[:u]) ? true : false
+      end
+      alias :u? :unicode_classes?
+    end
+
+    def matches?(string)
+      Regexp.new(to_s) =~ string ? true : false
+    end
+
+    def match(string, offset)
+      Regexp.new(to_s).match(string, offset)
+    end
+    alias :=~ :match
   end
 
   def self.parsed(exp)
@@ -137,6 +167,7 @@ require 'regexp_parser/expression/classes/backref'
 require 'regexp_parser/expression/classes/conditional'
 require 'regexp_parser/expression/classes/escape'
 require 'regexp_parser/expression/classes/group'
+require 'regexp_parser/expression/classes/keep'
 require 'regexp_parser/expression/classes/literal'
 require 'regexp_parser/expression/classes/property'
 require 'regexp_parser/expression/classes/root'

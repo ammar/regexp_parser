@@ -34,6 +34,46 @@ class TestParserGroups < Test::Unit::TestCase
     assert_equal( false, t.expressions[0].expressions[1].x? )
   end
 
+  if RUBY_VERSION >= '2.0'
+    def test_parse_options_dau
+      t = RP.parse('(?dua:abc)')
+
+      assert_equal( true,  t.expressions[0].d? )
+      assert_equal( true,  t.expressions[0].a? )
+      assert_equal( true,  t.expressions[0].u? )
+    end
+
+    def test_parse_nested_options_dau
+      t = RP.parse('(?u:a(?d:b))')
+
+      assert_equal( true,  t.expressions[0].u? )
+      assert_equal( false, t.expressions[0].d? )
+      assert_equal( false, t.expressions[0].a? )
+
+      assert_equal( true,  t.expressions[0].expressions[1].d? )
+      assert_equal( false, t.expressions[0].expressions[1].a? )
+      assert_equal( false, t.expressions[0].expressions[1].u? )
+    end
+
+    def test_parse_nested_options_da
+      t = RP.parse('(?di-xm:a(?da-x:b))')
+
+      assert_equal( true,  t.expressions[0].d? )
+      assert_equal( true,  t.expressions[0].i? )
+      assert_equal( false, t.expressions[0].m? )
+      assert_equal( false, t.expressions[0].x? )
+      assert_equal( false, t.expressions[0].a? )
+      assert_equal( false, t.expressions[0].u? )
+
+      assert_equal( true,  t.expressions[0].expressions[1].d? )
+      assert_equal( true,  t.expressions[0].expressions[1].a? )
+      assert_equal( false, t.expressions[0].expressions[1].u? )
+      assert_equal( false, t.expressions[0].expressions[1].x? )
+      assert_equal( false, t.expressions[0].expressions[1].m? )
+      assert_equal( false, t.expressions[0].expressions[1].i? )
+    end
+  end
+
   def test_parse_lookahead
     t = RP.parse('(?=abc)(?!def)', 'ruby/1.8')
 
