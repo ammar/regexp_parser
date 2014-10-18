@@ -1,3 +1,26 @@
+Fri Oct 18 14:09:38 2014 Ammar Ali <ammarabuali@gmail.com>
+
+	* Added conditional expressions. Ruby 2.0.
+
+	* Added keep (\K) markers. Ruby 2.0.
+
+	* Added d, a, and u options. Ruby 2.0.
+
+	* Added missing meta sequences to the parser. They were supported
+	  by the scanner only.
+
+	* Renamed Lexer's method to lex, added an alias to the old name (scan)
+
+	* Use #map instead of #each to run the block in Lexer.lex.
+
+	* Replaced VERSION.yml file with a constant.
+
+	* Updated README
+
+Fri Oct 10 11:49:38 2014 Ammar Ali <ammarabuali@gmail.com>
+
+	* Update tokens and scanner with new additions in Unicode 7.0.
+
 Mon Oct 6 04:30:24 2014 Ammar Ali <ammarabuali@gmail.com>
 
 	* Released version 0.1.6
