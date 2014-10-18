@@ -746,11 +746,7 @@ module Regexp::Scanner
   %% write data;
 
   # General scanner error (catch all)
-  class ScannerError < StandardError
-    def initialize(what)
-      super what
-    end
-  end
+  class ScannerError < StandardError; end
 
   # Base for all scanner validation errors
   class ValidationError < StandardError
@@ -940,13 +936,7 @@ module Regexp::Scanner
       error = ValidationError.new('expression')
     end
 
-    # TODO: configuration option to treat scanner level validation
-    # errors as warnings or ignore them
-    if false # @@config.validation_warn
-      $stderr.puts error.to_s # unless @@config.validation_ignore
-    else
-      raise error # unless @@config.validation_ignore
-    end
+    raise error # unless @@config.validation_ignore
   end
 
   # Used for references with an empty name or number

@@ -11,7 +11,6 @@
                           'cntrl'i | 'digit'i | 'graph'i | 'lower'i | 'print'i |
                           'punct'i | 'space'i | 'upper'i | 'word'i  | 'xdigit'i;
 
-  # TODO: are these case-insensitive?
   property_name_posix   = 'any'i | 'assigned'i | 'newline'i;
 
   property_name         = property_name_unicode | property_name_posix;
