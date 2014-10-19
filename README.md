@@ -356,6 +356,13 @@ sequences, one for each possible alternative, each of which contains 3
 expression objects.
 
 
+#### Notes
+  * Free spacing expressions that place whitespace or comments between quantifiers
+    and their targets return equivalent source from #to_s, as apposed to identical
+    source. Equivalent here means that the two sources will match the same text, but
+    will not return true if compared as Regexp objects or as strings.
+
+
 ## Scanner Syntax
 The following syntax features are recognized by the scanner:
 
