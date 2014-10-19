@@ -20,6 +20,8 @@
   set_close             = ']';
   brackets              = set_open | set_close;
 
+  comment               = ('#' . [^\n]* . '\n');
+
   class_name_posix      = 'alnum' | 'alpha' | 'blank' |
                           'cntrl' | 'digit' | 'graph' |
                           'lower' | 'print' | 'punct' |
@@ -140,8 +142,8 @@
   }
 
   # group (nesting) and set open/close actions
-  action group_opened { group_depth += 1; in_group = true }
-  action group_closed { group_depth -= 1; in_group = group_depth > 0 ? true : false }
+  action group_opened { @group_depth += 1; @in_group = true }
+  action group_closed { @group_depth -= 1; @in_group = @group_depth > 0 ? true : false }
 
   # Character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
@@ -445,7 +447,7 @@
 
     alternation {
       if in_conditional and conditional_stack.length > 0 and 
-         conditional_stack.last[1] == group_depth
+         conditional_stack.last[1] == @group_depth
         emit(:conditional, :separator, *text(data, ts, te))
       else
         emit(:meta, :alternation, *text(data, ts, te))
@@ -522,7 +524,7 @@
 
       in_conditional = true unless in_conditional
       conditional_depth += 1
-      conditional_stack << [conditional_depth, group_depth]
+      conditional_stack << [conditional_depth, @group_depth]
 
       emit(:conditional, :open, text[0..-2], ts, te-1)
       emit(:conditional, :condition_open, '(', te-1, te)
@@ -604,7 +606,7 @@
 
     group_close @group_closed {
       if in_conditional and conditional_stack.last and
-         conditional_stack.last[1] == (group_depth + 1)
+         conditional_stack.last[1] == (@group_depth + 1)
 
         emit(:conditional, :close, *text(data, ts, te))
         conditional_stack.pop
@@ -613,6 +615,17 @@
           in_conditional = false
         end
       else
+        if @spacing_stack.length > 1 and
+          @spacing_stack.last[1] == (@group_depth + 1)
+          @spacing_stack.pop
+
+          @free_spacing = @spacing_stack.last[0]
+
+          if @spacing_stack.length == 1
+            @in_options = false
+          end
+        end
+
         emit(:group, :close, *text(data, ts, te))
       end
     };
@@ -725,10 +738,26 @@
       fcall escape_sequence;
     };
 
+    comment {
+      if @free_spacing
+        emit(:free_space, :comment, *text(data, ts, te))
+      else
+        append_literal(data, ts, te)
+      end
+    };
+
+    space+ {
+      if @free_spacing
+        emit(:free_space, :whitespace, *text(data, ts, te))
+      else
+        append_literal(data, ts, te)
+      end
+    };
+
     # Literal: any run of ASCII (pritable or non-printable), and/or UTF-8,
     # except meta characters.
     # ------------------------------------------------------------------------
-    ascii_print+    |
+    (ascii_print -- space)+    |
     ascii_nonprint+ |
     utf8_2_byte+    |
     utf8_3_byte+    |
@@ -776,6 +805,13 @@ module Regexp::Scanner
     end
   end
 
+  # Invalid groupOption. Used for inline options.
+  class InvalidGroupOption < ValidationError
+    def initialize(option, text)
+      super "Invalid group option #{option} in #{text}"
+    end
+  end
+
   # Invalid back reference. Used for name a number refs/calls.
   class InvalidBackrefError < ValidationError
     def initialize(what, reason)
@@ -796,17 +832,27 @@ module Regexp::Scanner
   #
   # This method may raise errors if a syntax error is encountered.
   # --------------------------------------------------------------------------
-  def self.scan(input, &block)
+  def self.scan(input_object, &block)
     top, stack = 0, []
 
-    input = input.source if input.is_a?(Regexp)
+    if input_object.is_a?(Regexp)
+      input    = input_object.source
+      @free_spacing  = (input_object.options & Regexp::EXTENDED != 0)
+    else
+      input   = input_object
+      @free_spacing = false
+    end
+
+
     data  = input.unpack("c*") if input.is_a?(String)
     eof   = data.length
 
     @tokens = []
     @block  = block_given? ? block : nil
 
-    in_group, group_depth = false, 0
+    @in_group, @group_depth = false, 0
+    @in_options, @spacing_stack = false, [[@free_spacing, 0]]
+
     in_set,   set_depth, set_type   = false, 0, :set
     in_conditional, conditional_depth, conditional_stack = false, 0, []
 
@@ -819,7 +865,7 @@ module Regexp::Scanner
     end
 
     raise PrematureEndError.new("(missing group closing paranthesis) "+
-          "[#{in_group}:#{group_depth}]") if in_group
+          "[#{@in_group}:#{@group_depth}]") if @in_group
     raise PrematureEndError.new("(missing set closing bracket) "+
           "[#{in_set}:#{set_depth}]") if in_set
 
@@ -839,13 +885,19 @@ module Regexp::Scanner
 
     options_char, options_length = true, 0
 
-    # Copy while we have option characters, the maximum is 7, for (?mix-mix,
-    # even though it doesn't make sense it is possible.
-    while options_char and options_length < 7
+    # Copy while we have option characters. There is no maximum length,
+    # as ruby allows things like '(?xxxxxxxxx-xxxxxxxxxxxxx:abc)'.
+    negative_options = false
+    while options_char
       if data[te + options_length]
         c = data[te + options_length].chr
 
         if c =~ /[-mixdau]/
+          negative_options = true if c == '-'
+
+          raise InvalidGroupOption.new(c, text) if negative_options and
+            c =~ /[dau]/
+
           text << c ; p += 1 ; options_length += 1
         else
           options_char = false
@@ -861,11 +913,11 @@ module Regexp::Scanner
       if c == ':'
         # Include the ':' in the options text
         text << c ; p += 1 ; options_length += 1
-        emit(:group, :options, text, ts, te + options_length)
+        emit_options(text, ts, te + options_length)
 
       elsif c == ')'
         # Don't include the closing ')', let group_close handle it.
-        emit(:group, :options, text, ts, te + options_length)
+        emit_options(text, ts, te + options_length)
 
       else
         # Plain Regexp reports this as 'undefined group option'
@@ -907,6 +959,27 @@ module Regexp::Scanner
 
     @literal = nil
     emit(:literal, :literal, text, ts, te)
+  end
+
+  def self.emit_options(text, ts, te)
+    if text =~ /\(\?([mixdau]+)?-?([mix]+)?:/
+      positive, negative = $1, $2
+
+      if positive =~ /x/
+        @free_spacing = true
+      end
+
+      # If the x appears in both, treat it like ruby does, the second cancels
+      # the first.
+      if negative =~ /x/
+        @free_spacing = false
+      end
+    end
+
+    @in_options = true
+    @spacing_stack << [@free_spacing, @group_depth]
+
+    emit(:group, :options, text, ts, te)
   end
 
   # Emits an array with the details of the scanned pattern

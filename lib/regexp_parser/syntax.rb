@@ -1,5 +1,6 @@
+require File.expand_path('../syntax/tokens', __FILE__)
+
 module Regexp::Syntax
-  require File.expand_path('../syntax/tokens', __FILE__)
 
   class SyntaxError < StandardError
     def initialize(what)
@@ -93,7 +94,8 @@ module Regexp::Syntax
     def initialize
       @implements = {}
 
-      implements :literal, [:literal]
+      implements Token::Literal::Type,   Token::Literal::All
+      implements Token::FreeSpace::Type, Token::FreeSpace::All
     end
 
     def implementation

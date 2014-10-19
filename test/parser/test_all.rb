@@ -1,8 +1,8 @@
 require File.expand_path("../../helpers", __FILE__)
 
 %w{
-  alternation anchors errors escapes groups properties
-  quantifiers refcalls sets
+  alternation anchors errors escapes free_space groups
+  properties quantifiers refcalls sets
 }.each do|tc|
   require File.expand_path("../test_#{tc}", __FILE__)
 end
@@ -46,6 +46,14 @@ class TestParser < Test::Unit::TestCase
           "Not a group, but should be")
 
     assert_equal( true, root.expressions[3].quantified? )
+  end
+
+  def test_parse_no_quantifier_target_raises_error
+    assert_raise( ArgumentError ) { RP.parse('?abc') }
+  end
+
+  def test_parse_sequence_no_quantifier_target_raises_error
+    assert_raise( ArgumentError ) { RP.parse('abc|?def') }
   end
 
 end

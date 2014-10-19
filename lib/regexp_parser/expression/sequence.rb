@@ -1,6 +1,11 @@
 module Regexp::Expression
 
-  # A sequence of expressions
+  # A sequence of expressions. Differs from a Subexpressions by how it handles
+  # quantifiers, as it applies them to its last element instead of itself as
+  # a whole subexpression.
+  #
+  # Used as the base class for the Alternation alternatives and Conditional
+  # branches.
   class Sequence < Regexp::Expression::Subexpression
     def initialize(level, set_level, conditional_level)
       super Regexp::Token.new(
@@ -24,7 +29,16 @@ module Regexp::Expression
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
-      last.quantify(token, text, min, max, mode)
+      offset = -1
+      target = expressions[offset]
+      while target and target.is_a?(FreeSpace)
+        target = expressions[offset -= 1]
+      end
+
+      raise ArgumentError.new("No valid target found for '#{text}' " +
+                              "quantifier") unless target
+
+      target.quantify(token, text, min, max, mode)
     end
   end
 

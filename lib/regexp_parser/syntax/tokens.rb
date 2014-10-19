@@ -8,7 +8,13 @@ module Regexp::Syntax
       Type = :literal
     end
 
-    Map[Literal::Type] = Literal::All
+    module FreeSpace
+      All  = [:comment, :whitespace]
+      Type = :free_space
+    end
+
+    Map[FreeSpace::Type] = FreeSpace::All
+    Map[Literal::Type]   = Literal::All
   end
 end
 

@@ -4,15 +4,11 @@ module Regexp::Parser
   include Regexp::Expression
   include Regexp::Syntax
 
-  class ParserError < StandardError
-    def initialize(what)
-      super what
-    end
-  end
+  class ParserError < StandardError; end
 
   class UnknownTokenTypeError < ParserError
     def initialize(type, token)
-      super "Unknown #{type} type #{token.inspect}"
+      super "Unknown token type #{type} #{token.inspect}"
     end
   end
 
@@ -71,6 +67,8 @@ module Regexp::Parser
 
     when :literal
       @node << Literal.new(token)
+    when :free_space
+      free_space(token)
 
     else
       raise UnknownTokenTypeError.new(token.type, token)
@@ -344,8 +342,32 @@ module Regexp::Parser
     @node << Keep::Mark.new(token)
   end
 
+  def self.free_space(token)
+    case token.token
+    when :comment
+      @node << Comment.new(token)
+    when :whitespace
+      if @node.last and @node.last.is_a?(WhiteSpace)
+        @node.last.merge(WhiteSpace.new(token))
+      else
+        @node << WhiteSpace.new(token)
+      end
+    else
+      raise UnknownTokenError.new('FreeSpace', token)
+    end
+  end
+
   def self.quantifier(token)
-    unless @node.expressions.last
+    offset = -1
+    target_node = @node.expressions[offset]
+    while target_node and target_node.is_a?(FreeSpace)
+      target_node = @node.expressions[offset -= 1]
+    end
+
+    raise ArgumentError.new("No valid target found for '#{token.text}' "+
+                            "quantifier") unless target_node
+
+    unless target_node
       if token.token == :zero_or_one
         raise "Quantifier given without a target, or the syntax of the group " +
               "or its options is incorrect"
@@ -356,35 +378,36 @@ module Regexp::Parser
 
     case token.token
     when :zero_or_one
-      @node.expressions.last.quantify(:zero_or_one, token.text, 0, 1, :greedy)
+      target_node.quantify(:zero_or_one, token.text, 0, 1, :greedy)
     when :zero_or_one_reluctant
-      @node.expressions.last.quantify(:zero_or_one, token.text, 0, 1, :reluctant)
+      target_node.quantify(:zero_or_one, token.text, 0, 1, :reluctant)
     when :zero_or_one_possessive
-      @node.expressions.last.quantify(:zero_or_one, token.text, 0, 1, :possessive)
+      target_node.quantify(:zero_or_one, token.text, 0, 1, :possessive)
 
     when :zero_or_more
-      @node.expressions.last.quantify(:zero_or_more, token.text, 0, -1, :greedy)
+      target_node.quantify(:zero_or_more, token.text, 0, -1, :greedy)
     when :zero_or_more_reluctant
-      @node.expressions.last.quantify(:zero_or_more, token.text, 0, -1, :reluctant)
+      target_node.quantify(:zero_or_more, token.text, 0, -1, :reluctant)
     when :zero_or_more_possessive
-      @node.expressions.last.quantify(:zero_or_more, token.text, 0, -1, :possessive)
+      target_node.quantify(:zero_or_more, token.text, 0, -1, :possessive)
 
     when :one_or_more
-      @node.expressions.last.quantify(:one_or_more, token.text, 1, -1, :greedy)
+      target_node.quantify(:one_or_more, token.text, 1, -1, :greedy)
     when :one_or_more_reluctant
-      @node.expressions.last.quantify(:one_or_more, token.text, 1, -1, :reluctant)
+      target_node.quantify(:one_or_more, token.text, 1, -1, :reluctant)
     when :one_or_more_possessive
-      @node.expressions.last.quantify(:one_or_more, token.text, 1, -1, :possessive)
+      target_node.quantify(:one_or_more, token.text, 1, -1, :possessive)
 
     when :interval
-      interval(token.text)
+      interval(target_node, token)
 
     else
       raise UnknownTokenError.new('Quantifier', token)
     end
   end
 
-  def self.interval(text)
+  def self.interval(target_node, token)
+    text = token.text
     mchr = text[text.length-1].chr =~ /[?+]/ ? text[text.length-1].chr : nil
     mode = case mchr
     when '?'; text.chop!; :reluctant
@@ -396,7 +419,7 @@ module Regexp::Parser
     min = range[0].empty? ? 0 : range[0]
     max = range[1] ? (range[1].empty? ? -1 : range[1]) : min
 
-    @node.expressions.last.quantify(:interval, text, min.to_i, max.to_i, mode)
+    target_node.quantify(:interval, text, min.to_i, max.to_i, mode)
   end
 
   def self.group(token)

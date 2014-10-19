@@ -17,7 +17,12 @@ module Regexp::Expression
     end
 
     def <<(exp)
-      @expressions << exp
+      if exp.is_a?(WhiteSpace) and @expressions.last and
+        @expressions.last.is_a?(WhiteSpace)
+        @expressions.last.merge(exp)
+      else
+        @expressions << exp
+      end
     end
 
     def insert(exp)
