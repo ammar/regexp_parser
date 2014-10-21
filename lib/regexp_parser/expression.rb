@@ -154,6 +154,10 @@ module Regexp::Expression
 
 end # module Regexp::Expression
 
+require 'regexp_parser/expression/methods/tests'
+require 'regexp_parser/expression/methods/traverse'
+require 'regexp_parser/expression/methods/strfregexp'
+
 require 'regexp_parser/expression/quantifier'
 require 'regexp_parser/expression/subexpression'
 require 'regexp_parser/expression/sequence'
