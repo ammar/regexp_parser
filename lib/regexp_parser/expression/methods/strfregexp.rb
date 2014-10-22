@@ -5,6 +5,8 @@ module Regexp::Expression
     #   %l  Level (depth) of the expression. Returns 'root' for the root
     #       expression, returns zero or higher for all others.
     #
+    #   %>  Indentation at expression's level.
+    #
     #   %x  Index of the expression at its depth. Available when using
     #       the sprintf_tree method only.
     #
@@ -17,9 +19,7 @@ module Regexp::Expression
     #   %y  Type of expression.
     #   %k  Token of expression.
     #   %i  ID, same as '%y:%k'
-    #
-    #   %c  Quantified?, as 1 or 0
-    #   %C  Quantified?, as Y or N
+    #   %c  Class name
     #
     #   %q  Quantifier info, as {m[,M]}
     #   %Q  Quantifier text
@@ -35,15 +35,17 @@ module Regexp::Expression
     #   %m  Most info, same as '%b %q'
     #   %a  All info, same as '%m %t'
     #
-    def strfregexp(format = '%a', index = nil)
+    def strfregexp(format = '%a', indent_offset = 0, index = nil)
       have_index    = index ? true : false
 
       part = {}
 
-      # NOTE: Order is important! Fields that use other fields in their
+      # Order is important! Fields that use other fields in their
       # definition must appear before the fields they use.
-      part_keys = %w{a m b o i l x s e S y k c C q Q z Z t ~t T}
+      part_keys = %w{a m b o i l x s e S y k c q Q z Z t ~t T >}
       part.keys.each {|k| part[k] = "<?#{k}?>"}
+
+      part['>'] = level ? ('  ' * (level + indent_offset)) : ''
 
       part['l'] = level ? "#{'%d' % level}" : 'root'
       part['x'] = "#{'%d' % index}" if have_index
@@ -56,11 +58,9 @@ module Regexp::Expression
       part['k'] = token
       part['y'] = type
       part['i'] = '%y:%k'
+      part['c'] = self.class.name
 
       if quantified?
-        part['c'] = '1'
-        part['C'] = 'Y'
-
         if quantifier.max == -1
           part['q'] = "{#{quantifier.min}, or-more}"
         else
@@ -71,8 +71,6 @@ module Regexp::Expression
         part['z'] = quantifier.min
         part['Z'] = quantifier.max
       else
-        part['c'] = '0'
-        part['C'] = 'N'
         part['q'] = '{1}'
         part['Q'] = ''
         part['z'] = '1'
@@ -100,15 +98,16 @@ module Regexp::Expression
   end
 
   class Subexpression < Regexp::Expression::Base
-    def strfregexp_tree(format = '%a', indent = true, separator = "\n")
-      output = [self.strfregexp(format)]
+    def strfregexp_tree(format = '%a', include_self = true, separator = "\n")
+      output = include_self ? [self.strfregexp(format)] : []
 
       output += map {|exp, index|
-        ind = indent ? ('  ' * (exp.level + 1)) : ''
-        exp.strfregexp("#{ind}#{format}", index)
+        exp.strfregexp(format, (include_self ? 1 : 0), index)
       }
 
       output.join(separator)
     end
+
+    alias :strfre_tree :strfregexp_tree
   end
 end

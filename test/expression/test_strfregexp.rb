@@ -74,51 +74,50 @@ class Expressionstrfregexp < Test::Unit::TestCase
     assert_equal( 'expression', root.strfregexp('%y') )
     assert_equal( 'root', root.strfregexp('%k') )
     assert_equal( 'expression:root', root.strfregexp('%i') )
+    assert_equal( 'Regexp::Expression::Root', root.strfregexp('%c') )
 
     a = root.first
     assert_equal( 'literal', a.strfregexp('%y') )
     assert_equal( 'literal', a.strfregexp('%k') )
     assert_equal( 'literal:literal', a.strfregexp('%i') )
+    assert_equal( 'Regexp::Expression::Literal', a.strfregexp('%c') )
 
     set = root[1]
     assert_equal( 'set', set.strfregexp('%y') )
     assert_equal( 'character', set.strfregexp('%k') )
     assert_equal( 'set:character', set.strfregexp('%i') )
+    assert_equal( 'Regexp::Expression::CharacterSet', set.strfregexp('%c') )
 
     group = root.last
     assert_equal( 'group', group.strfregexp('%y') )
     assert_equal( 'capture', group.strfregexp('%k') )
     assert_equal( 'group:capture', group.strfregexp('%i') )
+    assert_equal( 'Regexp::Expression::Group::Capture', group.strfregexp('%c') )
   end
 
   def test_expression_strfregexp_quantifier
     root = RP.parse(/a+[b](c)?d{3,4}/)
 
-    assert_equal( '0N', root.strfregexp('%c%C') )
     assert_equal( '{1}', root.strfregexp('%q') )
     assert_equal( '', root.strfregexp('%Q') )
     assert_equal( '1, 1', root.strfregexp('%z, %Z') )
 
     a = root.first
-    assert_equal( '1Y', a.strfregexp('%c%C') )
     assert_equal( '{1, or-more}', a.strfregexp('%q') )
     assert_equal( '+', a.strfregexp('%Q') )
     assert_equal( '1, -1', a.strfregexp('%z, %Z') )
 
     set = root[1]
-    assert_equal( '0N', set.strfregexp('%c%C') )
     assert_equal( '{1}', set.strfregexp('%q') )
     assert_equal( '', set.strfregexp('%Q') )
     assert_equal( '1, 1', set.strfregexp('%z, %Z') )
 
     group = root[2]
-    assert_equal( '1Y', group.strfregexp('%c%C') )
     assert_equal( '{0, 1}', group.strfregexp('%q') )
     assert_equal( '?', group.strfregexp('%Q') )
     assert_equal( '0, 1', group.strfregexp('%z, %Z') )
 
     d = root.last
-    assert_equal( '1Y', d.strfregexp('%c%C') )
     assert_equal( '{3, 4}', d.strfregexp('%q') )
     assert_equal( '{3,4}', d.strfregexp('%Q') )
     assert_equal( '3, 4', d.strfregexp('%z, %Z') )
@@ -179,7 +178,36 @@ class Expressionstrfregexp < Test::Unit::TestCase
       "    @8+1 e\n" +
       "    @9+4 group:capture\n" +
       "      @10+2 f+",
-      root.strfregexp_tree('%o %~t')
+      root.strfregexp_tree('%>%o %~t')
+    )
+  end
+
+  def test_expression_strfregexp_tree_separator
+    root = RP.parse(/a[b-d]*(e(f+))?/)
+
+    assert_equal(
+      "@0+15 expression:root-SEP-" +
+      "  @0+1 a-SEP-" +
+      "  @1+6 [b-d]*-SEP-" +
+      "  @7+8 group:capture-SEP-" +
+      "    @8+1 e-SEP-" +
+      "    @9+4 group:capture-SEP-" +
+      "      @10+2 f+",
+      root.strfregexp_tree('%>%o %~t', true, '-SEP-')
+    )
+  end
+
+  def test_expression_strfregexp_tree_exclude_self
+    root = RP.parse(/a[b-d]*(e(f+))?/)
+
+    assert_equal(
+      "@0+1 a\n" +
+      "@1+6 [b-d]*\n" +
+      "@7+8 group:capture\n" +
+      "  @8+1 e\n" +
+      "  @9+4 group:capture\n" +
+      "    @10+2 f+",
+      root.strfregexp_tree('%>%o %~t', false)
     )
   end
 
