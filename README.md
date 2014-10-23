@@ -5,7 +5,7 @@
 A ruby gem for tokenizing, parsing, and transforming regular expressions.
 
 * Multilayered
-  * A scanner/tokenizer based on [ragel](http://www.complang.org/ragel/)
+  * A scanner/tokenizer based on [ragel](http://www.colm.net/open-source/ragel/)
   * A lexer that produces a "stream" of token objects.
   * A parser that produces a "tree" of Expression objects (OO API)
 * Runs on ruby 1.8, 1.9, 2.x, and jruby (1.9 mode) runtimes.
@@ -346,7 +346,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Meta**_                | `\M-c`, `\M-\C-C`                                       | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
-| **Unicode Properties**                | _<sub>(as of [Unicode 7.0.0](http://www.unicode.org/versions/Unicode7.0.0/))</sub>_ | &#x22f1; |
+| **Unicode Properties**                | _<sub>([Unicode 7.0.0](http://www.unicode.org/versions/Unicode7.0.0/))</sub>_ | &#x22f1; |
 | &emsp;&nbsp;_**Age**_                 | `\p{Age=5.2}`, `\P{age=7.0}`                            | &#x2713; |
 | &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`                                | &#x2713; |
 | &emsp;&nbsp;_**Derived**_             | `\p{Math}`, `\P{Lowercase}`                             | &#x2713; |
@@ -412,7 +412,7 @@ ruby -Ilib test/expression/test_base.rb -n test_expression_to_re
 
 
 ## Building
-Building the scanner and the gem requires [ragel](http://www.complang.org/ragel/) to be
+Building the scanner and the gem requires [ragel](http://www.colm.net/open-source/ragel/) to be
 installed. The build tasks will automatically invoke the 'ragel:rb' task to generate the
 ruby scanner code.
 
@@ -420,7 +420,7 @@ ruby scanner code.
 The project uses the standard rubygems package tasks, so:
 
 
-To build the gem in the pkg directory, run:
+To build the gem, run:
 ```
 rake build
 ```
