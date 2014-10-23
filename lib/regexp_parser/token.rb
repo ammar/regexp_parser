@@ -20,13 +20,6 @@ class Regexp
       self.te - self.ts
     end
 
-    def to_h
-      hash = {}
-      members.each do |member|
-        hash[member.to_sym] = self.send(member.to_sym)
-      end; hash
-    end
-
     def next(exp = nil)
       if exp
         @next = exp
@@ -40,6 +33,18 @@ class Regexp
         @previous = exp
       else
         @previous
+      end
+    end
+
+    if RUBY_VERSION < '2.0.0'
+      def to_h
+        hash = {}
+
+        members.each do |member|
+          hash[member.to_sym] = self.send(member.to_sym)
+        end
+
+        hash
       end
     end
   end
