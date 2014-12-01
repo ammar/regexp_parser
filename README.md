@@ -169,7 +169,7 @@ ruby_18.implements? :conditional, :condition               # => false
 
 
 #### Notes
-  * Variatiions on a token, for example a named group with angle brackets (< and >)
+  * Variations on a token, for example a named group with angle brackets (< and >)
     vs one with a pair of single quotes, are specified with an underscore followed
     by two characters appended to the base token. In the previous named group example,
     the tokens would be :named_ab (angle brackets) and :named_sq (single quotes).
