@@ -1,7 +1,7 @@
 require File.expand_path("../../helpers", __FILE__)
 
 %w{
-  base to_s clone subexpression free_space tests
+  base to_s to_h clone subexpression free_space tests
   traverse strfregexp
 }.each do|tc|
   require File.expand_path("../test_#{tc}", __FILE__)

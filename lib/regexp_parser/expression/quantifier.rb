@@ -21,6 +21,16 @@ module Regexp::Expression
       @text.dup
     end
     alias :to_str :to_s
+
+    def to_h
+      {
+        :token => token,
+        :text  => text,
+        :mode  => mode,
+        :min   =>  min,
+        :max   =>  max
+      }
+    end
   end
 
 end

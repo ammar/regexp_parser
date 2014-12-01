@@ -85,6 +85,13 @@ module Regexp::Expression
 
       s
     end
+
+    def to_h
+      h = super
+      h[:text] = to_s(:base)
+      h[:expressions] = @expressions.map(&:to_h)
+      h
+    end
   end
 
 end

@@ -135,6 +135,21 @@ module Regexp::Expression
       Regexp.new(to_s).match(string, offset)
     end
     alias :=~ :match
+
+    def to_h
+      {
+        :type               => @type,
+        :token              => @token,
+        :text               => to_s(:base),
+        :starts_at          => @ts,
+        :length             => full_length,
+        :level              => @level,
+        :set_level          => @set_level,
+        :conditional_level  => @conditional_level,
+        :options            => @options,
+        :quantifier         => quantified? ? @quantifier.to_h : nil
+      }
+    end
   end
 
   def self.parsed(exp)
