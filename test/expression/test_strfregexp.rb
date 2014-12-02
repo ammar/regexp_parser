@@ -124,34 +124,34 @@ class Expressionstrfregexp < Test::Unit::TestCase
   end
 
   def test_expression_strfregexp_text
-    root = RP.parse(/a(b(c))|[d-gk-p]/)
+    root = RP.parse(/a(b(c))|[d-gk-p]+/)
 
-    assert_equal( 'a(b(c))|[d-gk-p]', root.strfregexp('%t') )
+    assert_equal( 'a(b(c))|[d-gk-p]+', root.strfregexp('%t') )
     assert_equal( 'expression:root', root.strfregexp('%~t') )
 
     alt = root.first
-    assert_equal( 'a(b(c))|[d-gk-p]', alt.strfregexp('%t') )
-    assert_equal( '"a(b(c))|[d-gk-p]"', alt.strfregexp('%T') )
+    assert_equal( 'a(b(c))|[d-gk-p]+', alt.strfregexp('%t') )
+    assert_equal( 'a(b(c))|[d-gk-p]+', alt.strfregexp('%T') )
     assert_equal( 'meta:alternation', alt.strfregexp('%~t') )
 
     seq_1 = alt.first
     assert_equal( 'a(b(c))', seq_1.strfregexp('%t') )
-    assert_equal( '"a(b(c))"', seq_1.strfregexp('%T') )
+    assert_equal( 'a(b(c))', seq_1.strfregexp('%T') )
     assert_equal( 'expression:sequence', seq_1.strfregexp('%~t') )
 
     group = seq_1[1]
     assert_equal( '(b(c))', group.strfregexp('%t') )
-    assert_equal( '"(b(c))"', group.strfregexp('%T') )
+    assert_equal( '(b(c))', group.strfregexp('%T') )
     assert_equal( 'group:capture', group.strfregexp('%~t') )
 
     seq_2 = alt.last
-    assert_equal( '[d-gk-p]', seq_2.strfregexp('%t') )
-    assert_equal( '"[d-gk-p]"', seq_2.strfregexp('%T') )
+    assert_equal( '[d-gk-p]+', seq_2.strfregexp('%t') )
+    assert_equal( '[d-gk-p]+', seq_2.strfregexp('%T') )
 
     set = seq_2.first
     assert_equal( '[d-gk-p]', set.strfregexp('%t') )
-    assert_equal( '"[d-gk-p]"', set.strfregexp('%T') )
-    assert_equal( '[d-gk-p]', set.strfregexp('%~t') )
+    assert_equal( '[d-gk-p]+', set.strfregexp('%T') )
+    assert_equal( '[d-gk-p]+', set.strfregexp('%~t') )
   end
 
   def test_expression_strfregexp_combined
