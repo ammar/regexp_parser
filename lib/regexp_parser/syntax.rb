@@ -64,6 +64,8 @@ module Regexp::Syntax
       when 'ruby/2.1.0';  syntax = Regexp::Syntax::Ruby::V210.new
       when 'ruby/2.1.2';  syntax = Regexp::Syntax::Ruby::V212.new
       when 'ruby/2.1.3';  syntax = Regexp::Syntax::Ruby::V213.new
+      when 'ruby/2.1.4';  syntax = Regexp::Syntax::Ruby::V214.new
+      when 'ruby/2.1.5';  syntax = Regexp::Syntax::Ruby::V215.new
 
       # aliases for the latest 2.1 implementations
       when 'ruby/2.1';    syntax = Regexp::Syntax::Ruby::V21.new
