@@ -27,9 +27,9 @@ module Regexp::Expression
     #   %z  Quantifier min
     #   %Z  Quantifier max
     #
-    #   %t  Full text of the expression (string)
+    #   %t  Base text of the expression (excludes quantifier, if any)
     #   %~t Full text if the expression is terminal, otherwise %i
-    #   %T  Full text of the expression (result of inspect)
+    #   %T  Full text of the expression (includes quantifier, if any)
     #
     #   %b  Basic info, same as '%o %i'
     #   %m  Most info, same as '%b %q'
@@ -77,9 +77,9 @@ module Regexp::Expression
         part['Z'] = '1'
       end
 
-      part['t'] = to_s
+      part['t'] = to_s(:base)
       part['~t'] = terminal? ? to_s : "#{type}:#{token}"
-      part['T'] = part['t'].inspect
+      part['T'] = to_s(:full)
 
       part['b'] = '%o %i'
       part['m'] = '%b %q'
