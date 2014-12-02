@@ -270,6 +270,8 @@ end
 ```
 
 Another example, using each_expression and strfregexp to print the object tree.
+_See the traverse.rb and strfregexp.rb files under `lib/regexp_parser/expression/methods`
+for more information on these methods._
 
 ```ruby
 include_root  = true
