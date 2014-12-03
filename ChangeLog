@@ -1,3 +1,8 @@
+Wed Dec 3 05:21:27 2014 Ammar Ali <ammarabuali@gmail.com>
+
+	* Added expand_members method to CharacterSet, returns traditional
+	  or unicode property forms of shothands (\d, \W, \s, etc.)
+
 Tue Dec 2 02:42:39 2014 Ammar Ali <ammarabuali@gmail.com>
 
 	* Improved meaning and output of %t and %T in strfregexp.

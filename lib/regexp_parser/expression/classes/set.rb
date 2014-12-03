@@ -72,6 +72,33 @@ module Regexp::Expression
       @closed
     end
 
+    # Returns an array of the members with any shorthand members like \d and \W
+    # expanded to either traditional form or unicode properties.
+    def expand_members(use_properties = false)
+      @members.map do |member|
+        case member
+        when "\\d"
+          use_properties ? '\p{Digit}'  : '0-9'
+        when "\\D"
+          use_properties ? '\P{Digit}'  : '^0-9'
+        when "\\w"
+          use_properties ? '\p{Word}'   : 'A-Za-z0-9_'
+        when "\\W"
+          use_properties ? '\P{Word}'   : '^A-Za-z0-9_'
+        when "\\s"
+          use_properties ? '\p{Space}'  : ' \t\f\v\n\r'
+        when "\\S"
+          use_properties ? '\P{Space}'  : '^ \t\f\v\n\r'
+        when "\\h"
+          use_properties ? '\p{Xdigit}' : '0-9A-Fa-f'
+        when "\\H"
+          use_properties ? '\P{Xdigit}' : '^0-9A-Fa-f'
+        else
+          member
+        end
+      end
+    end
+
     def to_s(format = :full)
       s = ''
 
@@ -80,9 +107,7 @@ module Regexp::Expression
       s << @members.join
       s << ']'
 
-      case format
-      when :base
-      else
+      unless format == :base
         s << @quantifier.to_s if quantified?
       end
 
