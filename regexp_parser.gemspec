@@ -1,4 +1,5 @@
 $:.unshift File.join(File.dirname(__FILE__), 'lib')
+
 require 'regexp_parser/version'
 
 Gem::Specification.new do |gem|
@@ -10,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = 'http://github.com/ammar/regexp_parser'
 
   if gem.respond_to?(:metadata)
-    gem.metadata      = { 'issue_tracker' => 'https://github.com/ammar/regexp_parser/issues' }
+    gem.metadata    = { 'issue_tracker' => 'https://github.com/ammar/regexp_parser/issues' }
   end
 
   gem.authors       = ['Ammar Ali']
