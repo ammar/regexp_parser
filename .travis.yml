@@ -19,7 +19,6 @@ rvm:
   - '2.0.0'
   - '2.1.5'
   - '2.2.0'
-  - 'jruby-1.7.18'
 
 script: 'bundle exec rake test:full'
 
