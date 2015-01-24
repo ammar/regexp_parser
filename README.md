@@ -9,7 +9,7 @@ A ruby gem for tokenizing, parsing, and transforming regular expressions.
   * A lexer that produces a "stream" of token objects.
   * A parser that produces a "tree" of Expression objects (OO API)
 * Runs on ruby 1.8, 1.9, 2.x, and jruby (1.9 mode) runtimes.
-* Recognizes ruby 1.8, 1.9, and 2.x regular expressions [See Scanner Syntax](#scanner-syntax)
+* Recognizes ruby 1.8, 1.9, and 2.x regular expressions [See Supported Syntax](#supported-syntax)
 
 
 _For an example of regexp_parser in use, see the [meta_re project](https://github.com/ammar/meta_re)_
