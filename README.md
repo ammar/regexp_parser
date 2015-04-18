@@ -358,6 +358,10 @@ _Note that not all of these are available in all versions of Ruby_
 
 
 <br/>
+##### Missing Features
+
+  - Unicode blocks, e.g. \p{InArrows}, \p{InArmenian}. _(h/t @gjtorikian for pointing it out)_
+
 ##### Inapplicable Features
 
 Some modifiers, like `o` and `s`, apply to the **Regexp** object itself and do not

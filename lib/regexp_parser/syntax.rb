@@ -66,12 +66,15 @@ module Regexp::Syntax
       when 'ruby/2.1.3';  syntax = Regexp::Syntax::Ruby::V213.new
       when 'ruby/2.1.4';  syntax = Regexp::Syntax::Ruby::V214.new
       when 'ruby/2.1.5';  syntax = Regexp::Syntax::Ruby::V215.new
+      when 'ruby/2.1.6';  syntax = Regexp::Syntax::Ruby::V216.new
 
       # aliases for the latest 2.1 implementations
       when 'ruby/2.1';    syntax = Regexp::Syntax::Ruby::V21.new
 
       # Ruby 2.2.x
       when 'ruby/2.2.0';  syntax = Regexp::Syntax::Ruby::V220.new
+      when 'ruby/2.2.1';  syntax = Regexp::Syntax::Ruby::V221.new
+      when 'ruby/2.2.2';  syntax = Regexp::Syntax::Ruby::V222.new
 
       # aliases for the latest 2.2 implementations
       when 'ruby/2.2';    syntax = Regexp::Syntax::Ruby::V22.new
