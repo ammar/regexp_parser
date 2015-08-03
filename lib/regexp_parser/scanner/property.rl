@@ -33,7 +33,7 @@
                           'id_start'i       | 'id_continue'i      |
                           'xid_start'i      | 'xid_continue'i     |
                           'grapheme_base'i  | 'grapheme_extend'i  |
-                          'default_ignorable_code_point'i; 
+                          'default_ignorable_code_point'i;
 
   property_age          = 'age=1.1'i | 'age=2.0'i | 'age=2.1'i |
                           'age=3.0'i | 'age=3.1'i | 'age=3.2'i |
@@ -553,7 +553,7 @@
         self.emit(type, :script_tagalog,                  text, ts-1, te)
       when 'thaa', 'thaana'
         self.emit(type, :script_thaana,                   text, ts-1, te)
-      when 'thai' 
+      when 'thai'
         self.emit(type, :script_thai,                     text, ts-1, te)
       when 'tibt', 'tibetan'
         self.emit(type, :script_tibetan,                  text, ts-1, te)
@@ -577,6 +577,220 @@
         self.emit(type, :script_common,                   text, ts-1, te)
       when 'zzzz', 'unknown'
         self.emit(type, :script_unknown,                  text, ts-1, te)
+
+      # Unicode blocks
+      when 'inalphabetic_presentation_forms'
+        self.emit(type, :block_inalphabetic_presentation_forms,           text, ts-1, te)
+      when 'inalphabeticpresentationforms'
+        self.emit(type, :block_inalphabetic_presentation_forms,           text, ts-1, te)
+      when 'inarabicpresentationforms-a'
+        self.emit(type, :block_inarabic_presentation_forms_a,             text, ts-1, te)
+      when 'inarabicpresentationforms-b'
+        self.emit(type, :block_inarabic_presentation_forms_b,             text, ts-1, te)
+      when 'inarabic'
+        self.emit(type, :block_inarabic,                                  text, ts-1, te)
+      when 'inarmenian'
+        self.emit(type, :block_inarmenian,                                text, ts-1, te)
+      when 'inarrows'
+        self.emit(type, :block_inarrows,                                  text, ts-1, te)
+      when 'inbasiclatin'
+        self.emit(type, :block_inbasic_latin,                             text, ts-1, te)
+      when 'inbengali'
+        self.emit(type, :block_inbengali,                                 text, ts-1, te)
+      when 'inblockelements'
+        self.emit(type, :block_inblock_elements,                          text, ts-1, te)
+      when 'inbopomofoextended'
+        self.emit(type, :block_inbopomofo_extended,                       text, ts-1, te)
+      when 'inbopomofo'
+        self.emit(type, :block_inbopomofo,                                text, ts-1, te)
+      when 'inboxdrawing'
+        self.emit(type, :block_inbox_drawing,                             text, ts-1, te)
+      when 'inbraillepatterns'
+        self.emit(type, :block_inbraille_patterns,                        text, ts-1, te)
+      when 'inbuhid'
+        self.emit(type, :block_inbuhid,                                   text, ts-1, te)
+      when 'incjkcompatibilityforms'
+        self.emit(type, :block_incjk_compatibility_forms,                 text, ts-1, te)
+      when 'incjkcompatibilityideographs'
+        self.emit(type, :block_incjk_compatibility_ideographs,            text, ts-1, te)
+      when 'incjkcompatibility'
+        self.emit(type, :block_incjk_compatibility,                       text, ts-1, te)
+      when 'incjkradicalssupplement'
+        self.emit(type, :block_incjk_radicals_supplement,                 text, ts-1, te)
+      when 'incjksymbolsandpunctuation'
+        self.emit(type, :block_incjk_symbols_and_punctuation,             text, ts-1, te)
+      when 'incjkunifiedideographsextensiona'
+        self.emit(type, :block_incjk_unified_ideographs_extension_a,      text, ts-1, te)
+      when 'incjkunifiedideographs'
+        self.emit(type, :block_incjk_unified_ideographs,                  text, ts-1, te)
+      when 'incherokee'
+        self.emit(type, :block_incherokee,                                text, ts-1, te)
+      when 'incombiningdiacriticalmarksforsymbols'
+        self.emit(type, :block_incombining_diacritical_marks_for_symbols, text, ts-1, te)
+      when 'incombiningdiacriticalmarks'
+        self.emit(type, :block_incombining_diacritical_marks,             text, ts-1, te)
+      when 'incombininghalfmarks'
+        self.emit(type, :block_incombining_half_marks,                    text, ts-1, te)
+      when 'incontrolpictures'
+        self.emit(type, :block_incontrol_pictures,                        text, ts-1, te)
+      when 'incurrencysymbols'
+        self.emit(type, :block_incurrency_symbols,                        text, ts-1, te)
+      when 'incyrillicsupplementary'
+        self.emit(type, :block_incyrillic_supplementary,                  text, ts-1, te)
+      when 'incyrillic'
+        self.emit(type, :block_incyrillic,                                text, ts-1, te)
+      when 'indevanagari'
+        self.emit(type, :block_indevanagari,                              text, ts-1, te)
+      when 'indingbats'
+        self.emit(type, :block_indingbats,                                text, ts-1, te)
+      when 'inenclosedalphanumerics'
+        self.emit(type, :block_inenclosed_alphanumerics,                  text, ts-1, te)
+      when 'inenclosedcjklettersandmonths'
+        self.emit(type, :block_inenclosed_cjk_letters_and_months,         text, ts-1, te)
+      when 'inethiopic'
+        self.emit(type, :block_inethiopic,                                text, ts-1, te)
+      when 'ingeneralpunctuation'
+        self.emit(type, :block_ingeneral_punctuation,                     text, ts-1, te)
+      when 'ingeometricshapes'
+        self.emit(type, :block_ingeometric_shapes,                        text, ts-1, te)
+      when 'ingeorgian'
+        self.emit(type, :block_ingeorgian,                                text, ts-1, te)
+      when 'ingreekextended'
+        self.emit(type, :block_ingreek_extended,                          text, ts-1, te)
+      when 'ingreekandcoptic'
+        self.emit(type, :block_ingreek_and_coptic,                        text, ts-1, te)
+      when 'ingujarati'
+        self.emit(type, :block_ingujarati,                                text, ts-1, te)
+      when 'ingurmukhi'
+        self.emit(type, :block_ingurmukhi,                                text, ts-1, te)
+      when 'inhalfwidthandfullwidthforms'
+        self.emit(type, :block_inhalfwidth_and_fullwidth_forms,           text, ts-1, te)
+      when 'inhangulcompatibilityjamo'
+        self.emit(type, :block_inhangul_compatibility_jamo,               text, ts-1, te)
+      when 'inhanguljamo'
+        self.emit(type, :block_inhangul_jamo,                             text, ts-1, te)
+      when 'inhangulsyllables'
+        self.emit(type, :block_inhangul_syllables,                        text, ts-1, te)
+      when 'inhanunoo'
+        self.emit(type, :block_inhanunoo,                                 text, ts-1, te)
+      when 'inhebrew'
+        self.emit(type, :block_inhebrew,                                  text, ts-1, te)
+      when 'inhighprivateusesurrogates'
+        self.emit(type, :block_inhigh_private_use_surrogates,             text, ts-1, te)
+      when 'inhighsurrogates'
+        self.emit(type, :block_inhigh_surrogates,                         text, ts-1, te)
+      when 'inhiragana'
+        self.emit(type, :block_inhiragana,                                text, ts-1, te)
+      when 'inipaextensions'
+        self.emit(type, :block_inipa_extensions,                          text, ts-1, te)
+      when 'inideographicdescriptioncharacters'
+        self.emit(type, :block_inideographic_description_characters,      text, ts-1, te)
+      when 'inkanbun'
+        self.emit(type, :block_inkanbun,                                  text, ts-1, te)
+      when 'inkangxiradicals'
+        self.emit(type, :block_inkangxi_radicals,                         text, ts-1, te)
+      when 'inkannada'
+        self.emit(type, :block_inkannada,                                 text, ts-1, te)
+      when 'inkatakanaphoneticextensions'
+        self.emit(type, :block_inkatakana_phonetic_extensions,            text, ts-1, te)
+      when 'inkatakana'
+        self.emit(type, :block_inkatakana,                                text, ts-1, te)
+      when 'inkhmersymbols'
+        self.emit(type, :block_inkhmer_symbols,                           text, ts-1, te)
+      when 'inkhmer'
+        self.emit(type, :block_inkhmer,                                   text, ts-1, te)
+      when 'inlao'
+        self.emit(type, :block_inlao,                                     text, ts-1, te)
+      when 'inlatin-1supplement'
+        self.emit(type, :block_inlatin_1_supplement,                      text, ts-1, te)
+      when 'inlatinextended-a'
+        self.emit(type, :block_inlatin_extended_a,                        text, ts-1, te)
+      when 'inlatinextended-b'
+        self.emit(type, :block_inlatin_extended_b,                        text, ts-1, te)
+      when 'inlatinextendedadditional'
+        self.emit(type, :block_inlatin_extended_additional,               text, ts-1, te)
+      when 'inletterlikesymbols'
+        self.emit(type, :block_inletterlike_symbols,                      text, ts-1, te)
+      when 'inlimbu'
+        self.emit(type, :block_inlimbu,                                   text, ts-1, te)
+      when 'inlowsurrogates'
+        self.emit(type, :block_inlow_surrogates,                          text, ts-1, te)
+      when 'inmalayalam'
+        self.emit(type, :block_inmalayalam,                               text, ts-1, te)
+      when 'inmathematicaloperators'
+        self.emit(type, :block_inmathematical_operators,                  text, ts-1, te)
+      when 'inmiscellaneousmathematicalsymbols-a'
+        self.emit(type, :block_inmiscellaneous_mathematical_symbols_a,    text, ts-1, te)
+      when 'inmiscellaneousmathematicalsymbols-b'
+        self.emit(type, :block_inmiscellaneous_mathematical_symbols_b,    text, ts-1, te)
+      when 'inmiscellaneoussymbolsandarrows'
+        self.emit(type, :block_inmiscellaneous_symbols_and_arrows,        text, ts-1, te)
+      when 'inmiscellaneoussymbols'
+        self.emit(type, :block_inmiscellaneous_symbols,                   text, ts-1, te)
+      when 'inmiscellaneoustechnical'
+        self.emit(type, :block_inmiscellaneous_technical,                 text, ts-1, te)
+      when 'inmongolian'
+        self.emit(type, :block_inmongolian,                               text, ts-1, te)
+      when 'inmyanmar'
+        self.emit(type, :block_inmyanmar,                                 text, ts-1, te)
+      when 'innumberforms'
+        self.emit(type, :block_innumber_forms,                            text, ts-1, te)
+      when 'inogham'
+        self.emit(type, :block_inogham,                                   text, ts-1, te)
+      when 'inopticalcharacterrecognition'
+        self.emit(type, :block_inoptical_character_recognition,           text, ts-1, te)
+      when 'inoriya'
+        self.emit(type, :block_inoriya,                                   text, ts-1, te)
+      when 'inphoneticextensions'
+        self.emit(type, :block_inphonetic_extensions,                     text, ts-1, te)
+      when 'inprivateusearea'
+        self.emit(type, :block_inprivate_use_area,                        text, ts-1, te)
+      when 'inrunic'
+        self.emit(type, :block_inrunic,                                   text, ts-1, te)
+      when 'insinhala'
+        self.emit(type, :block_insinhala,                                 text, ts-1, te)
+      when 'insmallformvariants'
+        self.emit(type, :block_insmall_form_variants,                     text, ts-1, te)
+      when 'inspacingmodifierletters'
+        self.emit(type, :block_inspacing_modifier_letters,                text, ts-1, te)
+      when 'inspecials'
+        self.emit(type, :block_inspecials,                                text, ts-1, te)
+      when 'insuperscriptsandsubscripts'
+        self.emit(type, :block_insuperscripts_and_subscripts,             text, ts-1, te)
+      when 'insupplementalarrows-a'
+        self.emit(type, :block_insupplemental_arrows_a,                   text, ts-1, te)
+      when 'insupplementalarrows-b'
+        self.emit(type, :block_insupplemental_arrows_b,                   text, ts-1, te)
+      when 'insupplementalmathematicaloperators'
+        self.emit(type, :block_insupplemental_mathematical_operators,     text, ts-1, te)
+      when 'insyriac'
+        self.emit(type, :block_insyriac,                                  text, ts-1, te)
+      when 'intagalog'
+        self.emit(type, :block_intagalog,                                 text, ts-1, te)
+      when 'intagbanwa'
+        self.emit(type, :block_intagbanwa,                                text, ts-1, te)
+      when 'intaile'
+        self.emit(type, :block_intai_le,                                  text, ts-1, te)
+      when 'intamil'
+        self.emit(type, :block_intamil,                                   text, ts-1, te)
+      when 'intelugu'
+        self.emit(type, :block_intelugu,                                  text, ts-1, te)
+      when 'inthaana'
+        self.emit(type, :block_inthaana,                                  text, ts-1, te)
+      when 'inthai'
+        self.emit(type, :block_inthai,                                    text, ts-1, te)
+      when 'intibetan'
+        self.emit(type, :block_intibetan,                                 text, ts-1, te)
+      when 'inunifiedcanadianaboriginalsyllabics'
+        self.emit(type, :block_inunified_canadian_aboriginal_syllabics,   text, ts-1, te)
+      when 'invariationselectors'
+        self.emit(type, :block_invariation_selectors,                     text, ts-1, te)
+      when 'inyiradicals'
+        self.emit(type, :block_inyi_radicals,                             text, ts-1, te)
+      when 'inyisyllables'
+        self.emit(type, :block_inyi_syllables,                            text, ts-1, te)
+      when 'inyijinghexagramsymbols'
+        self.emit(type, :block_inyijing_hexagram_symbols,                 text, ts-1, te)
 
       else
         # Should this really be an error? Or would emitting
