@@ -42,7 +42,7 @@
                           'age=6.1'i | 'age=6.2'i | 'age=6.3'i |
                           'age=7.0'i;
 
-  property_script       = (alpha | space | '_')+; # everything else
+  property_script       = (alnum | space | '_' | '-')+; # everything else
 
   property_sequence     = property_char . '{' . '^'? (
                             property_name | general_category |
@@ -579,7 +579,7 @@
         self.emit(type, :script_unknown,                  text, ts-1, te)
 
       # Unicode blocks
-      when 'inalphabetic_presentation_forms'
+      when 'inalphabeticpresentationforms'
         self.emit(type, :block_inalphabetic_presentation_forms,           text, ts-1, te)
       when 'inalphabeticpresentationforms'
         self.emit(type, :block_inalphabetic_presentation_forms,           text, ts-1, te)
