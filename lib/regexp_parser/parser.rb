@@ -270,6 +270,9 @@ module Regexp::Parser
     when *Regexp::Syntax::Token::UnicodeProperty::Script
       @node << Script.new(token)
 
+    when *Regexp::Syntax::Token::UnicodeProperty::UnicodeBlock
+      @node << Block.new(token)
+
     else
       raise UnknownTokenError.new('UnicodeProperty', token)
     end
