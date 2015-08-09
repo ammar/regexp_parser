@@ -355,12 +355,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**General Categories**_  | `\p{Lu}`, `\P{Cs}`                                      | &#x2713; |
 | &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`                            | &#x2713; |
 | &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`                              | &#x2713; |
-
-
-<br/>
-##### Missing Features
-
-  - Unicode blocks, e.g. \p{InArrows}, \p{InArmenian}. _(h/t @gjtorikian for pointing it out)_
+| &emsp;&nbsp;_**Blocks**_             | `\p{InArmenian}`, `\P{InKhmer}`                            | &#x2713; |
 
 ##### Inapplicable Features
 

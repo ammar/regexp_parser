@@ -1,3 +1,15 @@
+Sun Aug 6 2015 Ammar Ali <ammarabuali@gmail.com>
+
+	* Added UnicodeBlocks support to the parser.
+
+Mon Aug 3 2015 Garen Torikian <gjtorikian@gmail.com>
+
+	* Added UnicodeBlocks support to the scanner.
+
+Sat Apr 18 14:38:12 2015 Ammar Ali <ammarabuali@gmail.com>
+
+	* Updated ruby versions for latest releases.
+
 Wed Dec 3 05:21:27 2014 Ammar Ali <ammarabuali@gmail.com>
 
 	* Added expand_members method to CharacterSet, returns traditional

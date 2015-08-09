@@ -337,6 +337,13 @@ class ParserProperties < Test::Unit::TestCase
            "Expected Script property, but got #{t.expressions[1].class.name}")
   end
 
+  def test_parse_property_block
+    t = RP.parse 'ab\p{InArmenian}cd', 'ruby/1.9'
+
+    assert( t.expressions[1].is_a?(UnicodeProperty::Block),
+           "Expected Block property, but got #{t.expressions[1].class.name}")
+  end
+
   def test_parse_property_following_literal
     t = RP.parse 'ab\p{Lu}cd', 'ruby/1.9'
 
