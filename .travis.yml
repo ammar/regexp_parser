@@ -9,6 +9,8 @@ env:
 
 before_install:
   - gem update --system
+  - gem install bundler
+  - gem update
   - gem --version
   - travis_retry sudo apt-get update -qq
   - travis_retry bash -c "if [[ \"${RAGEL}\" == ON ]]; then sudo apt-get install -qq ragel; fi"
