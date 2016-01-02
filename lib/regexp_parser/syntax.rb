@@ -10,7 +10,7 @@ module Regexp::Syntax
 
   class UnknownSyntaxNameError < SyntaxError
     def initialize(name)
-      super "Unknown syntax name '#{name}'"
+      super "Unknown syntax name '#{name}'. Forgot to add it in the case statement?"
     end
   end
 
@@ -36,7 +36,10 @@ module Regexp::Syntax
       ['*', 'any'].include?( name.to_s )
 
     self.load(name)
+    self.instantiate(name)
+  end
 
+  def self.instantiate(name)
     case name
       # Ruby 1.8.x (NOTE: 1.8.6 is no longer a supported runtime,
       # but its regex features are still recognized.)
@@ -68,6 +71,7 @@ module Regexp::Syntax
       when 'ruby/2.1.5';  syntax = Regexp::Syntax::Ruby::V215.new
       when 'ruby/2.1.6';  syntax = Regexp::Syntax::Ruby::V216.new
       when 'ruby/2.1.7';  syntax = Regexp::Syntax::Ruby::V217.new
+      when 'ruby/2.1.8';  syntax = Regexp::Syntax::Ruby::V218.new
 
       # aliases for the latest 2.1 implementations
       when 'ruby/2.1';    syntax = Regexp::Syntax::Ruby::V21.new
@@ -77,12 +81,19 @@ module Regexp::Syntax
       when 'ruby/2.2.1';  syntax = Regexp::Syntax::Ruby::V221.new
       when 'ruby/2.2.2';  syntax = Regexp::Syntax::Ruby::V222.new
       when 'ruby/2.2.3';  syntax = Regexp::Syntax::Ruby::V223.new
+      when 'ruby/2.2.4';  syntax = Regexp::Syntax::Ruby::V224.new
 
       # aliases for the latest 2.2 implementations
       when 'ruby/2.2';    syntax = Regexp::Syntax::Ruby::V22.new
 
+      # Ruby 2.3.x
+      when 'ruby/2.3.0';  syntax = Regexp::Syntax::Ruby::V230.new
+
+      # alias for the latest 2.3 implementation
+      when 'ruby/2.3';    syntax = Regexp::Syntax::Ruby::V23.new
+
       else
-        raise UnknownSyntaxError.new(name)
+        raise UnknownSyntaxNameError.new(name)
     end
   end
 

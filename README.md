@@ -350,12 +350,12 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
 | **Unicode Properties**                | _<sub>([Unicode 7.0.0](http://www.unicode.org/versions/Unicode7.0.0/))</sub>_ | &#x22f1; |
 | &emsp;&nbsp;_**Age**_                 | `\p{Age=5.2}`, `\P{age=7.0}`                            | &#x2713; |
+| &emsp;&nbsp;_**Blocks**_              | `\p{InArmenian}`, `\P{InKhmer}`                         | &#x2713; |
 | &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`                                | &#x2713; |
 | &emsp;&nbsp;_**Derived**_             | `\p{Math}`, `\P{Lowercase}`                             | &#x2713; |
 | &emsp;&nbsp;_**General Categories**_  | `\p{Lu}`, `\P{Cs}`                                      | &#x2713; |
 | &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`                            | &#x2713; |
 | &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`                              | &#x2713; |
-| &emsp;&nbsp;_**Blocks**_             | `\p{InArmenian}`, `\P{InKhmer}`                            | &#x2713; |
 
 ##### Inapplicable Features
 
@@ -458,4 +458,4 @@ Documentation and books used while working on this project.
 
 ---
 ##### Copyright
-_Copyright (c) 2010-2014 Ammar Ali. See LICENSE file for details._
+_Copyright (c) 2010-2016 Ammar Ali. See LICENSE file for details._
