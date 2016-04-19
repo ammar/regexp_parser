@@ -29,6 +29,7 @@ class ScannerGroups < Test::Unit::TestCase
 
     # Comments
     '(?#abc)'         => [0, :group,     :comment,      '(?#abc)',    0, 7],
+    '(?#)'            => [0, :group,     :comment,      '(?#)',       0, 4],
 
     # Assertions
     '(?=abc)'         => [0, :assertion, :lookahead,    '(?=',        0, 3],

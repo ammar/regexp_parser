@@ -78,7 +78,7 @@
 
   conditional           = '(?(';
 
-  group_comment         = '?#' . [^)]+ . group_close;
+  group_comment         = '?#' . [^)]* . group_close;
 
   group_atomic          = '?>';
   group_passive         = '?:';
