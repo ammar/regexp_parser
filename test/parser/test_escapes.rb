@@ -25,6 +25,9 @@ class TestParserEscapes < Test::Unit::TestCase
     /a\)c/    => [1, :escape,   :group_close,       EscapeSequence::Literal],
     /a\{c/    => [1, :escape,   :interval_open,     EscapeSequence::Literal],
     /a\}c/    => [1, :escape,   :interval_close,    EscapeSequence::Literal],
+
+    # unicode escapes
+    /a\u{9879}/ => [1, :escape, :codepoint_list,    EscapeSequence::Literal],
   }
 
   count = 0
