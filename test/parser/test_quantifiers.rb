@@ -150,6 +150,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :interval, t.expressions.first.quantifier.token )
+    assert_equal( '{2,}?', t.expressions.first.quantifier.text )
     assert_equal( 2, t.expressions.first.quantifier.min)
     assert_equal( -1, t.expressions.first.quantifier.max)
     assert_equal( :reluctant, t.expressions.first.quantifier.mode )
@@ -161,6 +162,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
 
     assert_equal( true, t.expressions.first.quantified? )
     assert_equal( :interval, t.expressions.first.quantifier.token )
+    assert_equal( '{3,}+', t.expressions.first.quantifier.text )
     assert_equal( 3, t.expressions.first.quantifier.min)
     assert_equal( -1, t.expressions.first.quantifier.max)
     assert_equal( :possessive, t.expressions.first.quantifier.mode )
