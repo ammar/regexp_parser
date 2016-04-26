@@ -412,13 +412,19 @@ module Regexp::Parser
   def self.interval(target_node, token)
     text = token.text
     mchr = text[text.length-1].chr =~ /[?+]/ ? text[text.length-1].chr : nil
-    mode = case mchr
-    when '?'; text.chop!; :reluctant
-    when '+'; text.chop!; :possessive
-    else :greedy
+    case mchr
+    when '?'
+      range_text = text[0...-1]
+      mode = :reluctant
+    when '+'
+      range_text = text[0...-1]
+      mode = :possessive
+    else
+      range_text = text
+      mode = :greedy
     end
 
-    range = text.gsub(/\{|\}/, '').split(',', 2).each {|i| i.strip}
+    range = range_text.gsub(/\{|\}/, '').split(',', 2).each {|i| i.strip}
     min = range[0].empty? ? 0 : range[0]
     max = range[1] ? (range[1].empty? ? -1 : range[1]) : min
 
