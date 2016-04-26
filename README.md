@@ -8,7 +8,7 @@ A ruby gem for tokenizing, parsing, and transforming regular expressions.
   * A scanner/tokenizer based on [ragel](http://www.colm.net/open-source/ragel/)
   * A lexer that produces a "stream" of token objects.
   * A parser that produces a "tree" of Expression objects (OO API)
-* Runs on ruby 1.8, 1.9, 2.x, and jruby (1.9 mode) runtimes.
+* Runs on ruby 1.9, 2.x, and jruby (1.9 mode) runtimes.
 * Recognizes ruby 1.8, 1.9, and 2.x regular expressions [See Supported Syntax](#supported-syntax)
 
 
@@ -18,7 +18,7 @@ _For an example of regexp_parser in use, see the [meta_re project](https://githu
 ---
 ## Requirements
 
-* Ruby >= 1.8.7
+* Ruby >= 1.9 _(1.8 still works, but is no being tested. It will be removed in 0.4.0)_
 * Ragel >= 6.0, but only if you want to build the gem or work on the scanner.
 
 
@@ -133,6 +133,12 @@ Regexp::Scanner.scan( /(cat?([bhm]at)){3,5}/ ).map {|token| token[2]}
     does not perform lexical analysis on the tokens, sticking to the task
     of identifying the smallest possible tokens and leaving lexical analysis
     to the lexer.
+
+  * The MRI implementation may accept expressions that either conflict with
+    the documentation or are undocumented. The scanner does not support such
+    implementation quirks.
+    _(See issues [#3](https://github.com/ammar/regexp_parser/issues/3) and
+    [#15](https://github.com/ammar/regexp_parser/issues/15) for examples)_
 
 
 ---
@@ -371,7 +377,7 @@ expressions library (Onigmo). They are not supported by the scanner.
   - **Capture History**: `(?@...)`, `(?@<name>...)` _<a href="https://github.com/k-takata/Onigmo/blob/master/doc/RE#L499" title="Links to master branch, may change">[See]</a>_
 
 
-See something else missing? Please submit an [issue](https://github.com/ammar/regexp_parser/issues)
+See something missing? Please submit an [issue](https://github.com/ammar/regexp_parser/issues)
 
 _**Note**: Attempting to process expressions with unsupported syntax features can raise an error,
 or incorrectly return tokens/objects as literals._
@@ -437,7 +443,7 @@ Documentation and books used while working on this project.
 
 
 #### Ruby Flavors
-* Oniguruma Regular Expressions (Ruby 1.9.x) [link](http://www.geocities.jp/kosako3/oniguruma/doc/RE.txt)
+* Oniguruma Regular Expressions (Ruby 1.9.x) [link](https://github.com/kkos/oniguruma/blob/master/doc/RE)
 * Onigmo Regular Expressions (Ruby >= 2.0) [link](https://github.com/k-takata/Onigmo/blob/master/doc/RE)
 
 

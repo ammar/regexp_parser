@@ -1,3 +1,12 @@
+Tue Apr 26 2016 Ammar Ali <ammarabuali@gmail.com>
+
+	* Thanks to John Backus (https://github.com/backus):
+	  - Fixed scanning of zero length comments (PR #12)
+	  - Fixed missing escape:codepoint_list syntax token (PR #14)
+	  - Fixed to_s for modified interval quantifiers (PR #17)
+	* Added a note about MRI implementation quirks to Scanner section
+	* Bumped version to 0.3.3
+
 Fri Jan 1 2016 Ammar Ali <ammarabuali@gmail.com>
 
 	* Updated ruby versions for latest releases; 2.1.8, 2.2.4, and 2.3.0
