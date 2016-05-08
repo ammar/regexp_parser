@@ -201,7 +201,7 @@ syntax, and prints the token objects' text indented to their level.
 ```ruby
 require 'regexp_parser'
 
-Regexp::Lexer.scan /a?(b(c))*[d]+/, 'ruby/1.9' do |token|
+Regexp::Lexer.lex /a?(b(c))*[d]+/, 'ruby/1.9' do |token|
   puts "#{'  ' * token.level}#{token.text}"
 end
 
