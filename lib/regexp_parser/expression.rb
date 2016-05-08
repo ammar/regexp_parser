@@ -16,6 +16,7 @@ module Regexp::Expression
       @level              = token.level
       @set_level          = token.set_level
       @conditional_level  = token.conditional_level
+      @quantifier         = nil
       @options            = nil
     end
 

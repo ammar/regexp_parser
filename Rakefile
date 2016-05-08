@@ -53,8 +53,17 @@ namespace :ragel do
   desc "Process the ragel source files and output ruby code"
   task :rb do |t|
     RAGEL_SOURCE_FILES.each do |file|
+      output_file = "#{RAGEL_OUTPUT_DIR}/#{file}.rb"
       # using faster flat table driven FSM, about 25% larger code, but about 30% faster
-      sh "ragel -F1 -R #{RAGEL_SOURCE_DIR}/#{file}.rl -o #{RAGEL_OUTPUT_DIR}/#{file}.rb"
+      sh "ragel -F1 -R #{RAGEL_SOURCE_DIR}/#{file}.rl -o #{output_file}"
+
+      contents = File.read(output_file)
+
+      File.open(output_file, 'r+') do |file|
+        contents = "# -*- warn-indent:false;  -*-\n" + contents
+
+        file.write(contents)
+      end
     end
   end
 
