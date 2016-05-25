@@ -1,3 +1,13 @@
+Wed May 25 2016 Ammar Ali <ammarabuali@gmail.com>
+
+	* Thanks to John Backus (https://github.com/backus):
+	  - Fix warnings (PR #19)
+	* Thanks to Dana Scheider (https://github.com/danascheider):
+	  - Correct error in README (PR #20)
+	* Fixed mistyped \h and \H character types (issue #21)
+	* Added ancestry syntax files for latest rubies (issue #22)
+	* Bumped version to 0.3.4
+
 Tue Apr 26 2016 Ammar Ali <ammarabuali@gmail.com>
 
 	* Thanks to John Backus (https://github.com/backus):
