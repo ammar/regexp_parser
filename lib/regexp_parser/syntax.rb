@@ -72,6 +72,7 @@ module Regexp::Syntax
       when 'ruby/2.1.6';  syntax = Regexp::Syntax::Ruby::V216.new
       when 'ruby/2.1.7';  syntax = Regexp::Syntax::Ruby::V217.new
       when 'ruby/2.1.8';  syntax = Regexp::Syntax::Ruby::V218.new
+      when 'ruby/2.1.9';  syntax = Regexp::Syntax::Ruby::V219.new
 
       # aliases for the latest 2.1 implementations
       when 'ruby/2.1';    syntax = Regexp::Syntax::Ruby::V21.new
@@ -82,12 +83,14 @@ module Regexp::Syntax
       when 'ruby/2.2.2';  syntax = Regexp::Syntax::Ruby::V222.new
       when 'ruby/2.2.3';  syntax = Regexp::Syntax::Ruby::V223.new
       when 'ruby/2.2.4';  syntax = Regexp::Syntax::Ruby::V224.new
+      when 'ruby/2.2.5';  syntax = Regexp::Syntax::Ruby::V225.new
 
       # aliases for the latest 2.2 implementations
       when 'ruby/2.2';    syntax = Regexp::Syntax::Ruby::V22.new
 
       # Ruby 2.3.x
       when 'ruby/2.3.0';  syntax = Regexp::Syntax::Ruby::V230.new
+      when 'ruby/2.3.1';  syntax = Regexp::Syntax::Ruby::V231.new
 
       # alias for the latest 2.3 implementation
       when 'ruby/2.3';    syntax = Regexp::Syntax::Ruby::V23.new
