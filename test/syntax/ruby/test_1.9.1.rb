@@ -13,6 +13,10 @@ class TestSyntaxRuby_V191 < Test::Unit::TestCase
         Escape::Backreference + Escape::ASCII + Escape::Meta + Escape::Unicode
       ].flatten,
 
+      :type => [
+        CharacterType::Hex
+      ].flatten,
+
       :quantifier => [
         Quantifier::Greedy + Quantifier::Reluctant +
         Quantifier::Possessive
