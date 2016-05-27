@@ -38,14 +38,16 @@ class ScannerEscapes < Test::Unit::TestCase
     'ab\\\Kcd'        => [1, :escape,  :backslash,        '\\\\',           2,  4],
   }
 
-  count = 0
-  tests.each do |pattern, test|
-    define_method "test_scan_#{test[1]}_#{test[2]}_#{count+=1}" do
-
+  tests.each_with_index do |(pattern, (index, type, token, text, ts, te)), count|
+    define_method "test_scanner_#{type}_#{token}_#{count}" do
       tokens = RS.scan(pattern)
-      token = tokens[test[0]]
-      assert_equal( test[1,5], token )
+      result = tokens.at(index)
 
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
+      assert_equal ts,    result[3]
+      assert_equal te,    result[4]
     end
   end
 

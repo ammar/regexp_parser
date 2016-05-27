@@ -22,13 +22,16 @@ class ScannerAnchors < Test::Unit::TestCase
    "a\\\\Bc"    => [1, :escape,    :backslash,              '\\\\', 1, 3],
   }
 
-  count = 0
-  tests.each do |pattern, test|
-    define_method "test_scanner_#{test[1]}_#{test[2]}_#{count+=1}" do
-
+  tests.each_with_index do |(pattern, (index, type, token, text, ts, te)), count|
+    define_method "test_scanner_#{type}_#{token}_#{count}" do
       tokens = RS.scan(pattern)
-      assert_equal( test[1,5], tokens[test[0]] )
+      result = tokens[index]
 
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
+      assert_equal ts,    result[3]
+      assert_equal te,    result[4]
     end
   end
 

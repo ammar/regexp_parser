@@ -30,46 +30,45 @@ class TestParserEscapes < Test::Unit::TestCase
     /a\u{9879}/ => [1, :escape, :codepoint_list,    EscapeSequence::Literal],
   }
 
-  count = 0
-  tests.each do |pattern, test|
-    define_method "test_parse_escape_#{test[2]}_#{count+=1}" do
+  tests.each_with_index do |(pattern, (index, type, token, klass)), count|
+    define_method "test_parse_escape_#{token}_#{count+=1}" do
       root = RP.parse(pattern, 'ruby/1.9')
-      exp  = root.expressions[test[0]]
+      exp  = root.expressions.at(index)
 
-      assert( exp.is_a?( test[3] ),
-             "Expected #{test[3]}, but got #{exp.class.name}")
+      assert exp.is_a?(klass),
+             "Expected #{klass}, but got #{exp.class.name}"
 
-      assert_equal( test[1], exp.type )
-      assert_equal( test[2], exp.token )
+      assert_equal type,  exp.type
+      assert_equal token, exp.token
     end
   end
 
   def test_parse_escape_control_sequence_lower
     root = RP.parse(/a\\\c2b/)
 
-    assert_equal( EscapeSequence::Control,  root[2].class )
-    assert_equal( '\\c2',                   root[2].text )
+    assert_equal EscapeSequence::Control, root[2].class
+    assert_equal '\\c2',                  root[2].text
   end
 
   def test_parse_escape_control_sequence_upper
     root = RP.parse(/\d\\\C-C\w/)
 
-    assert_equal( EscapeSequence::Control,  root[2].class )
-    assert_equal( '\\C-C',                  root[2].text )
+    assert_equal EscapeSequence::Control, root[2].class
+    assert_equal '\\C-C',                 root[2].text
   end
 
   def test_parse_escape_meta_sequence
     root = RP.parse(/\Z\\\M-Z/n)
 
-    assert_equal( EscapeSequence::Meta,  root[2].class )
-    assert_equal( '\\M-Z',               root[2].text )
+    assert_equal EscapeSequence::Meta, root[2].class
+    assert_equal '\\M-Z',              root[2].text
   end
 
   def test_parse_escape_meta_control_sequence
     root = RP.parse(/\A\\\M-\C-X/n)
 
-    assert_equal( EscapeSequence::MetaControl,  root[2].class )
-    assert_equal( '\\M-\\C-X',                  root[2].text )
+    assert_equal EscapeSequence::MetaControl, root[2].class
+    assert_equal '\\M-\\C-X',                 root[2].text
   end
 
 end

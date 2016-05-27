@@ -16,8 +16,8 @@ class ExpressionSubexpression < Test::Unit::TestCase
     }.each do |index, span|
       sequence = alt[index]
 
-      assert_equal( span[0], sequence.ts )
-      assert_equal( span[1], sequence.te )
+      assert_equal span[0], sequence.ts
+      assert_equal span[1], sequence.te
     end
   end
 

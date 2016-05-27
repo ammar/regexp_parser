@@ -92,15 +92,22 @@ class LexerNesting < Test::Unit::TestCase
     },
   }
 
-  count = 0
-  tests.each do |pattern, checks|
-    define_method "test_lex_nesting_#{count+=1}" do
-
+  tests.each_with_index do |(pattern, checks), count|
+    define_method "test_lex_nesting_#{count}" do
       tokens = RL.lex(pattern, 'ruby/1.9')
-      checks.each do |offset, token|
-        assert_equal( token, tokens[offset].to_a )
-      end
 
+      checks.each do |offset, (type, token, text, ts, te, level, set_level, conditional_level)|
+        struct = tokens.at(offset)
+
+        assert_equal type,              struct.type
+        assert_equal token,             struct.token
+        assert_equal text,              struct.text
+        assert_equal ts,                struct.ts
+        assert_equal te,                struct.te
+        assert_equal level,             struct.level
+        assert_equal set_level,         struct.set_level
+        assert_equal conditional_level, struct.conditional_level
+      end
     end
   end
 

@@ -15,10 +15,10 @@ class SubexpressionTraverse < Test::Unit::TestCase
       exits  += 1 if event == :exit
     }
 
-    assert_equal( 7, enters )
-    assert_equal( exits, enters )
+    assert_equal 7,     enters
+    assert_equal exits, enters
 
-    assert_equal( 8, visits )
+    assert_equal 8, visits
   end
 
   def test_subexpression_traverse_include_self
@@ -34,16 +34,16 @@ class SubexpressionTraverse < Test::Unit::TestCase
       exits  += 1 if event == :exit
     }
 
-    assert_equal( 8, enters )
-    assert_equal( exits, enters )
+    assert_equal 8,     enters
+    assert_equal exits, enters
 
-    assert_equal( 8, visits )
+    assert_equal 8, visits
   end
 
   def test_subexpression_walk_alias
     root = RP.parse(/abc/)
 
-    assert_equal( true, root.respond_to?(:walk) )
+    assert_equal true, root.respond_to?(:walk)
   end
 
   def test_subexpression_each_expression
@@ -54,7 +54,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
       count += 1
     }
 
-    assert_equal( 10, count )
+    assert_equal 10, count
   end
 
   def test_subexpression_each_expression_include_self
@@ -65,7 +65,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
       count += 1
     }
 
-    assert_equal( 11, count )
+    assert_equal 11, count
   end
 
   def test_subexpression_each_expression_indices
@@ -74,7 +74,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
     indices = []
     root.each_expression {|exp, index| indices << index}
 
-    assert_equal( [0, 1, 0, 2], indices )
+    assert_equal [0, 1, 0, 2], indices
   end
 
   def test_subexpression_each_expression_indices_include_self
@@ -83,7 +83,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
     indices = []
     root.each_expression(true) {|exp, index| indices << index}
 
-    assert_equal( [0, 0, 1, 0, 2], indices )
+    assert_equal [0, 0, 1, 0, 2], indices
   end
 
   def test_subexpression_map_without_block
@@ -91,14 +91,14 @@ class SubexpressionTraverse < Test::Unit::TestCase
 
     array = root.map
 
-    assert_equal( Array, array.class )
-    assert_equal( 5, array.length )
+    assert_equal Array, array.class
+    assert_equal 5, array.length
 
     array.each do |item|
-      assert_equal( Array, item.class )
-      assert_equal( 2, item.length )
-      assert_equal( true, item.first.is_a?(Regexp::Expression::Base) )
-      assert_equal( true, item.last.is_a?(Fixnum) )
+      assert_equal Array, item.class
+      assert_equal 2,     item.length
+      assert_equal true,  item.first.is_a?(Regexp::Expression::Base)
+      assert_equal true,  item.last.is_a?(Fixnum)
     end
   end
 
@@ -107,8 +107,8 @@ class SubexpressionTraverse < Test::Unit::TestCase
 
     array = root.map(true)
 
-    assert_equal( Array, array.class )
-    assert_equal( 6, array.length )
+    assert_equal Array, array.class
+    assert_equal 6, array.length
   end
 
   def test_subexpression_map_indices
@@ -116,7 +116,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
 
     indices = root.map {|exp, index| index}
 
-    assert_equal( [0, 1, 0, 1, 0, 2, 3], indices )
+    assert_equal [0, 1, 0, 1, 0, 2, 3], indices
   end
 
   def test_subexpression_map_indices_include_self
@@ -124,7 +124,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
 
     indices = root.map(true) {|exp, index| index}
 
-    assert_equal( [0, 0, 1, 0, 1, 0, 2, 3], indices )
+    assert_equal [0, 0, 1, 0, 1, 0, 2, 3], indices
   end
 
   def test_subexpression_map_expressions
@@ -134,10 +134,9 @@ class SubexpressionTraverse < Test::Unit::TestCase
       [exp.level, exp.text] if exp.terminal?
     }.compact
 
-    assert_equal(
-      [[0, 'a'], [1, 'b'], [2, 'c'], [3, 'd']],
-      levels
-    )
+    assert_equal [
+        [0, 'a'], [1, 'b'], [2, 'c'], [3, 'd']
+      ], levels
   end
 
   def test_subexpression_map_expressions_include_self
@@ -147,7 +146,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
       [exp.level, exp.to_s]
     }.compact
 
-    assert_equal( [
+    assert_equal [
         [nil, 'a(b(c(d)))'],
         [0,   'a'],
         [0,   '(b(c(d)))'],
@@ -156,9 +155,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
         [2,   'c'],
         [2,   '(d)'],
         [3,   'd']
-      ],
-      levels
-    )
+      ], levels
   end
 
 end

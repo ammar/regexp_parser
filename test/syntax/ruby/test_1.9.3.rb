@@ -17,19 +17,15 @@ class TestSyntaxRuby_V193 < Test::Unit::TestCase
         UnicodeProperty::Script_6_0 + UnicodeProperty::Age_V193
       ].flatten,
     },
-
-    :excludes => {
-    },
   }
 
   tests.each do |method, types|
+    expected = method == :excludes ? false : true
+
     types.each do |type, tokens|
       tokens.each do |token|
         define_method "test_syntax_ruby_v193_#{method}_#{type}_#{token}" do
-          assert_equal(
-            method == :excludes ? false : true,
-            @syntax.implements?(type, token)
-          )
+          assert_equal true, @syntax.implements?(type, token)
         end
       end
     end

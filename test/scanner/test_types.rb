@@ -3,27 +3,29 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerTypes < Test::Unit::TestCase
 
   tests = {
-   'a\dc'       => [:type,  :digit,       '\d',  1],
-   'a\Dc'       => [:type,  :nondigit,    '\D',  1],
+   'a\dc' => [1, :type,  :digit,       '\d',  1, 3],
+   'a\Dc' => [1, :type,  :nondigit,    '\D',  1, 3],
 
-   'a\hc'       => [:type,  :hex,         '\h',  1],
-   'a\Hc'       => [:type,  :nonhex,      '\H',  1],
+   'a\hc' => [1, :type,  :hex,         '\h',  1, 3],
+   'a\Hc' => [1, :type,  :nonhex,      '\H',  1, 3],
 
-   'a\sc'       => [:type,  :space,       '\s',  1],
-   'a\Sc'       => [:type,  :nonspace,    '\S',  1],
+   'a\sc' => [1, :type,  :space,       '\s',  1, 3],
+   'a\Sc' => [1, :type,  :nonspace,    '\S',  1, 3],
 
-   'a\wc'       => [:type,  :word,        '\w',  1],
-   'a\Wc'       => [:type,  :nonword,     '\W',  1],
+   'a\wc' => [1, :type,  :word,        '\w',  1, 3],
+   'a\Wc' => [1, :type,  :nonword,     '\W',  1, 3],
   }
 
-  tests.each do |pattern, test|
-    [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_scan_#{test[0]}_#{test[1]}_#{member}" do
+  tests.each do |(pattern, (index, type, token, text, ts, te))|
+    define_method "test_scanner_#{type}_#{token}" do
+      tokens = RS.scan(pattern)
+      result = tokens.at(index)
 
-        token = RS.scan(pattern)[test[3]]
-        assert_equal( test[i], token[i] )
-
-      end
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
+      assert_equal ts,    result[3]
+      assert_equal te,    result[4]
     end
   end
 

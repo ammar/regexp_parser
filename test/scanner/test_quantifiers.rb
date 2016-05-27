@@ -21,17 +21,16 @@ class ScannerQuantifiers < Test::Unit::TestCase
    'a{2,4}' => [:quantifier,  :interval,                '{2,4}'],
   }
 
-  counter = 0
-  tests.each do |pattern, test|
-    name = (test[1] == :interval ? "interval_#{counter += 1}" : test[1])
+  tests.each_with_index do |(pattern, (type, token, text)), count|
+    name = (token == :interval ? "interval_#{count}" : token)
 
-    [:type, :token, :text].each_with_index do |member, i|
-      define_method "test_scan_#{test[0]}_#{name}_#{member}" do
+    define_method "test_scan_#{type}_#{name}" do
+      tokens = RS.scan(pattern)
+      result = tokens.last
 
-        token = RS.scan(pattern).last
-        assert_equal( test[i], token[i] )
-
-      end
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
     end
   end
 

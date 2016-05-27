@@ -16,17 +16,16 @@ class TestParserTypes < Test::Unit::TestCase
     /a\Wc/    => [1, :type,   :nonword,   CharacterType::NonWord],
   }
 
-  count = 0
-  tests.each do |pattern, test|
-    define_method "test_parse_type_#{test[2]}_#{count+=1}" do
+  tests.each_with_index do |(pattern, (index, type, token, klass)), count|
+    define_method "test_parse_type_#{token}_#{count}" do
       root = RP.parse(pattern, 'ruby/1.9')
-      exp  = root.expressions[test[0]]
+      exp  = root.expressions.at(index)
 
-      assert( exp.is_a?( test[3] ),
-             "Expected #{test[3]}, but got #{exp.class.name}")
+      assert exp.is_a?( klass ),
+             "Expected #{klass}, but got #{exp.class.name}"
 
-      assert_equal( test[1], exp.type )
-      assert_equal( test[2], exp.token )
+      assert_equal type,  exp.type
+      assert_equal token, exp.token
     end
   end
 

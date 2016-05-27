@@ -364,20 +364,21 @@ class ScannerUnicodeScripts < Test::Unit::TestCase
 	  'Unknown'                 => :script_unknown,
   }
 
-  count = 0
-  tests.each do |property, test|
-    define_method "test_scan_property_#{test}_#{count+=1}" do
-      token = RS.scan("a\\p{#{property}}c")[1]
+  tests.each_with_index do |(property, token), count|
+    define_method "test_scanner_property_#{token}_#{count}" do
+      tokens = RS.scan("a\\p{#{property}}c")
+      result = tokens.at(1)
 
-      assert_equal( :property,  token[0] )
-      assert_equal( test,       token[1] )
+      assert_equal :property, result[0]
+      assert_equal token,     result[1]
     end
 
-    define_method "test_scan_nonproperty_#{test}_#{count+=1}" do
-      token = RS.scan("a\\P{#{property}}c")[1]
+    define_method "test_scanner_nonproperty_#{token}_#{count}" do
+      tokens = RS.scan("a\\P{#{property}}c")
+      result = tokens.at(1)
 
-      assert_equal( :nonproperty,   token[0] )
-      assert_equal( test,           token[1] )
+      assert_equal :nonproperty, result[0]
+      assert_equal token,        result[1]
     end
   end
 

@@ -31,12 +31,19 @@ class LexerRefCalls < Test::Unit::TestCase
     "(abc)\\k'1-0'"     => [3, :backref, :number_nest_ref,  "\\k'1-0'",   5, 12, 0, 0, 0],
   }
 
-  count = 0
-  tests.each do |pattern, test|
-    define_method "test_lexer_#{test[1]}_#{test[2]}_#{count+=1}" do
-
+  tests.each_with_index do |(pattern, (index, type, token, text, ts, te, level, set_level, conditional_level)), count|
+    define_method "test_lexer_#{type}_#{token}_#{count}" do
       tokens = RL.lex(pattern, 'ruby/1.9')
-      assert_equal( test[1,8], tokens[test[0]].to_a)
+      struct = tokens.at(index)
+
+      assert_equal type,              struct.type
+      assert_equal token,             struct.token
+      assert_equal text,              struct.text
+      assert_equal ts,                struct.ts
+      assert_equal te,                struct.te
+      assert_equal level,             struct.level
+      assert_equal set_level,         struct.set_level
+      assert_equal conditional_level, struct.conditional_level
     end
   end
 

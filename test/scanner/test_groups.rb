@@ -3,7 +3,7 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerGroups < Test::Unit::TestCase
 
   tests = {
-   ## Options
+    # Options
     '(?-mix:abc)'     => [0, :group,     :options,      '(?-mix:',    0, 7],
     '(?m-ix:abc)'     => [0, :group,     :options,      '(?m-ix:',    0, 7],
     '(?mi-x:abc)'     => [0, :group,     :options,      '(?mi-x:',    0, 7],
@@ -38,39 +38,34 @@ class ScannerGroups < Test::Unit::TestCase
     '(?<!abc)'        => [0, :assertion, :nlookbehind,  '(?<!',       0, 4],
   }
 
-  count = 0
-  tests.each do |pattern, test|
-    define_method "test_scan_#{test[1]}_#{test[2]}_#{count+=1}" do
-
-      tokens = RS.scan(pattern)
-      assert_equal( test[1,5], tokens[test[0]])
-      assert_equal( test[3],   pattern[tokens[test[0]][3], tokens[test[0]][4]])
-
-    end
+  if RUBY_VERSION >= '2.0'
+    tests.merge!({
+      # New options
+      '(?d-mix:abc)'  => [0, :group,     :options,      '(?d-mix:',   0, 8],
+      '(?a-mix:abc)'  => [0, :group,     :options,      '(?a-mix:',   0, 8],
+      '(?u-mix:abc)'  => [0, :group,     :options,      '(?u-mix:',   0, 8],
+      '(?da-m:abc)'   => [0, :group,     :options,      '(?da-m:',    0, 7],
+      '(?du-x:abc)'   => [0, :group,     :options,      '(?du-x:',    0, 7],
+      '(?dau-i:abc)'  => [0, :group,     :options,      '(?dau-i:',   0, 8],
+      '(?dau:abc)'    => [0, :group,     :options,      '(?dau:',     0, 6],
+      '(?dau)'        => [0, :group,     :options,      '(?dau',      0, 5],
+      '(?d:)'         => [0, :group,     :options,      '(?d:',       0, 4],
+      '(?a:)'         => [0, :group,     :options,      '(?a:',       0, 4],
+      '(?u:)'         => [0, :group,     :options,      '(?u:',       0, 4],
+    })
   end
 
-  if RUBY_VERSION >= '2.0'
-    option_tests = {
-      '(?m-dau:abc)'    => [0, :group,     :options,      '(?m-dau:',   0, 8],
-      '(?x-dmu:abc)'    => [0, :group,     :options,      '(?x-dmu:',   0, 8],
-      '(?-dau:abc)'     => [0, :group,     :options,      '(?-dau:',    0, 7],
-      '(?d-au:abc)'     => [0, :group,     :options,      '(?d-au:',    0, 7],
-      '(?da-u:abc)'     => [0, :group,     :options,      '(?da-u:',    0, 7],
-      '(?dau:abc)'      => [0, :group,     :options,      '(?dau:',     0, 6],
-      '(?dau)'          => [0, :group,     :options,      '(?dau',      0, 5],
-      '(?d:)'           => [0, :group,     :options,      '(?d:',       0, 4],
-      '(?a:)'           => [0, :group,     :options,      '(?a:',       0, 4],
-      '(?u:)'           => [0, :group,     :options,      '(?u:',       0, 4],
-    }
+  tests.each_with_index do |(pattern, (index, type, token, text, ts, te)), count|
+    define_method "test_scanner_#{type}_#{token}_#{count}" do
+      tokens = RS.scan(pattern)
+      result = tokens[index]
 
-    tests.each do |pattern, test|
-      define_method "test_scan_#{test[1]}_#{test[2]}_#{count+=1}" do
-
-        tokens = RS.scan(pattern)
-        assert_equal( test[1,5], tokens[test[0]])
-        assert_equal( test[3],   pattern[tokens[test[0]][3], tokens[test[0]][4]])
-
-      end
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
+      assert_equal ts,    result[3]
+      assert_equal te,    result[4]
+      assert_equal text,  pattern[ts, te]
     end
   end
 

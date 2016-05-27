@@ -22,14 +22,16 @@ class ScannerConditionals < Test::Unit::TestCase
     /(?'N'A)(?('N')T|F)/  => [5, :conditional,  :condition,         "'N'", 10, 13],
   }
 
-  count = 0
-  tests.each do |pattern, test|
-    define_method "test_scan_#{test[1]}_#{test[2]}_#{count+=1}" do
-
+  tests.each_with_index do |(pattern, (index, type, token, text, ts, te)), count|
+    define_method "test_scanner_#{type}_#{token}_#{count}" do
       tokens = RS.scan(pattern)
-      token = tokens[test[0]]
-      assert_equal( test[1,5], token )
+      result = tokens[index]
 
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
+      assert_equal ts,    result[3]
+      assert_equal te,    result[4]
     end
   end
 
@@ -80,8 +82,14 @@ class ScannerConditionals < Test::Unit::TestCase
       [40, :conditional,  :close,           ')',  45, 46],
       [41, :conditional,  :close,           ')',  46, 47],
       [42, :conditional,  :close,           ')',  47, 48]
-    ].each do |test|
-      assert_equal( test[1,5], tokens[test[0]] )
+    ].each do |index, type, token, text, ts, te|
+      result = tokens[index]
+
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
+      assert_equal ts,    result[3]
+      assert_equal te,    result[4]
     end
   end
 
@@ -139,8 +147,14 @@ class ScannerConditionals < Test::Unit::TestCase
       [47, :conditional,  :close,           ')',  50, 51],
       [48, :group,        :close,           ')',  51, 52],
       [49, :group,        :close,           ')',  52, 53]
-    ].each do |test|
-      assert_equal( test[1,5], tokens[test[0]] )
+    ].each do |index, type, token, text, ts, te|
+      result = tokens[index]
+
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
+      assert_equal ts,    result[3]
+      assert_equal te,    result[4]
     end
   end
 
@@ -148,18 +162,22 @@ class ScannerConditionals < Test::Unit::TestCase
     regexp = /(a)(?(1)(b|c|d)|(e|f|g))(h)(?(2)(i|j|k)|(l|m|n))|o|p/
     tokens = RS.scan(regexp)
 
-    [9, 11, 17, 19, 32, 34, 40, 42, 46, 48].each do |token|
-      assert_equal(:meta,         tokens[token][0])
-      assert_equal(:alternation,  tokens[token][1])
-      assert_equal('|',           tokens[token][2])
-      assert_equal(1,             tokens[token][4] - tokens[token][3])
+    [9, 11, 17, 19, 32, 34, 40, 42, 46, 48].each do |index|
+      result = tokens[index]
+
+      assert_equal :meta,         result[0]
+      assert_equal :alternation,  result[1]
+      assert_equal '|',           result[2]
+      assert_equal 1,             result[4] - result[3]
     end
 
-    [14, 37].each do |token|
-      assert_equal(:conditional,  tokens[token][0])
-      assert_equal(:separator,    tokens[token][1])
-      assert_equal('|',           tokens[token][2])
-      assert_equal(1,             tokens[token][4] - tokens[token][3])
+    [14, 37].each do |index|
+      result = tokens[index]
+
+      assert_equal :conditional,  result[0]
+      assert_equal :separator,    result[1]
+      assert_equal '|',           result[2]
+      assert_equal 1,             result[4] - result[3]
     end
   end
 

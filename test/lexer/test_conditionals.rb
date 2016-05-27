@@ -1,7 +1,6 @@
 require File.expand_path("../../helpers", __FILE__)
 
 class LexerConditionals < Test::Unit::TestCase
-
   if RUBY_VERSION >= '2.0'
 
   # Basic lexer output and nesting tests
@@ -12,11 +11,19 @@ class LexerConditionals < Test::Unit::TestCase
     '(?<D>a)(?(<D>)b|c)'  => [8, :conditional, :close,      ')',     17, 18, 0, 0, 0],
   }
 
-  count = 0
-  tests.each do |pattern, test|
-    define_method "test_lexer_#{test[1]}_#{test[2]}_#{count+=1}" do
+  tests.each_with_index do |(pattern, (index, type, token, text, ts, te, level, set_level, conditional_level)), count|
+    define_method "test_lexer_#{type}_#{token}_#{count}" do
       tokens = RL.lex(pattern)
-      assert_equal( test[1,8], tokens[test[0]].to_a)
+      struct = tokens.at(index)
+
+      assert_equal type,              struct.type
+      assert_equal token,             struct.token
+      assert_equal text,              struct.text
+      assert_equal ts,                struct.ts
+      assert_equal te,                struct.te
+      assert_equal level,             struct.level
+      assert_equal set_level,         struct.set_level
+      assert_equal conditional_level, struct.conditional_level
     end
   end
 
@@ -45,8 +52,17 @@ class LexerConditionals < Test::Unit::TestCase
 
       [22, :group,       :close,            ')',      44, 45, 1, 0, 0],
       [23, :group,       :close,            ')',      45, 46, 0, 0, 0]
-    ].each do |test|
-      assert_equal( test[1,8], tokens[test[0]].to_a)
+    ].each do |index, type, token, text, ts, te, level, set_level, conditional_level|
+      struct = tokens.at(index)
+
+      assert_equal type,              struct.type
+      assert_equal token,             struct.token
+      assert_equal text,              struct.text
+      assert_equal ts,                struct.ts
+      assert_equal te,                struct.te
+      assert_equal level,             struct.level
+      assert_equal set_level,         struct.set_level
+      assert_equal conditional_level, struct.conditional_level
     end
   end
 
@@ -91,11 +107,19 @@ class LexerConditionals < Test::Unit::TestCase
       [35, :conditional, :close,      ')',    53, 54, 0, 0, 2],
       [36, :conditional, :close,      ')',    54, 55, 0, 0, 1],
       [37, :conditional, :close,      ')',    55, 56, 0, 0, 0]
-    ].each do |test|
-      assert_equal( test[1,8], tokens[test[0]].to_a)
+    ].each do |index, type, token, text, ts, te, level, set_level, conditional_level|
+      struct = tokens.at(index)
+
+      assert_equal type,              struct.type
+      assert_equal token,             struct.token
+      assert_equal text,              struct.text
+      assert_equal ts,                struct.ts
+      assert_equal te,                struct.te
+      assert_equal level,             struct.level
+      assert_equal set_level,         struct.set_level
+      assert_equal conditional_level, struct.conditional_level
     end
   end
 
-  end
-
+  end # if RUBY_VERSION >= '2.0'
 end

@@ -16,21 +16,23 @@ end
 class TestRegexpScanner < Test::Unit::TestCase
 
   def test_scanner_returns_an_array
-    assert_instance_of( Array, RS.scan('abc') )
+    assert_instance_of Array, RS.scan('abc')
   end
 
   def test_scanner_returns_tokens_as_arrays
     tokens = RS.scan('^abc+[^one]{2,3}\b\d\\\C-C$')
 
-    assert( tokens.all?{|token|
+    all_arrays = tokens.all? do |token|
       token.kind_of?(Array) and token.length == 5
-    }, "Not all tokens are arrays of 5 elements")
+    end
+
+    assert all_arrays, 'Not all tokens are arrays of 5 elements'
   end
 
   def test_scanner_token_count
     re = /^(one|two){2,3}([^d\]efm-qz\,\-]*)(ghi)+$/i
 
-    assert_equal(26, RS.scan(re).length )
+    assert_equal 26, RS.scan(re).length
   end
 
 end
