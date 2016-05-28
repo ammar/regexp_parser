@@ -28,6 +28,9 @@ class TestParserEscapes < Test::Unit::TestCase
 
     # unicode escapes
     /a\u{9879}/ => [1, :escape, :codepoint_list,    EscapeSequence::Literal],
+
+     # hex escapes
+    /a\xFF/n =>  [1, :escape, :hex,                 EscapeSequence::Literal],
   }
 
   tests.each_with_index do |(pattern, (index, type, token, klass)), count|

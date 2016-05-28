@@ -21,6 +21,8 @@ module Regexp::Syntax
                :set_open, :set_close,
                :baclslash]
 
+      Hex   = [:hex]
+
       All   = Basic + Backreference + ASCII + Meta
       Type  = :escape
     end
