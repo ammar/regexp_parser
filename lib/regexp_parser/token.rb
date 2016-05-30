@@ -12,6 +12,12 @@ class Regexp
   ].freeze
 
   Token = Struct.new(*TOKEN_KEYS) do
+    def initialize(*)
+      super
+
+      @previous = @next = nil
+    end
+
     def offset
       [self.ts, self.te]
     end
