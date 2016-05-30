@@ -581,8 +581,6 @@
       # Unicode blocks
       when 'inalphabeticpresentationforms'
         self.emit(type, :block_inalphabetic_presentation_forms,           text, ts-1, te)
-      when 'inalphabeticpresentationforms'
-        self.emit(type, :block_inalphabetic_presentation_forms,           text, ts-1, te)
       when 'inarabicpresentationforms-a'
         self.emit(type, :block_inarabic_presentation_forms_a,             text, ts-1, te)
       when 'inarabicpresentationforms-b'
