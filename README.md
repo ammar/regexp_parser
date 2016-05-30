@@ -399,22 +399,22 @@ _A special task 'test:full' generates the scanner's code from the ragel source f
 runs all the tests. This task requires ragel to be installed._
 
 
-The tests use ruby's test/unit, so they can also be run with:
+The tests use ruby's test/unit. They can also be run with:
 
 ```
-ruby -Ilib test/test_all.rb
+bin/test
 ```
 
-This is useful when there is a need to focus on specific test files, for example:
+The test runner accepts all arguments accepted by test/unit.  You can run a specific test like so:
 
 ```
-ruby -Ilib test/scanner/test_properties.rb
+bin/test test/scanner/test_properties.rb
 ```
 
 It is sometimes helpful during development to focus on a specific test case, for example:
 
 ```
-ruby -Ilib test/expression/test_base.rb -n test_expression_to_re
+bin/test test/expression/test_base.rb -n test_expression_to_re
 ```
 
 
