@@ -281,7 +281,6 @@
       fhold;
       fnext character_set;
       fcall unicode_property;
-      fret;
     };
 
     # special case exclusion of escaped dash, could be cleaner.
@@ -409,7 +408,7 @@
     property_char > (escaped_alpha, 2) {
       fhold;
       fnext main;
-      fcall unicode_property; fret;
+      fcall unicode_property;
     };
 
     (any -- non_literal_escape) > (escaped_alpha, 1)  {
