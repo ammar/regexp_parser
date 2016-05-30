@@ -832,7 +832,7 @@ module Regexp::Scanner
   # This method may raise errors if a syntax error is encountered.
   # --------------------------------------------------------------------------
   def self.scan(input_object, &block)
-    top, stack = 0, []
+    @literal, top, stack = nil, 0, []
 
     if input_object.is_a?(Regexp)
       input    = input_object.source
