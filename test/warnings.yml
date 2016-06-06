@@ -1,63 +1,16 @@
 ---
+# Unused variable emitted by ragel
 - "lib/regexp_parser/scanner.rb:1646: warning:
   assigned but unused variable - testEof"
-- "test/scanner/test_escapes.rb:16: warning:
-  Unknown escape \\q is ignored: /c\\qt/"
-- "test/syntax/ruby/test_1.9.3.rb:23: warning:
-  assigned but unused variable - expected"
-- "test/lexer/test_conditionals.rb:34: warning:
-  assigned but unused variable - expected"
-- "test/lexer/test_conditionals.rb:73: warning:
-  assigned but unused variable - expected"
-- "test/parser/test_quantifiers.rb:49: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_quantifiers.rb:60: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_quantifiers.rb:72: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_quantifiers.rb:85: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_quantifiers.rb:96: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_quantifiers.rb:108: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_quantifiers.rb:157: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_quantifiers.rb:169: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_quantifiers.rb:182: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/parser/test_sets.rb:14: warning:
-  ambiguous first argument; put parentheses or a space even after `-' operator"
-- "test/expression/test_base.rb:68: warning:
-  assigned but unused variable - checks"
-- "test/expression/test_conditionals.rb:35:
-  warning: assigned but unused variable - branch_2"
+
+# Unavoidable duplicated character range tests
 - "lib/regexp_parser/expression.rb:132: warning:
   character class has duplicated range: /[[:^xdigit:][:^lower:]]+/"
 - "lib/regexp_parser/expression.rb:132: warning:
   character class has duplicated range: /[a[b[^c]]]/"
-- "lib/regexp_parser/scanner.rb:1647: warning:
-  assigned but unused variable - _nacts"
+
+# Warnings generated only under 1.9.3
 - "lib/regexp_parser/scanner.rb:1647:
   warning: assigned but unused variable - _acts"
-- "test/parser/test_quantifiers.rb:49: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_quantifiers.rb:60: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_quantifiers.rb:72: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_quantifiers.rb:85: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_quantifiers.rb:96: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_quantifiers.rb:108: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_quantifiers.rb:157: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_quantifiers.rb:169: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_quantifiers.rb:182: warning:
-  ambiguous first argument; put parentheses or even spaces"
-- "test/parser/test_sets.rb:14: warning:
-  ambiguous first argument; put parentheses or even spaces"
+- "lib/regexp_parser/scanner.rb:1647:
+  warning: assigned but unused variable - _nacts"

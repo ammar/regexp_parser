@@ -32,7 +32,6 @@ class ExpressionConditionals < Test::Unit::TestCase
   def test_expression_conditional_level_one
     condition = @cond_1.condition
     branch_1  = @cond_1.branches.first
-    branch_2  = @cond_1.branches.last
 
     # Condition
     assert_equal true,  is_conditional_condition?(condition)

@@ -13,7 +13,7 @@ class ScannerEscapes < Test::Unit::TestCase
     /c\tt/            => [1, :escape,  :tab,              '\t',             1,  3],
     /c\vt/            => [1, :escape,  :vertical_tab,     '\v',             1,  3],
 
-    /c\qt/            => [1, :escape,  :literal,          '\q',             1,  3],
+    'c\qt'            => [1, :escape,  :literal,          '\q',             1,  3],
 
     'a\012c'          => [1, :escape,  :octal,            '\012',           1,  5],
     'a\0124'          => [1, :escape,  :octal,            '\012',           1,  5],

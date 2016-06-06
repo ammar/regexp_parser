@@ -20,8 +20,6 @@ class TestSyntaxRuby_V193 < Test::Unit::TestCase
   }
 
   tests.each do |method, types|
-    expected = method == :excludes ? false : true
-
     types.each do |type, tokens|
       tokens.each do |token|
         define_method "test_syntax_ruby_v193_#{method}_#{type}_#{token}" do
