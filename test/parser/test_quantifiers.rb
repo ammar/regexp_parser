@@ -46,7 +46,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal true,          exp.quantified?
     assert_equal :zero_or_more, exp.quantifier.token
     assert_equal 0,             exp.quantifier.min
-    assert_equal -1,            exp.quantifier.max
+    assert_equal(-1,            exp.quantifier.max)
     assert_equal :greedy,       exp.quantifier.mode
   end
 
@@ -57,7 +57,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal true,          exp.quantified?
     assert_equal :zero_or_more, exp.quantifier.token
     assert_equal 0,             exp.quantifier.min
-    assert_equal -1,            exp.quantifier.max
+    assert_equal(-1,            exp.quantifier.max)
     assert_equal :reluctant,    exp.quantifier.mode
     assert_equal true,          exp.reluctant?
   end
@@ -69,7 +69,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal true,          exp.quantified?
     assert_equal :zero_or_more, exp.quantifier.token
     assert_equal 0,             exp.quantifier.min
-    assert_equal -1,            exp.quantifier.max
+    assert_equal(-1,            exp.quantifier.max)
     assert_equal :possessive,   exp.quantifier.mode
     assert_equal true,          exp.possessive?
   end
@@ -82,7 +82,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal true,          exp.quantified?
     assert_equal :one_or_more,  exp.quantifier.token
     assert_equal 1,             exp.quantifier.min
-    assert_equal -1,            exp.quantifier.max
+    assert_equal(-1,            exp.quantifier.max)
     assert_equal :greedy,       exp.quantifier.mode
   end
 
@@ -93,7 +93,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal true,          exp.quantified?
     assert_equal :one_or_more,  exp.quantifier.token
     assert_equal 1,             exp.quantifier.min
-    assert_equal -1,            exp.quantifier.max
+    assert_equal(-1,            exp.quantifier.max)
     assert_equal :reluctant,    exp.quantifier.mode
     assert_equal true,          exp.reluctant?
   end
@@ -105,7 +105,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal true,          exp.quantified?
     assert_equal :one_or_more,  exp.quantifier.token
     assert_equal 1,             exp.quantifier.min
-    assert_equal -1,            exp.quantifier.max
+    assert_equal(-1,            exp.quantifier.max)
     assert_equal :possessive,   exp.quantifier.mode
     assert_equal true,          exp.possessive?
   end
@@ -154,7 +154,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal true,      exp.quantified?
     assert_equal :interval, exp.quantifier.token
     assert_equal 2,         exp.quantifier.min
-    assert_equal -1,        exp.quantifier.max
+    assert_equal(-1,        exp.quantifier.max)
     assert_equal :greedy,   exp.quantifier.mode
   end
 
@@ -166,7 +166,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal :interval,   exp.quantifier.token
     assert_equal '{2,}?',     exp.quantifier.text
     assert_equal 2,           exp.quantifier.min
-    assert_equal -1,          exp.quantifier.max
+    assert_equal(-1,          exp.quantifier.max)
     assert_equal :reluctant,  exp.quantifier.mode
     assert_equal true,        exp.reluctant?
   end
@@ -179,7 +179,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal :interval,   exp.quantifier.token
     assert_equal '{3,}+',     exp.quantifier.text
     assert_equal 3,           exp.quantifier.min
-    assert_equal -1,          exp.quantifier.max
+    assert_equal(-1,          exp.quantifier.max)
     assert_equal :possessive, exp.quantifier.mode
     assert_equal true,        exp.possessive?
   end

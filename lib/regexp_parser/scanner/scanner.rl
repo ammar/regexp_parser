@@ -281,7 +281,6 @@
       fhold;
       fnext character_set;
       fcall unicode_property;
-      fret;
     };
 
     # special case exclusion of escaped dash, could be cleaner.
@@ -409,7 +408,7 @@
     property_char > (escaped_alpha, 2) {
       fhold;
       fnext main;
-      fcall unicode_property; fret;
+      fcall unicode_property;
     };
 
     (any -- non_literal_escape) > (escaped_alpha, 1)  {
@@ -833,7 +832,7 @@ module Regexp::Scanner
   # This method may raise errors if a syntax error is encountered.
   # --------------------------------------------------------------------------
   def self.scan(input_object, &block)
-    top, stack = 0, []
+    @literal, top, stack = nil, 0, []
 
     if input_object.is_a?(Regexp)
       input    = input_object.source

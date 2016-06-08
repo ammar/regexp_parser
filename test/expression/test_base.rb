@@ -65,7 +65,7 @@ class ExpressionBase < Test::Unit::TestCase
     assert_equal '@0+12', root.coded_offset
 
     # All top level offsets
-    checks = [
+    [
       [ '@0+1', '^'         ],
       [ '@1+2', 'a*'        ],
       [ '@3+8', '(b+(c?))'  ],

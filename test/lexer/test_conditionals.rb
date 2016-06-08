@@ -31,7 +31,7 @@ class LexerConditionals < Test::Unit::TestCase
     regexp = /((?<A>a)(?<B>(?(<A>)b|((?(<B>)[e-g]|[h-j])))))/
     tokens = RL.lex(regexp)
 
-    expected = [
+    [
       [ 0, :group,       :capture,          '(',       0,  1, 0, 0, 0],
       [ 1, :group,       :named,            '(?<A>',   1,  6, 1, 0, 0],
 
@@ -70,7 +70,7 @@ class LexerConditionals < Test::Unit::TestCase
     regexp = /(a(b(c)))(?(1)(?(2)(?(3)d|e))|(?(3)(?(2)f|g)|(?(1)f|g)))/
     tokens = RL.lex(regexp)
 
-    expected = [
+    [
       [ 9, :conditional, :open,       '(?',    9, 11, 0, 0, 0],
       [10, :conditional, :condition,  '(1)',  11, 14, 0, 0, 1],
 

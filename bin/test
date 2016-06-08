@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+
+require 'yaml'
+
+require_relative '../test/support/disable_autotest'
+require_relative '../test/support/warning_extractor'
+require_relative '../test/support/runner'
+
+tests = ARGV.empty? ? %w[test/test_all.rb] : ARGV
+warning_whitelist = Set.new(
+  YAML.load_file(File.expand_path('../../test/warnings.yml', __FILE__))
+)
+
+RegexpParserTest::Runner.new(tests, warning_whitelist).run

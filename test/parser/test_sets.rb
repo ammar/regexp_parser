@@ -11,7 +11,7 @@ class TestParserSets < Test::Unit::TestCase
 
     assert_equal true,  exp.quantified?
     assert_equal 1,     exp.quantifier.min
-    assert_equal -1,    exp.quantifier.max
+    assert_equal(-1,    exp.quantifier.max)
   end
 
   def test_parse_set_posix_class

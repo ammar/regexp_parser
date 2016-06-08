@@ -15,39 +15,13 @@ RAGEL_SOURCE_FILES = %w{scanner} # scanner.rl includes property.rl
 Bundler::GemHelper.install_tasks
 
 
-task :default => [:test]
-
-Rake::TestTask.new('test') do |t|
-  if t.respond_to?(:description)
-    t.description = "Run all unit tests under the test directory"
-  end
-
-  t.libs << "test"
-  t.test_files = FileList['test/test_all.rb']
-end
+task :default => [:'test:full']
 
 namespace :test do
-  %w{scanner lexer parser expression syntax}.each do |component|
-    Rake::TestTask.new(component) do |t|
-      if t.respond_to?(:description)
-        t.description = "Run all #{component} unit tests under the test/#{component} directory"
-      end
-
-      t.libs << "test"
-      t.test_files = ["test/#{component}/test_all.rb"]
-    end
-  end
-
-  Rake::TestTask.new('full' => 'ragel:rb') do |t|
-    if t.respond_to?(:description)
-      t.description = "Regenerate the scanner and run all unit tests under the test directory"
-    end
-
-    t.libs << "test"
-    t.test_files = FileList['test/test_all.rb']
+  task full: :'ragel:rb' do
+    sh 'bin/test'
   end
 end
-
 
 namespace :ragel do
   desc "Process the ragel source files and output ruby code"
