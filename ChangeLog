@@ -1,3 +1,9 @@
+Sun Nov 20 2016 Ammar Ali <ammarabuali@gmail.com>
+
+	* Added Syntax.supported? method
+	* Updated ruby versions for latest releases; 2.1.10, 2.2.6, and 2.3.2
+	* Bumped version to 0.4.0
+
 Wed Jun 8 2016 Ammar Ali <ammarabuali@gmail.com>
 
 	* Thanks to John Backus (https://github.com/backus):
