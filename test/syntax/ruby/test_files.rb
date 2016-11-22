@@ -205,9 +205,16 @@ class TestSyntaxFiles < Test::Unit::TestCase
     assert syntax.kind_of?(Regexp::Syntax::Ruby::V232)
   end
 
+  def test_syntax_file_2_3_3
+    syntax = Regexp::Syntax.new 'ruby/2.3.3'
+
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V232)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V233)
+  end
+
   def test_syntax_file_2_3_alias
     syntax = Regexp::Syntax.new 'ruby/2.3'
 
-    assert syntax.kind_of?(Regexp::Syntax::Ruby::V232)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V233)
   end
 end

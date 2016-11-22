@@ -18,7 +18,7 @@ _For an example of regexp_parser in use, see the [meta_re project](https://githu
 ---
 ## Requirements
 
-* Ruby >= 1.9 _(1.8 still works, but is no being tested. It will be removed in 0.4.0)_
+* Ruby >= 1.9
 * Ragel >= 6.0, but only if you want to build the gem or work on the scanner.
 
 
