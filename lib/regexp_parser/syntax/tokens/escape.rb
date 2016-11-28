@@ -11,7 +11,7 @@ module Regexp::Syntax
       ASCII = [:bell, :backspace, :escape, :form_feed, :newline, :carriage,
                :space, :tab, :vertical_tab]
 
-      Unicode = [:codepoint_list]
+      Unicode = [:codepoint, :codepoint_list]
 
       Meta  = [:dot, :alternation,
                :zero_or_one, :zero_or_more, :one_or_more,
