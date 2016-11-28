@@ -53,7 +53,7 @@
   wide_hex_seq_empty    = 'x' . '{' . (space+)? . '}';
 
   codepoint_single      = 'u' . xdigit{4};
-  codepoint_list        = 'u{' . (xdigit{4} . space?)+'}';
+  codepoint_list        = 'u{' . xdigit{1,5} . (space . xdigit{1,5})* . '}';
   codepoint_sequence    = codepoint_single | codepoint_list;
 
   control_sequence      = ('c' | 'C-');

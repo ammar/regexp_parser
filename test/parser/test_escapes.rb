@@ -27,7 +27,7 @@ class TestParserEscapes < Test::Unit::TestCase
     /a\}c/    => [1, :escape,   :interval_close,    EscapeSequence::Literal],
 
     # unicode escapes
-    /a\u{9879}/ => [1, :escape, :codepoint_list,    EscapeSequence::Literal],
+    /a\u{41 1F60D}/ => [1, :escape, :codepoint_list, EscapeSequence::Literal],
 
      # hex escapes
     /a\xFF/n =>  [1, :escape, :hex,                 EscapeSequence::Literal],
