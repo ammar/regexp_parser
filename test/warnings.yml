@@ -1,6 +1,6 @@
 ---
 # Unused variable emitted by ragel
-- "lib/regexp_parser/scanner.rb:1646: warning:
+- "lib/regexp_parser/scanner.rb:1674: warning:
   assigned but unused variable - testEof"
 
 # Unavoidable duplicated character range tests
@@ -10,7 +10,7 @@
   character class has duplicated range: /[a[b[^c]]]/"
 
 # Warnings generated only under 1.9.3
-- "lib/regexp_parser/scanner.rb:1647:
+- "lib/regexp_parser/scanner.rb:1675:
   warning: assigned but unused variable - _acts"
-- "lib/regexp_parser/scanner.rb:1647:
+- "lib/regexp_parser/scanner.rb:1675:
   warning: assigned but unused variable - _nacts"
