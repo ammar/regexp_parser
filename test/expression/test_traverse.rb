@@ -98,7 +98,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
       assert_equal Array, item.class
       assert_equal 2,     item.length
       assert_equal true,  item.first.is_a?(Regexp::Expression::Base)
-      assert_equal true,  item.last.is_a?(Fixnum)
+      assert_equal true,  item.last.is_a?(Integer)
     end
   end
 
