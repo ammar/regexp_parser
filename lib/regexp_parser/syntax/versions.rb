@@ -58,6 +58,12 @@ module Regexp::Syntax
 
     # alias for the latest 2.3 implementation
     'ruby/2.3',
+
+    # Ruby 2.4.x
+    'ruby/2.4.0',
+
+    # alias for the latest 2.4 implementation
+    'ruby/2.4',
   ]
 
 end

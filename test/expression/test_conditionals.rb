@@ -3,7 +3,7 @@ require File.expand_path("../../helpers", __FILE__)
 class ExpressionConditionals < Test::Unit::TestCase
 
   def setup
-    @root = RP.parse(/^a(b(?(1)c|(?(2)d|(?(3)e|f)))g)$/)
+    @root = RP.parse(/^(a(b))(b(?(1)c|(?(2)d|(?(3)e|f)))g)$/)
 
     @cond_1 = @root[2][1]
     @cond_2 = @root[2][1][2][0]
@@ -19,7 +19,7 @@ class ExpressionConditionals < Test::Unit::TestCase
   end
 
   def test_expression_conditional_root_level
-    %w{^ a (b(?(1)c|(?(2)d|(?(3)e|f)))g) $}.each_with_index do |t, i|
+    %w{^ (a(b)) (b(?(1)c|(?(2)d|(?(3)e|f)))g) $}.each_with_index do |t, i|
       assert_equal 0, @root[i].conditional_level
       assert_equal t, @root[i].to_s
     end

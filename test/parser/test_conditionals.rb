@@ -71,7 +71,7 @@ class TestParserConditionals < Test::Unit::TestCase
   end
 
   def test_parse_conditional_nested
-    regexp = /(a(b(c)))(?(1)(?(2)d|(?(3)e|f))|(?(4)(?(5)g|h)))/
+    regexp = /(a(b(c(d)(e))))(?(1)(?(2)d|(?(3)e|f))|(?(4)(?(5)g|h)))/
 
     root = RP.parse(regexp, 'ruby/2.0')
 
