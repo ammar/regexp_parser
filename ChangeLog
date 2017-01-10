@@ -1,3 +1,14 @@
+Tue Jan 10 2017 Ammar Ali <ammarabuali@gmail.com>
+
+	* Thanks to Janosch Müller (https://github.com/janosch-x):
+	  -   Support ruby 2.4 (PR #30)
+	* Bumped version to 0.4.2
+
+Sun Dec 4 2016 Ammar Ali <ammarabuali@gmail.com>
+
+	* Thanks to Janosch Müller (https://github.com/janosch-x):
+	  -  Improve codepoint handling (PR #27)
+
 Tue Nov 22 2016 Ammar Ali <ammarabuali@gmail.com>
 
 	* Updated ruby version file for 2.3.3
