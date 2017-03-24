@@ -61,6 +61,7 @@ module Regexp::Syntax
 
     # Ruby 2.4.x
     'ruby/2.4.0',
+    'ruby/2.4.1',
 
     # alias for the latest 2.4 implementation
     'ruby/2.4',
