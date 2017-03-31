@@ -31,6 +31,7 @@ module Regexp::Expression
     class Capture   < Group::Base; end
     class Passive   < Group::Base; end
     class Options   < Group::Base; end
+    class Absence   < Group::Base; end
 
     class Named     < Group::Capture
       attr_reader :name

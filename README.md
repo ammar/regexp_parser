@@ -329,6 +329,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&emsp;_Lookbehind_              | `(?<=abc)`                                              | &#x2713; |
 | &emsp;&emsp;_Negative Lookbehind_     | `(?<!abc)`                                              | &#x2713; |
 | &emsp;&nbsp;_**Atomic**_              | `(?>abc)`                                               | &#x2713; |
+| &emsp;&nbsp;_**Absence**_             | `(?~abc)`                                               | &#x2713; |
 | &emsp;&nbsp;_**Back-references**_     |                                                         | &#x22f1; |
 | &emsp;&emsp;_Named_                   | `\k<name>`                                              | &#x2713; |
 | &emsp;&emsp;_Nest Level_              | `\k<n-1>`                                               | &#x2713; |

@@ -4,7 +4,7 @@
 # given syntax flavor.
 module Regexp::Lexer
 
-  OPENING_TOKENS = [:capture, :options, :passive, :atomic, :named,
+  OPENING_TOKENS = [:capture, :options, :passive, :atomic, :named, :absence,
                     :lookahead, :nlookahead, :lookbehind, :nlookbehind
                    ].freeze
 
