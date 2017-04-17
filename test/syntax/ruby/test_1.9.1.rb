@@ -10,7 +10,8 @@ class TestSyntaxRuby_V191 < Test::Unit::TestCase
   tests = {
     :implements => {
       :escape => [
-        Escape::Backreference + Escape::ASCII + Escape::Meta + Escape::Unicode
+        Escape::Backreference + Escape::ASCII + Escape::Meta + Escape::Unicode +
+        Escape::Hex + Escape::Octal
       ].flatten,
 
       :type => [
