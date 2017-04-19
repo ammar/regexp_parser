@@ -167,6 +167,10 @@ module Regexp::Parser
       @node << CharacterType::Word.new(token)
     when :nonword
       @node << CharacterType::NonWord.new(token)
+    when :linebreak
+      @node << CharacterType::Linebreak.new(token)
+    when :xgrapheme
+      @node << CharacterType::ExtendedGrapheme.new(token)
     else
       raise UnknownTokenError.new('CharacterType', token)
     end

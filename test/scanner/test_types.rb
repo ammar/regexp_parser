@@ -14,6 +14,9 @@ class ScannerTypes < Test::Unit::TestCase
 
    'a\wc' => [1, :type,  :word,        '\w',  1, 3],
    'a\Wc' => [1, :type,  :nonword,     '\W',  1, 3],
+
+   'a\Rc' => [1, :type,  :linebreak,   '\R',  1, 3],
+   'a\Xc' => [1, :type,  :xgrapheme,   '\X',  1, 3],
   }
 
   tests.each do |(pattern, (index, type, token, text, ts, te))|
