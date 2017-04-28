@@ -72,14 +72,19 @@ class ScannerErrors < Test::Unit::TestCase
 
   def test_scanner_eof_in_control_sequence
     assert_raise( RS::PrematureEndError ) { RS.scan('\c') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\c\M') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\c\M-') }
     assert_raise( RS::PrematureEndError ) { RS.scan('\C') }
     assert_raise( RS::PrematureEndError ) { RS.scan('\C-') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\C-\M') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\C-\M-') }
   end
 
   def test_scanner_eof_in_meta_sequence
     assert_raise( RS::PrematureEndError ) { RS.scan('\M') }
     assert_raise( RS::PrematureEndError ) { RS.scan('\M-') }
     assert_raise( RS::PrematureEndError ) { RS.scan('\M-\\') }
+    assert_raise( RS::PrematureEndError ) { RS.scan('\M-\c') }
     assert_raise( RS::PrematureEndError ) { RS.scan('\M-\C') }
     assert_raise( RS::PrematureEndError ) { RS.scan('\M-\C-') }
   end

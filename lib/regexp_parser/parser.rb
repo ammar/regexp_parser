@@ -325,10 +325,14 @@ module Regexp::Parser
       @node << EscapeSequence::VerticalTab.new(token)
 
     when :control
-      @node << EscapeSequence::Control.new(token)
+      if token.text =~ /\A(?:\\C-\\M|\\c\\M)/
+        @node << EscapeSequence::MetaControl.new(token)
+      else
+        @node << EscapeSequence::Control.new(token)
+      end
 
     when :meta_sequence
-      if token.text =~ /\A\\M-\\C/
+      if token.text =~ /\A\\M-\\[Cc]/
         @node << EscapeSequence::MetaControl.new(token)
       else
         @node << EscapeSequence::Meta.new(token)

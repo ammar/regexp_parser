@@ -75,4 +75,25 @@ class TestParserEscapes < Test::Unit::TestCase
     assert_equal '\\M-\\C-X',                 root[2].text
   end
 
+  def test_parse_lower_c_meta_control_sequence
+    root = RP.parse(/\A\\\M-\cX/n)
+
+    assert_equal EscapeSequence::MetaControl, root[2].class
+    assert_equal '\\M-\\cX',                  root[2].text
+  end
+
+  def test_parse_escape_reverse_meta_control_sequence
+    root = RP.parse(/\A\\\C-\M-X/n)
+
+    assert_equal EscapeSequence::MetaControl, root[2].class
+    assert_equal '\\C-\\M-X',                 root[2].text
+  end
+
+  def test_parse_escape_reverse_lower_c_meta_control_sequence
+    root = RP.parse(/\A\\\c\M-X/n)
+
+    assert_equal EscapeSequence::MetaControl, root[2].class
+    assert_equal '\\c\\M-X',                  root[2].text
+  end
+
 end
