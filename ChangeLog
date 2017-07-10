@@ -1,3 +1,11 @@
+Mon Jul 10 2017 Ammar Ali <ammarabuali@gmail.com>
+
+	* Thanks to Janosch Müller (https://github.com/janosch-x):
+		- Add support for new absence operator (PR #33)
+	* Thanks to Bartek Bułat (https://github.com/barthez):
+		- Add support for Ruby 2.3.4 version (PR #40)
+	* Bumped version to 0.4.4
+
 Fri Mar 24 2017 Ammar Ali <ammarabuali@gmail.com>
 
 	* Added ruby version file for 2.4.1
