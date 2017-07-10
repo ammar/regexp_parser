@@ -6,6 +6,8 @@ module Regexp::Syntax
     class V241 < Regexp::Syntax::Ruby::V240
       def initialize
         super
+
+        implements :group, Group::Absence
       end
     end
 

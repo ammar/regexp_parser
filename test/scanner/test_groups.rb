@@ -55,6 +55,13 @@ class ScannerGroups < Test::Unit::TestCase
     })
   end
 
+  if RUBY_VERSION >= '2.4.1'
+    tests.merge!({
+      # New absence operator
+      '(?~abc)'       => [0, :group,     :absence,      '(?~',        0, 3],
+    })
+  end
+
   tests.each_with_index do |(pattern, (index, type, token, text, ts, te)), count|
     define_method "test_scanner_#{type}_#{token}_#{count}" do
       tokens = RS.scan(pattern)

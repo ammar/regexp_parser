@@ -82,6 +82,7 @@
 
   group_atomic          = '?>';
   group_passive         = '?:';
+  group_absence         = '?~';
 
   assertion_lookahead   = '?=';
   assertion_nlookahead  = '?!';
@@ -107,7 +108,7 @@
   group_number_ref      = group_ref . (('<' . group_number . group_level? '>') |
                                        ("'" . group_number . group_level? "'"));
 
-  group_type            = group_atomic | group_passive | group_named;
+  group_type            = group_atomic | group_passive | group_absence | group_named;
 
 
   assertion_type        = assertion_lookahead  | assertion_nlookahead |
@@ -573,6 +574,7 @@
     # Groups
     #   (?:subexp)          passive (non-captured) group
     #   (?>subexp)          atomic group, don't backtrack in subexp.
+    #   (?~subexp)          absence group, matches anything that is not subexp
     #   (?<name>subexp)     named group
     #   (?'name'subexp)     named group (single quoted version)
     #   (subexp)            captured group
@@ -581,6 +583,7 @@
       case text = text(data, ts, te).first
       when '(?:';  emit(:group, :passive,      text, ts, te)
       when '(?>';  emit(:group, :atomic,       text, ts, te)
+      when '(?~';  emit(:group, :absence,      text, ts, te)
 
       when /^\(\?<(\w*)>/
         empty_name_error(:group, 'named group (ab)') if $1.empty?

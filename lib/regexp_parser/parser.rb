@@ -470,6 +470,8 @@ module Regexp::Parser
       exp = Group::Named.new(token)
     when :capture
       exp = Group::Capture.new(token)
+    when :absence
+      exp = Group::Absence.new(token)
 
     when :lookahead
       exp = Assertion::Lookahead.new(token)
