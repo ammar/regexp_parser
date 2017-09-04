@@ -16,7 +16,7 @@ module Regexp::Syntax
 
   class UnknownSyntaxNameError < SyntaxError
     def initialize(name)
-      super "Unknown syntax name '#{name}'. Forgot to add it in the case statement?"
+      super "Unknown syntax name '#{name}'. Forgot to add it to Regexp::Syntax::VERSIONS?"
     end
   end
 
