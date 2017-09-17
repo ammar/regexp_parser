@@ -317,5 +317,13 @@ class ScannerProperties < Test::Unit::TestCase
       assert_equal :nonproperty, result[0]
       assert_equal token,        result[1]
     end
+
+    define_method "test_scan_double_negated_property_#{token}_#{count}" do
+      tokens = RS.scan("a\\P{^#{property}}c")
+      result = tokens.at(1)
+
+      assert_equal :property, result[0]
+      assert_equal token,     result[1]
+    end
   end
 end

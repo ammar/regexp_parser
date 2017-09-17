@@ -318,6 +318,18 @@ class ParserProperties < Test::Unit::TestCase
     assert_equal true, t.expressions[1].negative?
   end
 
+  def test_parse_caret_nonproperty_negative
+    t = RP.parse 'ab\p{^L}cd', 'ruby/1.9'
+
+    assert_equal true, t.expressions[1].negative?
+  end
+
+  def test_parse_double_negated_property_negative
+    t = RP.parse 'ab\P{^L}cd', 'ruby/1.9'
+
+    assert_equal false, t.expressions[1].negative?
+  end
+
   def test_parse_property_age
     t = RP.parse 'ab\p{age=5.2}cd', 'ruby/1.9'
 

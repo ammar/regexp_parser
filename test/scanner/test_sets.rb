@@ -58,6 +58,8 @@ class ScannerSets < Test::Unit::TestCase
 
     '[a\p{digit}c]'         => [2, :set,    :digit,           '\p{digit}',  2, 11],
     '[a\P{digit}c]'         => [2, :set,    :digit,           '\P{digit}',  2, 11],
+    '[a\p{^digit}c]'        => [2, :set,    :digit,           '\p{^digit}', 2, 12],
+    '[a\P{^digit}c]'        => [2, :set,    :digit,           '\P{^digit}', 2, 12],
 
     '[a\p{ALPHA}c]'         => [2, :set,    :alpha,           '\p{ALPHA}',  2, 11],
     '[a\p{P}c]'             => [2, :set,    :punct_any,       '\p{P}',      2, 7],
