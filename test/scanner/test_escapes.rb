@@ -29,9 +29,12 @@ class ScannerEscapes < Test::Unit::TestCase
 
     /a\cBc/           => [1, :escape,  :control,          '\cB',            1,  4],
     /a\C-bc/          => [1, :escape,  :control,          '\C-b',           1,  5],
+    /a\c\M-Bc/n       => [1, :escape,  :control,          '\c\M-B',         1,  7],
+    /a\C-\M-Bc/n      => [1, :escape,  :control,          '\C-\M-B',        1,  8],
 
     /a\M-Bc/n         => [1, :escape,  :meta_sequence,    '\M-B',           1,  5],
     /a\M-\C-Bc/n      => [1, :escape,  :meta_sequence,    '\M-\C-B',        1,  8],
+    /a\M-\cBc/n       => [1, :escape,  :meta_sequence,    '\M-\cB',         1,  7],
 
     'ab\\\xcd'        => [1, :escape,  :backslash,        '\\\\',           2,  4],
     'ab\\\0cd'        => [1, :escape,  :backslash,        '\\\\',           2,  4],

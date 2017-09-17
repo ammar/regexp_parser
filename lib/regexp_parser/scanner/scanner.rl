@@ -56,7 +56,7 @@
   codepoint_list        = 'u{' . xdigit{1,5} . (space . xdigit{1,5})* . '}';
   codepoint_sequence    = codepoint_single | codepoint_list;
 
-  control_sequence      = ('c' | 'C-');
+  control_sequence      = ('c' | 'C-') . (backslash . 'M-')?;
 
   meta_sequence         = 'M-' . (backslash . control_sequence)?;
 
