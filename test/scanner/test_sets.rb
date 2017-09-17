@@ -20,6 +20,8 @@ class ScannerSets < Test::Unit::TestCase
     '[<]'                   => [1, :set,    :member,          '<',          1, 2],
     '[>]'                   => [1, :set,    :member,          '>',          1, 2],
 
+    '[\x20]'                => [1, :set,    :member_hex,      '\x20',       1, 5],
+
     '[\.]'                  => [1, :set,    :escape,          '\.',         1, 3],
     '[\!]'                  => [1, :set,    :escape,          '\!',         1, 3],
     '[\#]'                  => [1, :set,    :escape,          '\#',         1, 3],

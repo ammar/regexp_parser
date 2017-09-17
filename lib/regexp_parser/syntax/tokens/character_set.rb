@@ -5,7 +5,8 @@ module Regexp::Syntax
       OpenClose = [:open, :close]
 
       Basic     = [:negate, :member, :range]
-      Extended  = Basic + [:escape, :intersection, :range_hex, :backspace]
+      Extended  = Basic + [:escape, :intersection, :backspace,
+                           :member_hex, :range_hex]
 
       Types     = [:type_digit, :type_nondigit, :type_hex, :type_nonhex,
                    :type_space, :type_nonspace, :type_word, :type_nonword]
