@@ -1,6 +1,6 @@
 # Regexp::Parser
 
-[![Gem Version](https://badge.fury.io/rb/regexp_parser.svg)](http://badge.fury.io/rb/regexp_parser) [![Build Status](https://secure.travis-ci.org/ammar/regexp_parser.png?branch=master)](http://travis-ci.org/ammar/regexp_parser) [![Code Climate](https://codeclimate.com/github/ammar/regexp_parser.png)](https://codeclimate.com/github/ammar/regexp_parser/badges)
+[![Gem Version](https://badge.fury.io/rb/regexp_parser.svg)](http://badge.fury.io/rb/regexp_parser) [![Build Status](https://secure.travis-ci.org/ammar/regexp_parser.svg?branch=master)](http://travis-ci.org/ammar/regexp_parser) [![Code Climate](https://codeclimate.com/github/ammar/regexp_parser.svg)](https://codeclimate.com/github/ammar/regexp_parser/badges)
 
 A ruby gem for tokenizing, parsing, and transforming regular expressions.
 
