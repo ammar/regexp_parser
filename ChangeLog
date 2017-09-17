@@ -1,3 +1,10 @@
+Sun Sep 17 2017 Ammar Ali <ammarabuali@gmail.com>
+
+	* Thanks to Janosch Müller (https://github.com/janosch-x):
+	  - Support ruby 2.2.7 (PR #42)
+	* Added ruby version files for 2.2.8, 2.3.5, and 2.4.2
+	* Bumped version to 0.4.5
+
 Mon Jul 10 2017 Ammar Ali <ammarabuali@gmail.com>
 
 	* Thanks to Janosch Müller (https://github.com/janosch-x):
