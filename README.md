@@ -315,11 +315,11 @@ _Note that not all of these are available in all versions of Ruby_
 
 | Syntax Feature                        | Examples                                                | &#x22ef; |
 | ------------------------------------- | ------------------------------------------------------- |:--------:|
-| **Alternation**                       | `a|b|c`                                                 | &#x2713; |
+| **Alternation**                       | `a\|b\|c`                                               | &#x2713; |
 | **Anchors**                           | `^`, `$`, `\b`                                          | &#x2713; |
 | **Character Classes**                 | `[abc]`, `[^\\]`, `[a-d&&g-h]`, `[a=e=b]`               | &#x2713; |
 | **Character Types**                   | `\d`, `\H`, `\s`                                        | &#x2713; |
-| **Conditional Exps.**                 | `(?(cond)yes-subexp)`, `(?(cond)yes-subexp|no-subexp)`  | &#x2713; |
+| **Conditional Exps.**                 | `(?(cond)yes-subexp)`, `(?(cond)yes-subexp\|no-subexp)` | &#x2713; |
 | **Escape Sequences**                  | `\t`, `\\+`, `\?`                                       | &#x2713; |
 | **Free Space**                        | whitespace and `# Comments` _(x modifier)_              | &#x2713; |
 | **Grouped Exps.**                     |                                                         | &#x22f1; |
@@ -342,7 +342,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Options**_             | `(?mi-x:abc)`, `(?a:\s\w+)`                             | &#x2713; |
 | &emsp;&nbsp;_**Passive**_             | `(?:abc)`                                               | &#x2713; |
 | &emsp;&nbsp;_**Subexp. Calls**_       | `\g<name>`, `\g<1>`                                     | &#x2713; |
-| **Keep**                              | `\K`, `(ab\Kc|d\Ke)f`                                   | &#x2713; |
+| **Keep**                              | `\K`, `(ab\Kc\|d\Ke)f`                                  | &#x2713; |
 | **Literals** _(utf-8)_                | `Ruby`, `ルビー`, `روبي`                                | &#x2713; |
 | **POSIX Classes**                     | `[:alpha:]`, `[:^digit:]`                               | &#x2713; |
 | **Quantifiers**                       |                                                         | &#x22f1; |
