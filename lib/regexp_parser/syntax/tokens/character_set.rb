@@ -11,6 +11,8 @@ module Regexp::Syntax
       Types     = [:type_digit, :type_nondigit, :type_hex, :type_nonhex,
                    :type_space, :type_nonspace, :type_word, :type_nonword]
 
+      Clustered = [:type_linebreak, :type_xgrapheme]
+
       module POSIX
         Standard  = [
           :class_alnum, :class_alpha, :class_blank, :class_cntrl,
@@ -31,7 +33,7 @@ module Regexp::Syntax
         All = Standard + StandardNegative + Extensions + ExtensionsNegative
       end
 
-      All = Basic + Extended + Types + POSIX::All
+      All = Basic + Extended + Types + Clustered + POSIX::All
       Type = :set
 
       module SubSet

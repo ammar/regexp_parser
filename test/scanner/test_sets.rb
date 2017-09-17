@@ -42,6 +42,9 @@ class ScannerSets < Test::Unit::TestCase
     '[\w]'                  => [1, :set,    :type_word,       '\w',         1, 3],
     '[\W]'                  => [1, :set,    :type_nonword,    '\W',         1, 3],
 
+    '[\R]'                  => [1, :set,    :type_linebreak,  '\R',         1, 3],
+    '[\X]'                  => [1, :set,    :type_xgrapheme,  '\X',         1, 3],
+
     '[a-c]'                 => [1, :set,    :range,           'a-c',        1, 4],
     '[a-c-]'                => [2, :set,    :member,          '-',          4, 6],
     '[a-c^]'                => [2, :set,    :member,          '^',          4, 5],

@@ -12,6 +12,10 @@ module Regexp::Syntax
         implements :conditional, Conditional::All
         implements :property,    UnicodeProperty::V200
         implements :nonproperty, UnicodeProperty::V200
+
+        implements :type,        CharacterType::Clustered
+        implements :set,         CharacterSet::Clustered
+        implements :subset,      CharacterSet::Clustered
       end
     end
 
