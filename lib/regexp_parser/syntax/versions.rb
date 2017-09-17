@@ -46,6 +46,8 @@ module Regexp::Syntax
     'ruby/2.2.4',
     'ruby/2.2.5',
     'ruby/2.2.6',
+    'ruby/2.2.7',
+    'ruby/2.2.8',
 
     # alias for the latest 2.2 implementations
     'ruby/2.2',
@@ -55,6 +57,8 @@ module Regexp::Syntax
     'ruby/2.3.1',
     'ruby/2.3.2',
     'ruby/2.3.3',
+    'ruby/2.3.4',
+    'ruby/2.3.5',
 
     # alias for the latest 2.3 implementation
     'ruby/2.3',
@@ -62,6 +66,7 @@ module Regexp::Syntax
     # Ruby 2.4.x
     'ruby/2.4.0',
     'ruby/2.4.1',
+    'ruby/2.4.2',
 
     # alias for the latest 2.4 implementation
     'ruby/2.4',

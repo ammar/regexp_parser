@@ -106,4 +106,17 @@ class TestParserGroups < Test::Unit::TestCase
     end
   end
 
+  if RUBY_VERSION >= '2.4.1'
+    def test_parse_absence_group
+      t = RP.parse('a(?~b)c(?~d)e')
+
+      [1,3].each do |i|
+        assert t.expressions[i].is_a?(Group::Absence),
+               "Expected absence group, but got #{t.expressions[i].class.name}"
+
+        assert_equal :group,   t.expressions[i].type
+        assert_equal :absence, t.expressions[i].token
+      end
+    end
+  end
 end

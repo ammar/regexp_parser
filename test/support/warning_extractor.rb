@@ -1,4 +1,5 @@
 require 'set'
+require 'delegate'
 
 module RegexpParserTest
   class Warning

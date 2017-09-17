@@ -39,6 +39,16 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal false, exp.include?(']')
   end
 
+  def test_parse_hex_members
+    root = RP.parse('[\x20\x24-\x26\x28]', :any)
+    exp  = root.expressions.at(0)
+
+    assert_equal true,  exp.include?('\x20')
+    assert_equal true,  exp.include?('\x24-\x26')
+    assert_equal true,  exp.include?('\x28')
+    assert_equal false, exp.include?(']')
+  end
+
   def test_parse_chat_type_set_members
     root = RP.parse('[\da-z]', :any)
     exp  = root.expressions.at(0)

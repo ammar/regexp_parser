@@ -177,10 +177,24 @@ class TestSyntaxFiles < Test::Unit::TestCase
     assert syntax.kind_of?(Regexp::Syntax::Ruby::V226)
   end
 
+  def test_syntax_file_2_2_7
+    syntax = Regexp::Syntax.new 'ruby/2.2.7'
+
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V226)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V227)
+  end
+
+  def test_syntax_file_2_2_8
+    syntax = Regexp::Syntax.new 'ruby/2.2.8'
+
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V227)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V228)
+  end
+
   def test_syntax_file_2_2_alias
     syntax = Regexp::Syntax.new 'ruby/2.2'
 
-    assert syntax.kind_of?(Regexp::Syntax::Ruby::V226)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V228)
   end
 
   # 2.3 syntax files
@@ -212,10 +226,24 @@ class TestSyntaxFiles < Test::Unit::TestCase
     assert syntax.kind_of?(Regexp::Syntax::Ruby::V233)
   end
 
+  def test_syntax_file_2_3_4
+    syntax = Regexp::Syntax.new 'ruby/2.3.4'
+
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V233)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V234)
+  end
+
+  def test_syntax_file_2_3_5
+    syntax = Regexp::Syntax.new 'ruby/2.3.5'
+
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V234)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V235)
+  end
+
   def test_syntax_file_2_3_alias
     syntax = Regexp::Syntax.new 'ruby/2.3'
 
-    assert syntax.kind_of?(Regexp::Syntax::Ruby::V233)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V235)
   end
 
   # 2.4 syntax files
@@ -233,9 +261,16 @@ class TestSyntaxFiles < Test::Unit::TestCase
     assert syntax.kind_of?(Regexp::Syntax::Ruby::V241)
   end
 
+  def test_syntax_file_2_4_2
+    syntax = Regexp::Syntax.new 'ruby/2.4.2'
+
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V241)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V242)
+  end
+
   def test_syntax_file_2_4_alias
     syntax = Regexp::Syntax.new 'ruby/2.4'
 
-    assert syntax.kind_of?(Regexp::Syntax::Ruby::V241)
+    assert syntax.kind_of?(Regexp::Syntax::Ruby::V242)
   end
 end

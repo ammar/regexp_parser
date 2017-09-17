@@ -63,13 +63,12 @@
       if in_set
         type = :set
       else
-        type = text[1,1] == 'p' ? :property : :nonproperty
+        type = (text[1] == 'P') ^ (text[3] == '^') ? :nonproperty : :property
       end
 
       name = data[ts+2..te-2].pack('c*').gsub(/[\s_]/,'').downcase
       if name[0].chr == '^'
         name = name[1..-1]
-        type = :nonproperty
       end
 
       case name

@@ -35,7 +35,7 @@
   collating_sequence    = '[.' . (alpha | [\-])+ . '.]';
   character_equivalent  = '[=' . alpha . '=]';
 
-  char_type             = [dDhHsSwW];
+  char_type             = [dDhHsSwWRX];
 
   line_anchor           = beginning_of_line | end_of_line;
   anchor_char           = [AbBzZG];
@@ -82,6 +82,7 @@
 
   group_atomic          = '?>';
   group_passive         = '?:';
+  group_absence         = '?~';
 
   assertion_lookahead   = '?=';
   assertion_nlookahead  = '?!';
@@ -107,7 +108,7 @@
   group_number_ref      = group_ref . (('<' . group_number . group_level? '>') |
                                        ("'" . group_number . group_level? "'"));
 
-  group_type            = group_atomic | group_passive | group_named;
+  group_type            = group_atomic | group_passive | group_absence | group_named;
 
 
   assertion_type        = assertion_lookahead  | assertion_nlookahead |
@@ -258,6 +259,8 @@
       when '\S'; emit(set_type, :type_nonspace,  text, ts-1, te)
       when '\w'; emit(set_type, :type_word,      text, ts-1, te)
       when '\W'; emit(set_type, :type_nonword,   text, ts-1, te)
+      when '\R'; emit(set_type, :type_linebreak, text, ts-1, te)
+      when '\X'; emit(set_type, :type_xgrapheme, text, ts-1, te)
       end
       fret;
     };
@@ -497,6 +500,8 @@
       when '\\S'; emit(:type, :nonspace,   text, ts, te)
       when '\\w'; emit(:type, :word,       text, ts, te)
       when '\\W'; emit(:type, :nonword,    text, ts, te)
+      when '\\R'; emit(:type, :linebreak,  text, ts, te)
+      when '\\X'; emit(:type, :xgrapheme,  text, ts, te)
       else
         raise ScannerError.new(
           "Unexpected character in type at #{text} (char #{ts})")
@@ -573,6 +578,7 @@
     # Groups
     #   (?:subexp)          passive (non-captured) group
     #   (?>subexp)          atomic group, don't backtrack in subexp.
+    #   (?~subexp)          absence group, matches anything that is not subexp
     #   (?<name>subexp)     named group
     #   (?'name'subexp)     named group (single quoted version)
     #   (subexp)            captured group
@@ -581,6 +587,7 @@
       case text = text(data, ts, te).first
       when '(?:';  emit(:group, :passive,      text, ts, te)
       when '(?>';  emit(:group, :atomic,       text, ts, te)
+      when '(?~';  emit(:group, :absence,      text, ts, te)
 
       when /^\(\?<(\w*)>/
         empty_name_error(:group, 'named group (ab)') if $1.empty?

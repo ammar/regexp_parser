@@ -15,7 +15,7 @@ module Regexp::Syntax
         implements :backref, Backreference::All +
           SubexpressionCall::All
 
-        implements :escape, Escape::Unicode + Escape::Hex
+        implements :escape, Escape::Unicode + Escape::Hex + Escape::Octal
 
         implements :type, CharacterType::Hex
 

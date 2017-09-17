@@ -32,6 +32,9 @@ class TestParserEscapes < Test::Unit::TestCase
 
      # hex escapes
     /a\xFF/n =>  [1, :escape, :hex,                 EscapeSequence::Literal],
+
+    # octal escapes
+    /a\177/n =>  [1, :escape, :octal,               EscapeSequence::Literal],
   }
 
   tests.each_with_index do |(pattern, (index, type, token, klass)), count|

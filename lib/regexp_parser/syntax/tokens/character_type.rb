@@ -6,7 +6,9 @@ module Regexp::Syntax
       Extended  = [:digit, :nondigit, :space, :nonspace, :word, :nonword]
       Hex       = [:hex, :nonhex]
 
-      All = Basic + Extended + Hex
+      Clustered = [:linebreak, :xgrapheme]
+
+      All = Basic + Extended + Hex + Clustered
       Type = :type
     end
 

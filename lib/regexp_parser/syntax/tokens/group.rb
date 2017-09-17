@@ -13,6 +13,8 @@ module Regexp::Syntax
       All = Group::Extended + Group::Named + Group::Atomic +
             Group::Passive + Group::Comment
 
+      Absence = [:absence]
+
       Type = :group
     end
 

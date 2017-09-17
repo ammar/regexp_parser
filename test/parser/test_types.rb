@@ -29,4 +29,22 @@ class TestParserTypes < Test::Unit::TestCase
     end
   end
 
+  tests_2_0 = {
+    'a\Rc'    => [1, :type,   :linebreak, CharacterType::Linebreak],
+    'a\Xc'    => [1, :type,   :xgrapheme, CharacterType::ExtendedGrapheme],
+  }
+
+  tests_2_0.each_with_index do |(pattern, (index, type, token, klass)), count|
+    define_method "test_parse_type_#{token}_#{count}" do
+      root = RP.parse(pattern, 'ruby/2.0')
+      exp  = root.expressions.at(index)
+
+      assert exp.is_a?( klass ),
+             "Expected #{klass}, but got #{exp.class.name}"
+
+      assert_equal type,  exp.type
+      assert_equal token, exp.token
+    end
+  end
+
 end

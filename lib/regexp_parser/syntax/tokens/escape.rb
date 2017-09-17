@@ -23,6 +23,8 @@ module Regexp::Syntax
 
       Hex   = [:hex]
 
+      Octal = [:octal]
+
       All   = Basic + Backreference + ASCII + Meta
       Type  = :escape
     end
