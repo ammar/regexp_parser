@@ -1,3 +1,11 @@
+Mon Sep 18 2017 Janosch Müller <janosch84@gmail.com>
+
+	* Added Parser support for hex escapes in sets (PR #36)
+	* Added Parser support for octal escapes (PR #37)
+	* Added support for cluster types \R and \X (PR #38)
+	* Added support for more metacontrol notations (PR #39)
+	* Bumped version to 0.4.6
+
 Sun Sep 17 2017 Ammar Ali <ammarabuali@gmail.com>
 
 	* Thanks to Janosch Müller (https://github.com/janosch-x):

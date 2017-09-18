@@ -319,6 +319,7 @@ _Note that not all of these are available in all versions of Ruby_
 | **Anchors**                           | `^`, `$`, `\b`                                          | &#x2713; |
 | **Character Classes**                 | `[abc]`, `[^\\]`, `[a-d&&g-h]`, `[a=e=b]`               | &#x2713; |
 | **Character Types**                   | `\d`, `\H`, `\s`                                        | &#x2713; |
+| **Cluster Types**                     | `\R`, `\X`                                              | &#x2713; |
 | **Conditional Exps.**                 | `(?(cond)yes-subexp)`, `(?(cond)yes-subexp\|no-subexp)` | &#x2713; |
 | **Escape Sequences**                  | `\t`, `\\+`, `\?`                                       | &#x2713; |
 | **Free Space**                        | whitespace and `# Comments` _(x modifier)_              | &#x2713; |
@@ -352,7 +353,7 @@ _Note that not all of these are available in all versions of Ruby_
 | **String Escapes**                    |                                                         | &#x22f1; |
 | &emsp;&nbsp;_**Control**_             | `\C-C`, `\cD`                                           | &#x2713; |
 | &emsp;&nbsp;_**Hex**_                 | `\x20`, `\x{701230}`                                    | &#x2713; |
-| &emsp;&nbsp;_**Meta**_                | `\M-c`, `\M-\C-C`                                       | &#x2713; |
+| &emsp;&nbsp;_**Meta**_                | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
 | **Unicode Properties**                | _<sub>([Unicode 7.0.0](http://www.unicode.org/versions/Unicode7.0.0/))</sub>_ | &#x22f1; |
