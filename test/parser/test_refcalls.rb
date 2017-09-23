@@ -6,6 +6,7 @@ class TestParserRefcalls < Test::Unit::TestCase
     exp  = root.expressions.at(1)
 
     assert_equal true, exp.is_a?(Backreference::Number)
+    assert_equal '1',  exp.number
   end
 
   def test_parse_backref_named_ab
@@ -13,6 +14,7 @@ class TestParserRefcalls < Test::Unit::TestCase
     exp  = root.expressions.at(1)
 
     assert_equal true, exp.is_a?(Backreference::Name)
+    assert_equal 'X',  exp.name
   end
 
   def test_parse_backref_named_sq
@@ -20,6 +22,7 @@ class TestParserRefcalls < Test::Unit::TestCase
     exp  = root.expressions.at(1)
 
     assert_equal true, exp.is_a?(Backreference::Name)
+    assert_equal 'X',  exp.name
   end
 
   def test_parse_backref_number_ab
@@ -27,6 +30,7 @@ class TestParserRefcalls < Test::Unit::TestCase
     exp  = root.expressions.at(1)
 
     assert_equal true, exp.is_a?(Backreference::Number)
+    assert_equal '1',  exp.number
   end
 
   def test_parse_backref_number_sq
@@ -34,6 +38,7 @@ class TestParserRefcalls < Test::Unit::TestCase
     exp  = root.expressions.at(1)
 
     assert_equal true, exp.is_a?(Backreference::Number)
+    assert_equal '1',  exp.number
   end
 
   def test_parse_backref_number_relative_ab
@@ -41,6 +46,7 @@ class TestParserRefcalls < Test::Unit::TestCase
     exp  = root.expressions.at(1)
 
     assert_equal true, exp.is_a?(Backreference::NumberRelative)
+    assert_equal '-1', exp.number
   end
 
   def test_parse_backref_number_relative_sq
@@ -48,6 +54,7 @@ class TestParserRefcalls < Test::Unit::TestCase
     exp  = root.expressions.at(1)
 
     assert_equal true, exp.is_a?(Backreference::NumberRelative)
+    assert_equal '-1', exp.number
   end
 
   def test_parse_backref_name_call_ab
