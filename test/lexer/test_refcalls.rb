@@ -3,6 +3,9 @@ require File.expand_path("../../helpers", __FILE__)
 class LexerRefCalls < Test::Unit::TestCase
 
   tests = {
+    # Traditional numerical group back-reference
+    '(abc)\1'         => [3, :backref, :number,             '\1',         5,  7, 0, 0, 0],
+
     # Group back-references, named, numbered, and relative
     '(?<X>abc)\k<X>'  => [3, :backref, :name_ref,           '\k<X>',      9, 14, 0, 0, 0],
     "(?<X>abc)\\k'X'" => [3, :backref, :name_ref,           "\\k'X'",     9, 14, 0, 0, 0],

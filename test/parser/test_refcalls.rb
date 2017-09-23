@@ -1,6 +1,12 @@
 require File.expand_path("../../helpers", __FILE__)
 
 class TestParserRefcalls < Test::Unit::TestCase
+  def test_parse_traditional_number_backref
+    root = RP.parse('(abc)\1', 'ruby/1.9')
+    exp  = root.expressions.at(1)
+
+    assert_equal true, exp.is_a?(Backreference::Number)
+  end
 
   def test_parse_backref_named_ab
     root = RP.parse('(?<X>abc)\k<X>', 'ruby/1.9')

@@ -3,6 +3,9 @@ require File.expand_path("../../helpers", __FILE__)
 class ScannerRefCalls < Test::Unit::TestCase
 
   tests = {
+    # Traditional numerical group back-reference
+    '(abc)\1'           => [3, :backref, :number,               '\1',         5, 7],
+
     # Group back-references, named, numbered, and relative
     '(?<X>abc)\k<X>'    => [3, :backref, :name_ref_ab,          '\k<X>',      9, 14],
     "(?<X>abc)\\k'X'"   => [3, :backref, :name_ref_sq,          "\\k'X'",     9, 14],
