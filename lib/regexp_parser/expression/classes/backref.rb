@@ -16,7 +16,7 @@ module Regexp::Expression
       attr_reader :number
 
       def initialize(token)
-        @number = token.text[3..-2]
+        @number = token.text[token.token.equal?(:number) ? 1..-1 : 3..-2]
         super(token)
       end
     end
