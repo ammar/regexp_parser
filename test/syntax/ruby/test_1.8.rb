@@ -23,7 +23,7 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
       :assertion    => [Assertion::Lookbehind].flatten,
 
       :backref => [
-        Backreference::All + SubexpressionCall::All
+        Backreference::All - [:number] + SubexpressionCall::All
       ].flatten,
 
       :quantifier => [

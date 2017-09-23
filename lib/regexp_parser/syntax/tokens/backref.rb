@@ -3,7 +3,7 @@ module Regexp::Syntax
 
     module Backreference
       Name      = [:name_ref]
-      Number    = [:number_ref, :number_rel_ref]
+      Number    = [:number, :number_ref, :number_rel_ref]
 
       NestLevel = [:name_nest_ref, :number_nest_ref]
 
