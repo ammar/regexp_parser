@@ -154,4 +154,47 @@ class ScannerFreeSpace < Test::Unit::TestCase
     end
   end
 
+  def test_scan_free_space_switch_groups
+    # Matches 'a bcde f g hi j'
+    regexp = /(a (b((?x) (c d) ((?-x)(e f) )g) h)i j)/
+    tokens = RS.scan(regexp)
+    [
+      [ 0, :group,      :capture,      '(',       0,  1],
+      [ 1, :literal,    :literal,      'a ',      1,  3],
+      [ 2, :group,      :capture,      '(',       3,  4],
+      [ 3, :literal,    :literal,      'b',       4,  5],
+      [ 4, :group,      :capture,      '(',       5,  6],
+      [ 5, :group,      :options,      '(?x',     6,  9],
+      [ 6, :group,      :close,        ')',       9,  10],
+      [ 7, :free_space, :whitespace,   ' ',       10, 11],
+      [ 8, :group,      :capture,      '(',       11, 12],
+      [ 9, :literal,    :literal,      'c',       12, 13],
+      [10, :free_space, :whitespace,   ' ',       13, 14],
+      [11, :literal,    :literal,      'd',       14, 15],
+      [12, :group,      :close,        ')',       15, 16],
+      [13, :free_space, :whitespace,   ' ',       16, 17],
+      [14, :group,      :capture,      '(',       17, 18],
+      [15, :group,      :options,      '(?-x',    18, 22],
+      [16, :group,      :close,        ')',       22, 23],
+      [17, :group,      :capture,      '(',       23, 24],
+      [18, :literal,    :literal,      'e f',     24, 27],
+      [19, :group,      :close,        ')',       27, 28],
+      [20, :literal,    :literal,      ' ',       28, 29],
+      [21, :group,      :close,        ')',       29, 30],
+      [22, :literal,    :literal,      'g',       30, 31],
+      [23, :group,      :close,        ')',       31, 32],
+      [24, :literal,    :literal,      ' h',      32, 34],
+      [25, :group,      :close,        ')',       34, 35],
+      [26, :literal,    :literal,      'i j',     35, 38],
+      [27, :group,      :close,        ')',       38, 39]
+    ].each do |index, type, token, text, ts, te|
+      result = tokens[index]
+
+      assert_equal type,  result[0]
+      assert_equal token, result[1]
+      assert_equal text,  result[2]
+      assert_equal ts,    result[3]
+      assert_equal te,    result[4]
+    end
+  end
 end
