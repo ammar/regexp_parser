@@ -1,5 +1,8 @@
 .*.swp
 .DS_Store
+.ruby-version
+.tags
+.tags1
 
 Gemfile.lock
 
