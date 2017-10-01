@@ -448,7 +448,7 @@
     };
 
     alternation {
-      if in_conditional and conditional_stack.length > 0 and 
+      if in_conditional and conditional_stack.length > 0 and
          conditional_stack.last[1] == @group_depth
         emit(:conditional, :separator, *text(data, ts, te))
       else
@@ -538,7 +538,7 @@
 
     # (?#...) comments: parsed as a single expression, without introducing a
     # new nesting level. Comments may not include parentheses, escaped or not.
-    # special case for close, action performed on all transitions to get the 
+    # special case for close, action performed on all transitions to get the
     # correct closing count.
     # ------------------------------------------------------------------------
     group_open . group_comment $group_closed {
@@ -622,14 +622,10 @@
         end
       else
         if @spacing_stack.length > 1 and
-          @spacing_stack.last[1] == (@group_depth + 1)
+          @spacing_stack.last[:depth] == (@group_depth + 1)
           @spacing_stack.pop
 
-          @free_spacing = @spacing_stack.last[0]
-
-          if @spacing_stack.length == 1
-            @in_options = false
-          end
+          @free_spacing = @spacing_stack.last[:free_spacing]
         end
 
         emit(:group, :close, *text(data, ts, te))
@@ -857,7 +853,7 @@ module Regexp::Scanner
     @block  = block_given? ? block : nil
 
     @in_group, @group_depth = false, 0
-    @in_options, @spacing_stack = false, [[@free_spacing, 0]]
+    @spacing_stack = [{:free_spacing => @free_spacing, :depth => 0}]
 
     in_set,   set_depth, set_type   = false, 0, :set
     in_conditional, conditional_depth, conditional_stack = false, 0, []
@@ -968,22 +964,26 @@ module Regexp::Scanner
   end
 
   def self.emit_options(text, ts, te)
-    if text =~ /\(\?([mixdau]+)?-?([mix]+)?:/
-      positive, negative = $1, $2
+    if text =~ /\(\?([mixdau]*)-?([mix]*)(:)?/
+      positive, negative, group_local = $1, $2, $3
 
-      if positive =~ /x/
+      if positive.include?('x')
         @free_spacing = true
       end
 
       # If the x appears in both, treat it like ruby does, the second cancels
       # the first.
-      if negative =~ /x/
+      if negative.include?('x')
         @free_spacing = false
       end
-    end
 
-    @in_options = true
-    @spacing_stack << [@free_spacing, @group_depth]
+      if group_local
+        @spacing_stack << {:free_spacing => @free_spacing, :depth => @group_depth}
+      else
+        # switch for parent group level
+        @spacing_stack.last[:free_spacing] = @free_spacing
+      end
+    end
 
     emit(:group, :options, text, ts, te)
   end
