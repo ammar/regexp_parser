@@ -125,9 +125,10 @@ Regexp::Scanner.scan( /(cat?([bhm]at)){3,5}/ ).map {|token| token[2]}
 
   * If the input is a ruby **Regexp** object, the scanner calls #source on it to
     get its string representation. #source does not include the options of
-    the expression (m, i, and x) To include the options in the scan, #to_s
-    should be called on the **Regexp** before passing it to the scanner or any
-    of the other modules.
+    the expression (m, i, and x). To include the options in the scan, #to_s
+    should be called on the **Regexp** before passing it to the scanner or the
+    lexer. For the parser, however, this is not necessary. It automatically
+    exposes the options of a passed **Regexp** in the returned root expression.
 
   * To keep the scanner simple(r) and fairly reusable for other purposes, it
     does not perform lexical analysis on the tokens, sticking to the task
