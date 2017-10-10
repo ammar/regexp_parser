@@ -1,6 +1,6 @@
 require 'regexp_parser/expression'
 
-module Regexp::Parser
+class Regexp::Parser
   include Regexp::Expression
   include Regexp::Syntax
 
@@ -19,6 +19,10 @@ module Regexp::Parser
   end
 
   def self.parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
+    new.parse(input, syntax, &block)
+  end
+
+  def parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
     @nesting = [@root = @node = Root.new]
 
     @conditional_nesting = []
@@ -34,21 +38,23 @@ module Regexp::Parser
     end
   end
 
-  def self.nest(exp)
+  private
+
+  def nest(exp)
     @nesting.push exp
 
     @node << exp
     @node  = exp
   end
 
-  def self.nest_conditional(exp)
+  def nest_conditional(exp)
     @conditional_nesting.push exp
 
     @node << exp
     @node  = exp
   end
 
-  def self.parse_token(token)
+  def parse_token(token)
     case token.type
     when :meta;         meta(token)
     when :quantifier;   quantifier(token)
@@ -75,7 +81,7 @@ module Regexp::Parser
     end
   end
 
-  def self.set(token)
+  def set(token)
     case token.token
     when :open
       open_set(token)
@@ -96,7 +102,7 @@ module Regexp::Parser
     end
   end
 
-  def self.meta(token)
+  def meta(token)
     case token.token
     when :dot
       @node << CharacterType::Any.new(token)
@@ -126,7 +132,7 @@ module Regexp::Parser
     end
   end
 
-  def self.backref(token)
+  def backref(token)
     case token.token
     when :name_ref
       @node << Backreference::Name.new(token)
@@ -149,7 +155,7 @@ module Regexp::Parser
     end
   end
 
-  def self.type(token)
+  def type(token)
     case token.token
     when :digit
       @node << CharacterType::Digit.new(token)
@@ -176,7 +182,7 @@ module Regexp::Parser
     end
   end
 
-  def self.conditional(token)
+  def conditional(token)
     case token.token
     when :open
       nest_conditional(Conditional::Expression.new(token))
@@ -200,9 +206,9 @@ module Regexp::Parser
     end
   end
 
-  def self.property(token)
-    include Regexp::Expression::UnicodeProperty
+  include Regexp::Expression::UnicodeProperty
 
+  def property(token)
     case token.token
     when :alnum;            @node << Alnum.new(token)
     when :alpha;            @node << Alpha.new(token)
@@ -282,7 +288,7 @@ module Regexp::Parser
     end
   end
 
-  def self.anchor(token)
+  def anchor(token)
     case token.token
     when :bol
       @node << Anchor::BeginningOfLine.new(token)
@@ -305,7 +311,7 @@ module Regexp::Parser
     end
   end
 
-  def self.escape(token)
+  def escape(token)
     case token.token
 
     when :backspace
@@ -349,11 +355,11 @@ module Regexp::Parser
   end
 
 
-  def self.keep(token)
+  def keep(token)
     @node << Keep::Mark.new(token)
   end
 
-  def self.free_space(token)
+  def free_space(token)
     case token.token
     when :comment
       @node << Comment.new(token)
@@ -368,7 +374,7 @@ module Regexp::Parser
     end
   end
 
-  def self.quantifier(token)
+  def quantifier(token)
     offset = -1
     target_node = @node.expressions[offset]
     while target_node and target_node.is_a?(FreeSpace)
@@ -417,7 +423,7 @@ module Regexp::Parser
     end
   end
 
-  def self.interval(target_node, token)
+  def interval(target_node, token)
     text = token.text
     mchr = text[text.length-1].chr =~ /[?+]/ ? text[text.length-1].chr : nil
     case mchr
@@ -439,7 +445,7 @@ module Regexp::Parser
     target_node.quantify(:interval, text, min.to_i, max.to_i, mode)
   end
 
-  def self.group(token)
+  def group(token)
     case token.token
     when :options
       options(token)
@@ -452,7 +458,7 @@ module Regexp::Parser
     end
   end
 
-  def self.options(token)
+  def options(token)
     opt = token.text.split('-', 2)
 
     exp = Group::Options.new(token)
@@ -468,7 +474,7 @@ module Regexp::Parser
     nest(exp)
   end
 
-  def self.open_group(token)
+  def open_group(token)
     case token.token
     when :passive
       exp = Group::Passive.new(token)
@@ -497,14 +503,14 @@ module Regexp::Parser
     nest(exp)
   end
 
-  def self.close_group
+  def close_group
     @nesting.pop
 
     @node = @nesting.last
     @node = @node.last if @node.last and @node.last.is_a?(Alternation)
   end
 
-  def self.open_set(token)
+  def open_set(token)
     token.token = :character
 
     if token.type == :subset
@@ -514,15 +520,15 @@ module Regexp::Parser
     end
   end
 
-  def self.negate_set
+  def negate_set
     @set.negate
   end
 
-  def self.append_set(token)
+  def append_set(token)
     @set << token.text
   end
 
-  def self.close_set(token)
+  def close_set(token)
     @set.close
   end
 
