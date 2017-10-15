@@ -14,7 +14,7 @@ class ExpressionToH < Test::Unit::TestCase
       :starts_at         => 0,
       :length            => 3,
       :quantifier        => nil,
-      :options           => nil,
+      :options           => {},
       :level             => nil,
       :set_level         => nil,
       :conditional_level => nil,
@@ -26,7 +26,7 @@ class ExpressionToH < Test::Unit::TestCase
           :starts_at         => 0,
           :length            => 3,
           :quantifier        => nil,
-          :options           => nil,
+          :options           => {},
           :level             => 0,
           :set_level         => 0,
           :conditional_level => 0

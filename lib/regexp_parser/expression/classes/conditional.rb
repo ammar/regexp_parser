@@ -11,8 +11,8 @@ module Regexp::Expression
     class Branch    < Regexp::Expression::Sequence; end
 
     class Expression < Regexp::Expression::Subexpression
-      def initialize(token)
-        super(token)
+      def initialize(token, options = {})
+        super
 
         @condition = nil
         @branches  = []
