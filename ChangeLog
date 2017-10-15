@@ -1,3 +1,16 @@
+Sun Oct 15 2017 Janosch Müller <janosch84@gmail.com>
+
+	* Fixed a thread safety issue (issue #45)
+	* Some public class methods that were only reliable for
+	  internal use are now private instance methods (PR #46)
+	* Improved the usefulness of Expression#options (issue #43) -
+	  #options and derived methods such as #i?, #m? and #x? are now
+	  defined for all Expressions that are affected by such flags.
+	* Fixed scanning of whitespace following (?x) (commit 5c94bd2)
+	* Fixed a Parser bug where the #number attribute of traditional
+	  numerical backreferences was not set correctly (commit 851b620)
+	* Bumped version to 0.4.7
+
 Mon Sep 18 2017 Janosch Müller <janosch84@gmail.com>
 
 	* Added Parser support for hex escapes in sets (PR #36)
