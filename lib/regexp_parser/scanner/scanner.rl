@@ -773,9 +773,7 @@
 # THIS IS A GENERATED FILE, DO NOT EDIT DIRECTLY
 # This file was generated from lib/regexp_parser/scanner/scanner.rl
 
-module Regexp::Scanner
-  %% write data;
-
+class Regexp::Scanner
   # General scanner error (catch all)
   class ScannerError < StandardError; end
 
@@ -835,6 +833,10 @@ module Regexp::Scanner
   # This method may raise errors if a syntax error is encountered.
   # --------------------------------------------------------------------------
   def self.scan(input_object, &block)
+    new.scan(input_object, &block)
+  end
+
+  def scan(input_object, &block)
     @literal, top, stack = nil, 0, []
 
     if input_object.is_a?(Regexp)
@@ -858,6 +860,7 @@ module Regexp::Scanner
     in_set,   set_depth, set_type   = false, 0, :set
     in_conditional, conditional_depth, conditional_stack = false, 0, []
 
+    %% write data;
     %% write init;
     %% write exec;
 
@@ -877,12 +880,25 @@ module Regexp::Scanner
     @tokens
   end
 
+  # Emits an array with the details of the scanned pattern
+  def emit(type, token, text, ts, te)
+    #puts "EMIT: type: #{type}, token: #{token}, text: #{text}, ts: #{ts}, te: #{te}"
+
+    emit_literal if @literal
+
+    if @block
+      @block.call type, token, text, ts, te
+    end
+
+    @tokens << [type, token, text, ts, te]
+  end
+
   private
 
   # Ragel's regex-based scan of the group options introduced a lot of
   # ambiguity, so we just ask it to find the beginning of what looks
   # like an options run and handle the rest in here.
-  def self.scan_options(p, data, ts, te)
+  def scan_options(p, data, ts, te)
     text = text(data, ts, te).first
 
     options_char, options_length = true, 0
@@ -934,26 +950,26 @@ module Regexp::Scanner
   end
 
   # Copy from ts to te from data as text
-  def self.copy(data, range)
+  def copy(data, range)
     data[range].pack('c*')
   end
 
   # Copy from ts to te from data as text, returning an array with the text
   #  and the offsets used to copy it.
-  def self.text(data, ts, te, soff = 0)
+  def text(data, ts, te, soff = 0)
     [copy(data, ts-soff..te-1), ts-soff, te]
   end
 
   # Appends one or more characters to the literal buffer, to be emitted later
   # by a call to emit_literal. Contents can be a mix of ASCII and UTF-8.
-  def self.append_literal(data, ts, te)
+  def append_literal(data, ts, te)
     @literal ||= []
     @literal << text(data, ts, te)
   end
 
   # Emits the literal run collected by calls to the append_literal method,
   # using the total start (ts) and end (te) offsets of the run.
-  def self.emit_literal
+  def emit_literal
     ts, te = @literal.first[1], @literal.last[2]
     text = @literal.map {|t| t[0]}.join
 
@@ -963,7 +979,7 @@ module Regexp::Scanner
     emit(:literal, :literal, text, ts, te)
   end
 
-  def self.emit_options(text, ts, te)
+  def emit_options(text, ts, te)
     if text =~ /\(\?([mixdau]*)-?([mix]*)(:)?/
       positive, negative, group_local = $1, $2, $3
 
@@ -988,22 +1004,9 @@ module Regexp::Scanner
     emit(:group, :options, text, ts, te)
   end
 
-  # Emits an array with the details of the scanned pattern
-  def self.emit(type, token, text, ts, te)
-    #puts "EMIT: type: #{type}, token: #{token}, text: #{text}, ts: #{ts}, te: #{te}"
-
-    emit_literal if @literal
-
-    if @block
-      @block.call type, token, text, ts, te
-    end
-
-    @tokens << [type, token, text, ts, te]
-  end
-
   # Centralizes and unifies the handling of validation related
   # errors.
-  def self.validation_error(type, what, reason)
+  def validation_error(type, what, reason)
     case type
     when :group
       error = InvalidGroupError.new(what, reason)
@@ -1019,12 +1022,12 @@ module Regexp::Scanner
   end
 
   # Used for references with an empty name or number
-  def self.empty_backref_error(type, what)
+  def empty_backref_error(type, what)
     validation_error(:backref, what, 'ref ID is empty')
   end
 
   # Used for named expressions with an empty name
-  def self.empty_name_error(type, what)
+  def empty_name_error(type, what)
     validation_error(type, what, 'name is empty')
   end
 

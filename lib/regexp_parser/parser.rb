@@ -1,6 +1,6 @@
 require 'regexp_parser/expression'
 
-module Regexp::Parser
+class Regexp::Parser
   include Regexp::Expression
   include Regexp::Syntax
 
@@ -19,6 +19,10 @@ module Regexp::Parser
   end
 
   def self.parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
+    new.parse(input, syntax, &block)
+  end
+
+  def parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
     @nesting = [@root = @node = Root.new(options_from_input(input))]
 
     @options_stack = [@root.options]
@@ -36,7 +40,9 @@ module Regexp::Parser
     end
   end
 
-  def self.options_from_input(input)
+  private
+
+  def options_from_input(input)
     return {} unless input.is_a?(::Regexp)
 
     options = {}
@@ -46,21 +52,21 @@ module Regexp::Parser
     options
   end
 
-  def self.nest(exp)
+  def nest(exp)
     @nesting.push exp
 
     @node << exp
     @node  = exp
   end
 
-  def self.nest_conditional(exp)
+  def nest_conditional(exp)
     @conditional_nesting.push exp
 
     @node << exp
     @node  = exp
   end
 
-  def self.parse_token(token)
+  def parse_token(token)
     case token.type
     when :meta;         meta(token)
     when :quantifier;   quantifier(token)
@@ -87,7 +93,7 @@ module Regexp::Parser
     end
   end
 
-  def self.set(token)
+  def set(token)
     case token.token
     when :open
       open_set(token)
@@ -108,7 +114,7 @@ module Regexp::Parser
     end
   end
 
-  def self.meta(token)
+  def meta(token)
     case token.token
     when :dot
       @node << CharacterType::Any.new(token, active_opts)
@@ -138,7 +144,7 @@ module Regexp::Parser
     end
   end
 
-  def self.backref(token)
+  def backref(token)
     case token.token
     when :name_ref
       @node << Backreference::Name.new(token, active_opts)
@@ -161,7 +167,7 @@ module Regexp::Parser
     end
   end
 
-  def self.type(token)
+  def type(token)
     case token.token
     when :digit
       @node << CharacterType::Digit.new(token, active_opts)
@@ -188,7 +194,7 @@ module Regexp::Parser
     end
   end
 
-  def self.conditional(token)
+  def conditional(token)
     case token.token
     when :open
       nest_conditional(Conditional::Expression.new(token, active_opts))
@@ -212,9 +218,9 @@ module Regexp::Parser
     end
   end
 
-  def self.property(token)
-    include Regexp::Expression::UnicodeProperty
+  include Regexp::Expression::UnicodeProperty
 
+  def property(token)
     case token.token
     when :alnum;            @node << Alnum.new(token, active_opts)
     when :alpha;            @node << Alpha.new(token, active_opts)
@@ -294,7 +300,7 @@ module Regexp::Parser
     end
   end
 
-  def self.anchor(token)
+  def anchor(token)
     case token.token
     when :bol
       @node << Anchor::BeginningOfLine.new(token, active_opts)
@@ -317,7 +323,7 @@ module Regexp::Parser
     end
   end
 
-  def self.escape(token)
+  def escape(token)
     case token.token
 
     when :backspace
@@ -360,12 +366,11 @@ module Regexp::Parser
     end
   end
 
-
-  def self.keep(token)
+  def keep(token)
     @node << Keep::Mark.new(token, active_opts)
   end
 
-  def self.free_space(token)
+  def free_space(token)
     case token.token
     when :comment
       @node << Comment.new(token, active_opts)
@@ -380,7 +385,7 @@ module Regexp::Parser
     end
   end
 
-  def self.quantifier(token)
+  def quantifier(token)
     offset = -1
     target_node = @node.expressions[offset]
     while target_node and target_node.is_a?(FreeSpace)
@@ -420,7 +425,7 @@ module Regexp::Parser
     end
   end
 
-  def self.interval(target_node, token)
+  def interval(target_node, token)
     text = token.text
     mchr = text[text.length-1].chr =~ /[?+]/ ? text[text.length-1].chr : nil
     case mchr
@@ -442,7 +447,7 @@ module Regexp::Parser
     target_node.quantify(:interval, text, min.to_i, max.to_i, mode)
   end
 
-  def self.group(token)
+  def group(token)
     case token.token
     when :options
       options_group(token)
@@ -455,13 +460,13 @@ module Regexp::Parser
     end
   end
 
-  def self.options_group(token)
+  def options_group(token)
     positive, negative = token.text.split('-', 2)
     negative ||= ''
     @switching_options = !token.text.include?(':')
     # TODO: change this -^ to token.type == :options_switch in v1.0.0
 
-    new_options = @options_stack[-1].dup
+    new_options = active_opts.dup
 
     # Negative options have precedence. E.g. /(?i-i)a/ is case-sensitive.
     %w[i m x].each do |flag|
@@ -484,7 +489,7 @@ module Regexp::Parser
     nest(exp)
   end
 
-  def self.open_group(token)
+  def open_group(token)
     case token.token
     when :passive
       exp = Group::Passive.new(token, active_opts)
@@ -517,7 +522,7 @@ module Regexp::Parser
     nest(exp)
   end
 
-  def self.close_group
+  def close_group
     @nesting.pop
     @options_stack.pop unless @switching_options
     @switching_options = false
@@ -526,7 +531,7 @@ module Regexp::Parser
     @node = @node.last if @node.last and @node.last.is_a?(Alternation)
   end
 
-  def self.open_set(token)
+  def open_set(token)
     token.token = :character
 
     if token.type == :subset
@@ -536,20 +541,19 @@ module Regexp::Parser
     end
   end
 
-  def self.negate_set
+  def negate_set
     @set.negate
   end
 
-  def self.append_set(token)
+  def append_set(token)
     @set << token.text
   end
 
-  def self.close_set(token)
+  def close_set(token)
     @set.close
   end
 
-  def self.active_opts
+  def active_opts
     @options_stack.last
   end
-
 end # module Regexp::Parser

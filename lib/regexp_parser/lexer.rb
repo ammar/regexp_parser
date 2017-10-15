@@ -2,7 +2,7 @@
 # collects emitted tokens into an array, calculates their nesting depth, and
 # normalizes tokens for the parser, and checks if they are implemented by the
 # given syntax flavor.
-module Regexp::Lexer
+class Regexp::Lexer
 
   OPENING_TOKENS = [:capture, :options, :passive, :atomic, :named, :absence,
                     :lookahead, :nlookahead, :lookbehind, :nlookbehind
@@ -11,6 +11,10 @@ module Regexp::Lexer
   CLOSING_TOKENS = [:close].freeze
 
   def self.lex(input, syntax = "ruby/#{RUBY_VERSION}", &block)
+    new.lex(input, syntax, &block)
+  end
+
+  def lex(input, syntax = "ruby/#{RUBY_VERSION}", &block)
     syntax = Regexp::Syntax.new(syntax)
 
     @tokens = []
@@ -57,7 +61,7 @@ module Regexp::Lexer
 
   protected
 
-  def self.ascend(type, token)
+  def ascend(type, token)
     if type == :group or type == :assertion
       @nesting -= 1 if CLOSING_TOKENS.include?(token)
     end
@@ -71,7 +75,7 @@ module Regexp::Lexer
     end
   end
 
-  def self.descend(type, token)
+  def descend(type, token)
     if type == :group or type == :assertion
       @nesting += 1 if OPENING_TOKENS.include?(token)
     end
@@ -87,7 +91,7 @@ module Regexp::Lexer
 
   # called by scan to break a literal run that is longer than one character
   # into two separate tokens when it is followed by a quantifier
-  def self.break_literal(token)
+  def break_literal(token)
     text = token.text
     if text.scan(/./mu).length > 1
       lead = text.sub(/.\z/mu, "")
@@ -113,7 +117,7 @@ module Regexp::Lexer
 
   # called by scan to merge two consecutive literals. this happens when tokens
   # get normalized (as in the case of posix/bre) and end up becoming literals.
-  def self.merge_literal(current)
+  def merge_literal(current)
     last = @tokens.pop
 
     Regexp::Token.new(
@@ -128,7 +132,7 @@ module Regexp::Lexer
     )
   end
 
-  def self.merge_condition(current)
+  def merge_condition(current)
     last = @tokens.pop
     Regexp::Token.new(:conditional, :condition, last.text + current.text,
       last.ts, current.te, @nesting, @set_nesting, @conditional_nesting)
