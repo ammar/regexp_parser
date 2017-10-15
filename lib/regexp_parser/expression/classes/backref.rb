@@ -6,18 +6,18 @@ module Regexp::Expression
     class Name < Backreference::Base
       attr_reader :name
 
-      def initialize(token)
+      def initialize(token, options = {})
         @name = token.text[3..-2]
-        super(token)
+        super
       end
     end
 
     class Number < Backreference::Base
       attr_reader :number
 
-      def initialize(token)
+      def initialize(token, options = {})
         @number = token.text[token.token.equal?(:number) ? 1..-1 : 3..-2]
-        super(token)
+        super
       end
     end
 
@@ -29,9 +29,9 @@ module Regexp::Expression
     class NameCall < Backreference::Base
       attr_reader :name
 
-      def initialize(token)
+      def initialize(token, options = {})
         @name = token.text[3..-2]
-        super(token)
+        super
       end
     end
 

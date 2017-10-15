@@ -3,7 +3,7 @@ module Regexp::Expression
   class CharacterSet < Regexp::Expression::Base
     attr_accessor :members
 
-    def initialize(token)
+    def initialize(token, options = {})
       @members  = []
       @negative = false
       @closed   = false

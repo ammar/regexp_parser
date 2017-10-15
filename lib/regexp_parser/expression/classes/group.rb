@@ -36,9 +36,9 @@ module Regexp::Expression
     class Named     < Group::Capture
       attr_reader :name
 
-      def initialize(token)
+      def initialize(token, options = {})
         @name = token.text[3..-2]
-        super(token)
+        super
       end
 
       def clone

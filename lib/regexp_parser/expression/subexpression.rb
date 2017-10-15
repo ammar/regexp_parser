@@ -3,8 +3,8 @@ module Regexp::Expression
   class Subexpression < Regexp::Expression::Base
     attr_accessor :expressions
 
-    def initialize(token)
-      super(token)
+    def initialize(token, options = {})
+      super
 
       @expressions = []
     end

@@ -8,7 +8,7 @@ module Regexp::Expression
     attr_accessor :quantifier
     attr_accessor :options
 
-    def initialize(token)
+    def initialize(token, options = {})
       @type               = token.type
       @token              = token.token
       @text               = token.text
@@ -17,7 +17,7 @@ module Regexp::Expression
       @set_level          = token.set_level
       @conditional_level  = token.conditional_level
       @quantifier         = nil
-      @options            = nil
+      @options            = options
     end
 
     def clone
@@ -95,35 +95,35 @@ module Regexp::Expression
     end
 
     def multiline?
-      (@options and @options[:m]) ? true : false
+      @options[:m] == true
     end
     alias :m? :multiline?
 
     def case_insensitive?
-      (@options and @options[:i]) ? true : false
+      @options[:i] == true
     end
     alias :i? :case_insensitive?
     alias :ignore_case? :case_insensitive?
 
     def free_spacing?
-      (@options and @options[:x]) ? true : false
+      @options[:x] == true
     end
     alias :x? :free_spacing?
     alias :extended? :free_spacing?
 
     if RUBY_VERSION >= '2.0'
       def default_classes?
-        (@options and @options[:d]) ? true : false
+        @options[:d] == true
       end
       alias :d? :default_classes?
 
       def ascii_classes?
-        (@options and @options[:a]) ? true : false
+        @options[:a] == true
       end
       alias :a? :ascii_classes?
 
       def unicode_classes?
-        (@options and @options[:u]) ? true : false
+        @options[:u] == true
       end
       alias :u? :unicode_classes?
     end
