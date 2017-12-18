@@ -1,3 +1,8 @@
+Mon Dec 18 2017 Janosch Müller <janosch84@gmail.com>
+
+	* Added ruby version files for 2.2.9, 2.3.6, and 2.4.3
+	* Bumped version to 0.4.8
+
 Sun Oct 15 2017 Janosch Müller <janosch84@gmail.com>
 
 	* Fixed a thread safety issue (issue #45)
