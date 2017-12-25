@@ -16,8 +16,6 @@ before_install:
   - travis_retry bash -c "if [[ \"${RAGEL}\" == ON ]]; then sudo apt-get install -qq ragel; fi"
 
 rvm:
-  - '1.8.7'
-  - '1.9.3'
   - '2.0.0'
   - '2.1.10'
   - '2.2.9'
