@@ -73,6 +73,12 @@ module Regexp::Syntax
 
     # alias for the latest 2.4 implementation
     'ruby/2.4',
+
+    # Ruby 2.5.x
+    'ruby/2.5.0',
+
+    # alias for the latest 2.5 implementation
+    'ruby/2.5',
   ]
 
 end

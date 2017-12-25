@@ -1,3 +1,8 @@
+Mon Dec 25 2017 Janosch Müller <ammarabuali@gmail.com>
+
+	* Added ruby version file for 2.5.0
+	* Bumped version to 0.4.9
+
 Mon Dec 18 2017 Janosch Müller <janosch84@gmail.com>
 
 	* Added ruby version files for 2.2.9, 2.3.6, and 2.4.3
