@@ -2,8 +2,10 @@ module Regexp::Syntax
   module Token
 
     module UnicodeProperty
-      CharType = [:alnum, :alpha, :ascii, :blank, :cntrl, :digit, :graph, :lower,
-                  :print, :punct, :space, :upper, :word, :xdigit]
+      CharType_V190 = [:alnum, :alpha, :ascii, :blank, :cntrl, :digit, :graph,
+                       :lower, :print, :punct, :space, :upper, :word, :xdigit]
+
+      CharType_V250 = [:xposixpunct]
 
       POSIX  = [:any, :assigned, :newline]
 
@@ -44,9 +46,15 @@ module Regexp::Syntax
       # These were merged (from Onigmo) in the branch for 2.2.0
       Age_V220 = [:age_6_2, :age_6_3, :age_7_0]
 
-      Age = Age_V193 + Age_V200 + Age_V220
+      Age_V230 = [:age_8_0]
 
-      Derived = [
+      Age_V240 = [:age_9_0]
+
+      Age_V250 = [:age_10_0]
+
+      Age = Age_V193 + Age_V200 + Age_V220 + Age_V230 + Age_V240 + Age_V250
+
+      Derived_V190 = [
         :ascii_hex,
         :alphabetic,
         :cased,
@@ -99,6 +107,12 @@ module Regexp::Syntax
         :xid_start,
         :xid_continue,
       ]
+
+      Derived_V250 = [
+        :regional_indicator
+      ]
+
+      Derived = Derived_V190 + Derived_V250
 
       Script_V190 = [
         :script_arabic,
@@ -335,14 +349,20 @@ module Regexp::Syntax
         :block_inyijing_hexagram_symbols,
       ]
 
-      V190 = CharType + POSIX + Category::All + Derived + Script_V190 + UnicodeBlock
+      V190 = CharType_V190 + POSIX + Category::All + Derived_V190 + Script_V190 + UnicodeBlock
       V193 = Age_V193 + Script_V193
 
       V200 = Age_V200
 
       V220 = Age_V220 + Script_V220
 
-      All  = V190 + V193 + V200 + V220
+      V230 = Age_V230
+
+      V240 = Age_V240
+
+      V250 = Age_V250 + CharType_V250 + Derived_V250
+
+      All  = V190 + V193 + V200 + V220 + V230 + V240 + V250
 
       Type = :property
       NonType = :nonproperty

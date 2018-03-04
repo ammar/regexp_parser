@@ -11,13 +11,15 @@ class ScannerProperties < Test::Unit::TestCase
     'Digit'                               => :digit,
     'Graph'                               => :graph,
     'Lower'                               => :lower,
-    'Newline'                             => :newline,
     'Print'                               => :print,
     'Punct'                               => :punct,
     'Space'                               => :space,
     'Upper'                               => :upper,
     'Word'                                => :word,
     'Xdigit'                              => :xdigit,
+    'XPosixPunct'                         => :xposixpunct,
+
+    'Newline'                             => :newline,
 
     'Any'                                 => :any,
     'Assigned'                            => :assigned,
@@ -149,6 +151,9 @@ class ScannerProperties < Test::Unit::TestCase
     'Age=6.2'                             => :age_6_2,
     'Age=6.3'                             => :age_6_3,
     'Age=7.0'                             => :age_7_0,
+    'Age=8.0'                             => :age_8_0,
+    'Age=9.0'                             => :age_9_0,
+    'Age=10.0'                            => :age_10_0,
 
     'ahex'                                => :ascii_hex,
     'ASCII_Hex_Digit'                     => :ascii_hex,
@@ -268,6 +273,9 @@ class ScannerProperties < Test::Unit::TestCase
     'quotationmark'                       => :quotation_mark,
 
     'radical'                             => :radical,
+
+    'ri'                                  => :regional_indicator,
+    'Regional_Indicator'                  => :regional_indicator,
 
     'sd'                                  => :soft_dotted,
     'Soft_Dotted'                         => :soft_dotted,

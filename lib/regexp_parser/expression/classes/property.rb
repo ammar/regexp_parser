@@ -19,13 +19,15 @@ module Regexp::Expression
     class Digit         < Base; end
     class Graph         < Base; end
     class Lower         < Base; end
-    class Newline       < Base; end
     class Print         < Base; end
     class Punct         < Base; end
     class Space         < Base; end
     class Upper         < Base; end
     class Word          < Base; end
     class Xdigit        < Base; end
+    class XPosixPunct   < Base; end
+
+    class Newline       < Base; end
 
     class Any           < Base; end
     class Assigned      < Base; end

@@ -6,6 +6,9 @@ module Regexp::Syntax
     class V230 < Regexp::Syntax::Ruby::V22
       def initialize
         super
+
+        implements :property,    UnicodeProperty::V230
+        implements :nonproperty, UnicodeProperty::V230
       end
     end
 

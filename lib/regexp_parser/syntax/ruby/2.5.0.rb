@@ -6,6 +6,9 @@ module Regexp::Syntax
     class V250 < Regexp::Syntax::Ruby::V24
       def initialize
         super
+
+        implements :property,    UnicodeProperty::V250
+        implements :nonproperty, UnicodeProperty::V250
       end
     end
 

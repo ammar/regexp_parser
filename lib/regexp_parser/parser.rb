@@ -236,6 +236,9 @@ class Regexp::Parser
     when :upper;            @node << Upper.new(token, active_opts)
     when :word;             @node << Word.new(token, active_opts)
     when :xdigit;           @node << Xdigit.new(token, active_opts)
+    when :xposixpunct;      @node << XPosixPunct.new(token, active_opts)
+
+    # only in Oniguruma (old rubies)
     when :newline;          @node << Newline.new(token, active_opts)
 
     when :any;              @node << Any.new(token, active_opts)

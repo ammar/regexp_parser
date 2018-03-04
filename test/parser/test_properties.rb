@@ -12,13 +12,15 @@ class ParserProperties < Test::Unit::TestCase
     'Digit',
     'Graph',
     'Lower',
-    'Newline',
     'Print',
     'Punct',
     'Space',
     'Upper',
     'Word',
     'Xdigit',
+    'XPosixPunct',
+
+    'Newline',
 
     'Any',
     'Assigned',
@@ -146,6 +148,10 @@ class ParserProperties < Test::Unit::TestCase
     'Age=5.1',
     'Age=5.2',
     'Age=6.0',
+    'Age=7.0',
+    'Age=8.0',
+    'Age=9.0',
+    'Age=10.0',
 
     'ahex',
     'ASCII_Hex_Digit',
@@ -266,6 +272,9 @@ class ParserProperties < Test::Unit::TestCase
 
     'radical',
 
+    'ri',
+    'Regional_Indicator',
+
     'sd',
     'Soft_Dotted',
 
@@ -297,7 +306,7 @@ class ParserProperties < Test::Unit::TestCase
 
     props.each do |property|
       define_method "test_parse_#{token_type}_#{property}" do
-        t = RP.parse "ab\\#{mode}{#{property}}", 'ruby/1.9'
+        t = RP.parse "ab\\#{mode}{#{property}}", 'ruby/2.5'
 
         assert t.expressions.last.is_a?(UnicodeProperty::Base),
                "Expected property, but got #{t.expressions.last.class.name}"
