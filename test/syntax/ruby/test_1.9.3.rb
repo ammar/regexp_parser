@@ -10,11 +10,11 @@ class TestSyntaxRuby_V193 < Test::Unit::TestCase
   tests = {
     :implements => {
       :property => [
-        UnicodeProperty::Script_6_0 + UnicodeProperty::Age_V193
+        UnicodeProperty::Script_V193 + UnicodeProperty::Age_V193
       ].flatten,
 
       :nonproperty => [
-        UnicodeProperty::Script_6_0 + UnicodeProperty::Age_V193
+        UnicodeProperty::Script_V193 + UnicodeProperty::Age_V193
       ].flatten,
     },
   }

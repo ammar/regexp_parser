@@ -100,7 +100,7 @@ module Regexp::Syntax
         :xid_continue,
       ]
 
-      Script =[
+      Script_V190 = [
         :script_arabic,
         :script_imperial_aramaic,
         :script_armenian,
@@ -197,9 +197,9 @@ module Regexp::Syntax
         :script_unknown
       ]
 
-      Script_6_0 = [:script_brahmi, :script_batak, :script_mandaic]
+      Script_V193 = [:script_brahmi, :script_batak, :script_mandaic]
 
-      Script_7_0 = [
+      Script_V220 = [
         :script_caucasian_albanian,
         :script_bassa_vah,
         :script_duployan,
@@ -224,6 +224,8 @@ module Regexp::Syntax
         :script_tirhuta,
         :script_warang_citi
       ]
+
+      Script = Script_V190 + Script_V193 + Script_V220
 
       UnicodeBlock = [
         :block_inalphabetic_presentation_forms,
@@ -333,12 +335,12 @@ module Regexp::Syntax
         :block_inyijing_hexagram_symbols,
       ]
 
-      V190 = CharType + POSIX + Category::All + Derived + Script + UnicodeBlock
-      V193 = Age_V193 + Script_6_0
+      V190 = CharType + POSIX + Category::All + Derived + Script_V190 + UnicodeBlock
+      V193 = Age_V193 + Script_V193
 
       V200 = Age_V200
 
-      V220 = Age_V220 + Script_7_0
+      V220 = Age_V220 + Script_V220
 
       All  = V190 + V193 + V200 + V220
 
