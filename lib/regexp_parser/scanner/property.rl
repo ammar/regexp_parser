@@ -348,6 +348,18 @@
       when 'xidc', 'xidcontinue'
         self.emit(type, :xid_continue,                    text, ts-1, te)
 
+      # Emoji
+      when 'emoji'
+        self.emit(type, :emoji_any,                       text, ts-1, te)
+      when 'emojicomponent'
+        self.emit(type, :emoji_component,                 text, ts-1, te)
+      when 'emojimodifier'
+        self.emit(type, :emoji_modifier,                  text, ts-1, te)
+      when 'emojimodifierbase'
+        self.emit(type, :emoji_modifier_base,             text, ts-1, te)
+      when 'emojipresentation'
+        self.emit(type, :emoji_presentation,              text, ts-1, te)
+
       # Scripts
       when 'aghb', 'caucasianalbanian'
         self.emit(type, :script_caucasian_albanian,       text, ts-1, te)

@@ -106,6 +106,7 @@ module Regexp::Expression
 
     class Age     < UnicodeProperty::Base; end
     class Derived < UnicodeProperty::Base; end
+    class Emoji   < UnicodeProperty::Base; end
     class Script  < UnicodeProperty::Base; end
     class Block   < UnicodeProperty::Base; end
   end

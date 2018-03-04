@@ -13,6 +13,12 @@ if RUBY_VERSION >= '2.0.0'
   end
 end
 
+if RUBY_VERSION >= '2.5.0'
+  %w{emojis}.each do|tc|
+    require File.expand_path("../test_#{tc}", __FILE__)
+  end
+end
+
 class TestRegexpScanner < Test::Unit::TestCase
 
   def test_scanner_returns_an_array

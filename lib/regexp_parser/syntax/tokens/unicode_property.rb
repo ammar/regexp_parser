@@ -349,6 +349,14 @@ module Regexp::Syntax
         :block_inyijing_hexagram_symbols,
       ]
 
+      Emoji = [
+        :emoji_any,
+        :emoji_component,
+        :emoji_modifier,
+        :emoji_modifier_base,
+        :emoji_presentation,
+      ]
+
       V190 = CharType_V190 + POSIX + Category::All + Derived_V190 + Script_V190 + UnicodeBlock
       V193 = Age_V193 + Script_V193
 
@@ -360,7 +368,7 @@ module Regexp::Syntax
 
       V240 = Age_V240
 
-      V250 = Age_V250 + CharType_V250 + Derived_V250
+      V250 = Age_V250 + CharType_V250 + Derived_V250 + Emoji
 
       All  = V190 + V193 + V200 + V220 + V230 + V240 + V250
 

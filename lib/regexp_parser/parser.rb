@@ -294,10 +294,13 @@ class Regexp::Parser
     when *Token::UnicodeProperty::Derived
       @node << Derived.new(token, active_opts)
 
-    when *Regexp::Syntax::Token::UnicodeProperty::Script
+    when *Token::UnicodeProperty::Emoji
+      @node << Emoji.new(token, active_opts)
+
+    when *Token::UnicodeProperty::Script
       @node << Script.new(token, active_opts)
 
-    when *Regexp::Syntax::Token::UnicodeProperty::UnicodeBlock
+    when *Token::UnicodeProperty::UnicodeBlock
       @node << Block.new(token, active_opts)
 
     else
