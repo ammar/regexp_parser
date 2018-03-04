@@ -1,4 +1,14 @@
-Mon Dec 25 2017 Janosch Müller <ammarabuali@gmail.com>
+Sun Mar 4 2018 Janosch Müller <janosch84@gmail.com>
+
+	* Added ruby version file for 2.6.0
+	* Added support for Emoji properties (available in Ruby since 2.5.0)
+	* Added support for XPosixPunct and Regional_Indicator properties
+	* Fixed parsing of Unicode 6.0 and 7.0 script properties
+	* Fixed parsing of the special Assigned property
+	* Fixed scanning of InCyrillic_Supplement property
+	* Bumped version to 0.4.10
+
+Mon Dec 25 2017 Ammar Ali <ammarabuali@gmail.com>
 
 	* Added ruby version file for 2.5.0
 	* Bumped version to 0.4.9
