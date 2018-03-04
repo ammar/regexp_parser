@@ -6,5 +6,5 @@
 module Regexp::Syntax
   version_file_paths = Dir[File.expand_path('../ruby/*.rb', __FILE__)]
   version_file_paths.each { |path| require path }
-  VERSIONS = version_file_paths.map { |path| path[%r{(ruby/.*)\.rb}, 1] }
+  VERSIONS = version_file_paths.map { |path| path[%r{(ruby/[^/]+)\.rb}, 1] }
 end
