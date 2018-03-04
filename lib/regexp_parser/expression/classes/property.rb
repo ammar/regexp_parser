@@ -13,7 +13,6 @@ module Regexp::Expression
 
     class Alnum         < Base; end
     class Alpha         < Base; end
-    class Any           < Base; end
     class Ascii         < Base; end
     class Blank         < Base; end
     class Cntrl         < Base; end
@@ -27,6 +26,9 @@ module Regexp::Expression
     class Upper         < Base; end
     class Word          < Base; end
     class Xdigit        < Base; end
+
+    class Any           < Base; end
+    class Assigned      < Base; end
 
     module Letter
       class Base < UnicodeProperty::Base; end

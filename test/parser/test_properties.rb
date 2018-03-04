@@ -6,7 +6,6 @@ class ParserProperties < Test::Unit::TestCase
   props = [
     'Alnum',
     'Alpha',
-    'Any',
     'Ascii',
     'Blank',
     'Cntrl',
@@ -20,6 +19,9 @@ class ParserProperties < Test::Unit::TestCase
     'Upper',
     'Word',
     'Xdigit',
+
+    'Any',
+    'Assigned',
 
     'L',
     'Letter',

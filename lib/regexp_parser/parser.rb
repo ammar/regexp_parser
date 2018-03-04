@@ -224,7 +224,6 @@ class Regexp::Parser
     case token.token
     when :alnum;            @node << Alnum.new(token, active_opts)
     when :alpha;            @node << Alpha.new(token, active_opts)
-    when :any;              @node << Any.new(token, active_opts)
     when :ascii;            @node << Ascii.new(token, active_opts)
     when :blank;            @node << Blank.new(token, active_opts)
     when :cntrl;            @node << Cntrl.new(token, active_opts)
@@ -238,6 +237,9 @@ class Regexp::Parser
     when :word;             @node << Word.new(token, active_opts)
     when :xdigit;           @node << Xdigit.new(token, active_opts)
     when :newline;          @node << Newline.new(token, active_opts)
+
+    when :any;              @node << Any.new(token, active_opts)
+    when :assigned;         @node << Assigned.new(token, active_opts)
 
     when :letter_any;       @node << Letter::Any.new(token, active_opts)
     when :letter_uppercase; @node << Letter::Uppercase.new(token, active_opts)

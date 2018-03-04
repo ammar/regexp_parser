@@ -5,7 +5,6 @@ class ScannerProperties < Test::Unit::TestCase
   tests = {
     'Alnum'                               => :alnum,
     'Alpha'                               => :alpha,
-    'Any'                                 => :any,
     'Ascii'                               => :ascii,
     'Blank'                               => :blank,
     'Cntrl'                               => :cntrl,
@@ -19,6 +18,9 @@ class ScannerProperties < Test::Unit::TestCase
     'Upper'                               => :upper,
     'Word'                                => :word,
     'Xdigit'                              => :xdigit,
+
+    'Any'                                 => :any,
+    'Assigned'                            => :assigned,
 
     'L'                                   => :letter_any,
     'Letter'                              => :letter_any,
