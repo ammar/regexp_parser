@@ -253,7 +253,7 @@ module Regexp::Syntax
         :block_incombining_half_marks,
         :block_incontrol_pictures,
         :block_incurrency_symbols,
-        :block_incyrillic_supplementary,
+        :block_incyrillic_supplement,
         :block_incyrillic,
         :block_indevanagari,
         :block_indingbats,

@@ -632,8 +632,8 @@
         self.emit(type, :block_incontrol_pictures,                        text, ts-1, te)
       when 'incurrencysymbols'
         self.emit(type, :block_incurrency_symbols,                        text, ts-1, te)
-      when 'incyrillicsupplementary'
-        self.emit(type, :block_incyrillic_supplementary,                  text, ts-1, te)
+      when 'incyrillicsupplement'
+        self.emit(type, :block_incyrillic_supplement,                     text, ts-1, te)
       when 'incyrillic'
         self.emit(type, :block_incyrillic,                                text, ts-1, te)
       when 'indevanagari'

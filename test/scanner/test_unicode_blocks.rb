@@ -30,7 +30,7 @@ class ScannerUnicodeBlocks < Test::Unit::TestCase
     'InCombining_Half_Marks'                    => :block_incombining_half_marks,
     'InControl_Pictures'                        => :block_incontrol_pictures,
     'InCurrency_Symbols'                        => :block_incurrency_symbols,
-    'InCyrillic_Supplementary'                  => :block_incyrillic_supplementary,
+    'InCyrillic_Supplement'                     => :block_incyrillic_supplement,
     'InCyrillic'                                => :block_incyrillic,
     'InDevanagari'                              => :block_indevanagari,
     'InDingbats'                                => :block_indingbats,
