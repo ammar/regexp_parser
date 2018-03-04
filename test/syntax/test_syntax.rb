@@ -21,6 +21,8 @@ class TestSyntax < Test::Unit::TestCase
 
   def test_syntax_supported?
     assert_equal false, Regexp::Syntax.supported?('ruby/1.1.1')
+    assert_equal true, Regexp::Syntax.supported?('ruby/2.4.3')
+    assert_equal true, Regexp::Syntax.supported?('ruby/2.5')
 
     Regexp::Syntax::VERSIONS.each do |version|
       assert_equal true, Regexp::Syntax.supported?(version)
