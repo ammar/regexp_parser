@@ -28,7 +28,14 @@ module Regexp::Syntax
       return if (version_index = sorted_versions.index(version)) < 1
 
       next_lower_version = sorted_versions[version_index - 1]
-      version_class(next_lower_version)
+      inherit_from_version(next_lower_version, version)
+    end
+
+    def inherit_from_version(parent_version, new_version)
+      new_const = version_const_name(new_version)
+      parent = const_get(version_const_name(parent_version))
+      const_defined?(new_const) || const_set(new_const, Class.new(parent))
+      const_get(new_const)
     end
 
     def specified_versions

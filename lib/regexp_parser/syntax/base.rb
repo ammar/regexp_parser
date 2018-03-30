@@ -97,6 +97,10 @@ module Regexp::Syntax
         [type, token]
       end
     end
+
+    def self.inspect
+      "#{super} (feature set of #{ancestors[1].to_s.split('::').last})"
+    end
   end
 
 end
