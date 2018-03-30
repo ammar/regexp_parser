@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'regexp_parser'
+
+RL = Regexp::Lexer
+RP = Regexp::Parser
+RS = Regexp::Scanner
+
+require 'irb'
+IRB.start(__FILE__)
