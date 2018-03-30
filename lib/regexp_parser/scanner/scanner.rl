@@ -837,7 +837,7 @@ class Regexp::Scanner
   end
 
   def scan(input_object, &block)
-    @literal, top, stack = nil, 0, []
+    @literal, stack = nil, []
 
     if input_object.is_a?(Regexp)
       input    = input_object.source
