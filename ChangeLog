@@ -1,3 +1,8 @@
+Fri Mar 30 2018 Janosch Müller <janosch84@gmail.com>
+
+	* Added ruby version files for 2.4.4 and 2.5.1
+	* Bumped version to 0.4.12
+
 Sun Mar 4 2018 Janosch Müller <janosch84@gmail.com>
 
 	* Fixed UnknownSyntaxNameError introduced in v0.4.10 if
