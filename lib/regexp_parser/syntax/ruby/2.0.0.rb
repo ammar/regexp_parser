@@ -1,5 +1,3 @@
-require File.expand_path('../1.9', __FILE__)
-
 module Regexp::Syntax
   module Ruby
 

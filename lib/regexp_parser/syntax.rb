@@ -1,13 +1,10 @@
 require File.expand_path('../syntax/tokens', __FILE__)
 require File.expand_path('../syntax/base', __FILE__)
 require File.expand_path('../syntax/any', __FILE__)
+require File.expand_path('../syntax/ruby', __FILE__)
 require File.expand_path('../syntax/versions', __FILE__)
 
 module Regexp::Syntax
-
-  VERSION_FORMAT = '\Aruby/\d+\.\d+(\.\d+)?\z'
-  VERSION_REGEXP = /#{VERSION_FORMAT}/
-
   class SyntaxError < StandardError
     def initialize(what)
       super what
@@ -22,7 +19,7 @@ module Regexp::Syntax
 
   class InvalidVersionNameError < SyntaxError
     def initialize(name)
-      super "Invalid version name '#{name}'. Expected format is '#{VERSION_FORMAT}'"
+      super "Invalid version name '#{name}'. Expected format is '#{Ruby::VERSION_FORMAT}'"
     end
   end
 
@@ -39,22 +36,14 @@ module Regexp::Syntax
   end
 
   def self.supported?(name)
-    VERSIONS.include?(name)
-  end
-
-  def self.version_class(version)
-    raise InvalidVersionNameError.new(version) unless
-      version =~ VERSION_REGEXP
-
-    version_const_name = version.scan(/\d+/).join
-
-    const_name = "Regexp::Syntax::Ruby::V#{version_const_name}"
-
-    if RUBY_VERSION >= '2.0.0'
-      Kernel.const_get(const_name)
-    else
-      Object.module_eval(const_name, __FILE__, __LINE__)
+    begin
+      !!version_class(name)
+    rescue UnknownSyntaxNameError
+      false
     end
   end
 
+  def self.version_class(version)
+    Ruby.version_class(version)
+  end
 end

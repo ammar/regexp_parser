@@ -1,9 +1,9 @@
-require File.expand_path('../1.8', __FILE__)
+require File.expand_path('../1.8.6', __FILE__)
 
 module Regexp::Syntax
 
   module Ruby
-    class V191 < Regexp::Syntax::Ruby::V18
+    class V191 < Regexp::Syntax::Ruby::V186
       include Regexp::Syntax::Token
 
       def initialize
