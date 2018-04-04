@@ -1,3 +1,8 @@
+Tue Apr 4 2018 ammarabuali@gmail.com <ammarabuali@gmail.com>
+
+	* Added ruby version files for 2.2.10 and 2.3.7
+	* Bumped version to 0.4.13
+
 Fri Mar 30 2018 Janosch Müller <janosch84@gmail.com>
 
 	* Added ruby version files for 2.4.4 and 2.5.1
