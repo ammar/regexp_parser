@@ -9,7 +9,7 @@ class TestSyntax < Test::Unit::TestCase
   end
 
   def test_syntax_new
-    assert_instance_of Regexp::Syntax::Ruby::V193,
+    assert_instance_of Regexp::Syntax::V1_9_3,
                        Regexp::Syntax.new('ruby/1.9.3')
   end
 
@@ -23,10 +23,6 @@ class TestSyntax < Test::Unit::TestCase
     assert_equal false, Regexp::Syntax.supported?('ruby/1.1.1')
     assert_equal true, Regexp::Syntax.supported?('ruby/2.4.3')
     assert_equal true, Regexp::Syntax.supported?('ruby/2.5')
-
-    Regexp::Syntax::VERSIONS.each do |version|
-      assert_equal true, Regexp::Syntax.supported?(version)
-    end
   end
 
   def test_syntax_invalid_version
@@ -40,18 +36,18 @@ class TestSyntax < Test::Unit::TestCase
   end
 
   def test_syntax_version_class_tiny_version
-    assert_equal Regexp::Syntax::Ruby::V193,
+    assert_equal Regexp::Syntax::V1_9_3,
                  Regexp::Syntax.version_class('ruby/1.9.3')
 
-    assert_equal Regexp::Syntax::Ruby::V231,
+    assert_equal Regexp::Syntax::V2_3_1,
                  Regexp::Syntax.version_class('ruby/2.3.1')
   end
 
   def test_syntax_version_class_minor_version
-    assert_equal Regexp::Syntax::Ruby::V19,
+    assert_equal Regexp::Syntax::V1_9,
                  Regexp::Syntax.version_class('ruby/1.9')
 
-    assert_equal Regexp::Syntax::Ruby::V23,
+    assert_equal Regexp::Syntax::V2_3,
                  Regexp::Syntax.version_class('ruby/2.3')
   end
 

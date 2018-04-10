@@ -1,6 +1,6 @@
 require File.expand_path("../../../helpers", __FILE__)
 
-class TestSyntaxRuby_V220 < Test::Unit::TestCase
+class TestSyntaxV2_2_0 < Test::Unit::TestCase
   include Regexp::Syntax::Token
 
   def setup
@@ -8,13 +8,13 @@ class TestSyntaxRuby_V220 < Test::Unit::TestCase
   end
 
   tests = {
-    :implements => {
-      :property => [
-        UnicodeProperty::Script_V220 + UnicodeProperty::Age_V220
+    implements: {
+      property: [
+        UnicodeProperty::Script_V2_2_0 + UnicodeProperty::Age_V2_2_0
       ].flatten,
 
-      :nonproperty => [
-        UnicodeProperty::Script_V220 + UnicodeProperty::Age_V220
+      nonproperty: [
+        UnicodeProperty::Script_V2_2_0 + UnicodeProperty::Age_V2_2_0
       ].flatten,
     },
   }
@@ -22,7 +22,7 @@ class TestSyntaxRuby_V220 < Test::Unit::TestCase
   tests.each do |method, types|
     types.each do |type, tokens|
       tokens.each do |token|
-        define_method "test_syntax_ruby_v220_#{method}_#{type}_#{token}" do
+        define_method "test_syntax_V2_2_0_#{method}_#{type}_#{token}" do
           assert_equal true, @syntax.implements?(type, token)
         end
       end

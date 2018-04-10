@@ -368,14 +368,14 @@ class ParserProperties < Test::Unit::TestCase
            "Expected Script property, but got #{t.expressions[1].class.name}"
   end
 
-  def test_parse_property_script_v193
+  def test_parse_property_script_V1_9_3
     t = RP.parse 'ab\p{Brahmi}cd', 'ruby/1.9.3'
 
     assert t.expressions[1].is_a?(UnicodeProperty::Script),
            "Expected Script property, but got #{t.expressions[1].class.name}"
   end
 
-  def test_parse_property_script_v220
+  def test_parse_property_script_V2_2_0
     t = RP.parse 'ab\p{Caucasian_Albanian}cd', 'ruby/2.2'
 
     assert t.expressions[1].is_a?(UnicodeProperty::Script),
