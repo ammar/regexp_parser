@@ -1,7 +1,7 @@
 module Regexp::Syntax
   VERSION_FORMAT = '\Aruby/\d+\.\d+(\.\d+)?\z'
   VERSION_REGEXP = /#{VERSION_FORMAT}/
-  VERSION_CONST_FORMAT = /\AV\d_\d(?:_\d)?\z/
+  VERSION_CONST_REGEXP = /\AV\d_\d(?:_\d)?\z/
 
   class InvalidVersionNameError < SyntaxError
     def initialize(name)
@@ -41,7 +41,7 @@ module Regexp::Syntax
   end
 
   def const_missing(const_name)
-    if const_name =~ VERSION_CONST_FORMAT
+    if const_name =~ VERSION_CONST_REGEXP
       return fallback_version_class(const_name)
     end
     super
@@ -64,7 +64,7 @@ module Regexp::Syntax
   end
 
   def specified_versions
-    constants.select { |const_name| const_name =~ VERSION_CONST_FORMAT }
+    constants.select { |const_name| const_name =~ VERSION_CONST_REGEXP }
   end
 
   def comparable_version(name)
