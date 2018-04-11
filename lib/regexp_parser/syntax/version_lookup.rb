@@ -26,11 +26,8 @@ module Regexp::Syntax
   end
 
   def supported?(name)
-    begin
-      !!version_class(name)
-    rescue UnknownSyntaxNameError
-      false
-    end
+    name =~ VERSION_REGEXP &&
+      comparable_version(name) >= comparable_version('1.8.6')
   end
 
   def version_class(version)
