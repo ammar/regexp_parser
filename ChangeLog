@@ -1,3 +1,16 @@
+XXXXXXX
+
+	* Changed handling of Ruby versions (PR #53)
+	  - New Ruby versions are now supported by default
+	  - Some deep-lying APIs have changed, which should not affect most users:
+	    - `Regexp::Syntax::VERSIONS` is gone
+	    - Syntax version names have changed from `Regexp::Syntax::Ruby::Vnnn`
+	      to `Regexp::Syntax::Vn_n_n`
+	    - Syntax version classes for Ruby versions without regex feature changes
+	      are no longer predefined and are now only created on demand / lazily
+	    - `Regexp::Syntax::supported?` returns true for any argument >= 1.8.6
+	* Bumped version to 0.5.0
+
 Tue Apr 4 2018 ammarabuali@gmail.com <ammarabuali@gmail.com>
 
 	* Added ruby version files for 2.2.10 and 2.3.7
