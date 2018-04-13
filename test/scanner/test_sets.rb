@@ -70,10 +70,10 @@ class ScannerSets < Test::Unit::TestCase
     '[a\p{P}c]'             => [2, :set,    :punct_any,       '\p{P}',      2, 7],
     '[a\p{P}\P{Z}c]'        => [3, :set,    :separator_any,   '\P{Z}',      7, 12],
 
-    '[a-w&&[^c-g]z]'        => [3, :subset, :open,            '[',          6, 7],
-    '[a-w&&[^c-h]z]'        => [4, :subset, :negate,          '^',          7, 8],
-    '[a-w&&[^c-i]z]'        => [5, :subset, :range,           'c-i',        8, 11],
-    '[a-w&&[^c-j]z]'        => [6, :subset, :close,           ']',          11, 12],
+    '[a-w&&[^c-g]z]'        => [3, :set,    :open,            '[',          6, 7],
+    '[a-w&&[^c-h]z]'        => [4, :set,    :negate,          '^',          7, 8],
+    '[a-w&&[^c-i]z]'        => [5, :set,    :range,           'c-i',        8, 11],
+    '[a-w&&[^c-j]z]'        => [6, :set,    :close,           ']',          11, 12],
   }
 
   tests.each_with_index do |(pattern, (index, type, token, text, ts, te)), count|

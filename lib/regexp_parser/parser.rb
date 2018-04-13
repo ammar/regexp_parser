@@ -74,7 +74,7 @@ class Regexp::Parser
     when :escape;       escape(token)
     when :group;        group(token)
     when :assertion;    group(token)
-    when :set, :subset; set(token)
+    when :set,          set(token)
     when :type;         type(token)
     when :backref;      backref(token)
     when :conditional;  conditional(token)
@@ -98,7 +98,7 @@ class Regexp::Parser
     when :open
       open_set(token)
     when :close
-      close_set(token)
+      close_set
     when :negate
       negate_set
     when :member, :range, :escape, :collation, :equivalent
@@ -557,7 +557,7 @@ class Regexp::Parser
     @set << token.text
   end
 
-  def close_set(token)
+  def close_set
     @set.close
   end
 

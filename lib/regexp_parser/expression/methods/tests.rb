@@ -7,22 +7,12 @@ module Regexp::Expression
     #   # is it a :group expression
     #   exp.type? :group
     #
-    #   # is it a :set, :subset, or :meta
-    #   exp.type? [:set, :subset, :meta]
+    #   # is it a :set, or :meta
+    #   exp.type? [:set, :meta]
     #
     def type?(test_type)
-      case test_type
-      when Array
-        if test_type.include?(:*)
-          return (test_type.include?(type) or test_type.include?(:*))
-        else
-          return test_type.include?(type)
-        end
-      when Symbol
-        return (type == test_type or test_type == :*)
-      else
-        raise "Array or Symbol expected, #{test_type.class.name} given"
-      end
+      test_types = Array(test_type).map(&:to_sym)
+      test_types.include?(:*) || test_types.include?(type)
     end
 
     # Test if this expression has the given test_token, and optionally a given

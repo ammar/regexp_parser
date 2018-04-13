@@ -35,17 +35,9 @@ module Regexp::Syntax
 
       All = Basic + Extended + Types + Clustered + POSIX::All
       Type = :set
-
-      module SubSet
-        OpenClose = [:open, :close]
-
-        All = CharacterSet::All
-        Type = :subset
-      end
     end
 
     Map[CharacterSet::Type] = CharacterSet::All
-    Map[CharacterSet::SubSet::Type] = CharacterSet::All
 
   end
 end

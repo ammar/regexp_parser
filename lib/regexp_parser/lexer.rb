@@ -66,7 +66,7 @@ class Regexp::Lexer
       @nesting -= 1 if CLOSING_TOKENS.include?(token)
     end
 
-    if type == :set or type == :subset
+    if type == :set
       @set_nesting -= 1 if token == :close
     end
 
@@ -80,7 +80,7 @@ class Regexp::Lexer
       @nesting += 1 if OPENING_TOKENS.include?(token)
     end
 
-    if type == :set or type == :subset
+    if type == :set
       @set_nesting += 1 if token == :open
     end
 

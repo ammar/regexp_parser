@@ -49,7 +49,7 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal false, exp.include?(']')
   end
 
-  def test_parse_chat_type_set_members
+  def test_parse_char_type_set_members
     root = RP.parse('[\da-z]', :any)
     exp  = root.expressions.at(0)
 

@@ -1,6 +1,8 @@
 module Regexp::Expression
 
   class Subexpression < Regexp::Expression::Base
+    include Enumerable
+
     attr_accessor :expressions
 
     def initialize(token, options = {})
@@ -30,35 +32,7 @@ module Regexp::Expression
     end
 
     def each(&block)
-      @expressions.each {|e| yield e}
-    end
-
-    def each_with_index(&block)
-      @expressions.each_with_index {|e, i| yield e, i}
-    end
-
-    def first
-      @expressions.first
-    end
-
-    def last
-      @expressions.last
-    end
-
-    def [](index)
-      @expressions[index]
-    end
-
-    def length
-      @expressions.length
-    end
-
-    def empty?
-      @expressions.empty?
-    end
-
-    def all?(&block)
-      @expressions.all? {|exp| yield(exp) }
+      @expressions.each(&block)
     end
 
     def ts

@@ -108,23 +108,14 @@ class ExpressionClone < Test::Unit::TestCase
   end
 
   def test_expression_clone_subset
-    # Explicitly set syntax to ruby 1.9 because 1.8 does not
-    # implement subsets.
     root = RP.parse('^a(b([c[def]g])h)i$', 'ruby/1.9')
     copy = root.clone
 
     root_set    = root.expressions[2][1][0]
     copy_set    = copy.expressions[2][1][0]
 
-    root_subset = root_set.members[1]
-    copy_subset = copy_set.members[1]
-
-    # Sanity checks
-    assert root_set.respond_to?(:members)
-    assert copy_set.respond_to?(:members)
-
-    assert root_subset.respond_to?(:members)
-    assert copy_subset.respond_to?(:members)
+    root_subset = root_set.expressions[1]
+    copy_subset = copy_set.expressions[1]
 
     # The sets are not equal
     refute_equal copy_set.object_id, root_set.object_id
@@ -132,14 +123,14 @@ class ExpressionClone < Test::Unit::TestCase
     # The subsets are not equal
     refute_equal copy_subset.object_id, root_subset.object_id
 
-    # The subsets' members arrays are not equal.
-    refute_equal copy_subset.members.object_id,
-                 root_subset.members.object_id
+    # The subsets' expressions arrays are not equal.
+    refute_equal copy_subset.expressions.object_id,
+                 root_subset.expressions.object_id
 
-    # The subsets' members are not equal
-    copy_subset.members.each_with_index do |member, member_index|
-      refute_equal member.object_id,
-                   root_subset.members[member_index].object_id
+    # The subsets' expressions are not equal
+    copy_subset.expressions.each_with_index do |expression, index|
+      refute_equal expression.object_id,
+                   root_subset.expressions[index].object_id
     end
   end
 

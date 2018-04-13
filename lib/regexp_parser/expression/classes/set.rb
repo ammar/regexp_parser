@@ -1,33 +1,27 @@
 module Regexp::Expression
 
-  class CharacterSet < Regexp::Expression::Base
-    attr_accessor :members
+  class CharacterSet < Regexp::Expression::Subexpression
+    # alias for backwards compatibility
+    alias :members :expressions
 
     def initialize(token, options = {})
-      @members  = []
       @negative = false
       @closed   = false
       super
     end
 
-    # Override base method to clone set members as well.
-    def clone
-      copy = super
-      copy.members = @members.map {|m| m.clone }
-      copy
-    end
-
+    # TODO: check if this is still necessary
     def <<(member)
-      if @members.last.is_a?(CharacterSubSet) and not @members.last.closed?
-        @members.last << member
+      if expressions.last.is_a?(CharacterSet) && !expressions.last.closed?
+        expressions.last << member
       else
-        @members << member
+        expressions << member
       end
     end
 
     def include?(member, directly = false)
       @members.each do |m|
-        if m.is_a?(CharacterSubSet) and not directly
+        if m.is_a?(CharacterSet) and not directly
           return true if m.include?(member)
         else
           return true if member == m.to_s
@@ -35,20 +29,8 @@ module Regexp::Expression
       end; false
     end
 
-    def each(&block)
-      @members.each {|m| yield m}
-    end
-
-    def each_with_index(&block)
-      @members.each_with_index {|m, i| yield m, i}
-    end
-
-    def length
-      @members.length
-    end
-
     def negate
-      if @members.last.is_a?(CharacterSubSet)
+      if @members.last.is_a?(CharacterSet)
         @members.last.negate
       else
         @negative = true
@@ -61,7 +43,7 @@ module Regexp::Expression
     alias :negated? :negative?
 
     def close
-      if @members.last.is_a?(CharacterSubSet) and not @members.last.closed?
+      if @members.last.is_a?(CharacterSet) and not @members.last.closed?
         @members.last.close
       else
         @closed = true
@@ -114,8 +96,4 @@ module Regexp::Expression
       s
     end
   end
-
-  class CharacterSubSet < CharacterSet
-  end
-
 end # module Regexp::Expression

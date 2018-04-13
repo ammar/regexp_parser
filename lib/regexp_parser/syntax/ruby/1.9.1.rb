@@ -33,10 +33,6 @@ module Regexp::Syntax
           CharacterSet::POSIX::Extensions +
           CharacterSet::POSIX::ExtensionsNegative +
           UnicodeProperty::V190
-
-        implements :subset, CharacterSet::OpenClose +
-          CharacterSet::Extended + CharacterSet::Types +
-          CharacterSet::POSIX::Standard
       end
 
     end

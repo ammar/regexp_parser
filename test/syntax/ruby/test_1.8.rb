@@ -28,9 +28,7 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
 
       :quantifier => [
         Quantifier::Possessive
-      ].flatten,
-
-      :subset => nil
+      ].flatten
     },
   }
 

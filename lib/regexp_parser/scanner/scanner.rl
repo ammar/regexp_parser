@@ -151,10 +151,10 @@
   # --------------------------------------------------------------------------
   character_set := |*
     ']' {
-      set_type  = set_depth > 1 ? :subset : :set
-      set_depth -= 1; in_set = set_depth > 0 ? true : false
+      set_depth -= 1
+      in_set = set_depth > 0 ? true : false
 
-      emit(set_type, :close, *text(data, ts, te))
+      emit(:set, :close, *text(data, ts, te))
 
       if set_depth == 0
         fgoto main;
@@ -164,11 +164,11 @@
     };
 
     '-]' { # special case, emits two tokens
-      set_type  = set_depth > 1 ? :subset : :set
-      set_depth -= 1; in_set = set_depth > 0 ? true : false
+      set_depth -= 1
+      in_set = set_depth > 0 ? true : false
 
-      emit(set_type, :member, copy(data, ts..te-2), ts, te)
-      emit(set_type, :close,  copy(data, ts+1..te-1), ts, te)
+      emit(:set, :member, copy(data, ts..te-2), ts, te)
+      emit(:set, :close,  copy(data, ts+1..te-1), ts, te)
 
       if set_depth == 0
         fgoto main;
@@ -180,18 +180,18 @@
     '^' {
       text = text(data, ts, te).first
       if @tokens.last[1] == :open
-        emit(set_type, :negate, text, ts, te)
+        emit(:set, :negate, text, ts, te)
       else
-        emit(set_type, :member, text, ts, te)
+        emit(:set, :member, text, ts, te)
       end
     };
 
     alnum . '-' . alnum {
-      emit(set_type, :range, *text(data, ts, te))
+      emit(:set, :range, *text(data, ts, te))
     };
 
     '&&' {
-      emit(set_type, :intersection, *text(data, ts, te))
+      emit(:set, :intersection, *text(data, ts, te))
     };
 
     '\\' {
@@ -199,10 +199,9 @@
     };
 
     '[' >(open_bracket, 1) {
-      set_depth += 1; in_set = true
-      set_type  = set_depth > 1 ? :subset : :set
+      set_depth += 1
 
-      emit(set_type, :open, *text(data, ts, te))
+      emit(:set, :open, *text(data, ts, te))
       fcall character_set;
     };
 
@@ -215,21 +214,21 @@
       end
 
       token_sym = "class_#{class_name}".to_sym
-      emit(set_type, token_sym, text, ts, te)
+      emit(:set, token_sym, text, ts, te)
     };
 
     collating_sequence >(open_bracket, 1) @eof(premature_end_error) {
-      emit(set_type, :collation, *text(data, ts, te))
+      emit(:set, :collation, *text(data, ts, te))
     };
 
     character_equivalent >(open_bracket, 1) @eof(premature_end_error) {
-      emit(set_type, :equivalent, *text(data, ts, te))
+      emit(:set, :equivalent, *text(data, ts, te))
     };
 
     # exclude the closing bracket as a cleaner workaround for dealing with the
     # ambiguity caused upon exit from the unicode properties machine
     meta_char -- ']' {
-      emit(set_type, :member, *text(data, ts, te))
+      emit(:set, :member, *text(data, ts, te))
     };
 
     any            |
@@ -237,7 +236,7 @@
     utf8_2_byte    |
     utf8_3_byte    |
     utf8_4_byte    {
-      emit(set_type, :member, *text(data, ts, te))
+      emit(:set, :member, *text(data, ts, te))
     };
   *|;
 
@@ -245,38 +244,38 @@
   # --------------------------------------------------------------------------
   set_escape_sequence := |*
     'b' > (escaped_set_alpha, 2) {
-      emit(set_type, :backspace, *text(data, ts, te, 1))
+      emit(:set, :backspace, *text(data, ts, te, 1))
       fret;
     };
 
     char_type > (escaped_set_alpha, 4) {
       case text = text(data, ts, te, 1).first
-      when '\d'; emit(set_type, :type_digit,     text, ts-1, te)
-      when '\D'; emit(set_type, :type_nondigit,  text, ts-1, te)
-      when '\h'; emit(set_type, :type_hex,       text, ts-1, te)
-      when '\H'; emit(set_type, :type_nonhex,    text, ts-1, te)
-      when '\s'; emit(set_type, :type_space,     text, ts-1, te)
-      when '\S'; emit(set_type, :type_nonspace,  text, ts-1, te)
-      when '\w'; emit(set_type, :type_word,      text, ts-1, te)
-      when '\W'; emit(set_type, :type_nonword,   text, ts-1, te)
-      when '\R'; emit(set_type, :type_linebreak, text, ts-1, te)
-      when '\X'; emit(set_type, :type_xgrapheme, text, ts-1, te)
+      when '\d'; emit(:set, :type_digit,     text, ts-1, te)
+      when '\D'; emit(:set, :type_nondigit,  text, ts-1, te)
+      when '\h'; emit(:set, :type_hex,       text, ts-1, te)
+      when '\H'; emit(:set, :type_nonhex,    text, ts-1, te)
+      when '\s'; emit(:set, :type_space,     text, ts-1, te)
+      when '\S'; emit(:set, :type_nonspace,  text, ts-1, te)
+      when '\w'; emit(:set, :type_word,      text, ts-1, te)
+      when '\W'; emit(:set, :type_nonword,   text, ts-1, te)
+      when '\R'; emit(:set, :type_linebreak, text, ts-1, te)
+      when '\X'; emit(:set, :type_xgrapheme, text, ts-1, te)
       end
       fret;
     };
 
     hex_sequence . '-\\' . hex_sequence {
-      emit(set_type, :range_hex, *text(data, ts, te, 1))
+      emit(:set, :range_hex, *text(data, ts, te, 1))
       fret;
     };
 
     hex_sequence {
-      emit(set_type, :member_hex, *text(data, ts, te, 1))
+      emit(:set, :member_hex, *text(data, ts, te, 1))
       fret;
     };
 
     meta_char | [\\\]\-\,] {
-      emit(set_type, :escape, *text(data, ts, te, 1))
+      emit(:set, :escape, *text(data, ts, te, 1))
       fret;
     };
 
@@ -292,7 +291,7 @@
     utf8_2_byte               |
     utf8_3_byte               |
     utf8_4_byte               {
-      emit(set_type, :escape, *text(data, ts, te, 1))
+      emit(:set, :escape, *text(data, ts, te, 1))
       fret;
     };
   *|;
@@ -512,10 +511,10 @@
     # Character sets
     # ------------------------------------------------------------------------
     set_open {
-      set_depth += 1; in_set = true
-      set_type  = set_depth > 1 ? :subset : :set
+      set_depth += 1
+      in_set = true
 
-      emit(set_type, :open, *text(data, ts, te))
+      emit(:set, :open, *text(data, ts, te))
       fcall character_set;
     };
 
@@ -857,8 +856,11 @@ class Regexp::Scanner
     @in_group, @group_depth = false, 0
     @spacing_stack = [{:free_spacing => @free_spacing, :depth => 0}]
 
-    in_set,   set_depth, set_type   = false, 0, :set
-    in_conditional, conditional_depth, conditional_stack = false, 0, []
+    in_set = false
+    set_depth = 0
+    in_conditional = false
+    conditional_depth = 0
+    conditional_stack = []
 
     %% write data;
     %% write init;
