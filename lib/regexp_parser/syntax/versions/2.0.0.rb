@@ -12,6 +12,9 @@ module Regexp::Syntax
       implements :type,        CharacterType::Clustered
       implements :set,         CharacterSet::Clustered
       implements :subset,      CharacterSet::Clustered
+
+      excludes   :property,    :newline
+      excludes   :nonproperty, :newline
     end
   end
 end

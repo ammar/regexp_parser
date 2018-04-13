@@ -20,8 +20,6 @@ class ParserProperties < Test::Unit::TestCase
     'Xdigit',
     'XPosixPunct',
 
-    'Newline',
-
     'Any',
     'Assigned',
 
@@ -394,5 +392,15 @@ class ParserProperties < Test::Unit::TestCase
 
     assert t.expressions[2].is_a?(Literal),
            "Expected Literal, but got #{t.expressions[2].class.name}"
+  end
+
+  def test_parse_abandoned_newline_property
+    t = RP.parse '\p{newline}', 'ruby/1.9'
+    assert t.expressions.last.is_a?(UnicodeProperty::Base),
+           "Expected property, but got #{t.expressions.last.class.name}"
+
+    assert_raise(Regexp::Syntax::NotImplementedError) {
+      RP.parse('\p{newline}', 'ruby/2.0')
+    }
   end
 end
