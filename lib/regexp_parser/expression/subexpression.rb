@@ -29,36 +29,9 @@ module Regexp::Expression
       @expressions.insert 0, exp
     end
 
-    def each(&block)
-      @expressions.each {|e| yield e}
-    end
-
-    def each_with_index(&block)
-      @expressions.each_with_index {|e, i| yield e, i}
-    end
-
-    def first
-      @expressions.first
-    end
-
-    def last
-      @expressions.last
-    end
-
-    def [](index)
-      @expressions[index]
-    end
-
-    def length
-      @expressions.length
-    end
-
-    def empty?
-      @expressions.empty?
-    end
-
-    def all?(&block)
-      @expressions.all? {|exp| yield(exp) }
+    %w[[] all? any? at count each each_with_index empty?
+       fetch find first index join last length values_at].each do |m|
+      define_method(m) { |*args, &block| expressions.send(m, *args, &block) }
     end
 
     def te
