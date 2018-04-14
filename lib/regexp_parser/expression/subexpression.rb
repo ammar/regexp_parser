@@ -61,10 +61,6 @@ module Regexp::Expression
       @expressions.all? {|exp| yield(exp) }
     end
 
-    def ts
-      starts_at
-    end
-
     def te
       ts + to_s.length
     end

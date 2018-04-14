@@ -27,6 +27,7 @@ module Regexp::Expression
     def starts_at
       @expressions.first.starts_at
     end
+    alias :ts :starts_at
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
       offset = -1
