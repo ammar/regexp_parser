@@ -167,6 +167,13 @@ class Expressionstrfregexp < Test::Unit::TestCase
     assert_equal root.strfregexp('%m %t'), root.strfregexp('%a')
   end
 
+  # regression test
+  def test_expression_strfregexp_conditional
+    root = RP.parse('(?<A>a)(?(<A>)b|c)', 'ruby/2.0')
+
+    assert_nothing_raised { root.strfregexp }
+  end
+
   def test_expression_strfregexp_tree
     root = RP.parse(/a[b-d]*(e(f+))?/)
 

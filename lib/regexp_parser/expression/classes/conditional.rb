@@ -45,11 +45,8 @@ module Regexp::Expression
         branches.last.last.quantify(token, text, min, max, mode)
       end
 
-      def to_s
-        s = @text.dup
-        s << @condition.text
-        s << branches.map{|e| e.to_s}.join('|')
-        s << ')'
+      def to_s(_format = :full)
+        text + @condition.text + branches.join('|') + ')'
       end
     end
   end
