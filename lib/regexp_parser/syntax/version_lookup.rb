@@ -60,6 +60,7 @@ module Regexp::Syntax
     new_const = version_const_name(new_version)
     parent = const_get(version_const_name(parent_version))
     const_defined?(new_const) || const_set(new_const, Class.new(parent))
+    warn_if_future_version(new_const)
     const_get(new_const)
   end
 
@@ -70,5 +71,12 @@ module Regexp::Syntax
   def comparable_version(name)
     # add .99 to treat versions without a patch value as latest patch version
     Gem::Version.new((name.to_s.scan(/\d+/) << 99).join('.'))
+  end
+
+  def warn_if_future_version(const_name)
+    return if comparable_version(const_name) < comparable_version('3.0.0')
+
+    warn('This library has only been tested up to Ruby 2.x, '\
+         "but you are running with #{const_get(const_name).inspect}")
   end
 end

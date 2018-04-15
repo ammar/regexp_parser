@@ -119,4 +119,11 @@ class TestSyntaxAliases < Test::Unit::TestCase
 
     assert syntax.is_a?(Regexp::Syntax::V2_5_0)
   end
+
+  def test_future_alias_warning
+    _, stderr_output = capture_output { Regexp::Syntax.new 'ruby/5.0' }
+
+    assert_match(/This library .* but you are running .* \(feature set of .*\)/,
+                 stderr_output)
+  end
 end
