@@ -8,9 +8,3 @@
   character class has duplicated range: /[[:^xdigit:][:^lower:]]+/"
 - "lib/regexp_parser/expression.rb:124: warning:
   character class has duplicated range: /[a[b[^c]]]/"
-
-# Warnings generated only under 1.9.3
-- "lib/regexp_parser/scanner.rb:1693:
-  warning: assigned but unused variable - _acts"
-- "lib/regexp_parser/scanner.rb:1693:
-  warning: assigned but unused variable - _nacts"
