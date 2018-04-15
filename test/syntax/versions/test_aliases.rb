@@ -54,6 +54,12 @@ class TestSyntaxAliases < Test::Unit::TestCase
     assert syntax.is_a?(Regexp::Syntax::V2_0_0)
   end
 
+  def test_syntax_alias_2_2_10
+    syntax = Regexp::Syntax.new 'ruby/2.2.10'
+
+    assert syntax.is_a?(Regexp::Syntax::V2_0_0)
+  end
+
   def test_syntax_alias_2_2_alias
     syntax = Regexp::Syntax.new 'ruby/2.2'
 

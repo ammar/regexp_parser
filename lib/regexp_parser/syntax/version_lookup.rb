@@ -1,7 +1,7 @@
 module Regexp::Syntax
   VERSION_FORMAT = '\Aruby/\d+\.\d+(\.\d+)?\z'
   VERSION_REGEXP = /#{VERSION_FORMAT}/
-  VERSION_CONST_REGEXP = /\AV\d_\d(?:_\d)?\z/
+  VERSION_CONST_REGEXP = /\AV\d+_\d+(?:_\d+)?\z/
 
   class InvalidVersionNameError < SyntaxError
     def initialize(name)
