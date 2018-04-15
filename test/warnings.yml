@@ -8,3 +8,7 @@
   character class has duplicated range: /[[:^xdigit:][:^lower:]]+/"
 - "lib/regexp_parser/expression.rb:124: warning:
   character class has duplicated range: /[a[b[^c]]]/"
+
+# Faulty warning generated only under Ruby < 2.3
+# c.f. https://bugs.ruby-lang.org/issues/10967
+- "private attribute?"
