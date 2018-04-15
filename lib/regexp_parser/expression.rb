@@ -9,23 +9,23 @@ module Regexp::Expression
     attr_accessor :options
 
     def initialize(token, options = {})
-      @type               = token.type
-      @token              = token.token
-      @text               = token.text
-      @ts                 = token.ts
-      @level              = token.level
-      @set_level          = token.set_level
-      @conditional_level  = token.conditional_level
-      @quantifier         = nil
-      @options            = options
+      self.type              = token.type
+      self.token             = token.token
+      self.text              = token.text
+      self.ts                = token.ts
+      self.level             = token.level
+      self.set_level         = token.set_level
+      self.conditional_level = token.conditional_level
+      self.quantifier        = nil
+      self.options           = options
     end
 
     def clone
-      copy = self.dup
+      copy = dup
 
-      copy.text       = (self.text        ? self.text.dup         : nil)
-      copy.options    = (self.options     ? self.options.dup      : nil)
-      copy.quantifier = (self.quantifier  ? self.quantifier.clone : nil)
+      copy.text       = (text        ? text.dup         : nil)
+      copy.options    = (options     ? options.dup      : nil)
+      copy.quantifier = (quantifier  ? quantifier.clone : nil)
 
       copy
     end
@@ -34,9 +34,7 @@ module Regexp::Expression
       ::Regexp.new(to_s(format))
     end
 
-    def starts_at
-      @ts
-    end
+    alias :starts_at :ts
 
     def full_length
       to_s.length
@@ -63,61 +61,61 @@ module Regexp::Expression
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
-      @quantifier = Quantifier.new(token, text, min, max, mode)
+      self.quantifier = Quantifier.new(token, text, min, max, mode)
     end
 
     def quantified?
-      not @quantifier.nil?
+      !quantifier.nil?
     end
 
     def quantity
       return [nil,nil] unless quantified?
-      [@quantifier.min, @quantifier.max]
+      [quantifier.min, quantifier.max]
     end
 
     def greedy?
-      quantified? and @quantifier.mode == :greedy
+      quantified? and quantifier.mode == :greedy
     end
 
     def reluctant?
-      quantified? and @quantifier.mode == :reluctant
+      quantified? and quantifier.mode == :reluctant
     end
     alias :lazy? :reluctant?
 
     def possessive?
-      quantified? and @quantifier.mode == :possessive
+      quantified? and quantifier.mode == :possessive
     end
 
     def multiline?
-      @options[:m] == true
+      options[:m] == true
     end
     alias :m? :multiline?
 
     def case_insensitive?
-      @options[:i] == true
+      options[:i] == true
     end
     alias :i? :case_insensitive?
     alias :ignore_case? :case_insensitive?
 
     def free_spacing?
-      @options[:x] == true
+      options[:x] == true
     end
     alias :x? :free_spacing?
     alias :extended? :free_spacing?
 
     if RUBY_VERSION >= '2.0'
       def default_classes?
-        @options[:d] == true
+        options[:d] == true
       end
       alias :d? :default_classes?
 
       def ascii_classes?
-        @options[:a] == true
+        options[:a] == true
       end
       alias :a? :ascii_classes?
 
       def unicode_classes?
-        @options[:u] == true
+        options[:u] == true
       end
       alias :u? :unicode_classes?
     end
@@ -133,16 +131,16 @@ module Regexp::Expression
 
     def to_h
       {
-        :type               => @type,
-        :token              => @token,
-        :text               => to_s(:base),
-        :starts_at          => @ts,
-        :length             => full_length,
-        :level              => @level,
-        :set_level          => @set_level,
-        :conditional_level  => @conditional_level,
-        :options            => @options,
-        :quantifier         => quantified? ? @quantifier.to_h : nil
+        type:              type,
+        token:             token,
+        text:              to_s(:base),
+        starts_at:         ts,
+        length:            full_length,
+        level:             level,
+        set_level:         set_level,
+        conditional_level: conditional_level,
+        options:           options,
+        quantifier:        quantified? ? quantifier.to_h : nil,
       }
     end
   end
@@ -156,9 +154,9 @@ module Regexp::Expression
     when Regexp::Expression
       exp
     else
-      raise "Expression.parsed accepts a String, Regexp, or " +
-            "a Regexp::Expression as a value for exp, but it " +
-            "was given #{exp.class.name}."
+      raise ArgumentError, 'Expression.parsed accepts a String, Regexp, or '\
+                           'a Regexp::Expression as a value for exp, but it '\
+                           "was given #{exp.class.name}."
     end
   end
 

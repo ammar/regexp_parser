@@ -6,27 +6,26 @@ module Regexp::Expression
     def initialize(token, options = {})
       super
 
-      @expressions = []
+      self.expressions = []
     end
 
     # Override base method to clone the expressions as well.
     def clone
       copy = super
-      copy.expressions = @expressions.map {|e| e.clone }
+      copy.expressions = expressions.map(&:clone)
       copy
     end
 
     def <<(exp)
-      if exp.is_a?(WhiteSpace) and @expressions.last and
-        @expressions.last.is_a?(WhiteSpace)
-        @expressions.last.merge(exp)
+      if exp.is_a?(WhiteSpace) && last && last.is_a?(WhiteSpace)
+        last.merge(exp)
       else
-        @expressions << exp
+        expressions << exp
       end
     end
 
     def insert(exp)
-      @expressions.insert 0, exp
+      expressions.insert(0, exp)
     end
 
     %w[[] all? any? at count each each_with_index empty?
@@ -46,11 +45,10 @@ module Regexp::Expression
     end
 
     def to_h
-      h = super
-      h[:text] = to_s(:base)
-      h[:expressions] = @expressions.map(&:to_h)
-      h
+      super.merge({
+        text:        to_s(:base),
+        expressions: expressions.map(&:to_h)
+      })
     end
   end
-
 end

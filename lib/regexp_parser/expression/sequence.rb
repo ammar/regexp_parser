@@ -25,19 +25,19 @@ module Regexp::Expression
     end
 
     def starts_at
-      @expressions.first.starts_at
+      expressions.first.starts_at
     end
     alias :ts :starts_at
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
       offset = -1
       target = expressions[offset]
-      while target and target.is_a?(FreeSpace)
+      while target.is_a?(FreeSpace)
         target = expressions[offset -= 1]
       end
 
-      raise ArgumentError.new("No valid target found for '#{text}' " +
-                              "quantifier") unless target
+      target || raise(ArgumentError, "No valid target found for '#{text}' "\
+                                     'quantifier')
 
       target.quantify(token, text, min, max, mode)
     end

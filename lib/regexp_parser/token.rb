@@ -12,45 +12,22 @@ class Regexp
   ].freeze
 
   Token = Struct.new(*TOKEN_KEYS) do
-    def initialize(*)
-      super
-
-      @previous = @next = nil
-    end
+    attr_accessor :previous, :next
 
     def offset
-      [self.ts, self.te]
+      [ts, te]
     end
 
     def length
-      self.te - self.ts
-    end
-
-    def next(exp = nil)
-      if exp
-        @next = exp
-      else
-        @next
-      end
-    end
-
-    def previous(exp = nil)
-      if exp
-        @previous = exp
-      else
-        @previous
-      end
+      te - ts
     end
 
     if RUBY_VERSION < '2.0.0'
       def to_h
-        hash = {}
-
-        members.each do |member|
-          hash[member.to_sym] = self.send(member.to_sym)
+        members.inject({}) do |hash, member|
+          hash[member.to_sym] = self[member]
+          hash
         end
-
-        hash
       end
     end
   end

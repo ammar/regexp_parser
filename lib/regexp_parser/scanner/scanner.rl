@@ -143,8 +143,8 @@
   }
 
   # group (nesting) and set open/close actions
-  action group_opened { @group_depth += 1; @in_group = true }
-  action group_closed { @group_depth -= 1; @in_group = @group_depth > 0 ? true : false }
+  action group_opened { self.group_depth = group_depth + 1; in_group = true }
+  action group_closed { self.group_depth = group_depth - 1; in_group = group_depth > 0 ? true : false }
 
   # Character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
@@ -179,7 +179,7 @@
 
     '^' {
       text = text(data, ts, te).first
-      if @tokens.last[1] == :open
+      if tokens.last[1] == :open
         emit(set_type, :negate, text, ts, te)
       else
         emit(set_type, :member, text, ts, te)
@@ -449,7 +449,7 @@
 
     alternation {
       if in_conditional and conditional_stack.length > 0 and
-         conditional_stack.last[1] == @group_depth
+         conditional_stack.last[1] == group_depth
         emit(:conditional, :separator, *text(data, ts, te))
       else
         emit(:meta, :alternation, *text(data, ts, te))
@@ -528,7 +528,7 @@
 
       in_conditional = true unless in_conditional
       conditional_depth += 1
-      conditional_stack << [conditional_depth, @group_depth]
+      conditional_stack << [conditional_depth, group_depth]
 
       emit(:conditional, :open, text[0..-2], ts, te-1)
       emit(:conditional, :condition_open, '(', te-1, te)
@@ -612,7 +612,7 @@
 
     group_close @group_closed {
       if in_conditional and conditional_stack.last and
-         conditional_stack.last[1] == (@group_depth + 1)
+         conditional_stack.last[1] == (group_depth + 1)
 
         emit(:conditional, :close, *text(data, ts, te))
         conditional_stack.pop
@@ -621,11 +621,11 @@
           in_conditional = false
         end
       else
-        if @spacing_stack.length > 1 and
-          @spacing_stack.last[:depth] == (@group_depth + 1)
-          @spacing_stack.pop
+        if spacing_stack.length > 1 and
+          spacing_stack.last[:depth] == (group_depth + 1)
+          spacing_stack.pop
 
-          @free_spacing = @spacing_stack.last[:free_spacing]
+          self.free_spacing = spacing_stack.last[:free_spacing]
         end
 
         emit(:group, :close, *text(data, ts, te))
@@ -741,7 +741,7 @@
     };
 
     comment {
-      if @free_spacing
+      if free_spacing
         emit(:free_space, :comment, *text(data, ts, te))
       else
         append_literal(data, ts, te)
@@ -749,7 +749,7 @@
     };
 
     space+ {
-      if @free_spacing
+      if free_spacing
         emit(:free_space, :whitespace, *text(data, ts, te))
       else
         append_literal(data, ts, te)
@@ -837,27 +837,29 @@ class Regexp::Scanner
   end
 
   def scan(input_object, &block)
-    @literal, stack = nil, []
+    self.literal = nil
+    stack = []
 
     if input_object.is_a?(Regexp)
-      input    = input_object.source
-      @free_spacing  = (input_object.options & Regexp::EXTENDED != 0)
+      input = input_object.source
+      self.free_spacing = (input_object.options & Regexp::EXTENDED != 0)
     else
-      input   = input_object
-      @free_spacing = false
+      input = input_object
+      self.free_spacing = false
     end
 
 
     data  = input.unpack("c*") if input.is_a?(String)
     eof   = data.length
 
-    @tokens = []
-    @block  = block_given? ? block : nil
+    self.tokens = []
+    self.block  = block_given? ? block : nil
 
-    @in_group, @group_depth = false, 0
-    @spacing_stack = [{:free_spacing => @free_spacing, :depth => 0}]
+    self.in_group = false
+    self.group_depth = 0
+    self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
 
-    in_set,   set_depth, set_type   = false, 0, :set
+    in_set, set_depth, set_type = false, 0, :set
     in_conditional, conditional_depth, conditional_stack = false, 0, []
 
     %% write data;
@@ -870,30 +872,34 @@ class Regexp::Scanner
     end
 
     raise PrematureEndError.new("(missing group closing paranthesis) "+
-          "[#{@in_group}:#{@group_depth}]") if @in_group
+          "[#{in_group}:#{group_depth}]") if in_group
     raise PrematureEndError.new("(missing set closing bracket) "+
           "[#{in_set}:#{set_depth}]") if in_set
 
     # when the entire expression is a literal run
-    emit_literal if @literal
+    emit_literal if literal
 
-    @tokens
+    tokens
   end
 
   # Emits an array with the details of the scanned pattern
   def emit(type, token, text, ts, te)
     #puts "EMIT: type: #{type}, token: #{token}, text: #{text}, ts: #{ts}, te: #{te}"
 
-    emit_literal if @literal
+    emit_literal if literal
 
-    if @block
-      @block.call type, token, text, ts, te
+    if block
+      block.call type, token, text, ts, te
     end
 
-    @tokens << [type, token, text, ts, te]
+    tokens << [type, token, text, ts, te]
   end
 
   private
+
+  attr_accessor :tokens, :literal, :block,
+                :in_group, :group_depth,
+                :free_spacing, :spacing_stack
 
   # Ragel's regex-based scan of the group options introduced a lot of
   # ambiguity, so we just ask it to find the beginning of what looks
@@ -963,19 +969,19 @@ class Regexp::Scanner
   # Appends one or more characters to the literal buffer, to be emitted later
   # by a call to emit_literal. Contents can be a mix of ASCII and UTF-8.
   def append_literal(data, ts, te)
-    @literal ||= []
-    @literal << text(data, ts, te)
+    self.literal = literal || []
+    literal << text(data, ts, te)
   end
 
   # Emits the literal run collected by calls to the append_literal method,
   # using the total start (ts) and end (te) offsets of the run.
   def emit_literal
-    ts, te = @literal.first[1], @literal.last[2]
-    text = @literal.map {|t| t[0]}.join
+    ts, te = literal.first[1], literal.last[2]
+    text = literal.map {|t| t[0]}.join
 
     text.force_encoding('utf-8') if text.respond_to?(:force_encoding)
 
-    @literal = nil
+    self.literal = nil
     emit(:literal, :literal, text, ts, te)
   end
 
@@ -984,20 +990,20 @@ class Regexp::Scanner
       positive, negative, group_local = $1, $2, $3
 
       if positive.include?('x')
-        @free_spacing = true
+        self.free_spacing = true
       end
 
       # If the x appears in both, treat it like ruby does, the second cancels
       # the first.
       if negative.include?('x')
-        @free_spacing = false
+        self.free_spacing = false
       end
 
       if group_local
-        @spacing_stack << {:free_spacing => @free_spacing, :depth => @group_depth}
+        spacing_stack << {:free_spacing => free_spacing, :depth => group_depth}
       else
         # switch for parent group level
-        @spacing_stack.last[:free_spacing] = @free_spacing
+        spacing_stack.last[:free_spacing] = free_spacing
       end
     end
 

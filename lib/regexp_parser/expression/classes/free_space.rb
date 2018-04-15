@@ -10,7 +10,7 @@ module Regexp::Expression
 
   class WhiteSpace < Regexp::Expression::FreeSpace
     def merge(exp)
-      @text << exp.text
+      text << exp.text
     end
   end
 

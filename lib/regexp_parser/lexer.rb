@@ -17,8 +17,10 @@ class Regexp::Lexer
   def lex(input, syntax = "ruby/#{RUBY_VERSION}", &block)
     syntax = Regexp::Syntax.new(syntax)
 
-    @tokens = []
-    @nesting, @set_nesting, @conditional_nesting = 0, 0, 0
+    self.tokens = []
+    self.nesting = 0
+    self.set_nesting = 0
+    self.conditional_nesting = 0
 
     last = nil
     Regexp::Scanner.scan(input) do |type, token, text, ts, te|
@@ -31,7 +33,7 @@ class Regexp::Lexer
         last and last.type == :literal
 
       current = Regexp::Token.new(type, token, text, ts, te,
-                @nesting, @set_nesting, @conditional_nesting)
+                nesting, set_nesting, conditional_nesting)
 
       current = merge_literal(current) if type == :literal and
         last and last.type == :literal
@@ -39,19 +41,19 @@ class Regexp::Lexer
       current = merge_condition(current) if type == :conditional and
         [:condition, :condition_close].include?(token)
 
-      last.next(current) if last
-      current.previous(last) if last
+      last.next = current if last
+      current.previous = last if last
 
-      @tokens << current
+      tokens << current
       last = current
 
       descend(type, token)
     end
 
     if block_given?
-      @tokens.map {|t| block.call(t)}
+      tokens.map { |t| block.call(t) }
     else
-      @tokens
+      tokens
     end
   end
 
@@ -59,33 +61,35 @@ class Regexp::Lexer
     alias :scan :lex
   end
 
-  protected
+  private
+
+  attr_accessor :tokens, :nesting, :set_nesting, :conditional_nesting
 
   def ascend(type, token)
     if type == :group or type == :assertion
-      @nesting -= 1 if CLOSING_TOKENS.include?(token)
+      self.nesting = nesting - 1 if CLOSING_TOKENS.include?(token)
     end
 
     if type == :set or type == :subset
-      @set_nesting -= 1 if token == :close
+      self.set_nesting = set_nesting - 1 if token == :close
     end
 
     if type == :conditional
-      @conditional_nesting -= 1 if token == :close
+      self.conditional_nesting = conditional_nesting - 1 if token == :close
     end
   end
 
   def descend(type, token)
     if type == :group or type == :assertion
-      @nesting += 1 if OPENING_TOKENS.include?(token)
+      self.nesting = nesting + 1 if OPENING_TOKENS.include?(token)
     end
 
     if type == :set or type == :subset
-      @set_nesting += 1 if token == :open
+      self.set_nesting = set_nesting + 1 if token == :open
     end
 
     if type == :conditional
-      @conditional_nesting += 1 if token == :open
+      self.conditional_nesting = conditional_nesting + 1 if token == :open
     end
   end
 
@@ -105,20 +109,20 @@ class Regexp::Lexer
         last_length = last.length
       end
 
-      @tokens.pop
-      @tokens << Regexp::Token.new(:literal, :literal, lead, token.ts,
-                  (token.te - last_length), @nesting, @set_nesting, @conditional_nesting)
+      tokens.pop
+      tokens << Regexp::Token.new(:literal, :literal, lead, token.ts,
+                (token.te - last_length), nesting, set_nesting, conditional_nesting)
 
-      @tokens << Regexp::Token.new(:literal, :literal, last,
-                  (token.ts + lead_length),
-                  token.te, @nesting, @set_nesting, @conditional_nesting)
+      tokens << Regexp::Token.new(:literal, :literal, last,
+                (token.ts + lead_length),
+                token.te, nesting, set_nesting, conditional_nesting)
     end
   end
 
   # called by scan to merge two consecutive literals. this happens when tokens
   # get normalized (as in the case of posix/bre) and end up becoming literals.
   def merge_literal(current)
-    last = @tokens.pop
+    last = tokens.pop
 
     Regexp::Token.new(
       :literal,
@@ -126,16 +130,16 @@ class Regexp::Lexer
       last.text + current.text,
       last.ts,
       current.te,
-      @nesting,
-      @set_nesting,
-      @conditional_nesting
+      nesting,
+      set_nesting,
+      conditional_nesting,
     )
   end
 
   def merge_condition(current)
-    last = @tokens.pop
+    last = tokens.pop
     Regexp::Token.new(:conditional, :condition, last.text + current.text,
-      last.ts, current.te, @nesting, @set_nesting, @conditional_nesting)
+      last.ts, current.te, nesting, set_nesting, conditional_nesting)
   end
 
 end # module Regexp::Lexer

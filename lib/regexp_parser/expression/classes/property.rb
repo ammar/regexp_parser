@@ -3,11 +3,11 @@ module Regexp::Expression
   module UnicodeProperty
     class Base < Regexp::Expression::Base
       def negative?
-        @type == :nonproperty
+        type == :nonproperty
       end
 
       def name
-        @text =~ /\A\\[pP]\{([^}]+)\}\z/; $1
+        text =~ /\A\\[pP]\{([^}]+)\}\z/; $1
       end
     end
 

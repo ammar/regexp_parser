@@ -3,10 +3,12 @@ module Regexp::Expression
   module Group
     class Base < Regexp::Expression::Subexpression
       def capturing?
-        [:capture, :named].include? @token
+        [:capture, :named].include?(token)
       end
 
-      def comment?; @type == :comment end
+      def comment?
+        type == :comment
+      end
 
       def to_s(format = :full)
         "#{text}#{expressions.join})#{quantifier_affix(format)}"
@@ -29,14 +31,14 @@ module Regexp::Expression
 
       def clone
         copy = super
-        copy.instance_variable_set(:@name, @name.dup)
+        copy.instance_variable_set(:@name, name.dup)
         copy
       end
     end
 
-    class Comment   < Group::Base
-      def to_s(format = :full)
-        @text.dup
+    class Comment < Group::Base
+      def to_s(_format = :full)
+        text.dup
       end
     end
   end
