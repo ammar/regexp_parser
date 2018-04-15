@@ -4,9 +4,9 @@
   assigned but unused variable - testEof"
 
 # Unavoidable duplicated character range tests
-- "lib/regexp_parser/expression.rb:132: warning:
+- "lib/regexp_parser/expression.rb:126: warning:
   character class has duplicated range: /[[:^xdigit:][:^lower:]]+/"
-- "lib/regexp_parser/expression.rb:132: warning:
+- "lib/regexp_parser/expression.rb:126: warning:
   character class has duplicated range: /[a[b[^c]]]/"
 
 # Warnings generated only under 1.9.3

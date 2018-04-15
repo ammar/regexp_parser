@@ -51,17 +51,11 @@ module Regexp::Expression
     end
 
     def to_s(format = :full)
-      s = ''
+      "#{text}#{quantifier_affix(format)}"
+    end
 
-      case format
-      when :base
-        s << @text.dup
-      else
-        s << @text.dup
-        s << @quantifier if quantified?
-      end
-
-      s
+    def quantifier_affix(expression_format)
+      quantifier.to_s if quantified? && expression_format != :base
     end
 
     def terminal?

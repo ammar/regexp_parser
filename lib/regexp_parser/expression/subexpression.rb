@@ -39,20 +39,10 @@ module Regexp::Expression
     end
 
     def to_s(format = :full)
-      s = ''
-
       # Note: the format does not get passed down to subexpressions.
-      case format
-      when :base
-        s << @text.dup
-        s << @expressions.map{|e| e.to_s}.join unless @expressions.empty?
-      else
-        s << @text.dup
-        s << @expressions.map{|e| e.to_s}.join unless @expressions.empty?
-        s << @quantifier if quantified?
-      end
-
-      s
+      # Note: cant use #text accessor, b/c it is overriden as def text; to_s end
+      # in Expression::Sequence, causing infinite recursion. Clean-up needed.
+      "#{@text}#{expressions.join}#{quantifier_affix(format)}"
     end
 
     def to_h

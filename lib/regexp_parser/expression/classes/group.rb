@@ -9,21 +9,7 @@ module Regexp::Expression
       def comment?; @type == :comment end
 
       def to_s(format = :full)
-        s = ''
-
-        case format
-        when :base
-          s << @text.dup
-          s << @expressions.join
-          s << ')'
-        else
-          s << @text.dup
-          s << @expressions.join
-          s << ')'
-          s << @quantifier.to_s if quantified?
-        end
-
-        s
+        "#{text}#{expressions.join})#{quantifier_affix(format)}"
       end
     end
 
