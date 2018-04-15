@@ -125,26 +125,19 @@ class Regexp::Parser
     when :dot
       node << CharacterType::Any.new(token, active_opts)
     when :alternation
-      unless node.token == :alternation
-        unless node.last.is_a?(Alternation)
-          alt = Alternation.new(token, active_opts)
-          seq = Alternative.new(alt.level, alt.set_level, alt.conditional_level)
-
-          while node.expressions.last
-            seq.insert node.expressions.pop
-          end
-          alt.alternative(seq)
-
-          node << alt
-          self.node = alt
-          node.alternative
-        else
-          self.node = node.last
-          node.alternative
-        end
+      if node.token == :alternation
+      elsif node.last.is_a?(Alternation)
+        self.node = node.last
       else
-        node.alternative
+        alt = Alternation.new(token, active_opts)
+        seq = Alternative.new(alt.level, alt.set_level, alt.conditional_level)
+        node.expressions.count.times { seq.insert(node.expressions.pop) }
+        alt.alternative(seq)
+
+        node << alt
+        self.node = alt
       end
+      node.alternative
     else
       raise UnknownTokenError.new('Meta', token)
     end
