@@ -1,16 +1,14 @@
 ---
 # Unused variable emitted by ragel
-- "lib/regexp_parser/scanner.rb:1692: warning:
+- "lib/regexp_parser/scanner.rb:1694: warning:
   assigned but unused variable - testEof"
 
 # Unavoidable duplicated character range tests
-- "lib/regexp_parser/expression.rb:132: warning:
+- "lib/regexp_parser/expression.rb:124: warning:
   character class has duplicated range: /[[:^xdigit:][:^lower:]]+/"
-- "lib/regexp_parser/expression.rb:132: warning:
+- "lib/regexp_parser/expression.rb:124: warning:
   character class has duplicated range: /[a[b[^c]]]/"
 
-# Warnings generated only under 1.9.3
-- "lib/regexp_parser/scanner.rb:1693:
-  warning: assigned but unused variable - _acts"
-- "lib/regexp_parser/scanner.rb:1693:
-  warning: assigned but unused variable - _nacts"
+# Faulty warning generated only under Ruby < 2.3
+# c.f. https://bugs.ruby-lang.org/issues/10967
+- "private attribute?"

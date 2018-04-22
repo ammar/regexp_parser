@@ -82,18 +82,7 @@ module Regexp::Expression
     end
 
     def to_s(format = :full)
-      s = ''
-
-      s << @text.dup
-      s << '^' if negative?
-      s << @members.join
-      s << ']'
-
-      unless format == :base
-        s << @quantifier.to_s if quantified?
-      end
-
-      s
+      "#{text}#{'^' if negative?}#{members.join}]#{quantifier_affix(format)}"
     end
   end
 end # module Regexp::Expression

@@ -11,45 +11,37 @@ module Regexp::Expression
     class Branch    < Regexp::Expression::Sequence; end
 
     class Expression < Regexp::Expression::Subexpression
+      attr_reader :branches, :condition
+
       def initialize(token, options = {})
         super
-
-        @condition = nil
         @branches  = []
       end
 
-      def condition(exp = nil)
-        return @condition unless exp
+      def condition=(exp)
         @condition = exp
-        @expressions << exp
+        expressions << exp
       end
 
       def <<(exp)
-        @expressions.last << exp
+        expressions.last << exp
       end
 
       def branch(exp = nil)
-        raise TooManyBranches.new if @branches.length == 2
+        raise TooManyBranches.new if branches.length == 2
 
         sequence = Branch.new(level, set_level, conditional_level + 1)
 
-        @expressions << sequence
-        @branches << @expressions.last
-      end
-
-      def branches
-        @branches
+        expressions << sequence
+        branches << expressions.last
       end
 
       def quantify(token, text, min = nil, max = nil, mode = :greedy)
         branches.last.last.quantify(token, text, min, max, mode)
       end
 
-      def to_s
-        s = @text.dup
-        s << @condition.text
-        s << branches.map{|e| e.to_s}.join('|')
-        s << ')'
+      def to_s(_format = :full)
+        text + condition.text + branches.join('|') + ')'
       end
     end
   end

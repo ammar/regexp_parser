@@ -50,4 +50,10 @@ class ExpressionToH < Test::Unit::TestCase
     }
   end
 
+  # regression test
+  def test_conditional_expression_to_h
+    root = RP.parse('(?<A>a)(?(<A>)b|c)', 'ruby/2.0')
+
+    assert_nothing_raised { root.to_h }
+  end
 end

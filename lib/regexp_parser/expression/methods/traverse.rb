@@ -7,7 +7,7 @@ module Regexp::Expression
     #
     # The event argument is passed as follows:
     #
-    # - For subexpressions, :enter upon entrering the subexpression, and
+    # - For subexpressions, :enter upon entering the subexpression, and
     #   :exit upon exiting it.
     #
     # - For terminal expressions, :visit is called once.
