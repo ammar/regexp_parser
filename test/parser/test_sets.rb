@@ -99,7 +99,7 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal true,  exp.include?('b')
     assert_equal false, exp.include?('b', true) # should not include b directly
 
-    sub = exp.members.at(1)
+    sub = exp.at(1)
     assert_equal false, sub.include?('a')
     assert_equal true,  sub.include?('b')
     assert_equal true,  sub.include?('b', true)
@@ -115,7 +115,7 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal true,  exp.include?('b')
     assert_equal false, exp.include?('b', true) # should not include b directly
 
-    sub = exp.members.at(1)
+    sub = exp.at(1)
     assert_equal false, sub.include?('a')
     assert_equal true,  sub.include?('b')
     assert_equal true,  sub.include?('b', true)
@@ -123,7 +123,7 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal true,  sub.include?('c')
     assert_equal false, sub.include?('c', true)
 
-    sub2 = sub.members.at(1)
+    sub2 = sub.at(1)
     assert_equal false, sub2.include?('a')
     assert_equal false, sub2.include?('b')
     assert_equal true,  sub2.include?('c')
@@ -132,7 +132,7 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal true,  sub2.include?('d')
     assert_equal false, sub2.include?('d', true)
 
-    sub3 = sub2.members.at(1)
+    sub3 = sub2.at(1)
     assert_equal false, sub3.include?('a')
     assert_equal false, sub3.include?('g')
     assert_equal false, sub3.include?('b')

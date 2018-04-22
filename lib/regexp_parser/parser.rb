@@ -47,8 +47,7 @@ class Regexp::Parser
   private
 
   attr_accessor :root, :node, :nesting,
-                :options_stack, :switching_options, :conditional_nesting,
-                :current_set
+                :options_stack, :switching_options, :conditional_nesting
 
   def options_from_input(input)
     return {} unless input.is_a?(::Regexp)
@@ -66,6 +65,13 @@ class Regexp::Parser
     self.node = exp
   end
 
+  def decrease_nesting
+    nesting.pop
+    yield(node) if block_given?
+    self.node = nesting.last
+    self.node = node.last if node.last.is_a?(Alternation)
+  end
+
   def nest_conditional(exp)
     conditional_nesting.push(exp)
     node << exp
@@ -80,7 +86,7 @@ class Regexp::Parser
     when :escape;       escape(token)
     when :group;        group(token)
     when :assertion;    group(token)
-    when :set,          set(token)
+    when :set;          set(token)
     when :type;         type(token)
     when :backref;      backref(token)
     when :conditional;  conditional(token)
@@ -99,6 +105,8 @@ class Regexp::Parser
     end
   end
 
+  # TODO: this method should only handle set-specific tokens:
+  # [, ], ^, &&, -, [:...:], [=...=], [.xxx.]
   def set(token)
     case token.token
     when :open
@@ -108,13 +116,11 @@ class Regexp::Parser
     when :negate
       negate_set
     when :member, :range, :escape, :collation, :equivalent
-      append_set(token)
-    when *Token::Escape::All
-      append_set(token)
-    when *Token::CharacterSet::All
-      append_set(token)
+      node << Literal.new(token, active_opts)
+    when *Token::CharacterSet::All # currently handles [:...:] & types, e.g. \w
+      node << Literal.new(token, active_opts)
     when *Token::UnicodeProperty::All
-      append_set(token)
+      node << Literal.new(token, active_opts)
     else
       raise UnknownTokenError.new('CharacterSet', token)
     end
@@ -530,35 +536,22 @@ class Regexp::Parser
   end
 
   def close_group
-    nesting.pop
     options_stack.pop unless switching_options
     self.switching_options = false
-
-    self.node = nesting.last
-    self.node = node.last if node.last and node.last.is_a?(Alternation)
+    decrease_nesting
   end
 
   def open_set(token)
     token.token = :character
-
-    if token.type == :subset
-      current_set << CharacterSubSet.new(token, active_opts)
-    else
-      self.current_set = CharacterSet.new(token, active_opts)
-      node << current_set
-    end
+    nest(CharacterSet.new(token, active_opts))
   end
 
   def negate_set
-    current_set.negate
-  end
-
-  def append_set(token)
-    current_set << token.text
+    node.negate
   end
 
   def close_set
-    current_set.close
+    decrease_nesting(&:close)
   end
 
   def active_opts

@@ -151,7 +151,7 @@ class Expressionstrfregexp < Test::Unit::TestCase
     set = seq_2.first
     assert_equal '[d-gk-p]', set.strfregexp('%t')
     assert_equal '[d-gk-p]+', set.strfregexp('%T')
-    assert_equal '[d-gk-p]+', set.strfregexp('%~t')
+    assert_equal 'set:character', set.strfregexp('%~t')
   end
 
   def test_expression_strfregexp_combined
@@ -180,7 +180,8 @@ class Expressionstrfregexp < Test::Unit::TestCase
     assert_equal(
       "@0+15 expression:root\n" +
       "  @0+1 a\n" +
-      "  @1+6 [b-d]*\n" +
+      "  @1+6 set:character\n" +
+      "    @2+3 b-d\n" +
       "  @7+8 group:capture\n" +
       "    @8+1 e\n" +
       "    @9+4 group:capture\n" +
@@ -195,7 +196,8 @@ class Expressionstrfregexp < Test::Unit::TestCase
     assert_equal(
       "@0+15 expression:root-SEP-" +
       "  @0+1 a-SEP-" +
-      "  @1+6 [b-d]*-SEP-" +
+      "  @1+6 set:character-SEP-" +
+      "    @2+3 b-d-SEP-" +
       "  @7+8 group:capture-SEP-" +
       "    @8+1 e-SEP-" +
       "    @9+4 group:capture-SEP-" +
@@ -209,7 +211,8 @@ class Expressionstrfregexp < Test::Unit::TestCase
 
     assert_equal(
       "@0+1 a\n" +
-      "@1+6 [b-d]*\n" +
+      "@1+6 set:character\n" +
+      "  @2+3 b-d\n" +
       "@7+8 group:capture\n" +
       "  @8+1 e\n" +
       "  @9+4 group:capture\n" +

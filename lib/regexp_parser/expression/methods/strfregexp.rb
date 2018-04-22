@@ -45,9 +45,12 @@ module Regexp::Expression
       part_keys = %w{a m b o i l x s e S y k c q Q z Z t ~t T >}
       part.keys.each {|k| part[k] = "<?#{k}?>"}
 
-      part['>'] = level ? ('  ' * (level + indent_offset)) : ''
+      # TODO: is this the best way to correctly display nesting in sets?
+      nesting_level = level || set_level ? level.to_i + set_level.to_i : nil
 
-      part['l'] = level ? "#{'%d' % level}" : 'root'
+      part['>'] = nesting_level ? ('  ' * (nesting_level + indent_offset)) : ''
+
+      part['l'] = nesting_level ? "#{'%d' % nesting_level}" : 'root'
       part['x'] = "#{'%d' % index}" if have_index
 
       part['s'] = starts_at
@@ -101,9 +104,9 @@ module Regexp::Expression
     def strfregexp_tree(format = '%a', include_self = true, separator = "\n")
       output = include_self ? [self.strfregexp(format)] : []
 
-      output += map {|exp, index|
+      output += map do |exp, index|
         exp.strfregexp(format, (include_self ? 1 : 0), index)
-      }
+      end
 
       output.join(separator)
     end

@@ -1,8 +1,6 @@
 module Regexp::Expression
 
   class Subexpression < Regexp::Expression::Base
-    include Enumerable
-
     attr_accessor :expressions
 
     def initialize(token, options = {})
