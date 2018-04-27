@@ -29,21 +29,21 @@ class ScannerSets < Test::Unit::TestCase
     '[\\\]'                 => [1, :set,    :escape,          '\\\\',       1, 3],
     '[a\-c]'                => [2, :set,    :escape,          '\-',         2, 4],
 
-    '[\d]'                  => [1, :set,    :type_digit,      '\d',         1, 3],
-    '[\da-z]'               => [1, :set,    :type_digit,      '\d',         1, 3],
-    '[\D]'                  => [1, :set,    :type_nondigit,   '\D',         1, 3],
+    '[\d]'                  => [1, :type,   :digit,           '\d',         1, 3],
+    '[\da-z]'               => [1, :type,   :digit,           '\d',         1, 3],
+    '[\D]'                  => [1, :type,   :nondigit,        '\D',         1, 3],
 
-    '[\h]'                  => [1, :set,    :type_hex,        '\h',         1, 3],
-    '[\H]'                  => [1, :set,    :type_nonhex,     '\H',         1, 3],
+    '[\h]'                  => [1, :type,   :hex,             '\h',         1, 3],
+    '[\H]'                  => [1, :type,   :nonhex,          '\H',         1, 3],
 
-    '[\s]'                  => [1, :set,    :type_space,      '\s',         1, 3],
-    '[\S]'                  => [1, :set,    :type_nonspace,   '\S',         1, 3],
+    '[\s]'                  => [1, :type,   :space,           '\s',         1, 3],
+    '[\S]'                  => [1, :type,   :nonspace,        '\S',         1, 3],
 
-    '[\w]'                  => [1, :set,    :type_word,       '\w',         1, 3],
-    '[\W]'                  => [1, :set,    :type_nonword,    '\W',         1, 3],
+    '[\w]'                  => [1, :type,   :word,            '\w',         1, 3],
+    '[\W]'                  => [1, :type,   :nonword,         '\W',         1, 3],
 
-    '[\R]'                  => [1, :set,    :type_linebreak,  '\R',         1, 3],
-    '[\X]'                  => [1, :set,    :type_xgrapheme,  '\X',         1, 3],
+    '[\R]'                  => [1, :type,   :linebreak,       '\R',         1, 3],
+    '[\X]'                  => [1, :type,   :xgrapheme,       '\X',         1, 3],
 
     '[a-c]'                 => [1, :set,    :range,           'a-c',        1, 4],
     '[a-c-]'                => [2, :set,    :member,          '-',          4, 6],

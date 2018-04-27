@@ -1,6 +1,6 @@
 ---
 # Unused variable emitted by ragel
-- "lib/regexp_parser/scanner.rb:1697: warning:
+- "lib/regexp_parser/scanner.rb:1708: warning:
   assigned but unused variable - testEof"
 
 # Unavoidable duplicated character range tests

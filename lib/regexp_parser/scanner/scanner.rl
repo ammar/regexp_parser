@@ -1,6 +1,7 @@
 %%{
   machine re_scanner;
-  include re_property "property.rl";
+  include re_char_type "char_type.rl";
+  include re_property  "property.rl";
 
   dot                   = '.';
   backslash             = '\\';
@@ -34,8 +35,6 @@
   # these are not supported in ruby, and need verification
   collating_sequence    = '[.' . (alpha | [\-])+ . '.]';
   character_equivalent  = '[=' . alpha . '=]';
-
-  char_type             = [dDhHsSwWRX];
 
   line_anchor           = beginning_of_line | end_of_line;
   anchor_char           = [AbBzZG];
@@ -127,7 +126,7 @@
   utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf)+;
   utf8_byte_sequence    = utf8_2_byte | utf8_3_byte | utf8_4_byte;
 
-  non_literal_escape    = char_type | anchor_char | escaped_ascii |
+  non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
                           group_ref | [xucCM];
 
   # EOF error, used where it can be detected
@@ -248,20 +247,10 @@
       fret;
     };
 
-    char_type > (escaped_set_alpha, 4) {
-      case text = text(data, ts, te, 1).first
-      when '\d'; emit(:set, :type_digit,     text, ts-1, te)
-      when '\D'; emit(:set, :type_nondigit,  text, ts-1, te)
-      when '\h'; emit(:set, :type_hex,       text, ts-1, te)
-      when '\H'; emit(:set, :type_nonhex,    text, ts-1, te)
-      when '\s'; emit(:set, :type_space,     text, ts-1, te)
-      when '\S'; emit(:set, :type_nonspace,  text, ts-1, te)
-      when '\w'; emit(:set, :type_word,      text, ts-1, te)
-      when '\W'; emit(:set, :type_nonword,   text, ts-1, te)
-      when '\R'; emit(:set, :type_linebreak, text, ts-1, te)
-      when '\X'; emit(:set, :type_xgrapheme, text, ts-1, te)
-      end
-      fret;
+    char_type_char > (escaped_set_alpha, 4) {
+      fhold;
+      fnext character_set;
+      fcall char_type;
     };
 
     hex_sequence . '-\\' . hex_sequence {
@@ -286,7 +275,7 @@
     };
 
     # special case exclusion of escaped dash, could be cleaner.
-    (ascii_print - char_type -- [\-}]) > (escaped_set_alpha, 1) |
+    (ascii_print - char_type_char -- [\-}]) > (escaped_set_alpha, 1) |
     ascii_nonprint            |
     utf8_2_byte               |
     utf8_3_byte               |
@@ -483,28 +472,10 @@
       end
     };
 
-    # Character types
-    #   \d, \D    digit, non-digit
-    #   \h, \H    hex, non-hex
-    #   \s, \S    space, non-space
-    #   \w, \W    word, non-word
-    # ------------------------------------------------------------------------
-    backslash . char_type > (backslashed, 2) {
-      case text = text(data, ts, te).first
-      when '\\d'; emit(:type, :digit,      text, ts, te)
-      when '\\D'; emit(:type, :nondigit,   text, ts, te)
-      when '\\h'; emit(:type, :hex,        text, ts, te)
-      when '\\H'; emit(:type, :nonhex,     text, ts, te)
-      when '\\s'; emit(:type, :space,      text, ts, te)
-      when '\\S'; emit(:type, :nonspace,   text, ts, te)
-      when '\\w'; emit(:type, :word,       text, ts, te)
-      when '\\W'; emit(:type, :nonword,    text, ts, te)
-      when '\\R'; emit(:type, :linebreak,  text, ts, te)
-      when '\\X'; emit(:type, :xgrapheme,  text, ts, te)
-      else
-        raise ScannerError.new(
-          "Unexpected character in type at #{text} (char #{ts})")
-      end
+    backslash . char_type_char > (backslashed, 2) {
+      fhold;
+      fnext main;
+      fcall char_type;
     };
 
 
