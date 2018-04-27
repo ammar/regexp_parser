@@ -61,14 +61,14 @@ class ScannerSets < Test::Unit::TestCase
 
     '[\\x20-\\x28]'         => [1, :set,    :range_hex,       '\x20-\x28',  1, 10],
 
-    '[a\p{digit}c]'         => [2, :set,    :digit,           '\p{digit}',  2, 11],
-    '[a\P{digit}c]'         => [2, :set,    :digit,           '\P{digit}',  2, 11],
-    '[a\p{^digit}c]'        => [2, :set,    :digit,           '\p{^digit}', 2, 12],
-    '[a\P{^digit}c]'        => [2, :set,    :digit,           '\P{^digit}', 2, 12],
+    '[a\p{digit}c]'         => [2, :property,    :digit,      '\p{digit}',  2, 11],
+    '[a\P{digit}c]'         => [2, :nonproperty, :digit,      '\P{digit}',  2, 11],
+    '[a\p{^digit}c]'        => [2, :nonproperty, :digit,      '\p{^digit}', 2, 12],
+    '[a\P{^digit}c]'        => [2, :property,    :digit,      '\P{^digit}', 2, 12],
 
-    '[a\p{ALPHA}c]'         => [2, :set,    :alpha,           '\p{ALPHA}',  2, 11],
-    '[a\p{P}c]'             => [2, :set,    :punct_any,       '\p{P}',      2, 7],
-    '[a\p{P}\P{Z}c]'        => [3, :set,    :separator_any,   '\P{Z}',      7, 12],
+    '[a\p{ALPHA}c]'         => [2, :property,    :alpha,      '\p{ALPHA}',  2, 11],
+    '[a\p{P}c]'             => [2, :property,    :punct_any,  '\p{P}',      2, 7],
+    '[a\p{P}\P{P}c]'        => [3, :nonproperty, :punct_any,  '\P{P}',      7, 12],
 
     '[a-w&&[^c-g]z]'        => [3, :set,    :open,            '[',          6, 7],
     '[a-w&&[^c-h]z]'        => [4, :set,    :negate,          '^',          7, 8],

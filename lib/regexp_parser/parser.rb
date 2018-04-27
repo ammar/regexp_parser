@@ -119,8 +119,6 @@ class Regexp::Parser
       node << Literal.new(token, active_opts)
     when *Token::CharacterSet::All # currently handles [:...:] & types, e.g. \w
       node << Literal.new(token, active_opts)
-    when *Token::UnicodeProperty::All
-      node << Literal.new(token, active_opts)
     else
       raise UnknownTokenError.new('CharacterSet', token)
     end

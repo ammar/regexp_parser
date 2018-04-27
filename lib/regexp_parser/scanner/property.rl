@@ -61,11 +61,7 @@
 
     property_sequence < eof(premature_property_end) {
       text = text(data, ts, te, 1).first
-      if in_set
-        type = :set
-      else
-        type = (text[1] == 'P') ^ (text[3] == '^') ? :nonproperty : :property
-      end
+      type = (text[1] == 'P') ^ (text[3] == '^') ? :nonproperty : :property
 
       name = data[ts+2..te-2].pack('c*').gsub(/[\s_]/,'').downcase
       if name[0].chr == '^'
