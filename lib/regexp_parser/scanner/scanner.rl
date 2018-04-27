@@ -185,7 +185,7 @@
       end
     };
 
-    alnum . '-' . alnum {
+    (alnum | ('\\' . hex_sequence)) . '-' . (alnum | ('\\' . hex_sequence)) {
       emit(:set, :range, *text(data, ts, te))
     };
 
@@ -253,13 +253,8 @@
       fcall char_type;
     };
 
-    hex_sequence . '-\\' . hex_sequence {
-      emit(:set, :range_hex, *text(data, ts, te, 1))
-      fret;
-    };
-
     hex_sequence {
-      emit(:set, :member_hex, *text(data, ts, te, 1))
+      emit(:escape, :hex, *text(data, ts, te, 1))
       fret;
     };
 

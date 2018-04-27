@@ -20,7 +20,7 @@ class ScannerSets < Test::Unit::TestCase
     '[<]'                   => [1, :set,    :member,          '<',          1, 2],
     '[>]'                   => [1, :set,    :member,          '>',          1, 2],
 
-    '[\x20]'                => [1, :set,    :member_hex,      '\x20',       1, 5],
+    '[\x20]'                => [1, :escape, :hex,             '\x20',       1, 5],
 
     '[\.]'                  => [1, :set,    :escape,          '\.',         1, 3],
     '[\!]'                  => [1, :set,    :escape,          '\!',         1, 3],
@@ -59,7 +59,7 @@ class ScannerSets < Test::Unit::TestCase
 
     '[a-d&&g-h]'            => [2, :set,    :intersection,    '&&',         4, 6],
 
-    '[\\x20-\\x28]'         => [1, :set,    :range_hex,       '\x20-\x28',  1, 10],
+    '[\\x20-\\x28]'         => [1, :set,    :range,           '\x20-\x28',  1, 10],
 
     '[a\p{digit}c]'         => [2, :property,    :digit,      '\p{digit}',  2, 11],
     '[a\P{digit}c]'         => [2, :nonproperty, :digit,      '\P{digit}',  2, 11],
