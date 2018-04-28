@@ -109,6 +109,7 @@
 
   group_type            = group_atomic | group_passive | group_absence | group_named;
 
+  keep_mark             = 'K';
 
   assertion_type        = assertion_lookahead  | assertion_nlookahead |
                           assertion_lookbehind | assertion_nlookbehind;
@@ -127,9 +128,9 @@
   utf8_byte_sequence    = utf8_2_byte | utf8_3_byte | utf8_4_byte;
 
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
-                          group_ref | [xucCM];
+                          group_ref | keep_mark | [xucCM];
 
-  non_set_escape        = anchor_char | group_ref | [0-9cCM];
+  non_set_escape        = anchor_char | group_ref | keep_mark | [0-9cCM];
 
   # EOF error, used where it can be detected
   action premature_end_error {
@@ -151,7 +152,7 @@
   # closing bracket of the set.
   # --------------------------------------------------------------------------
   character_set := |*
-    ']' {
+    set_close > (set_meta, 2) {
       set_depth -= 1
       in_set = set_depth > 0 ? true : false
 
@@ -195,11 +196,11 @@
       emit(:set, :intersection, *text(data, ts, te))
     };
 
-    '\\' {
+    backslash {
       fcall set_escape_sequence;
     };
 
-    '[' >(open_bracket, 1) {
+    set_open >(open_bracket, 1) {
       set_depth += 1
 
       emit(:set, :open, *text(data, ts, te))
@@ -226,9 +227,7 @@
       emit(:set, :equivalent, *text(data, ts, te))
     };
 
-    # exclude the closing bracket as a cleaner workaround for dealing with the
-    # ambiguity caused upon exit from the unicode properties machine
-    meta_char -- ']' {
+    meta_char > (set_meta, 1) {
       emit(:literal, :literal, *text(data, ts, te))
     };
 
@@ -252,18 +251,6 @@
     non_set_escape > (escaped_set_alpha, 2) {
       emit(:escape, :literal, *text(data, ts, te, 1))
       fret;
-    };
-
-    char_type_char > (escaped_set_alpha, 1) {
-      fhold;
-      fnext character_set;
-      fcall char_type;
-    };
-
-    property_char > (escaped_set_alpha, 1) {
-      fhold;
-      fnext character_set;
-      fcall unicode_property;
     };
 
     any > (escaped_set_alpha, 1) {
@@ -385,13 +372,13 @@
 
     char_type_char > (escaped_alpha, 2) {
       fhold;
-      fnext main;
+      fnext *(in_set ? fentry(character_set) : fentry(main));
       fcall char_type;
     };
 
     property_char > (escaped_alpha, 2) {
       fhold;
-      fnext main;
+      fnext *(in_set ? fentry(character_set) : fentry(main));
       fcall unicode_property;
     };
 
@@ -447,7 +434,7 @@
       emit(:anchor, :eol, *text(data, ts, te))
     };
 
-    backslash . 'K' > (backslashed, 4) {
+    backslash . keep_mark > (backslashed, 4) {
       emit(:keep, :mark, *text(data, ts, te))
     };
 
