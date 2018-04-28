@@ -24,12 +24,8 @@ module Regexp::Expression
       end
     end
 
-    def insert(exp)
-      expressions.insert(0, exp)
-    end
-
     %w[[] all? any? at count each each_with_index empty?
-       fetch find first index join last length values_at].each do |m|
+       fetch find first index join last length unshift values_at].each do |m|
       define_method(m) { |*args, &block| expressions.send(m, *args, &block) }
     end
 

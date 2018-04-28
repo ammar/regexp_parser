@@ -135,7 +135,7 @@ class Regexp::Parser
       else
         alt = Alternation.new(token, active_opts)
         seq = Alternative.new(alt.level, alt.set_level, alt.conditional_level)
-        node.expressions.count.times { seq.insert(node.expressions.pop) }
+        node.expressions.count.times { seq.unshift(node.expressions.pop) }
         alt.alternative(seq)
 
         node << alt
