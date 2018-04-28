@@ -39,7 +39,7 @@
   line_anchor           = beginning_of_line | end_of_line;
   anchor_char           = [AbBzZG];
 
-  escaped_ascii         = [abefnrstv];
+  escaped_ascii         = [abefnrtv];
   octal_sequence        = [0-7]{1,3};
 
   hex_sequence          = 'x' . xdigit{1,2};
@@ -318,7 +318,6 @@
       when '\f'; emit(:escape, :form_feed,      text, ts-1, te)
       when '\n'; emit(:escape, :newline,        text, ts-1, te)
       when '\r'; emit(:escape, :carriage,       text, ts-1, te)
-      when '\s'; emit(:escape, :space,          text, ts-1, te)
       when '\t'; emit(:escape, :tab,            text, ts-1, te)
       when '\v'; emit(:escape, :vertical_tab,   text, ts-1, te)
       end
@@ -382,6 +381,12 @@
         raise PrematureEndError.new("meta sequence")
       end
       fret;
+    };
+
+    char_type_char > (escaped_alpha, 2) {
+      fhold;
+      fnext main;
+      fcall char_type;
     };
 
     property_char > (escaped_alpha, 2) {
@@ -459,13 +464,6 @@
           "Unexpected character in anchor at #{text} (char #{ts})")
       end
     };
-
-    backslash . char_type_char > (backslashed, 2) {
-      fhold;
-      fnext main;
-      fcall char_type;
-    };
-
 
     # Character sets
     # ------------------------------------------------------------------------

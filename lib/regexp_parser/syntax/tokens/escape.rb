@@ -9,7 +9,7 @@ module Regexp::Syntax
       Control = [:control, :meta_sequence]
 
       ASCII = [:bell, :backspace, :escape, :form_feed, :newline, :carriage,
-               :space, :tab, :vertical_tab]
+               :tab, :vertical_tab]
 
       Unicode = [:codepoint, :codepoint_list]
 
