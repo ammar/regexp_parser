@@ -7,18 +7,18 @@ class ScannerSets < Test::Unit::TestCase
     '[b]'                   => [2, :set,    :close,           ']',          2, 3],
     '[^n]'                  => [1, :set,    :negate,          '^',          1, 2],
 
-    '[c]'                   => [1, :set,    :member,          'c',          1, 2],
+    '[c]'                   => [1, :literal, :literal,        'c',          1, 2],
     '[\b]'                  => [1, :set,    :backspace,       '\b',         1, 3],
     '[A\bX]'                => [2, :set,    :backspace,       '\b',         2, 4],
 
-    '[.]'                   => [1, :set,    :member,          '.',          1, 2],
-    '[?]'                   => [1, :set,    :member,          '?',          1, 2],
-    '[*]'                   => [1, :set,    :member,          '*',          1, 2],
-    '[+]'                   => [1, :set,    :member,          '+',          1, 2],
-    '[{]'                   => [1, :set,    :member,          '{',          1, 2],
-    '[}]'                   => [1, :set,    :member,          '}',          1, 2],
-    '[<]'                   => [1, :set,    :member,          '<',          1, 2],
-    '[>]'                   => [1, :set,    :member,          '>',          1, 2],
+    '[.]'                   => [1, :literal, :literal,        '.',          1, 2],
+    '[?]'                   => [1, :literal, :literal,        '?',          1, 2],
+    '[*]'                   => [1, :literal, :literal,        '*',          1, 2],
+    '[+]'                   => [1, :literal, :literal,        '+',          1, 2],
+    '[{]'                   => [1, :literal, :literal,        '{',          1, 2],
+    '[}]'                   => [1, :literal, :literal,        '}',          1, 2],
+    '[<]'                   => [1, :literal, :literal,        '<',          1, 2],
+    '[>]'                   => [1, :literal, :literal,        '>',          1, 2],
 
     '[\x20]'                => [1, :escape, :hex,             '\x20',       1, 5],
 
@@ -46,8 +46,8 @@ class ScannerSets < Test::Unit::TestCase
     '[\X]'                  => [1, :type,   :xgrapheme,       '\X',         1, 3],
 
     '[a-c]'                 => [1, :set,    :range,           'a-c',        1, 4],
-    '[a-c-]'                => [2, :set,    :member,          '-',          4, 6],
-    '[a-c^]'                => [2, :set,    :member,          '^',          4, 5],
+    '[a-c-]'                => [2, :literal, :literal,        '-',          4, 6],
+    '[a-c^]'                => [2, :literal, :literal,        '^',          4, 5],
     '[a-cd-f]'              => [2, :set,    :range,           'd-f',        4, 7],
 
     '[a[:digit:]c]'         => [2, :set,    :class_digit,     '[:digit:]',  2, 11],

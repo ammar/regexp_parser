@@ -36,6 +36,7 @@ class Regexp::Lexer
                 nesting, set_nesting, conditional_nesting)
 
       current = merge_literal(current) if type == :literal and
+        set_nesting == 0 and
         last and last.type == :literal
 
       current = merge_condition(current) if type == :conditional and

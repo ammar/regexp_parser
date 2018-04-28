@@ -115,7 +115,7 @@ class Regexp::Parser
       close_set
     when :negate
       negate_set
-    when :member, :range, :escape, :collation, :equivalent
+    when :range, :escape, :collation, :equivalent
       node << Literal.new(token, active_opts)
     when *Token::CharacterSet::All # currently handles [:...:] & types, e.g. \w
       node << Literal.new(token, active_opts)

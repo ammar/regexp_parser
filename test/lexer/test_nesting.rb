@@ -78,11 +78,11 @@ class LexerNesting < Test::Unit::TestCase
 
     '[a[b[c[d-g]]]]' => {
       0     => [:set,         :open,          '[',      0,  1, 0, 0, 0],
-      1     => [:set,         :member,        'a',      1,  2, 0, 1, 0],
+      1     => [:literal,     :literal,       'a',      1,  2, 0, 1, 0],
       2     => [:set,         :open,          '[',      2,  3, 0, 1, 0],
-      3     => [:set,         :member,        'b',      3,  4, 0, 2, 0],
+      3     => [:literal,     :literal,       'b',      3,  4, 0, 2, 0],
       4     => [:set,         :open,          '[',      4,  5, 0, 2, 0],
-      5     => [:set,         :member,        'c',      5,  6, 0, 3, 0],
+      5     => [:literal,     :literal,       'c',      5,  6, 0, 3, 0],
       6     => [:set,         :open,          '[',      6,  7, 0, 3, 0],
       7     => [:set,         :range,         'd-g',    7, 10, 0, 4, 0],
       8     => [:set,         :close,         ']',     10, 11, 0, 3, 0],

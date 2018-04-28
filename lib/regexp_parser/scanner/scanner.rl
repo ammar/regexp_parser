@@ -166,8 +166,8 @@
       set_depth -= 1
       in_set = set_depth > 0 ? true : false
 
-      emit(:set, :member, copy(data, ts..te-2), ts, te)
-      emit(:set, :close,  copy(data, ts+1..te-1), ts, te)
+      emit(:literal, :literal, copy(data, ts..te-2), ts, te)
+      emit(:set, :close, copy(data, ts+1..te-1), ts, te)
 
       if set_depth == 0
         fgoto main;
@@ -181,7 +181,7 @@
       if tokens.last[1] == :open
         emit(:set, :negate, text, ts, te)
       else
-        emit(:set, :member, text, ts, te)
+        emit(:literal, :literal, text, ts, te)
       end
     };
 
@@ -227,7 +227,7 @@
     # exclude the closing bracket as a cleaner workaround for dealing with the
     # ambiguity caused upon exit from the unicode properties machine
     meta_char -- ']' {
-      emit(:set, :member, *text(data, ts, te))
+      emit(:literal, :literal, *text(data, ts, te))
     };
 
     any            |
@@ -235,7 +235,7 @@
     utf8_2_byte    |
     utf8_3_byte    |
     utf8_4_byte    {
-      emit(:set, :member, *text(data, ts, te))
+      emit(:literal, :literal, *text(data, ts, te))
     };
   *|;
 
