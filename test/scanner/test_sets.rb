@@ -32,6 +32,7 @@ class ScannerSets < Test::Unit::TestCase
     '[\g]'                  => [1, :escape, :literal,         '\g',         1, 3],
     '[\K]'                  => [1, :escape, :literal,         '\K',         1, 3],
     '[\c2]'                 => [1, :escape, :literal,         '\c',         1, 3],
+    '[\B]'                  => [1, :escape, :literal,         '\B',         1, 3],
     '[a\-c]'                => [2, :escape, :literal,         '\-',         2, 4],
 
     '[\d]'                  => [1, :type,   :digit,           '\d',         1, 3],

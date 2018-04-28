@@ -143,6 +143,25 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal true,  sub3.include?('d', true)
   end
 
+  def test_parse_set_members_is_not_merged
+    root = RP.parse("[#{'a' * 10}]", 'ruby/1.9')
+    exp  = root.expressions.at(0)
+
+    assert_equal 10, exp.count
+  end
+
+  def test_parse_set_whitespace_is_not_merged
+    root = RP.parse("[#{' ' * 10}]", 'ruby/1.9')
+    exp  = root.expressions.at(0)
+
+    assert_equal 10, exp.count
+
+    root = RP.parse("(?x)[#{' ' * 10}]", 'ruby/1.9')
+    exp  = root.expressions.at(1)
+
+    assert_equal 10, exp.count
+  end
+
   # character subsets and negated posix classes are not available in ruby 1.8
   if RUBY_VERSION >= '1.9'
     def test_parse_set_nesting_matches
