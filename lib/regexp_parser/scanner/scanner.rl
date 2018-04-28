@@ -129,6 +129,8 @@
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
                           group_ref | [xucCM];
 
+  non_set_escape        = anchor_char | group_ref | [0-9cCM];
+
   # EOF error, used where it can be detected
   action premature_end_error {
     text = ts ? copy(data, ts-1..-1) : data.pack('c*')
@@ -242,41 +244,32 @@
   # set escapes scanner
   # --------------------------------------------------------------------------
   set_escape_sequence := |*
-    'b' > (escaped_set_alpha, 2) {
+    'b' > (escaped_set_alpha, 3) {
       emit(:set, :backspace, *text(data, ts, te, 1))
       fret;
     };
 
-    char_type_char > (escaped_set_alpha, 4) {
+    non_set_escape > (escaped_set_alpha, 2) {
+      emit(:escape, :literal, *text(data, ts, te, 1))
+      fret;
+    };
+
+    char_type_char > (escaped_set_alpha, 1) {
       fhold;
       fnext character_set;
       fcall char_type;
     };
 
-    hex_sequence {
-      emit(:escape, :hex, *text(data, ts, te, 1))
-      fret;
-    };
-
-    meta_char | [\\\]\-\,] {
-      emit(:set, :escape, *text(data, ts, te, 1))
-      fret;
-    };
-
-    property_char > (escaped_set_alpha, 3) {
+    property_char > (escaped_set_alpha, 1) {
       fhold;
       fnext character_set;
       fcall unicode_property;
     };
 
-    # special case exclusion of escaped dash, could be cleaner.
-    (ascii_print - char_type_char -- [\-}]) > (escaped_set_alpha, 1) |
-    ascii_nonprint            |
-    utf8_2_byte               |
-    utf8_3_byte               |
-    utf8_4_byte               {
-      emit(:set, :escape, *text(data, ts, te, 1))
-      fret;
+    any > (escaped_set_alpha, 1) {
+      fhold;
+      fnext character_set;
+      fcall escape_sequence;
     };
   *|;
 

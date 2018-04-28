@@ -22,12 +22,17 @@ class ScannerSets < Test::Unit::TestCase
 
     '[\x20]'                => [1, :escape, :hex,             '\x20',       1, 5],
 
-    '[\.]'                  => [1, :set,    :escape,          '\.',         1, 3],
-    '[\!]'                  => [1, :set,    :escape,          '\!',         1, 3],
-    '[\#]'                  => [1, :set,    :escape,          '\#',         1, 3],
-    '[\]]'                  => [1, :set,    :escape,          '\]',         1, 3],
-    '[\\\]'                 => [1, :set,    :escape,          '\\\\',       1, 3],
-    '[a\-c]'                => [2, :set,    :escape,          '\-',         2, 4],
+    '[\.]'                  => [1, :escape, :dot,             '\.',         1, 3],
+    '[\!]'                  => [1, :escape, :literal,         '\!',         1, 3],
+    '[\#]'                  => [1, :escape, :literal,         '\#',         1, 3],
+    '[\]]'                  => [1, :escape, :set_close,       '\]',         1, 3],
+    '[\\\]'                 => [1, :escape, :backslash,       '\\\\',       1, 3],
+    '[\A]'                  => [1, :escape, :literal,         '\A',         1, 3],
+    '[\z]'                  => [1, :escape, :literal,         '\z',         1, 3],
+    '[\g]'                  => [1, :escape, :literal,         '\g',         1, 3],
+    '[\K]'                  => [1, :escape, :literal,         '\K',         1, 3],
+    '[\c2]'                 => [1, :escape, :literal,         '\c',         1, 3],
+    '[a\-c]'                => [2, :escape, :literal,         '\-',         2, 4],
 
     '[\d]'                  => [1, :type,   :digit,           '\d',         1, 3],
     '[\da-z]'               => [1, :type,   :digit,           '\d',         1, 3],
