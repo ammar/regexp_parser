@@ -117,7 +117,7 @@ class Regexp::Parser
       negate_set
     when :range, :collation, :equivalent
       node << Literal.new(token, active_opts)
-    when *Token::CharacterSet::All # currently handles [:...:] & types, e.g. \w
+    when *Token::CharacterSet::All # currently handles [:...:]
       node << Literal.new(token, active_opts)
     else
       raise UnknownTokenError.new('CharacterSet', token)
@@ -337,9 +337,6 @@ class Regexp::Parser
   def escape(token)
     case token.token
 
-    when :backspace
-      node << EscapeSequence::Backspace.new(token, active_opts)
-
     when :escape
       node << EscapeSequence::AsciiEscape.new(token, active_opts)
     when :bell
@@ -350,8 +347,6 @@ class Regexp::Parser
       node << EscapeSequence::Newline.new(token, active_opts)
     when :carriage
       node << EscapeSequence::Return.new(token, active_opts)
-    when :space
-      node << EscapeSequence::Space.new(token, active_opts)
     when :tab
       node << EscapeSequence::Tab.new(token, active_opts)
     when :vertical_tab

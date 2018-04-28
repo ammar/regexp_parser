@@ -6,12 +6,10 @@ module Regexp::Expression
     class Literal       < EscapeSequence::Base; end
 
     class AsciiEscape   < EscapeSequence::Base; end
-    class Backspace     < EscapeSequence::Base; end
     class Bell          < EscapeSequence::Base; end
     class FormFeed      < EscapeSequence::Base; end
     class Newline       < EscapeSequence::Base; end
     class Return        < EscapeSequence::Base; end
-    class Space         < EscapeSequence::Base; end
     class Tab           < EscapeSequence::Base; end
     class VerticalTab   < EscapeSequence::Base; end
 

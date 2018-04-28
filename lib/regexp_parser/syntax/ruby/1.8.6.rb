@@ -24,7 +24,7 @@ module Regexp::Syntax
           Quantifier::Interval + Quantifier::IntervalReluctant
 
         implements :set, CharacterSet::OpenClose +
-          CharacterSet::Extended + CharacterSet::Types +
+          CharacterSet::Extended +
           CharacterSet::POSIX::Standard
 
         implements :type,

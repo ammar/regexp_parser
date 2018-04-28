@@ -14,7 +14,6 @@ module Regexp::Syntax
         implements :nonproperty, UnicodeProperty::V200
 
         implements :type,        CharacterType::Clustered
-        implements :set,         CharacterSet::Clustered
 
         excludes   :property,    :newline
         excludes   :nonproperty, :newline

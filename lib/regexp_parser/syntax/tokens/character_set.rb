@@ -5,12 +5,7 @@ module Regexp::Syntax
       OpenClose = [:open, :close]
 
       Basic     = [:negate, :range]
-      Extended  = Basic + [:escape, :intersection, :backspace]
-
-      Types     = [:type_digit, :type_nondigit, :type_hex, :type_nonhex,
-                   :type_space, :type_nonspace, :type_word, :type_nonword]
-
-      Clustered = [:type_linebreak, :type_xgrapheme]
+      Extended  = Basic + [:intersection, :backspace]
 
       module POSIX
         Standard  = [
@@ -32,7 +27,7 @@ module Regexp::Syntax
         All = Standard + StandardNegative + Extensions + ExtensionsNegative
       end
 
-      All = Basic + Extended + Types + Clustered + POSIX::All
+      All = Basic + Extended + POSIX::All
       Type = :set
     end
 
