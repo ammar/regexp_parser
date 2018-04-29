@@ -38,7 +38,7 @@ class TestRegexpScanner < Test::Unit::TestCase
   def test_scanner_token_count
     re = /^(one|two){2,3}([^d\]efm-qz\,\-]*)(ghi)+$/i
 
-    assert_equal 26, RS.scan(re).length
+    assert_equal 28, RS.scan(re).length
   end
 
 end

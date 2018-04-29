@@ -79,6 +79,8 @@ class Regexp::Parser
   end
 
   def parse_token(token)
+    close_completed_binary_set_exp
+
     case token.type
     when :meta;         meta(token)
     when :quantifier;   quantifier(token)
@@ -115,9 +117,9 @@ class Regexp::Parser
       close_set
     when :negate
       negate_set
-    when :range, :collation, :equivalent
-      node << Literal.new(token, active_opts)
-    when *Token::CharacterSet::All # currently handles [:...:]
+    when :intersection, :range
+      binary_set_exp(token)
+    when :collation, :equivalent, *Token::CharacterSet::All # [:...:]
       node << Literal.new(token, active_opts)
     else
       raise UnknownTokenError.new('CharacterSet', token)
@@ -366,6 +368,8 @@ class Regexp::Parser
         node << EscapeSequence::Meta.new(token, active_opts)
       end
 
+    # TODO: hex, hex_wide, codepoint_single, codepoint_list
+
     else
       # treating everything else as a literal
       node << EscapeSequence::Literal.new(token, active_opts)
@@ -545,6 +549,20 @@ class Regexp::Parser
 
   def close_set
     decrease_nesting(&:close)
+  end
+
+  def binary_set_exp(token)
+    klass = Regexp::Expression::CharacterSet.const_get(token.token.capitalize)
+    exp = klass.new(token, active_opts)
+    exp << node.expressions.pop
+    nest(exp)
+  end
+
+  def close_completed_binary_set_exp
+    while node.is_a?(Regexp::Expression::CharacterSet::BinaryExpression) &&
+          node.complete?
+      decrease_nesting
+    end
   end
 
   def active_opts

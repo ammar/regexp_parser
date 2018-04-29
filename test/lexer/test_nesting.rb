@@ -62,18 +62,34 @@ class LexerNesting < Test::Unit::TestCase
 
     'a[b-e]f' => {
       1     => [:set,         :open,          '[',      1,  2, 0, 0, 0],
-      2     => [:set,         :range,         'b-e',    2,  5, 0, 1, 0],
-      3     => [:set,         :close,         ']',      5,  6, 0, 0, 0],
+      2     => [:literal,     :literal,       'b',      2,  3, 0, 1, 0],
+      3     => [:set,         :range,         '-',      3,  4, 0, 1, 0],
+      4     => [:literal,     :literal,       'e',      4,  5, 0, 1, 0],
+      5     => [:set,         :close,         ']',      5,  6, 0, 0, 0],
     },
 
-    '[a-w&&[^c-g]z]' => {
+    '[[:word:]&&[^c]z]' => {
       0     => [:set,         :open,          '[',      0,  1, 0, 0, 0],
-      2     => [:set,         :intersection,  '&&',     4,  6, 0, 1, 0],
-      3     => [:set,         :open,          '[',      6,  7, 0, 1, 0],
-      4     => [:set,         :negate,        '^',      7,  8, 0, 2, 0],
-      5     => [:set,         :range,         'c-g',    8, 11, 0, 2, 0],
-      6     => [:set,         :close,         ']',     11, 12, 0, 1, 0],
-      8     => [:set,         :close,         ']',     13, 14, 0, 0, 0],
+      1     => [:set,         :class_word, '[:word:]',  1,  9, 0, 1, 0],
+      2     => [:set,         :intersection,  '&&',     9, 11, 0, 1, 0],
+      3     => [:set,         :open,          '[',     11, 12, 0, 1, 0],
+      4     => [:set,         :negate,        '^',     12, 13, 0, 2, 0],
+      5     => [:literal,     :literal,       'c',     13, 14, 0, 2, 0],
+      6     => [:set,         :close,         ']',     14, 15, 0, 1, 0],
+      7     => [:literal,     :literal,       'z',     15, 16, 0, 1, 0],
+      8     => [:set,         :close,         ']',     16, 17, 0, 0, 0],
+    },
+
+    '[\p{word}&&[^c]z]' => {
+      0     => [:set,         :open,          '[',      0,  1, 0, 0, 0],
+      1     => [:property,    :word, '\p{word}',        1,  9, 0, 1, 0],
+      2     => [:set,         :intersection,  '&&',     9, 11, 0, 1, 0],
+      3     => [:set,         :open,          '[',     11, 12, 0, 1, 0],
+      4     => [:set,         :negate,        '^',     12, 13, 0, 2, 0],
+      5     => [:literal,     :literal,       'c',     13, 14, 0, 2, 0],
+      6     => [:set,         :close,         ']',     14, 15, 0, 1, 0],
+      7     => [:literal,     :literal,       'z',     15, 16, 0, 1, 0],
+      8     => [:set,         :close,         ']',     16, 17, 0, 0, 0],
     },
 
     '[a[b[c[d-g]]]]' => {
@@ -84,16 +100,18 @@ class LexerNesting < Test::Unit::TestCase
       4     => [:set,         :open,          '[',      4,  5, 0, 2, 0],
       5     => [:literal,     :literal,       'c',      5,  6, 0, 3, 0],
       6     => [:set,         :open,          '[',      6,  7, 0, 3, 0],
-      7     => [:set,         :range,         'd-g',    7, 10, 0, 4, 0],
-      8     => [:set,         :close,         ']',     10, 11, 0, 3, 0],
-      9     => [:set,         :close,         ']',     11, 12, 0, 2, 0],
-     10     => [:set,         :close,         ']',     12, 13, 0, 1, 0],
-     11     => [:set,         :close,         ']',     13, 14, 0, 0, 0],
+      7     => [:literal,     :literal,       'd',      7,  8, 0, 4, 0],
+      8     => [:set,         :range,         '-',      8,  9, 0, 4, 0],
+      9     => [:literal,     :literal,       'g',      9, 10, 0, 4, 0],
+      10    => [:set,         :close,         ']',     10, 11, 0, 3, 0],
+      11    => [:set,         :close,         ']',     11, 12, 0, 2, 0],
+      12    => [:set,         :close,         ']',     12, 13, 0, 1, 0],
+      13    => [:set,         :close,         ']',     13, 14, 0, 0, 0],
     },
   }
 
   tests.each_with_index do |(pattern, checks), count|
-    define_method "test_lex_nesting_#{count}" do
+    define_method "test_lex_nesting_in_'#{pattern}'_#{count}" do
       tokens = RL.lex(pattern, 'ruby/1.9')
 
       checks.each do |offset, (type, token, text, ts, te, level, set_level, conditional_level)|

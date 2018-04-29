@@ -15,10 +15,10 @@ class SubexpressionTraverse < Test::Unit::TestCase
       exits  += 1 if event == :exit
     }
 
-    assert_equal 8,     enters
+    assert_equal 9,     enters
     assert_equal exits, enters
 
-    assert_equal 8, visits
+    assert_equal 9, visits
   end
 
   def test_subexpression_traverse_include_self
@@ -34,10 +34,10 @@ class SubexpressionTraverse < Test::Unit::TestCase
       exits  += 1 if event == :exit
     }
 
-    assert_equal 9,     enters
+    assert_equal 10,    enters
     assert_equal exits, enters
 
-    assert_equal 8, visits
+    assert_equal 9, visits
   end
 
   def test_subexpression_walk_alias
@@ -54,7 +54,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
       count += 1
     }
 
-    assert_equal 11, count
+    assert_equal 13, count
   end
 
   def test_subexpression_each_expression_include_self
@@ -65,7 +65,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
       count += 1
     }
 
-    assert_equal 12, count
+    assert_equal 14, count
   end
 
   def test_subexpression_each_expression_indices
@@ -92,7 +92,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
     array = root.map
 
     assert_equal Array, array.class
-    assert_equal 6, array.length
+    assert_equal 8, array.length
 
     array.each do |item|
       assert_equal Array, item.class
@@ -108,7 +108,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
     array = root.map(true)
 
     assert_equal Array, array.class
-    assert_equal 7, array.length
+    assert_equal 9, array.length
   end
 
   def test_subexpression_map_indices
@@ -116,7 +116,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
 
     indices = root.map {|exp, index| index}
 
-    assert_equal [0, 1, 0, 1, 0, 0, 2, 3], indices
+    assert_equal [0, 1, 0, 1, 0, 0, 0, 1, 2, 3], indices
   end
 
   def test_subexpression_map_indices_include_self
@@ -124,7 +124,7 @@ class SubexpressionTraverse < Test::Unit::TestCase
 
     indices = root.map(true) {|exp, index| index}
 
-    assert_equal [0, 0, 1, 0, 1, 0, 0, 2, 3], indices
+    assert_equal [0, 0, 1, 0, 1, 0, 0, 0, 1, 2, 3], indices
   end
 
   def test_subexpression_map_expressions

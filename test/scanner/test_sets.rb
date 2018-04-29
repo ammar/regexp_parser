@@ -51,10 +51,14 @@ class ScannerSets < Test::Unit::TestCase
     '[\R]'                  => [1, :type,   :linebreak,       '\R',         1, 3],
     '[\X]'                  => [1, :type,   :xgrapheme,       '\X',         1, 3],
 
-    '[a-c]'                 => [1, :set,    :range,           'a-c',        1, 4],
-    '[a-c-]'                => [2, :literal, :literal,        '-',          4, 6],
-    '[a-c^]'                => [2, :literal, :literal,        '^',          4, 5],
-    '[a-cd-f]'              => [2, :set,    :range,           'd-f',        4, 7],
+    '[a-b]'                 => [1, :literal, :literal,        'a',          1, 2],
+    '[a-c]'                 => [2, :set,     :range,          '-',          2, 3],
+    '[a-d]'                 => [3, :literal, :literal,        'd',          3, 4],
+    '[a-b-]'                => [4, :literal, :literal,        '-',          4, 6],
+    '[-a]'                  => [1, :literal, :literal,        '-',          1, 2],
+    '[a-c^]'                => [4, :literal, :literal,        '^',          4, 5],
+    '[a-bd-f]'              => [2, :set,    :range,           '-',          2, 3],
+    '[a-cd-f]'              => [5, :set,    :range,           '-',          5, 6],
 
     '[a[:digit:]c]'         => [2, :set,    :class_digit,     '[:digit:]',  2, 11],
     '[[:digit:][:space:]]'  => [2, :set,    :class_space,     '[:space:]', 10, 19],
@@ -63,9 +67,13 @@ class ScannerSets < Test::Unit::TestCase
     '[a[.a-b.]c]'           => [2, :set,    :collation,       '[.a-b.]',    2,  9],
     '[a[=e=]c]'             => [2, :set,    :equivalent,      '[=e=]',      2,  7],
 
-    '[a-d&&g-h]'            => [2, :set,    :intersection,    '&&',         4, 6],
+    '[a-d&&g-h]'            => [4, :set,    :intersection,    '&&',         4, 6],
+    '[a&&]'                 => [2, :set,    :intersection,    '&&',         2, 4],
+    '[&&z]'                 => [1, :set,    :intersection,    '&&',         1, 3],
 
-    '[\\x20-\\x28]'         => [1, :set,    :range,           '\x20-\x28',  1, 10],
+    '[\\x20-\\x27]'         => [1, :escape, :hex,             '\x20',       1, 5],
+    '[\\x20-\\x28]'         => [2, :set,    :range,           '-',          5, 6],
+    '[\\x20-\\x29]'         => [3, :escape, :hex,             '\x29',       6, 10],
 
     '[a\p{digit}c]'         => [2, :property,    :digit,      '\p{digit}',  2, 11],
     '[a\P{digit}c]'         => [2, :nonproperty, :digit,      '\P{digit}',  2, 11],
@@ -76,14 +84,14 @@ class ScannerSets < Test::Unit::TestCase
     '[a\p{P}c]'             => [2, :property,    :punct_any,  '\p{P}',      2, 7],
     '[a\p{P}\P{P}c]'        => [3, :nonproperty, :punct_any,  '\P{P}',      7, 12],
 
-    '[a-w&&[^c-g]z]'        => [3, :set,    :open,            '[',          6, 7],
-    '[a-w&&[^c-h]z]'        => [4, :set,    :negate,          '^',          7, 8],
-    '[a-w&&[^c-i]z]'        => [5, :set,    :range,           'c-i',        8, 11],
-    '[a-w&&[^c-j]z]'        => [6, :set,    :close,           ']',          11, 12],
+    '[a-w&&[^c-g]z]'        => [5, :set,    :open,            '[',          6, 7],
+    '[a-w&&[^c-h]z]'        => [6, :set,    :negate,          '^',          7, 8],
+    '[a-w&&[^c-i]z]'        => [8, :set,    :range,           '-',          9, 10],
+    '[a-w&&[^c-j]z]'        => [10,:set,    :close,           ']',          11, 12],
   }
 
   tests.each_with_index do |(pattern, (index, type, token, text, ts, te)), count|
-    define_method "test_scanner_#{type}_#{token}_#{count}" do
+    define_method "test_scanner_#{type}_#{token}_in_'#{pattern}'_#{count}" do
       tokens = RS.scan(pattern)
       result = tokens.at(index)
 

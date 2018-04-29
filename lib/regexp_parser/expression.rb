@@ -7,6 +7,7 @@ module Regexp::Expression
 
     attr_accessor :quantifier
     attr_accessor :options
+    attr_accessor :in_binary_set_expression
 
     def initialize(token, options = {})
       self.type              = token.type
@@ -84,6 +85,10 @@ module Regexp::Expression
 
     def possessive?
       quantified? and quantifier.mode == :possessive
+    end
+
+    def in_binary_set_expression?
+      !!in_binary_set_expression
     end
 
     def multiline?
@@ -182,4 +187,7 @@ require 'regexp_parser/expression/classes/literal'
 require 'regexp_parser/expression/classes/property'
 require 'regexp_parser/expression/classes/root'
 require 'regexp_parser/expression/classes/set'
+require 'regexp_parser/expression/classes/set/binary_expression'
+require 'regexp_parser/expression/classes/set/intersection'
+require 'regexp_parser/expression/classes/set/range'
 require 'regexp_parser/expression/classes/type'

@@ -179,6 +179,11 @@
       end
     };
 
+    '-&&' { # special case, emits two tokens
+      emit(:literal, :literal, '-', ts, te)
+      emit(:set, :intersection, '&&', ts, te)
+    };
+
     '^' {
       text = text(data, ts, te).first
       if tokens.last[1] == :open
@@ -188,10 +193,18 @@
       end
     };
 
-    (alnum | ('\\' . hex_sequence)) . '-' . (alnum | ('\\' . hex_sequence)) {
-      emit(:set, :range, *text(data, ts, te))
+    '-' {
+      text = text(data, ts, te).first
+      # ranges cant start with a subset or intersection/negation/range operator
+      if tokens.last[0] == :set
+        emit(:literal, :literal, text, ts, te)
+      else
+        emit(:set, :range, text, ts, te)
+      end
     };
 
+    # Unlike ranges, intersections can start or end at set boundaries, whereupon
+    # they match nothing: r = /[a&&]/; [r =~ ?a, r =~ ?&] # => [nil, nil]
     '&&' {
       emit(:set, :intersection, *text(data, ts, te))
     };

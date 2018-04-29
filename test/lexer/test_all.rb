@@ -31,7 +31,7 @@ class TestRegexpLexer < Test::Unit::TestCase
   def test_lexer_token_count
     tokens = RL.lex(/^(one|two){2,3}([^d\]efm-qz\,\-]*)(ghi)+$/i)
 
-    assert_equal 26, tokens.length
+    assert_equal 28, tokens.length
   end
 
   def test_lexer_scan_alias
