@@ -339,6 +339,9 @@ class Regexp::Parser
   def escape(token)
     case token.token
 
+    when :backspace
+      node << EscapeSequence::Backspace.new(token, active_opts)
+
     when :escape
       node << EscapeSequence::AsciiEscape.new(token, active_opts)
     when :bell

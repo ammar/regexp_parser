@@ -6,6 +6,7 @@ module Regexp::Expression
     class Literal       < EscapeSequence::Base; end
 
     class AsciiEscape   < EscapeSequence::Base; end
+    class Backspace     < EscapeSequence::Base; end
     class Bell          < EscapeSequence::Base; end
     class FormFeed      < EscapeSequence::Base; end
     class Newline       < EscapeSequence::Base; end

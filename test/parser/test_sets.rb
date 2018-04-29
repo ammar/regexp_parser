@@ -29,6 +29,18 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal false, exp.matches?("\x48")
   end
 
+  def test_parse_set_escape_sequence_backspace
+    root = RP.parse('[a\bc]')
+    exp  = root.expressions.at(0)
+
+    assert_equal true,  exp.is_a?(CharacterSet)
+    assert              exp[1].is_a?(EscapeSequence::Backspace)
+    assert_equal true,  exp.matches?('a')
+    assert_equal true,  exp.matches?("\b")
+    assert_equal false, exp.matches?('b')
+    assert_equal true,  exp.matches?('c')
+  end
+
   def test_parse_set_members
     root = RP.parse('[ac-eh]', :any)
     exp  = root.expressions.at(0)

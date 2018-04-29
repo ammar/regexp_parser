@@ -8,8 +8,8 @@ class ScannerSets < Test::Unit::TestCase
     '[^n]'                  => [1, :set,    :negate,          '^',          1, 2],
 
     '[c]'                   => [1, :literal, :literal,        'c',          1, 2],
-    '[\b]'                  => [1, :set,    :backspace,       '\b',         1, 3],
-    '[A\bX]'                => [2, :set,    :backspace,       '\b',         2, 4],
+    '[\b]'                  => [1, :escape,  :backspace,      '\b',         1, 3],
+    '[A\bX]'                => [2, :escape,  :backspace,      '\b',         2, 4],
 
     '[.]'                   => [1, :literal, :literal,        '.',          1, 2],
     '[?]'                   => [1, :literal, :literal,        '?',          1, 2],

@@ -8,7 +8,7 @@ module Regexp::Syntax
 
       Control = [:control, :meta_sequence]
 
-      ASCII = [:bell, :escape, :form_feed, :newline, :carriage,
+      ASCII = [:bell, :backspace, :escape, :form_feed, :newline, :carriage,
                :tab, :vertical_tab]
 
       Unicode = [:codepoint, :codepoint_list]

@@ -130,7 +130,7 @@
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
                           group_ref | keep_mark | [xucCM];
 
-  non_set_escape        = anchor_char | group_ref | keep_mark | [0-9cCM];
+  non_set_escape        = (anchor_char | group_ref | keep_mark | [0-9cCM])-'b';
 
   # EOF error, used where it can be detected
   action premature_end_error {
@@ -256,11 +256,6 @@
   # set escapes scanner
   # --------------------------------------------------------------------------
   set_escape_sequence := |*
-    'b' > (escaped_set_alpha, 3) {
-      emit(:set, :backspace, *text(data, ts, te, 1))
-      fret;
-    };
-
     non_set_escape > (escaped_set_alpha, 2) {
       emit(:escape, :literal, *text(data, ts, te, 1))
       fret;
@@ -314,6 +309,7 @@
       # it is a word boundary anchor. A syntax might "normalize" it if needed.
       case text = text(data, ts, te, 1).first
       when '\a'; emit(:escape, :bell,           text, ts-1, te)
+      when '\b'; emit(:escape, :backspace,      text, ts-1, te)
       when '\e'; emit(:escape, :escape,         text, ts-1, te)
       when '\f'; emit(:escape, :form_feed,      text, ts-1, te)
       when '\n'; emit(:escape, :newline,        text, ts-1, te)
