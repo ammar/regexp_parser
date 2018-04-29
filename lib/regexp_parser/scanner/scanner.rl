@@ -223,13 +223,14 @@
     class_posix >(open_bracket, 1) @eof(premature_end_error) {
       text = text(data, ts, te).first
 
+      type = :charclass
       class_name = text[2..-3]
       if class_name[0].chr == '^'
-        class_name = "non#{class_name[1..-1]}"
+        class_name = class_name[1..-1]
+        type = :noncharclass
       end
 
-      token_sym = "class_#{class_name}".to_sym
-      emit(:set, token_sym, text, ts, te)
+      emit(type, class_name.to_sym, text, ts, te)
     };
 
     collating_sequence >(open_bracket, 1) @eof(premature_end_error) {

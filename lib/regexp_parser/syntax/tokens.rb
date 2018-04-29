@@ -23,6 +23,7 @@ end
 require 'regexp_parser/syntax/tokens/anchor'
 require 'regexp_parser/syntax/tokens/assertion'
 require 'regexp_parser/syntax/tokens/backref'
+require 'regexp_parser/syntax/tokens/character_class'
 require 'regexp_parser/syntax/tokens/character_set'
 require 'regexp_parser/syntax/tokens/character_type'
 require 'regexp_parser/syntax/tokens/conditional'

@@ -94,6 +94,8 @@ class Regexp::Parser
     when :conditional;  conditional(token)
     when :keep;         keep(token)
 
+    when :charclass, :noncharclass
+      charclass(token)
     when :property, :nonproperty
       property(token)
 
@@ -107,8 +109,6 @@ class Regexp::Parser
     end
   end
 
-  # TODO: this method should only handle set-specific tokens:
-  # [, ], ^, &&, -, [:...:], [=...=], [.xxx.]
   def set(token)
     case token.token
     when :open
@@ -119,7 +119,7 @@ class Regexp::Parser
       negate_set
     when :intersection, :range
       binary_set_exp(token)
-    when :collation, :equivalent, *Token::CharacterSet::All # [:...:]
+    when :collation, :equivalent
       node << Literal.new(token, active_opts)
     else
       raise UnknownTokenError.new('CharacterSet', token)
@@ -221,6 +221,10 @@ class Regexp::Parser
     else
       raise UnknownTokenError.new('Conditional', token)
     end
+  end
+
+  def charclass(token)
+    node << CharacterClass.new(token)
   end
 
   include Regexp::Expression::UnicodeProperty

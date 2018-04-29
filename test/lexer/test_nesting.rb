@@ -70,7 +70,7 @@ class LexerNesting < Test::Unit::TestCase
 
     '[[:word:]&&[^c]z]' => {
       0     => [:set,         :open,          '[',      0,  1, 0, 0, 0],
-      1     => [:set,         :class_word, '[:word:]',  1,  9, 0, 1, 0],
+      1     => [:charclass,   :word, '[:word:]',        1,  9, 0, 1, 0],
       2     => [:set,         :intersection,  '&&',     9, 11, 0, 1, 0],
       3     => [:set,         :open,          '[',     11, 12, 0, 1, 0],
       4     => [:set,         :negate,        '^',     12, 13, 0, 2, 0],

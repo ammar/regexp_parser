@@ -9,6 +9,10 @@ module Regexp::Syntax
       implements :backref, Backreference::All +
         SubexpressionCall::All
 
+      implements :charclass, CharacterClass::Extensions
+
+      implements :noncharclass, CharacterClass::All
+
       implements :escape, Escape::Unicode + Escape::Hex + Escape::Octal
 
       implements :type, CharacterType::Hex
@@ -21,12 +25,6 @@ module Regexp::Syntax
 
       implements :quantifier,
         Quantifier::Possessive + Quantifier::IntervalPossessive
-
-      implements :set,
-        CharacterSet::POSIX::StandardNegative +
-        CharacterSet::POSIX::Extensions +
-        CharacterSet::POSIX::ExtensionsNegative +
-        UnicodeProperty::V1_9_0
     end
   end
 end
