@@ -1,3 +1,18 @@
+Sun Apr 29 2018 Janosch Müller <janosch84@gmail.com>
+
+	* Changed handling of Ruby versions (PR #53)
+	  - New Ruby versions are now supported by default
+	  - Some deep-lying APIs have changed, which should not affect most users:
+	    - `Regexp::Syntax::VERSIONS` is gone
+	    - Syntax version names have changed from `Regexp::Syntax::Ruby::Vnnn`
+	      to `Regexp::Syntax::Vn_n_n`
+	    - Syntax version classes for Ruby versions without regex feature changes
+	      are no longer predefined and are now only created on demand / lazily
+	    - `Regexp::Syntax::supported?` returns true for any argument >= 1.8.6
+	* Fixed some use cases of Expression methods #strfregexp and #to_h (@e738107)
+	* Added full signature support to collection methods of Expressions (@aa7c55a)
+	* Bumped version to 0.5.0
+
 Tue Apr 4 2018 ammarabuali@gmail.com <ammarabuali@gmail.com>
 
 	* Added ruby version files for 2.2.10 and 2.3.7
