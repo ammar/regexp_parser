@@ -2,10 +2,10 @@ module Regexp::Syntax
   module Token
 
     module UnicodeProperty
-      CharType_V190 = [:alnum, :alpha, :ascii, :blank, :cntrl, :digit, :graph,
+      CharType_V1_9_0 = [:alnum, :alpha, :ascii, :blank, :cntrl, :digit, :graph,
                        :lower, :print, :punct, :space, :upper, :word, :xdigit]
 
-      CharType_V250 = [:xposixpunct]
+      CharType_V2_5_0 = [:xposixpunct]
 
       POSIX  = [:any, :assigned, :newline]
 
@@ -37,24 +37,24 @@ module Regexp::Syntax
       end
 
       # As of ruby version 1.9.3
-      Age_V193 = [:age_1_1, :age_2_0, :age_2_1, :age_3_0, :age_3_1,
-                  :age_3_2, :age_4_0, :age_4_1, :age_5_0, :age_5_1,
-                  :age_5_2, :age_6_0]
+      Age_V1_9_3 = [:age_1_1, :age_2_0, :age_2_1, :age_3_0, :age_3_1,
+                    :age_3_2, :age_4_0, :age_4_1, :age_5_0, :age_5_1,
+                    :age_5_2, :age_6_0]
 
-      Age_V200 = [:age_6_1]
+      Age_V2_0_0 = [:age_6_1]
 
       # These were merged (from Onigmo) in the branch for 2.2.0
-      Age_V220 = [:age_6_2, :age_6_3, :age_7_0]
+      Age_V2_2_0 = [:age_6_2, :age_6_3, :age_7_0]
 
-      Age_V230 = [:age_8_0]
+      Age_V2_3_0 = [:age_8_0]
 
-      Age_V240 = [:age_9_0]
+      Age_V2_4_0 = [:age_9_0]
 
-      Age_V250 = [:age_10_0]
+      Age_V2_5_0 = [:age_10_0]
 
-      Age = Age_V193 + Age_V200 + Age_V220 + Age_V230 + Age_V240 + Age_V250
+      Age = Age_V1_9_3 + Age_V2_0_0 + Age_V2_2_0 + Age_V2_3_0 + Age_V2_4_0 + Age_V2_5_0
 
-      Derived_V190 = [
+      Derived_V1_9_0 = [
         :ascii_hex,
         :alphabetic,
         :cased,
@@ -108,13 +108,13 @@ module Regexp::Syntax
         :xid_continue,
       ]
 
-      Derived_V250 = [
+      Derived_V2_5_0 = [
         :regional_indicator
       ]
 
-      Derived = Derived_V190 + Derived_V250
+      Derived = Derived_V1_9_0 + Derived_V2_5_0
 
-      Script_V190 = [
+      Script_V1_9_0 = [
         :script_arabic,
         :script_imperial_aramaic,
         :script_armenian,
@@ -211,9 +211,9 @@ module Regexp::Syntax
         :script_unknown
       ]
 
-      Script_V193 = [:script_brahmi, :script_batak, :script_mandaic]
+      Script_V1_9_3 = [:script_brahmi, :script_batak, :script_mandaic]
 
-      Script_V220 = [
+      Script_V2_2_0 = [
         :script_caucasian_albanian,
         :script_bassa_vah,
         :script_duployan,
@@ -239,7 +239,7 @@ module Regexp::Syntax
         :script_warang_citi
       ]
 
-      Script = Script_V190 + Script_V193 + Script_V220
+      Script = Script_V1_9_0 + Script_V1_9_3 + Script_V2_2_0
 
       UnicodeBlock = [
         :block_inalphabetic_presentation_forms,
@@ -357,20 +357,20 @@ module Regexp::Syntax
         :emoji_presentation,
       ]
 
-      V190 = CharType_V190 + POSIX + Category::All + Derived_V190 + Script_V190 + UnicodeBlock
-      V193 = Age_V193 + Script_V193
+      V1_9_0 = CharType_V1_9_0 + POSIX + Category::All + Derived_V1_9_0 + Script_V1_9_0 + UnicodeBlock
+      V1_9_3 = Age_V1_9_3 + Script_V1_9_3
 
-      V200 = Age_V200
+      V2_0_0 = Age_V2_0_0
 
-      V220 = Age_V220 + Script_V220
+      V2_2_0 = Age_V2_2_0 + Script_V2_2_0
 
-      V230 = Age_V230
+      V2_3_0 = Age_V2_3_0
 
-      V240 = Age_V240
+      V2_4_0 = Age_V2_4_0
 
-      V250 = Age_V250 + CharType_V250 + Derived_V250 + Emoji
+      V2_5_0 = Age_V2_5_0 + CharType_V2_5_0 + Derived_V2_5_0 + Emoji
 
-      All  = V190 + V193 + V200 + V220 + V230 + V240 + V250
+      All  = V1_9_0 + V1_9_3 + V2_0_0 + V2_2_0 + V2_3_0 + V2_4_0 + V2_5_0
 
       Type = :property
       NonType = :nonproperty
