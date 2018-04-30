@@ -44,12 +44,6 @@
 
   hex_sequence          = 'x' . xdigit{1,2};
   hex_sequence_err      = 'x' . [^0-9a-fA-F{];
-  wide_hex_sequence     = 'x' . '{' . xdigit{1,8} . '}';
-
-  hex_or_not            = (xdigit|[^0-9a-fA-F}]); # note closing curly at end
-
-  wide_hex_seq_invalid  = 'x' . '{' . hex_or_not{1,9};
-  wide_hex_seq_empty    = 'x' . '{' . (space+)? . '}';
 
   codepoint_single      = 'u' . xdigit{4};
   codepoint_list        = 'u{' . xdigit{1,5} . (space . xdigit{1,5})* . '}';
@@ -336,17 +330,7 @@
       fret;
     };
 
-    wide_hex_sequence > (escaped_alpha, 5) $eof(premature_end_error) {
-      emit(:escape, :hex_wide, *text(data, ts, te, 1))
-      fret;
-    };
-
     hex_sequence_err @invalid_sequence_error {
-      fret;
-    };
-
-    (wide_hex_seq_invalid | wide_hex_seq_empty) {
-      raise InvalidSequenceError.new("wide hex sequence")
       fret;
     };
 

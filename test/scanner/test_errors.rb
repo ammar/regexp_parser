@@ -46,18 +46,6 @@ class ScannerErrors < Test::Unit::TestCase
     assert_raise( RS::PrematureEndError ) { RS.scan('\x') }
   end
 
-  def test_scanner_eof_in_wide_hex_escape
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{') }
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{0') }
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02') }
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{024') }
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{0246') }
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02468') }
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02468A') }
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02468AC') }
-    assert_raise( RS::PrematureEndError ) { RS.scan('\x{02468ACE') }
-  end
-
   def test_scanner_eof_in_codepoint_escape
     assert_raise( RS::PrematureEndError ) { RS.scan('\u') }
     assert_raise( RS::PrematureEndError ) { RS.scan('\u0') }
@@ -92,24 +80,6 @@ class ScannerErrors < Test::Unit::TestCase
   def test_scanner_invalid_hex_escape
     assert_raise( RS::InvalidSequenceError ) { RS.scan('\xZ') }
     assert_raise( RS::InvalidSequenceError ) { RS.scan('\xZ0') }
-  end
-
-  def test_scanner_invalid_wide_hex_escape
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{}') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{ }') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{ A }') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0-}') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{Z00}') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{000Z}') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{00ZZ}') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0000ZZ}') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0000ZZ0}') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0000ZZ0X}') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{00X') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{00XYZ') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{0000XYZ') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{02468ACED') }
-    assert_raise( RS::InvalidSequenceError ) { RS.scan('\x{02468ACE]') }
   end
 
   def test_scanner_invalid_named_group

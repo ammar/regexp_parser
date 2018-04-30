@@ -22,8 +22,6 @@ class ScannerEscapes < Test::Unit::TestCase
     'a\x24c'          => [1, :escape,  :hex,              '\x24',           1,  5],
     'a\x0640c'        => [1, :escape,  :hex,              '\x06',           1,  5],
 
-    'a\x{0640}c'      => [1, :escape,  :hex_wide,         '\x{0640}',       1,  9],
-
     'a\u0640c'        => [1, :escape,  :codepoint,        '\u0640',         1,  7],
     'a\u{640 0641}c'  => [1, :escape,  :codepoint_list,   '\u{640 0641}',   1,  13],
 
