@@ -58,4 +58,27 @@ class ExpressionSet < Test::Unit::TestCase
     assert_equal ['\P{Xdigit}'], set.expand_members(true)
   end
 
+  def test_expression_set_include
+    set = RP.parse('[ac-eh\s[:digit:]\x20[b]]').first
+
+    assert set.include?('a')
+    assert set.include?('a', true)
+    assert set.include?('c-e')
+    assert set.include?('h')
+    assert set.include?('\s')
+    assert set.include?('[:digit:]')
+    assert set.include?('\x20')
+
+    assert set.include?('b')
+    refute set.include?('b', true) # should not include b directly
+
+    refute set.include?(']')
+    refute set.include?('[')
+    refute set.include?('x')
+    refute set.include?('\S')
+
+    subset = set.last
+    assert subset.include?('b')
+    refute subset.include?('a')
+  end
 end
