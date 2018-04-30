@@ -1,6 +1,6 @@
 require File.expand_path("../../../helpers", __FILE__)
 
-class TestSyntaxRuby_V18 < Test::Unit::TestCase
+class TestSyntaxV1_8 < Test::Unit::TestCase
   include Regexp::Syntax::Token
 
   def setup
@@ -8,25 +8,25 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
   end
 
   tests = {
-    :implements => {
-      :assertion    => [Assertion::Lookahead].flatten,
-      :backref      => [:number],
-      :escape       => [Escape::All].flatten,
-      :group        => [Group::All].flatten,
-      :quantifier   => [
+    implements: {
+      assertion:    [Assertion::Lookahead].flatten,
+      backref:      [:number],
+      escape:       [Escape::All].flatten,
+      group:        [Group::All].flatten,
+      quantifier:   [
           Quantifier::Greedy + Quantifier::Reluctant +
           Quantifier::Interval + Quantifier::IntervalReluctant
       ].flatten,
     },
 
-    :excludes => {
-      :assertion    => [Assertion::Lookbehind].flatten,
+    excludes: {
+      assertion: [Assertion::Lookbehind].flatten,
 
-      :backref => [
+      backref: [
         Backreference::All - [:number] + SubexpressionCall::All
       ].flatten,
 
-      :quantifier => [
+      quantifier: [
         Quantifier::Possessive
       ].flatten
     },
@@ -37,12 +37,12 @@ class TestSyntaxRuby_V18 < Test::Unit::TestCase
 
     types.each do |type, tokens|
       if tokens.nil? or tokens.empty?
-        define_method "test_syntax_ruby_v18_#{method}_#{type}" do
+        define_method "test_syntax_V1_8_#{method}_#{type}" do
           assert_equal expected, @syntax.implements?(type, nil)
         end
       else
         tokens.each do |token|
-          define_method "test_syntax_ruby_v18_#{method}_#{type}_#{token}" do
+          define_method "test_syntax_V1_8_#{method}_#{type}_#{token}" do
             assert_equal expected, @syntax.implements?(type, token)
           end
         end
