@@ -8,6 +8,8 @@ module Regexp::Expression
     class AsciiEscape   < EscapeSequence::Base; end
     class Backspace     < EscapeSequence::Base; end
     class Bell          < EscapeSequence::Base; end
+    class Codepoint     < EscapeSequence::Base; end
+    class CodepointList < EscapeSequence::Base; end
     class FormFeed      < EscapeSequence::Base; end
     class Newline       < EscapeSequence::Base; end
     class Return        < EscapeSequence::Base; end

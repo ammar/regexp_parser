@@ -361,6 +361,13 @@ class Regexp::Parser
     when :vertical_tab
       node << EscapeSequence::VerticalTab.new(token, active_opts)
 
+    when :hex
+      node << EscapeSequence::Hex.new(token, active_opts)
+    when :codepoint
+      node << EscapeSequence::Codepoint.new(token, active_opts)
+    when :codepoint_list
+      node << EscapeSequence::CodepointList.new(token, active_opts)
+
     when :control
       if token.text =~ /\A(?:\\C-\\M|\\c\\M)/
         node << EscapeSequence::MetaControl.new(token, active_opts)
@@ -374,8 +381,6 @@ class Regexp::Parser
       else
         node << EscapeSequence::Meta.new(token, active_opts)
       end
-
-    # TODO: hex, hex_wide, codepoint_single, codepoint_list
 
     else
       # treating everything else as a literal
