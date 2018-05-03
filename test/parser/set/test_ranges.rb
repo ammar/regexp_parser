@@ -89,8 +89,8 @@ class ParserSetRangs < Test::Unit::TestCase
     root  = RP.parse('[[\-ab]&&-bc]')
     set   = root[0]
 
-    assert_equal 3, set.count
-    assert_equal '[\-ab]&&-', set.first.to_s
+    assert_equal 1, set.count
+    assert_equal '-bc', set.first.last.to_s
     assert       set.matches?('-')
     assert       set.matches?('b')
     refute       set.matches?('a')
@@ -101,8 +101,8 @@ class ParserSetRangs < Test::Unit::TestCase
     root  = RP.parse('[bc-&&[\-ab]]')
     set   = root[0]
 
-    assert_equal 3, set.count
-    assert_equal '-&&[\-ab]', set.last.to_s
+    assert_equal 1, set.count
+    assert_equal 'bc-', set.first.first.to_s
     assert       set.matches?('-')
     assert       set.matches?('b')
     refute       set.matches?('a')

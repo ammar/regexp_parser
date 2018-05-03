@@ -9,10 +9,17 @@ class ParserSetIntersections < Test::Unit::TestCase
     assert_equal 1, set.count
     assert_equal CharacterSet::Intersection, ints.class
     assert_equal 2, ints.count
-    assert_equal 'a', ints.first.to_s
-    assert_equal Literal, ints.first.class
-    assert_equal 'z', ints.last.to_s
-    assert_equal Literal, ints.last.class
+
+    seq1, seq2 = ints.expressions
+    assert_equal CharacterSet::IntersectedSequence, seq1.class
+    assert_equal 1, seq1.count
+    assert_equal 'a', seq1.first.to_s
+    assert_equal Literal, seq1.first.class
+    assert_equal CharacterSet::IntersectedSequence, seq2.class
+    assert_equal 1, seq2.count
+    assert_equal 'z', seq2.first.to_s
+    assert_equal Literal, seq2.first.class
+
     refute       set.matches?('a')
     refute       set.matches?('&')
     refute       set.matches?('z')
@@ -26,10 +33,17 @@ class ParserSetIntersections < Test::Unit::TestCase
     assert_equal 1, set.count
     assert_equal CharacterSet::Intersection, ints.class
     assert_equal 2, ints.count
-    assert_equal 'a-z', ints.first.to_s
-    assert_equal CharacterSet::Range, ints.first.class
-    assert_equal '[^a]', ints.last.to_s
-    assert_equal CharacterSet, ints.last.class
+
+    seq1, seq2 = ints.expressions
+    assert_equal CharacterSet::IntersectedSequence, seq1.class
+    assert_equal 1, seq1.count
+    assert_equal 'a-z', seq1.first.to_s
+    assert_equal CharacterSet::Range, seq1.first.class
+    assert_equal CharacterSet::IntersectedSequence, seq2.class
+    assert_equal 1, seq2.count
+    assert_equal '[^a]', seq2.first.to_s
+    assert_equal CharacterSet, seq2.first.class
+
     refute       set.matches?('a')
     refute       set.matches?('&')
     assert       set.matches?('b')
@@ -43,12 +57,45 @@ class ParserSetIntersections < Test::Unit::TestCase
     assert_equal 1, set.count
     assert_equal CharacterSet::Intersection, ints.class
     assert_equal 2, ints.count
-    assert_equal 'a', ints.first.to_s
-    assert_equal Literal, ints.first.class
-    assert_equal '\w', ints.last.to_s
-    assert_equal CharacterType::Word, ints.last.class
+
+    seq1, seq2 = ints.expressions
+    assert_equal CharacterSet::IntersectedSequence, seq1.class
+    assert_equal 1, seq1.count
+    assert_equal 'a', seq1.first.to_s
+    assert_equal Literal, seq1.first.class
+    assert_equal CharacterSet::IntersectedSequence, seq2.class
+    assert_equal 1, seq2.count
+    assert_equal '\w', seq2.first.to_s
+    assert_equal CharacterType::Word, seq2.first.class
+
     assert       set.matches?('a')
     refute       set.matches?('&')
     refute       set.matches?('b')
+  end
+
+  def test_parse_set_intersection_multipart
+    root = RP.parse('[\h&&\w&&efg]')
+    set  = root[0]
+    ints = set[0]
+
+    assert_equal 1, set.count
+    assert_equal CharacterSet::Intersection, ints.class
+    assert_equal 3, ints.count
+
+    seq1, seq2, seq3 = ints.expressions
+    assert_equal CharacterSet::IntersectedSequence, seq1.class
+    assert_equal 1, seq1.count
+    assert_equal '\h', seq1.first.to_s
+    assert_equal CharacterSet::IntersectedSequence, seq2.class
+    assert_equal 1, seq2.count
+    assert_equal '\w', seq2.first.to_s
+    assert_equal CharacterSet::IntersectedSequence, seq3.class
+    assert_equal 3, seq3.count
+    assert_equal 'efg', seq3.to_s
+
+    assert       set.matches?('e')
+    assert       set.matches?('f')
+    refute       set.matches?('a')
+    refute       set.matches?('g')
   end
 end

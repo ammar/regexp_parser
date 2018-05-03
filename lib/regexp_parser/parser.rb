@@ -66,10 +66,14 @@ class Regexp::Parser
   end
 
   def decrease_nesting
+    while nesting.last.is_a?(SequenceOperation)
+      nesting.pop
+      self.node = nesting.last
+    end
     nesting.pop
     yield(node) if block_given?
     self.node = nesting.last
-    self.node = node.last if node.last.is_a?(Alternation)
+    self.node = node.last if node.last.is_a?(SequenceOperation)
   end
 
   def nest_conditional(exp)
@@ -79,7 +83,7 @@ class Regexp::Parser
   end
 
   def parse_token(token)
-    close_completed_binary_set_exp
+    close_completed_character_set_range
 
     case token.type
     when :meta;         meta(token)
@@ -117,8 +121,10 @@ class Regexp::Parser
       close_set
     when :negate
       negate_set
-    when :intersection, :range
-      binary_set_exp(token)
+    when :range
+      range(token)
+    when :intersection
+      intersection(token)
     when :collation, :equivalent
       node << Literal.new(token, active_opts)
     else
@@ -131,19 +137,7 @@ class Regexp::Parser
     when :dot
       node << CharacterType::Any.new(token, active_opts)
     when :alternation
-      if node.token == :alternation
-      elsif node.last.is_a?(Alternation)
-        self.node = node.last
-      else
-        alt = Alternation.new(token, active_opts)
-        seq = Alternative.new(alt.level, alt.set_level, alt.conditional_level)
-        node.expressions.count.times { seq.unshift(node.expressions.pop) }
-        alt.alternative(seq)
-
-        node << alt
-        self.node = alt
-      end
-      node.alternative
+      sequence_operation(Alternation, token)
     else
       raise UnknownTokenError.new('Meta', token)
     end
@@ -563,18 +557,30 @@ class Regexp::Parser
     decrease_nesting(&:close)
   end
 
-  def binary_set_exp(token)
-    klass = Regexp::Expression::CharacterSet.const_get(token.token.capitalize)
-    exp = klass.new(token, active_opts)
+  def range(token)
+    exp = CharacterSet::Range.new(token, active_opts)
     exp << node.expressions.pop
     nest(exp)
   end
 
-  def close_completed_binary_set_exp
-    while node.is_a?(Regexp::Expression::CharacterSet::BinaryExpression) &&
-          node.complete?
-      decrease_nesting
+  def close_completed_character_set_range
+    decrease_nesting if node.is_a?(CharacterSet::Range) && node.complete?
+  end
+
+  def intersection(token)
+    sequence_operation(CharacterSet::Intersection, token)
+  end
+
+  def sequence_operation(klass, token)
+    if node.last.is_a?(klass)
+      self.node = node.last
+    elsif !node.is_a?(klass)
+      operator = klass.new(token, active_opts)
+      sequence = operator.add_sequence
+      node.expressions.count.times { sequence.unshift(node.expressions.pop) }
+      nest(operator)
     end
+    node.add_sequence
   end
 
   def active_opts

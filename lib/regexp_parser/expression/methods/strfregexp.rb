@@ -47,7 +47,7 @@ module Regexp::Expression
 
       # TODO: is this the best way to correctly display nesting in sets?
       nesting_level = level || set_level ? level.to_i + set_level.to_i : nil
-      nesting_level += 1 if in_binary_set_expression?
+      nesting_level += 1 if in_character_set_range?
 
       part['>'] = nesting_level ? ('  ' * (nesting_level + indent_offset)) : ''
 
