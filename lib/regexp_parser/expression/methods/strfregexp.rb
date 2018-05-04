@@ -40,18 +40,16 @@ module Regexp::Expression
 
       part = {}
 
+      print_level = nesting_level > 0 ? nesting_level - 1 : nil
+
       # Order is important! Fields that use other fields in their
       # definition must appear before the fields they use.
       part_keys = %w{a m b o i l x s e S y k c q Q z Z t ~t T >}
       part.keys.each {|k| part[k] = "<?#{k}?>"}
 
-      # TODO: is this the best way to correctly display nesting in sets?
-      nesting_level = level || set_level ? level.to_i + set_level.to_i : nil
-      nesting_level += 1 if in_character_set_range?
+      part['>'] = print_level ? ('  ' * (print_level + indent_offset)) : ''
 
-      part['>'] = nesting_level ? ('  ' * (nesting_level + indent_offset)) : ''
-
-      part['l'] = nesting_level ? "#{'%d' % nesting_level}" : 'root'
+      part['l'] = print_level ? "#{'%d' % print_level}" : 'root'
       part['x'] = "#{'%d' % index}" if have_index
 
       part['s'] = starts_at

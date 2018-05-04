@@ -3,11 +3,10 @@ module Regexp::Expression
   class Base
     attr_accessor :type, :token
     attr_accessor :text, :ts
-    attr_accessor :level, :set_level, :conditional_level
+    attr_accessor :level, :set_level, :conditional_level, :nesting_level
 
     attr_accessor :quantifier
     attr_accessor :options
-    attr_accessor :in_character_set_range
 
     def initialize(token, options = {})
       self.type              = token.type
@@ -17,6 +16,7 @@ module Regexp::Expression
       self.level             = token.level
       self.set_level         = token.set_level
       self.conditional_level = token.conditional_level
+      self.nesting_level     = 0
       self.quantifier        = nil
       self.options           = options
     end
@@ -85,10 +85,6 @@ module Regexp::Expression
 
     def possessive?
       quantified? and quantifier.mode == :possessive
-    end
-
-    def in_character_set_range?
-      !!in_character_set_range
     end
 
     def multiline?

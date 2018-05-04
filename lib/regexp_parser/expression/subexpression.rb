@@ -20,12 +20,13 @@ module Regexp::Expression
       if exp.is_a?(WhiteSpace) && last && last.is_a?(WhiteSpace)
         last.merge(exp)
       else
+        exp.nesting_level = nesting_level + 1
         expressions << exp
       end
     end
 
     %w[[] all? any? at count each each_with_index empty?
-       fetch find first index join last length unshift values_at].each do |m|
+       fetch find first index join last length values_at].each do |m|
       define_method(m) { |*args, &block| expressions.send(m, *args, &block) }
     end
 

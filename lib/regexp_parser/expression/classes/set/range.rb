@@ -8,7 +8,6 @@ module Regexp::Expression
 
       def <<(exp)
         complete? && raise("Can't add more than 2 expressions to a Range")
-        exp.in_character_set_range = true
         super
       end
 

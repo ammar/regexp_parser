@@ -62,7 +62,15 @@ class Regexp::Parser
   def nest(exp)
     nesting.push(exp)
     node << exp
+    update_transplanted_subtree(exp, node)
     self.node = exp
+  end
+
+  # subtrees are transplanted to build Alternations, Intersections, Ranges
+  def update_transplanted_subtree(exp, new_parent)
+    exp.nesting_level = new_parent.nesting_level + 1
+    exp.respond_to?(:each) &&
+      exp.each { |subexp| update_transplanted_subtree(subexp, exp) }
   end
 
   def decrease_nesting
@@ -577,7 +585,8 @@ class Regexp::Parser
     elsif !node.is_a?(klass)
       operator = klass.new(token, active_opts)
       sequence = operator.add_sequence
-      node.expressions.count.times { sequence.unshift(node.expressions.pop) }
+      sequence.expressions = node.expressions
+      node.expressions = []
       nest(operator)
     end
     node.add_sequence
