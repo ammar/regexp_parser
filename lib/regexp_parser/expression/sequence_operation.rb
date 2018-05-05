@@ -16,6 +16,7 @@ module Regexp::Expression
 
     def add_sequence
       exp = self.class::OPERAND.new(level, set_level, conditional_level)
+      exp.nesting_level = nesting_level + 1
       expressions << exp
       exp
     end

@@ -21,4 +21,29 @@ class ExpressionSubexpression < Test::Unit::TestCase
     end
   end
 
+  def test_subexpression_nesting_level
+    root = RP.parse(/a(b(c\d|[ef-g[h]]))/)
+
+    tests = {
+      'a'         => 1,
+      'b'         => 2,
+      '|'         => 3,
+      'c\d'       => 4, # first alternative
+      'c'         => 5,
+      '\d'        => 5,
+      '[ef-g[h]]' => 4, # second alternative
+      'e'         => 5,
+      '-'         => 5,
+      'f'         => 6,
+      'g'         => 6,
+      'h'         => 6,
+    }
+
+    root.each_expression do |exp|
+      next unless (expected_nesting_level = tests.delete(exp.text))
+      assert_equal exp.nesting_level, expected_nesting_level
+    end
+
+    assert tests.empty?
+  end
 end
