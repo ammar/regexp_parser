@@ -2,10 +2,12 @@
 
 require 'bundler/setup'
 require 'regexp_parser'
+require 'regexp_property_values'
 
 RL = Regexp::Lexer
 RP = Regexp::Parser
 RS = Regexp::Scanner
+PV = RegexpPropertyValues
 
 require 'irb'
 IRB.start(__FILE__)

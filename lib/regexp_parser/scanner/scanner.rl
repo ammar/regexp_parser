@@ -882,6 +882,18 @@ class Regexp::Scanner
     tokens
   end
 
+  # lazy-load property maps when first needed
+  require 'yaml'
+  PROP_MAPS_DIR = File.expand_path('../scanner/properties', __FILE__)
+
+  def self.short_prop_map
+    @short_prop_map ||= YAML.load_file("#{PROP_MAPS_DIR}/short.yml")
+  end
+
+  def self.long_prop_map
+    @long_prop_map ||= YAML.load_file("#{PROP_MAPS_DIR}/long.yml")
+  end
+
   # Emits an array with the details of the scanned pattern
   def emit(type, token, text, ts, te)
     #puts "EMIT: type: #{type}, token: #{token}, text: #{text}, ts: #{ts}, te: #{te}"
