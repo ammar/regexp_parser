@@ -1,3 +1,15 @@
+UPCOMING
+
+	* Changed naming of many property tokens (emitted for \p{...})
+	  - if you work with these tokens, see PR #56 for details
+	* Added support for all previously missing properties (about 250)
+	* Added Expression::UnicodeProperty#shortcut (e.g. returns 'm' for '\p{mark}')
+	* Fixed ruby version mapping of some properties
+	* Fixed scanning of some property spellings, e.g. with dashes
+	* Fixed some incorrect property alias normalizations
+	* Improved the speed of the properties machine
+	* Bumped version to XXX
+
 Sun Apr 29 2018 Janosch Müller <janosch84@gmail.com>
 
 	* Changed handling of Ruby versions (PR #53)
