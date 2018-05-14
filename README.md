@@ -389,18 +389,7 @@ or incorrectly return tokens/objects as literals._
 ## Testing
 To run the tests simply run rake from the root directory, as 'test' is the default task.
 
-In addition to the main test task, which runs all tests, there are also component specific test
-tasks, which only run the tests for one component at a time. These are:
-
-* test:scanner
-* test:lexer
-* test:parser
-* test:expression
-* test:syntax
-
-_A special task 'test:full' generates the scanner's code from the ragel source files and
-runs all the tests. This task requires ragel to be installed._
-
+It generates the scanner's code from the ragel source files and runs all the tests, thus it requires ragel to be installed.
 
 The tests use ruby's test/unit. They can also be run with:
 
@@ -420,6 +409,11 @@ It is sometimes helpful during development to focus on a specific test case, for
 bin/test test/expression/test_base.rb -n test_expression_to_re
 ```
 
+Note that changes to ragel files will not be reflected when using `bin/test`, so you might want to run:
+
+```
+rake ragel:rb && bin/test test/scanner/test_properties.rb
+```
 
 ## Building
 Building the scanner and the gem requires [ragel](http://www.colm.net/open-source/ragel/) to be
