@@ -369,15 +369,15 @@ _Note that not all of these are available in all versions of Ruby_
 ##### Inapplicable Features
 
 Some modifiers, like `o` and `s`, apply to the **Regexp** object itself and do not
-appear in its source. Others such modifiers include the encoding modifiers `e` and `n`
-[See](http://www.ruby-doc.org/core-2.1.3/Regexp.html#class-Regexp-label-Encoding).
+appear in its source. Other such modifiers include the encoding modifiers `e` and `n`
+[See](http://www.ruby-doc.org/core-2.5.0/Regexp.html#class-Regexp-label-Encoding).
 These are not seen by the scanner.
 
 The following features are not currently enabled for Ruby by its regular
 expressions library (Onigmo). They are not supported by the scanner.
 
-  - **Quotes**: `\Q...\E` _<a href="https://github.com/k-takata/Onigmo/blob/master/doc/RE#L452/" title="Links to master branch, may change">[See]</a>_
-  - **Capture History**: `(?@...)`, `(?@<name>...)` _<a href="https://github.com/k-takata/Onigmo/blob/master/doc/RE#L499" title="Links to master branch, may change">[See]</a>_
+  - **Quotes**: `\Q...\E` _[[See]](https://github.com/k-takata/Onigmo/blob/7911409/doc/RE#L499)_
+  - **Capture History**: `(?@...)`, `(?@<name>...)` _[[See]](https://github.com/k-takata/Onigmo/blob/7911409/doc/RE#L550)_
 
 
 See something missing? Please submit an [issue](https://github.com/ammar/regexp_parser/issues)
