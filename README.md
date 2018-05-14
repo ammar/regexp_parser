@@ -12,7 +12,7 @@ A ruby gem for tokenizing, parsing, and transforming regular expressions.
 * Recognizes ruby 1.8, 1.9, and 2.x regular expressions [See Supported Syntax](#supported-syntax)
 
 
-_For an example of regexp_parser in use, see the [meta_re project](https://github.com/ammar/meta_re)_
+_For examples of regexp_parser in use, see [Example Projects](#example-projects)._
 
 
 ---
@@ -433,6 +433,16 @@ To install the gem from the cloned project, run:
 ```
 rake install
 ```
+
+
+## Example Projects
+Projects using regexp_parser.
+
+- [meta_re](https://github.com/ammar/meta_re) is a regular expression preprocessor with alias support.
+
+- [mutant](https://github.com/mbj/mutant) manipulates your regular expressions (amongst others) to see if your tests cover their behavior.
+
+- [js_regex](https://github.com/janosch-x/js_regex) converts Ruby regular expressions to JavaScript-compatible regular expressions.
 
 
 ## References
