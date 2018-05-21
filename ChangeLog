@@ -1,3 +1,17 @@
+UPCOMING
+
+	* Improved parsing of sets (a.k.a. character classes or "bracket expressions")
+		- sets are now parsed to expression trees like other nestable expressions
+		- scan now emits the same tokens as outside sets (no longer :set, :member)
+		- new Range and Intersection classes represent corresponding syntax features
+		- a new PosixClass expression class represents e.g. [[:ascii:]]
+			- PosixClass instances behave like Property ones, e.g. support #negative?
+			- scan emits :(non)posixclass, :<type> instead of :set, :char_(non)<type>
+		- see PR #55 / issue #47 for more details
+	* EscapeSequence::Codepoint, CodepointList, Hex and Octal are now all used
+		- they already existed, but were all parsed as EscapeSequence::Literal
+	* Bumped version to XXX
+
 Sun Apr 29 2018 Janosch Müller <janosch84@gmail.com>
 
 	* Changed handling of Ruby versions (PR #53)
