@@ -1,16 +1,16 @@
 module Regexp::Syntax
   module Token
-    module CharacterClass
+    module PosixClass
       Standard  = [:alnum, :alpha, :blank, :cntrl, :digit, :graph,
                    :lower, :print, :punct, :space, :upper, :xdigit]
 
       Extensions = [:ascii, :word]
 
       All = Standard + Extensions
-      Type = :charclass
-      NonType = :noncharclass
+      Type = :posixclass
+      NonType = :nonposixclass
     end
-    Map[CharacterClass::Type]    = CharacterClass::All
-    Map[CharacterClass::NonType] = CharacterClass::All
+    Map[PosixClass::Type]    = PosixClass::All
+    Map[PosixClass::NonType] = PosixClass::All
   end
 end

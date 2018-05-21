@@ -85,9 +85,9 @@ class TestParserSets < Test::Unit::TestCase
     assert_equal CharacterSet, exp.class
     assert_equal 2, exp.count
 
-    assert_equal CharacterClass, exp[0].class
+    assert_equal PosixClass, exp[0].class
     assert_equal '[:digit:]', exp[0].text
-    assert_equal CharacterClass, exp[1].class
+    assert_equal PosixClass, exp[1].class
     assert_equal '[:^lower:]', exp[1].text
   end
 

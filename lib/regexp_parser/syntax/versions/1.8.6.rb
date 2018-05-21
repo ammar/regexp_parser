@@ -6,7 +6,7 @@ module Regexp::Syntax
       implements :anchor, Anchor::All
       implements :assertion, Assertion::Lookahead
       implements :backref, [:number]
-      implements :charclass, CharacterClass::Standard
+      implements :posixclass, PosixClass::Standard
       implements :escape,
         Escape::Basic + Escape::Backreference +
         Escape::ASCII + Escape::Meta + Escape::Control

@@ -1,7 +1,7 @@
 module Regexp::Expression
-  class CharacterClass < Regexp::Expression::Base
+  class PosixClass < Regexp::Expression::Base
     def negative?
-      type == :noncharclass
+      type == :nonposixclass
     end
 
     def name

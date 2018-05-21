@@ -106,8 +106,8 @@ class Regexp::Parser
     when :conditional;  conditional(token)
     when :keep;         keep(token)
 
-    when :charclass, :noncharclass
-      charclass(token)
+    when :posixclass, :nonposixclass
+      posixclass(token)
     when :property, :nonproperty
       property(token)
 
@@ -225,8 +225,8 @@ class Regexp::Parser
     end
   end
 
-  def charclass(token)
-    node << CharacterClass.new(token)
+  def posixclass(token)
+    node << PosixClass.new(token)
   end
 
   include Regexp::Expression::UnicodeProperty

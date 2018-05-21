@@ -60,9 +60,9 @@ class ScannerSets < Test::Unit::TestCase
     '[a-bd-f]'              => [2, :set,    :range,           '-',          2, 3],
     '[a-cd-f]'              => [5, :set,    :range,           '-',          5, 6],
 
-    '[a[:digit:]c]'         => [2, :charclass,    :digit,     '[:digit:]',  2, 11],
-    '[[:digit:][:space:]]'  => [2, :charclass,    :space,     '[:space:]', 10, 19],
-    '[[:^digit:]]'          => [1, :noncharclass, :digit,     '[:^digit:]', 1, 11],
+    '[a[:digit:]c]'         => [2, :posixclass,    :digit,    '[:digit:]',  2, 11],
+    '[[:digit:][:space:]]'  => [2, :posixclass,    :space,    '[:space:]', 10, 19],
+    '[[:^digit:]]'          => [1, :nonposixclass, :digit,    '[:^digit:]', 1, 11],
 
     '[a[.a-b.]c]'           => [2, :set,    :collation,       '[.a-b.]',    2,  9],
     '[a[=e=]c]'             => [2, :set,    :equivalent,      '[=e=]',      2,  7],

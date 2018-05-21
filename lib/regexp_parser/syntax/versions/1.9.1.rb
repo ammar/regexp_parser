@@ -9,9 +9,9 @@ module Regexp::Syntax
       implements :backref, Backreference::All +
         SubexpressionCall::All
 
-      implements :charclass, CharacterClass::Extensions
+      implements :posixclass, PosixClass::Extensions
 
-      implements :noncharclass, CharacterClass::All
+      implements :nonposixclass, PosixClass::All
 
       implements :escape, Escape::Unicode + Escape::Hex + Escape::Octal
 

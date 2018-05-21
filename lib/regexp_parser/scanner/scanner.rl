@@ -217,11 +217,11 @@
     class_posix >(open_bracket, 1) @eof(premature_end_error) {
       text = text(data, ts, te).first
 
-      type = :charclass
+      type = :posixclass
       class_name = text[2..-3]
       if class_name[0].chr == '^'
         class_name = class_name[1..-1]
-        type = :noncharclass
+        type = :nonposixclass
       end
 
       emit(type, class_name.to_sym, text, ts, te)
