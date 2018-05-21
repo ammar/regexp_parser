@@ -365,6 +365,8 @@ class Regexp::Parser
 
     when :hex
       node << EscapeSequence::Hex.new(token, active_opts)
+    when :octal
+      node << EscapeSequence::Octal.new(token, active_opts)
     when :codepoint
       node << EscapeSequence::Codepoint.new(token, active_opts)
     when :codepoint_list
