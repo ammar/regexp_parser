@@ -4,118 +4,107 @@ class ScannerProperties < Test::Unit::TestCase
 
   tests = {
     'Alnum'                               => :alnum,
-    'Alpha'                               => :alpha,
-    'Ascii'                               => :ascii,
-    'Blank'                               => :blank,
-    'Cntrl'                               => :cntrl,
-    'Digit'                               => :digit,
-    'Graph'                               => :graph,
-    'Lower'                               => :lower,
-    'Print'                               => :print,
-    'Punct'                               => :punct,
-    'Space'                               => :space,
-    'Upper'                               => :upper,
-    'Word'                                => :word,
-    'Xdigit'                              => :xdigit,
+
     'XPosixPunct'                         => :xposixpunct,
 
     'Newline'                             => :newline,
 
     'Any'                                 => :any,
+
     'Assigned'                            => :assigned,
 
-    'L'                                   => :letter_any,
-    'Letter'                              => :letter_any,
+    'L'                                   => :letter,
+    'Letter'                              => :letter,
 
-    'Lu'                                  => :letter_uppercase,
-    'Uppercase_Letter'                    => :letter_uppercase,
+    'Lu'                                  => :uppercase_letter,
+    'Uppercase_Letter'                    => :uppercase_letter,
 
-    'Ll'                                  => :letter_lowercase,
-    'Lowercase_Letter'                    => :letter_lowercase,
+    'Ll'                                  => :lowercase_letter,
+    'Lowercase_Letter'                    => :lowercase_letter,
 
-    'Lt'                                  => :letter_titlecase,
-    'Titlecase_Letter'                    => :letter_titlecase,
+    'Lt'                                  => :titlecase_letter,
+    'Titlecase_Letter'                    => :titlecase_letter,
 
-    'Lm'                                  => :letter_modifier,
-    'Modifier_Letter'                     => :letter_modifier,
+    'Lm'                                  => :modifier_letter,
+    'Modifier_Letter'                     => :modifier_letter,
 
-    'Lo'                                  => :letter_other,
-    'Other_Letter'                        => :letter_other,
+    'Lo'                                  => :other_letter,
+    'Other_Letter'                        => :other_letter,
 
-    'M'                                   => :mark_any,
-    'Mark'                                => :mark_any,
+    'M'                                   => :mark,
+    'Mark'                                => :mark,
 
-    'Mn'                                  => :mark_nonspacing,
-    'Nonspacing_Mark'                     => :mark_nonspacing,
+    'Mn'                                  => :nonspacing_mark,
+    'Nonspacing_Mark'                     => :nonspacing_mark,
 
-    'Mc'                                  => :mark_spacing,
-    'Spacing_Mark'                        => :mark_spacing,
+    'Mc'                                  => :spacing_mark,
+    'Spacing_Mark'                        => :spacing_mark,
 
-    'Me'                                  => :mark_enclosing,
-    'Enclosing_Mark'                      => :mark_enclosing,
+    'Me'                                  => :enclosing_mark,
+    'Enclosing_Mark'                      => :enclosing_mark,
 
-    'N'                                   => :number_any,
-    'Number'                              => :number_any,
+    'N'                                   => :number,
+    'Number'                              => :number,
 
-    'Nd'                                  => :number_decimal,
-    'Decimal_Number'                      => :number_decimal,
+    'Nd'                                  => :decimal_number,
+    'Decimal_Number'                      => :decimal_number,
 
-    'Nl'                                  => :number_letter,
-    'Letter_Number'                       => :number_letter,
+    'Nl'                                  => :letter_number,
+    'Letter_Number'                       => :letter_number,
 
-    'No'                                  => :number_other,
-    'Other_Number'                        => :number_other,
+    'No'                                  => :other_number,
+    'Other_Number'                        => :other_number,
 
-    'P'                                   => :punct_any,
-    'Punctuation'                         => :punct_any,
+    'P'                                   => :punctuation,
+    'Punctuation'                         => :punctuation,
 
-    'Pc'                                  => :punct_connector,
-    'Connector_Punctuation'               => :punct_connector,
+    'Pc'                                  => :connector_punctuation,
+    'Connector_Punctuation'               => :connector_punctuation,
 
-    'Pd'                                  => :punct_dash,
-    'Dash_Punctuation'                    => :punct_dash,
+    'Pd'                                  => :dash_punctuation,
+    'Dash_Punctuation'                    => :dash_punctuation,
 
-    'Ps'                                  => :punct_open,
-    'Open_Punctuation'                    => :punct_open,
+    'Ps'                                  => :open_punctuation,
+    'Open_Punctuation'                    => :open_punctuation,
 
-    'Pe'                                  => :punct_close,
-    'Close_Punctuation'                   => :punct_close,
+    'Pe'                                  => :close_punctuation,
+    'Close_Punctuation'                   => :close_punctuation,
 
-    'Pi'                                  => :punct_initial,
-    'Initial_Punctuation'                 => :punct_initial,
+    'Pi'                                  => :initial_punctuation,
+    'Initial_Punctuation'                 => :initial_punctuation,
 
-    'Pf'                                  => :punct_final,
-    'Final_Punctuation'                   => :punct_final,
+    'Pf'                                  => :final_punctuation,
+    'Final_Punctuation'                   => :final_punctuation,
 
-    'Po'                                  => :punct_other,
-    'Other_Punctuation'                   => :punct_other,
+    'Po'                                  => :other_punctuation,
+    'Other_Punctuation'                   => :other_punctuation,
 
-    'S'                                   => :symbol_any,
-    'Symbol'                              => :symbol_any,
+    'S'                                   => :symbol,
+    'Symbol'                              => :symbol,
 
-    'Sm'                                  => :symbol_math,
-    'Math_Symbol'                         => :symbol_math,
+    'Sm'                                  => :math_symbol,
+    'Math_Symbol'                         => :math_symbol,
 
-    'Sc'                                  => :symbol_currency,
-    'Currency_Symbol'                     => :symbol_currency,
+    'Sc'                                  => :currency_symbol,
+    'Currency_Symbol'                     => :currency_symbol,
 
-    'Sk'                                  => :symbol_modifier,
-    'Modifier_Symbol'                     => :symbol_modifier,
+    'Sk'                                  => :modifier_symbol,
+    'Modifier_Symbol'                     => :modifier_symbol,
 
-    'So'                                  => :symbol_other,
-    'Other_Symbol'                        => :symbol_other,
+    'So'                                  => :other_symbol,
+    'Other_Symbol'                        => :other_symbol,
 
-    'Z'                                   => :separator_any,
-    'Separator'                           => :separator_any,
+    'Z'                                   => :separator,
+    'Separator'                           => :separator,
 
-    'Zs'                                  => :separator_space,
-    'Space_Separator'                     => :separator_space,
+    'Zs'                                  => :space_separator,
+    'Space_Separator'                     => :space_separator,
 
-    'Zl'                                  => :separator_line,
-    'Line_Separator'                      => :separator_line,
+    'Zl'                                  => :line_separator,
+    'Line_Separator'                      => :line_separator,
 
-    'Zp'                                  => :separator_para,
-    'Paragraph_Separator'                 => :separator_para,
+    'Zp'                                  => :paragraph_separator,
+    'Paragraph_Separator'                 => :paragraph_separator,
 
     'C'                                   => :other,
     'Other'                               => :other,
@@ -135,28 +124,12 @@ class ScannerProperties < Test::Unit::TestCase
     'Cn'                                  => :unassigned,
     'Unassigned'                          => :unassigned,
 
-    'Age=1.1'                             => :age_1_1,
-    'Age=2.0'                             => :age_2_0,
-    'Age=2.1'                             => :age_2_1,
-    'Age=3.0'                             => :age_3_0,
-    'Age=3.1'                             => :age_3_1,
-    'Age=3.2'                             => :age_3_2,
-    'Age=4.0'                             => :age_4_0,
-    'Age=4.1'                             => :age_4_1,
-    'Age=5.0'                             => :age_5_0,
-    'Age=5.1'                             => :age_5_1,
-    'Age=5.2'                             => :age_5_2,
-    'Age=6.0'                             => :age_6_0,
-    'Age=6.1'                             => :age_6_1,
-    'Age=6.2'                             => :age_6_2,
-    'Age=6.3'                             => :age_6_3,
-    'Age=7.0'                             => :age_7_0,
-    'Age=8.0'                             => :age_8_0,
-    'Age=9.0'                             => :age_9_0,
-    'Age=10.0'                            => :age_10_0,
+    'Age=1.1'                             => :'age=1.1',
+    'Age=6.0'                             => :'age=6.0',
+    'Age=10.0'                            => :'age=10.0',
 
-    'ahex'                                => :ascii_hex,
-    'ASCII_Hex_Digit'                     => :ascii_hex,
+    'ahex'                                => :ascii_hex_digit,
+    'ASCII_Hex_Digit'                     => :ascii_hex_digit,
 
     'Alphabetic'                          => :alphabetic,
 
@@ -188,8 +161,8 @@ class ScannerProperties < Test::Unit::TestCase
     'dep'                                 => :deprecated,
     'Deprecated'                          => :deprecated,
 
-    'di'                                  => :default_ignorable_cp,
-    'Default_Ignorable_Code_Point'        => :default_ignorable_cp,
+    'di'                                  => :default_ignorable_code_point,
+    'Default_Ignorable_Code_Point'        => :default_ignorable_code_point,
 
     'dia'                                 => :diacritic,
     'Diacritic'                           => :diacritic,
@@ -220,11 +193,11 @@ class ScannerProperties < Test::Unit::TestCase
     'ids'                                 => :id_start,
     'ID_Start'                            => :id_start,
 
-    'idsb'                                => :ids_binary_op,
-    'IDS_Binary_Operator'                 => :ids_binary_op,
+    'idsb'                                => :ids_binary_operator,
+    'IDS_Binary_Operator'                 => :ids_binary_operator,
 
-    'idst'                                => :ids_trinary_op,
-    'IDS_Trinary_Operator'                => :ids_trinary_op,
+    'idst'                                => :ids_trinary_operator,
+    'IDS_Trinary_Operator'                => :ids_trinary_operator,
 
     'joinc'                               => :join_control,
     'Join_Control'                        => :join_control,
@@ -236,17 +209,17 @@ class ScannerProperties < Test::Unit::TestCase
 
     'Math'                                => :math,
 
-    'nchar'                               => :non_character_cp,
-    'Noncharacter_Code_Point'             => :non_character_cp,
+    'nchar'                               => :noncharacter_code_point,
+    'Noncharacter_Code_Point'             => :noncharacter_code_point,
 
     'oalpha'                              => :other_alphabetic,
     'Other_Alphabetic'                    => :other_alphabetic,
 
-    'odi'                                 => :other_default_ignorable_cp,
-    'Other_Default_Ignorable_Code_Point'  => :other_default_ignorable_cp,
+    'odi'                                 => :other_default_ignorable_code_point,
+    'Other_Default_Ignorable_Code_Point'  => :other_default_ignorable_code_point,
 
-    'ogrext'                              => :other_grapheme_extended,
-    'Other_Grapheme_Extend'               => :other_grapheme_extended,
+    'ogrext'                              => :other_grapheme_extend,
+    'Other_Grapheme_Extend'               => :other_grapheme_extend,
 
     'oidc'                                => :other_id_continue,
     'Other_ID_Continue'                   => :other_id_continue,
@@ -266,8 +239,8 @@ class ScannerProperties < Test::Unit::TestCase
     'patsyn'                              => :pattern_syntax,
     'Pattern_Syntax'                      => :pattern_syntax,
 
-    'patws'                               => :pattern_whitespace,
-    'Pattern_Whitespace'                  => :pattern_whitespace,
+    'patws'                               => :pattern_white_space,
+    'Pattern_Whitespace'                  => :pattern_white_space,
 
     'qmark'                               => :quotation_mark,
     'quotationmark'                       => :quotation_mark,
@@ -278,7 +251,7 @@ class ScannerProperties < Test::Unit::TestCase
     'Regional_Indicator'                  => :regional_indicator,
 
     'sd'                                  => :soft_dotted,
-    'Soft_Dotted'                         => :soft_dotted,
+    'Soft-Dotted'                         => :soft_dotted, # test dash spelling
 
     'sterm'                               => :sentence_terminal,
 
@@ -293,8 +266,8 @@ class ScannerProperties < Test::Unit::TestCase
     'vs'                                  => :variation_selector,
     'Variation_Selector'                  => :variation_selector,
 
-    'wspace'                              => :whitespace,
-    'whitespace'                          => :whitespace,
+    'wspace'                              => :white_space,
+    'whitespace'                          => :white_space,
 
     'xids'                                => :xid_start,
     'XID_Start'                           => :xid_start,
