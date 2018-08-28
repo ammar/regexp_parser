@@ -938,6 +938,8 @@ class Regexp::Scanner
   end
 
   def emit_options(text, ts, te)
+    token = nil
+
     if text =~ /\(\?([mixdau]*)-?([mix]*)(:)?/
       positive, negative, group_local = $1, $2, $3
 
@@ -953,13 +955,15 @@ class Regexp::Scanner
 
       if group_local
         spacing_stack << {:free_spacing => free_spacing, :depth => group_depth}
+        token = :options
       else
         # switch for parent group level
         spacing_stack.last[:free_spacing] = free_spacing
+        token = :options_switch
       end
     end
 
-    emit(:group, :options, text, ts, te)
+    emit(:group, token, text, ts, te)
   end
 
   # Centralizes and unifies the handling of validation related

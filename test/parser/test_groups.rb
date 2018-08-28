@@ -82,9 +82,8 @@ class TestParserGroups < Test::Unit::TestCase
   def test_parse_option_switch_group
     t = RP.parse(/a(?i-m)b/m, 'ruby/1.8')
 
-    assert_equal Group::Options, t.expressions[1].class
-    assert_equal :options,       t.expressions[1].token
-    # TODO: change this ^ to :options_switch in v1.0.0
+    assert_equal Group::Options,  t.expressions[1].class
+    assert_equal :options_switch, t.expressions[1].token
 
     assert_equal false, t.expressions[1].m?
     assert_equal true,  t.expressions[1].i?

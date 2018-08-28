@@ -3,7 +3,7 @@ module Regexp::Syntax
 
     module Group
       Basic     = [:capture, :close]
-      Extended  = Basic + [:options]
+      Extended  = Basic + [:options, :options_switch]
 
       Named     = [:named]
       Atomic    = [:atomic]

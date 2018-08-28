@@ -477,7 +477,7 @@ class Regexp::Parser
 
   def group(token)
     case token.token
-    when :options
+    when :options, :options_switch
       options_group(token)
     when :close
       close_group
@@ -491,8 +491,7 @@ class Regexp::Parser
   def options_group(token)
     positive, negative = token.text.split('-', 2)
     negative ||= ''
-    self.switching_options = !token.text.include?(':')
-    # TODO: change this -^ to token.type == :options_switch in v1.0.0
+    self.switching_options = token.token.equal?(:options_switch)
 
     new_options = active_opts.dup
 
@@ -512,9 +511,7 @@ class Regexp::Parser
 
     options_stack << new_options
 
-    exp = Group::Options.new(token, active_opts)
-
-    nest(exp)
+    nest(Group::Options.new(token, active_opts))
   end
 
   def open_group(token)

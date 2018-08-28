@@ -12,10 +12,12 @@ UPCOMING
 	* Changed Expression emissions for some escape sequences
 	  - EscapeSequence::Codepoint, CodepointList, Hex and Octal are now all used
 	  - they already existed, but were all parsed as EscapeSequence::Literal
-	  - e.g. \x97 is now EscapeSequence::Hex instead of EscapeSequence::Literal 
+	  - e.g. \x97 is now EscapeSequence::Hex instead of EscapeSequence::Literal
 	* Changed naming of many property tokens (emitted for \p{...})
 	  - if you work with these tokens, see PR #56 for details
 	  - e.g. :punct_dash is now :dash_punctuation
+	* Changed (?m) and the likes to emit as :options_switch token
+	  - allows differentiating from group-local :options, e.g. (?m:.)
 	* Fixed ruby version mapping of some properties
 	* Fixed scanning of some property spellings, e.g. with dashes
 	* Fixed some incorrect property alias normalizations

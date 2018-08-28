@@ -4,9 +4,10 @@
 # given syntax flavor.
 class Regexp::Lexer
 
-  OPENING_TOKENS = [:capture, :options, :passive, :atomic, :named, :absence,
-                    :lookahead, :nlookahead, :lookbehind, :nlookbehind
-                   ].freeze
+  OPENING_TOKENS = [
+    :capture, :passive, :lookahead, :nlookahead, :lookbehind, :nlookbehind,
+    :atomic, :options, :options_switch, :named, :absence
+  ].freeze
 
   CLOSING_TOKENS = [:close].freeze
 
