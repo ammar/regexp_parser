@@ -4,22 +4,22 @@ class ScannerConditionals < Test::Unit::TestCase
 
   # Basic conditional scan token tests
   tests = {
-    /(a)(?(1)T|F)/        => [3,  :conditional,  :open,              '(?',   3,  5],
-    /(a)(?(1)T|F)/        => [4,  :conditional,  :condition_open,    '(',    5,  6],
-    /(a)(?(1)T|F)/        => [5,  :conditional,  :condition,         '3',    6,  7],
-    /(a)(?(1)T|F)/        => [6,  :conditional,  :condition_close,   ')',    7,  8],
-    /(a)(?(1)T|F)/        => [7,  :literal,      :literal,           'T',    8,  9],
-    /(a)(?(1)T|F)/        => [8,  :conditional,  :separator,         '|',    9,  10],
-    /(a)(?(1)T|F)/        => [9,  :literal,      :literal,           'F',    10, 11],
-    /(a)(?(1)T|F)/        => [10, :conditional,  :close,             ')',    11, 12],
+    /(a)(?(1)T|F)1/       => [3,  :conditional,  :open,              '(?',   3,  5],
+    /(a)(?(1)T|F)2/       => [4,  :conditional,  :condition_open,    '(',    5,  6],
+    /(a)(?(1)T|F)3/       => [5,  :conditional,  :condition,         '1',    6,  7],
+    /(a)(?(1)T|F)4/       => [6,  :conditional,  :condition_close,   ')',    7,  8],
+    /(a)(?(1)T|F)5/       => [7,  :literal,      :literal,           'T',    8,  9],
+    /(a)(?(1)T|F)6/       => [8,  :conditional,  :separator,         '|',    9,  10],
+    /(a)(?(1)T|F)7/       => [9,  :literal,      :literal,           'F',    10, 11],
+    /(a)(?(1)T|F)8/       => [10, :conditional,  :close,             ')',    11, 12],
 
-    /(a)(?(1)TRUE)/       => [8,  :conditional,  :close,             ')',    12, 13],
+    /(a)(?(1)TRUE)9/      => [8,  :conditional,  :close,             ')',    12, 13],
 
-    /(a)(?(1)TRUE|)/      => [8,  :conditional,  :separator,         '|',    12, 13],
-    /(a)(?(1)TRUE|)/      => [9,  :conditional,  :close,             ')',    13, 14],
+    /(a)(?(1)TRUE|)10/    => [8,  :conditional,  :separator,         '|',    12, 13],
+    /(a)(?(1)TRUE|)11/    => [9,  :conditional,  :close,             ')',    13, 14],
 
-    /(?<N>A)(?(<N>)T|F)/  => [5,  :conditional,  :condition,         '<N>',  10, 13],
-    /(?'N'A)(?('N')T|F)/  => [5,  :conditional,  :condition,         "'N'",  10, 13],
+    /(?<N>A)(?(<N>)T|F)1/ => [5,  :conditional,  :condition,         '<N>',  10, 13],
+    /(?'N'A)(?('N')T|F)2/ => [5,  :conditional,  :condition,         "'N'",  10, 13],
   }
 
   tests.each_with_index do |(pattern, (index, type, token, text, ts, te)), count|

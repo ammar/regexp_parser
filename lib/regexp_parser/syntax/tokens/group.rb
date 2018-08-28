@@ -10,11 +10,12 @@ module Regexp::Syntax
       Passive   = [:passive]
       Comment   = [:comment]
 
-      All = Group::Extended + Group::Named + Group::Atomic +
-            Group::Passive + Group::Comment
+      V1_8_6 = Group::Extended + Group::Named + Group::Atomic +
+               Group::Passive + Group::Comment
 
-      Absence = [:absence]
+      V2_4_1 = [:absence]
 
+      All = V1_8_6 + V2_4_1
       Type = :group
     end
 

@@ -12,7 +12,7 @@ A ruby gem for tokenizing, parsing, and transforming regular expressions.
 * Recognizes ruby 1.8, 1.9, and 2.x regular expressions [See Supported Syntax](#supported-syntax)
 
 
-_For an example of regexp_parser in use, see the [meta_re project](https://github.com/ammar/meta_re)_
+_For examples of regexp_parser in use, see [Example Projects](#example-projects)._
 
 
 ---
@@ -369,15 +369,15 @@ _Note that not all of these are available in all versions of Ruby_
 ##### Inapplicable Features
 
 Some modifiers, like `o` and `s`, apply to the **Regexp** object itself and do not
-appear in its source. Others such modifiers include the encoding modifiers `e` and `n`
-[See](http://www.ruby-doc.org/core-2.1.3/Regexp.html#class-Regexp-label-Encoding).
+appear in its source. Other such modifiers include the encoding modifiers `e` and `n`
+[See](http://www.ruby-doc.org/core-2.5.0/Regexp.html#class-Regexp-label-Encoding).
 These are not seen by the scanner.
 
 The following features are not currently enabled for Ruby by its regular
 expressions library (Onigmo). They are not supported by the scanner.
 
-  - **Quotes**: `\Q...\E` _<a href="https://github.com/k-takata/Onigmo/blob/master/doc/RE#L452/" title="Links to master branch, may change">[See]</a>_
-  - **Capture History**: `(?@...)`, `(?@<name>...)` _<a href="https://github.com/k-takata/Onigmo/blob/master/doc/RE#L499" title="Links to master branch, may change">[See]</a>_
+  - **Quotes**: `\Q...\E` _[[See]](https://github.com/k-takata/Onigmo/blob/7911409/doc/RE#L499)_
+  - **Capture History**: `(?@...)`, `(?@<name>...)` _[[See]](https://github.com/k-takata/Onigmo/blob/7911409/doc/RE#L550)_
 
 
 See something missing? Please submit an [issue](https://github.com/ammar/regexp_parser/issues)
@@ -389,18 +389,7 @@ or incorrectly return tokens/objects as literals._
 ## Testing
 To run the tests simply run rake from the root directory, as 'test' is the default task.
 
-In addition to the main test task, which runs all tests, there are also component specific test
-tasks, which only run the tests for one component at a time. These are:
-
-* test:scanner
-* test:lexer
-* test:parser
-* test:expression
-* test:syntax
-
-_A special task 'test:full' generates the scanner's code from the ragel source files and
-runs all the tests. This task requires ragel to be installed._
-
+It generates the scanner's code from the ragel source files and runs all the tests, thus it requires ragel to be installed.
 
 The tests use ruby's test/unit. They can also be run with:
 
@@ -420,6 +409,11 @@ It is sometimes helpful during development to focus on a specific test case, for
 bin/test test/expression/test_base.rb -n test_expression_to_re
 ```
 
+Note that changes to ragel files will not be reflected when using `bin/test`, so you might want to run:
+
+```
+rake ragel:rb && bin/test test/scanner/test_properties.rb
+```
 
 ## Building
 Building the scanner and the gem requires [ragel](http://www.colm.net/open-source/ragel/) to be
@@ -439,6 +433,16 @@ To install the gem from the cloned project, run:
 ```
 rake install
 ```
+
+
+## Example Projects
+Projects using regexp_parser.
+
+- [meta_re](https://github.com/ammar/meta_re) is a regular expression preprocessor with alias support.
+
+- [mutant](https://github.com/mbj/mutant) manipulates your regular expressions (amongst others) to see if your tests cover their behavior.
+
+- [js_regex](https://github.com/janosch-x/js_regex) converts Ruby regular expressions to JavaScript-compatible regular expressions.
 
 
 ## References

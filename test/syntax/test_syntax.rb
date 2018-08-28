@@ -13,6 +13,13 @@ class TestSyntax < Test::Unit::TestCase
                        Regexp::Syntax.new('ruby/1.9.3')
   end
 
+  def test_syntax_new_any
+    assert_instance_of Regexp::Syntax::Any,
+                       Regexp::Syntax.new('any')
+    assert_instance_of Regexp::Syntax::Any,
+                       Regexp::Syntax.new('*')
+  end
+
   def test_syntax_not_implemented
     assert_raise( Regexp::Syntax::NotImplementedError ) {
       RP.parse('\p{alpha}', 'ruby/1.8')

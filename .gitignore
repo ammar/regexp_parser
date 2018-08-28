@@ -1,3 +1,4 @@
+*.gem
 .*.swp
 .DS_Store
 .ruby-version

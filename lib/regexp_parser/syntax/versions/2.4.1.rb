@@ -3,7 +3,7 @@ module Regexp::Syntax
     def initialize
       super
 
-      implements :group, Group::Absence
+      implements :group, Group::V2_4_1
     end
   end
 end

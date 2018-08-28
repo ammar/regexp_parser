@@ -9,6 +9,10 @@ module Regexp::Expression
       def name
         text =~ /\A\\[pP]\{([^}]+)\}\z/; $1
       end
+
+      def shortcut
+        (Regexp::Scanner.short_prop_map.rassoc(token.to_s) || []).first
+      end
     end
 
     class Alnum         < Base; end
@@ -36,6 +40,7 @@ module Regexp::Expression
       class Base < UnicodeProperty::Base; end
 
       class Any         < Letter::Base; end
+      class Cased       < Letter::Base; end
       class Uppercase   < Letter::Base; end
       class Lowercase   < Letter::Base; end
       class Titlecase   < Letter::Base; end
@@ -47,6 +52,7 @@ module Regexp::Expression
       class Base < UnicodeProperty::Base; end
 
       class Any         < Mark::Base; end
+      class Combining   < Mark::Base; end
       class Nonspacing  < Mark::Base; end
       class Spacing     < Mark::Base; end
       class Enclosing   < Mark::Base; end
