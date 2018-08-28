@@ -36,6 +36,7 @@ class Regexp::Lexer
                 nesting, set_nesting, conditional_nesting)
 
       current = merge_literal(current) if type == :literal and
+        set_nesting == 0 and
         last and last.type == :literal
 
       current = merge_condition(current) if type == :conditional and
@@ -66,29 +67,23 @@ class Regexp::Lexer
   attr_accessor :tokens, :nesting, :set_nesting, :conditional_nesting
 
   def ascend(type, token)
-    if type == :group or type == :assertion
+    case type
+    when :group, :assertion
       self.nesting = nesting - 1 if CLOSING_TOKENS.include?(token)
-    end
-
-    if type == :set or type == :subset
+    when :set
       self.set_nesting = set_nesting - 1 if token == :close
-    end
-
-    if type == :conditional
+    when :conditional
       self.conditional_nesting = conditional_nesting - 1 if token == :close
     end
   end
 
   def descend(type, token)
-    if type == :group or type == :assertion
+    case type
+    when :group, :assertion
       self.nesting = nesting + 1 if OPENING_TOKENS.include?(token)
-    end
-
-    if type == :set or type == :subset
+    when :set
       self.set_nesting = set_nesting + 1 if token == :open
-    end
-
-    if type == :conditional
+    when :conditional
       self.conditional_nesting = conditional_nesting + 1 if token == :open
     end
   end

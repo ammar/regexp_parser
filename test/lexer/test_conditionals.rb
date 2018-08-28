@@ -43,15 +43,17 @@ class LexerConditionals < Test::Unit::TestCase
       [11, :conditional, :condition,        '(<B>)',  25, 30, 3, 0, 2],
 
       [12, :set,         :open,             '[',      30, 31, 3, 0, 2],
-      [13, :set,         :range,            'e-g',    31, 34, 3, 1, 2],
-      [14, :set,         :close,            ']',      34, 35, 3, 0, 2],
+      [13, :literal,     :literal,          'e',      31, 32, 3, 1, 2],
+      [14, :set,         :range,            '-',      32, 33, 3, 1, 2],
+      [15, :literal,     :literal,          'g',      33, 34, 3, 1, 2],
+      [16, :set,         :close,            ']',      34, 35, 3, 0, 2],
 
-      [15, :conditional, :separator,        '|',      35, 36, 3, 0, 2],
-      [19, :conditional, :close,            ')',      41, 42, 3, 0, 1],
-      [21, :conditional, :close,            ')',      43, 44, 2, 0, 0],
+      [17, :conditional, :separator,        '|',      35, 36, 3, 0, 2],
+      [23, :conditional, :close,            ')',      41, 42, 3, 0, 1],
+      [25, :conditional, :close,            ')',      43, 44, 2, 0, 0],
 
-      [22, :group,       :close,            ')',      44, 45, 1, 0, 0],
-      [23, :group,       :close,            ')',      45, 46, 0, 0, 0]
+      [26, :group,       :close,            ')',      44, 45, 1, 0, 0],
+      [27, :group,       :close,            ')',      45, 46, 0, 0, 0]
     ].each do |index, type, token, text, ts, te, level, set_level, conditional_level|
       struct = tokens.at(index)
 

@@ -27,14 +27,14 @@ class TestParserEscapes < Test::Unit::TestCase
     /a\}c/    => [1, :escape,   :interval_close,    EscapeSequence::Literal],
 
     # unicode escapes
-    /a\u0640/       => [1, :escape, :codepoint,      EscapeSequence::Literal],
-    /a\u{41 1F60D}/ => [1, :escape, :codepoint_list, EscapeSequence::Literal],
+    /a\u0640/       => [1, :escape, :codepoint,      EscapeSequence::Codepoint],
+    /a\u{41 1F60D}/ => [1, :escape, :codepoint_list, EscapeSequence::CodepointList],
 
      # hex escapes
-    /a\xFF/n =>  [1, :escape, :hex,                 EscapeSequence::Literal],
+    /a\xFF/n =>  [1, :escape, :hex,                 EscapeSequence::Hex],
 
     # octal escapes
-    /a\177/n =>  [1, :escape, :octal,               EscapeSequence::Literal],
+    /a\177/n =>  [1, :escape, :octal,               EscapeSequence::Octal],
   }
 
   tests.each_with_index do |(pattern, (index, type, token, klass)), count|

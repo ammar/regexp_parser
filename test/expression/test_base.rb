@@ -40,7 +40,8 @@ class ExpressionBase < Test::Unit::TestCase
     assert_equal true,  root[0].terminal?
     assert_equal true,  root[1].terminal?
     assert_equal false, root[2].terminal?
-    assert_equal true,  root[2][0].terminal?
+    assert_equal false, root[2][0].terminal?
+    assert_equal true,  root[2][0][0].terminal?
     assert_equal true,  root[3].terminal?
     assert_equal true,  root[4].terminal?
   end

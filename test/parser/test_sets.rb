@@ -1,176 +1,179 @@
 require File.expand_path("../../helpers", __FILE__)
 
 class TestParserSets < Test::Unit::TestCase
-
   def test_parse_set_basic
-    root = RP.parse('[a-c]+', :any)
-    exp  = root.expressions.at(0)
+    root = RP.parse('[ab]+')
+    exp  = root[0]
 
-    assert_equal true, exp.is_a?(CharacterSet)
-    assert_equal true, exp.include?('a-c')
+    assert_equal CharacterSet, exp.class
+    assert_equal 2, exp.count
 
-    assert_equal true,  exp.quantified?
-    assert_equal 1,     exp.quantifier.min
-    assert_equal(-1,    exp.quantifier.max)
+    assert_equal Literal, exp[0].class
+    assert_equal 'a', exp[0].text
+    assert_equal Literal, exp[1].class
+    assert_equal 'b', exp[1].text
+
+    assert       exp.quantified?
+    assert_equal 1, exp.quantifier.min
+    assert_equal(-1, exp.quantifier.max)
+  end
+
+  def test_parse_set_char_type
+    root = RP.parse('[a\dc]')
+    exp  = root[0]
+
+    assert_equal CharacterSet, exp.class
+    assert_equal 3, exp.count
+
+    assert_equal CharacterType::Digit, exp[1].class
+    assert_equal '\d', exp[1].text
+  end
+
+  def test_parse_set_escape_sequence_backspace
+    root = RP.parse('[a\bc]')
+    exp  = root[0]
+
+    assert_equal CharacterSet, exp.class
+    assert_equal 3, exp.count
+
+    assert_equal EscapeSequence::Backspace, exp[1].class
+    assert_equal '\b', exp[1].text
+
+    assert       exp.matches?('a')
+    assert       exp.matches?("\b")
+    refute       exp.matches?('b')
+    assert       exp.matches?('c')
+  end
+
+  def test_parse_set_escape_sequence_hex
+    root = RP.parse('[a\x20c]', :any)
+    exp  = root[0]
+
+    assert_equal CharacterSet, exp.class
+    assert_equal 3, exp.count
+
+    assert_equal EscapeSequence::Hex, exp[1].class
+    assert_equal '\x20', exp[1].text
+  end
+
+  def test_parse_set_escape_sequence_codepoint
+    root = RP.parse('[a\u0640]')
+    exp  = root[0]
+
+    assert_equal CharacterSet, exp.class
+    assert_equal 2, exp.count
+
+    assert_equal EscapeSequence::Codepoint, exp[1].class
+    assert_equal '\u0640', exp[1].text
+  end
+
+  def test_parse_set_escape_sequence_codepoint_list
+    root = RP.parse('[a\u{41 1F60D}]')
+    exp  = root[0]
+
+    assert_equal CharacterSet, exp.class
+    assert_equal 2, exp.count
+
+    assert_equal EscapeSequence::CodepointList, exp[1].class
+    assert_equal '\u{41 1F60D}', exp[1].text
   end
 
   def test_parse_set_posix_class
-    root = RP.parse('[[:digit:][:lower:]]+', 'ruby/1.9')
-    exp  = root.expressions.at(0)
+    root = RP.parse('[[:digit:][:^lower:]]+')
+    exp  = root[0]
 
-    assert_equal true,  exp.is_a?(CharacterSet)
+    assert_equal CharacterSet, exp.class
+    assert_equal 2, exp.count
 
-    assert_equal true,  exp.include?('[:digit:]')
-    assert_equal true,  exp.include?('[:lower:]')
-
-    assert_equal true,  exp.matches?("6")
-
-    assert_equal true,  exp.matches?("v")
-    assert_equal false, exp.matches?("\x48")
+    assert_equal PosixClass, exp[0].class
+    assert_equal '[:digit:]', exp[0].text
+    assert_equal PosixClass, exp[1].class
+    assert_equal '[:^lower:]', exp[1].text
   end
 
-  def test_parse_set_members
-    root = RP.parse('[ac-eh]', :any)
-    exp  = root.expressions.at(0)
+  def test_parse_set_nesting
+    root = RP.parse('[a[b[c]d]e]')
 
-    assert_equal true,  exp.include?('a')
-    assert_equal true,  exp.include?('c-e')
-    assert_equal true,  exp.include?('h')
-    assert_equal false, exp.include?(']')
+    exp = root[0]
+    assert_equal CharacterSet, exp.class
+    assert_equal 3, exp.count
+    assert_equal Literal, exp[0].class
+    assert_equal Literal, exp[2].class
+
+    subset1 = exp[1]
+    assert_equal CharacterSet, subset1.class
+    assert_equal 3, subset1.count
+    assert_equal Literal, subset1[0].class
+    assert_equal Literal, subset1[2].class
+
+    subset2 = subset1[1]
+    assert_equal CharacterSet, subset2.class
+    assert_equal 1, subset2.count
+    assert_equal Literal, subset2[0].class
   end
 
-  def test_parse_hex_members
-    root = RP.parse('[\x20\x24-\x26\x28]', :any)
-    exp  = root.expressions.at(0)
+  def test_parse_set_nesting_negative
+    root = RP.parse('[a[^b[c]]]')
+    exp  = root[0]
 
-    assert_equal true,  exp.include?('\x20')
-    assert_equal true,  exp.include?('\x24-\x26')
-    assert_equal true,  exp.include?('\x28')
-    assert_equal false, exp.include?(']')
+    assert_equal CharacterSet, exp.class
+    assert_equal 2, exp.count
+    assert_equal Literal, exp[0].class
+    refute       exp.negative?
+
+    subset1 = exp[1]
+    assert_equal CharacterSet, subset1.class
+    assert_equal 2, subset1.count
+    assert_equal Literal, subset1[0].class
+    assert       subset1.negative?
+
+    subset2 = subset1[1]
+    assert_equal CharacterSet, subset2.class
+    assert_equal 1, subset2.count
+    assert_equal Literal, subset2[0].class
+    refute       subset2.negative?
   end
 
-  def test_parse_chat_type_set_members
-    root = RP.parse('[\da-z]', :any)
-    exp  = root.expressions.at(0)
-
-    assert_equal true,  exp.include?('\d')
-    assert_equal true,  exp.include?('a-z')
-  end
-
-  def test_parse_set_collating_sequence
-    root = RP.parse('[a[.span-ll.]h]', :any)
-    exp  = root.expressions.at(0)
-
-    assert_equal true,  exp.include?('[.span-ll.]')
-    assert_equal false, exp.include?(']')
-  end
-
-  def test_parse_set_character_equivalents
-    root = RP.parse('[a[=e=]h]', :any)
-    exp  = root.expressions.at(0)
-
-    assert_equal true,  exp.include?('[=e=]')
-    assert_equal false, exp.include?(']')
-  end
-
-  def test_parse_set_nesting_tos
+  def test_parse_set_nesting_to_s
     pattern = '[a[b[^c]]]'
-    root    = RP.parse(pattern, 'ruby/1.9')
+    root    = RP.parse(pattern)
 
     assert_equal pattern, root.to_s
   end
 
-  def test_parse_set_nesting_include
-    root = RP.parse('[a[b[^c]]]', 'ruby/1.9')
-    exp  = root.expressions.at(0)
+  def test_parse_set_literals_are_not_merged
+    root = RP.parse("[#{'a' * 10}]")
+    exp  = root[0]
 
-    assert_equal true, exp.is_a?(CharacterSet)
-    assert_equal true, exp.include?('a')
-    assert_equal true, exp.include?('b')
-    assert_equal true, exp.include?('c')
+    assert_equal 10, exp.count
   end
 
-  def test_parse_set_nesting_include_at_depth
-    root = RP.parse('[a[b]c]', 'ruby/1.9')
+  def test_parse_set_whitespace_is_not_merged
+    root = RP.parse("[#{' ' * 10}]")
+    exp  = root[0]
 
-    exp = root.expressions.at(0)
-    assert_equal true,  exp.is_a?(CharacterSet)
-    assert_equal true,  exp.include?('a')
-    assert_equal true,  exp.include?('b')
-    assert_equal false, exp.include?('b', true) # should not include b directly
-
-    sub = exp.members.at(1)
-    assert_equal false, sub.include?('a')
-    assert_equal true,  sub.include?('b')
-    assert_equal true,  sub.include?('b', true)
-    assert_equal false, sub.include?('c')
+    assert_equal 10, exp.count
   end
 
-  def test_parse_set_nesting_include_at_depth_2
-    root = RP.parse('[a[b[c[d]e]f]g]', 'ruby/1.9')
+  def test_parse_set_whitespace_is_not_merged_in_x_mode
+    root = RP.parse("(?x)[#{' ' * 10}]")
+    exp  = root[1]
 
-    exp = root.expressions.at(0)
-    assert_equal true,  exp.is_a?(CharacterSet)
-    assert_equal true,  exp.include?('a')
-    assert_equal true,  exp.include?('b')
-    assert_equal false, exp.include?('b', true) # should not include b directly
-
-    sub = exp.members.at(1)
-    assert_equal false, sub.include?('a')
-    assert_equal true,  sub.include?('b')
-    assert_equal true,  sub.include?('b', true)
-    assert_equal true,  sub.include?('f', true)
-    assert_equal true,  sub.include?('c')
-    assert_equal false, sub.include?('c', true)
-
-    sub2 = sub.members.at(1)
-    assert_equal false, sub2.include?('a')
-    assert_equal false, sub2.include?('b')
-    assert_equal true,  sub2.include?('c')
-    assert_equal true,  sub2.include?('c', true)
-    assert_equal true,  sub2.include?('e', true)
-    assert_equal true,  sub2.include?('d')
-    assert_equal false, sub2.include?('d', true)
-
-    sub3 = sub2.members.at(1)
-    assert_equal false, sub3.include?('a')
-    assert_equal false, sub3.include?('g')
-    assert_equal false, sub3.include?('b')
-    assert_equal false, sub3.include?('f')
-    assert_equal false, sub3.include?('c')
-    assert_equal false, sub3.include?('e')
-    assert_equal true,  sub3.include?('d')
-    assert_equal true,  sub3.include?('d', true)
+    assert_equal 10, exp.count
   end
 
-  # character subsets and negated posix classes are not available in ruby 1.8
-  if RUBY_VERSION >= '1.9'
-    def test_parse_set_nesting_matches
-      root = RP.parse('[a[b[^c]]]', 'ruby/1.9')
-      exp  = root.expressions.at(0)
+  # TODO: Collations and equivalents need own exp class if they ever get enabled
+  def test_parse_set_collating_sequence
+    root = RP.parse('[a[.span-ll.]h]', :any)
+    exp  = root[0]
 
-      assert_equal true,  exp.matches?('b')
-      assert_equal false, exp.matches?('c')
-    end
-
-    def test_parse_set_nesting_not_matches
-      root = RP.parse('[a[b[^c]]]', 'ruby/1.9')
-      exp  = root.expressions.at(0)
-
-      assert_equal false, exp.matches?('c')
-    end
-
-    def test_parse_set_negated_posix_class
-      root = RP.parse('[[:^xdigit:][:^lower:]]+', 'ruby/1.9')
-      exp  = root.expressions.at(0)
-
-      assert_equal true,  exp.is_a?(CharacterSet)
-
-      assert_equal true,  exp.include?('[:^xdigit:]')
-      assert_equal true,  exp.include?('[:^lower:]')
-
-      assert_equal true,  exp.matches?('GT')
-    end
+    assert_equal '[.span-ll.]', exp[1].to_s
   end
 
+  def test_parse_set_character_equivalents
+    root = RP.parse('[a[=e=]h]', :any)
+    exp  = root[0]
+
+    assert_equal '[=e=]', exp[1].to_s
+  end
 end

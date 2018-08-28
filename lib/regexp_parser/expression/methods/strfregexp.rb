@@ -40,14 +40,16 @@ module Regexp::Expression
 
       part = {}
 
+      print_level = nesting_level > 0 ? nesting_level - 1 : nil
+
       # Order is important! Fields that use other fields in their
       # definition must appear before the fields they use.
       part_keys = %w{a m b o i l x s e S y k c q Q z Z t ~t T >}
       part.keys.each {|k| part[k] = "<?#{k}?>"}
 
-      part['>'] = level ? ('  ' * (level + indent_offset)) : ''
+      part['>'] = print_level ? ('  ' * (print_level + indent_offset)) : ''
 
-      part['l'] = level ? "#{'%d' % level}" : 'root'
+      part['l'] = print_level ? "#{'%d' % print_level}" : 'root'
       part['x'] = "#{'%d' % index}" if have_index
 
       part['s'] = starts_at
@@ -101,9 +103,9 @@ module Regexp::Expression
     def strfregexp_tree(format = '%a', include_self = true, separator = "\n")
       output = include_self ? [self.strfregexp(format)] : []
 
-      output += map {|exp, index|
+      output += map do |exp, index|
         exp.strfregexp(format, (include_self ? 1 : 0), index)
-      }
+      end
 
       output.join(separator)
     end

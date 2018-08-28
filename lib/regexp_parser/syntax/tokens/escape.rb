@@ -9,7 +9,7 @@ module Regexp::Syntax
       Control = [:control, :meta_sequence]
 
       ASCII = [:bell, :backspace, :escape, :form_feed, :newline, :carriage,
-               :space, :tab, :vertical_tab]
+               :tab, :vertical_tab]
 
       Unicode = [:codepoint, :codepoint_list]
 
@@ -18,8 +18,7 @@ module Regexp::Syntax
                :bol, :eol,
                :group_open, :group_close,
                :interval_open, :interval_close,
-               :set_open, :set_close,
-               :baclslash]
+               :set_open, :set_close]
 
       Hex   = [:hex]
 

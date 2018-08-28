@@ -1,13 +1,26 @@
 UPCOMING
 
+	* Breaking changes to character set and property handling:
+	* Changed parsing of sets (a.k.a. character classes or "bracket expressions")
+	  - see PR #55 / issue #47 for details
+	  - sets are now parsed to expression trees like other nestable expressions
+	  - #scan now emits the same tokens as outside sets (no longer :set, :member)
+	  - new Range and Intersection classes represent corresponding syntax features
+	  - a new PosixClass expression class represents e.g. [[:ascii:]]
+	    - PosixClass instances behave like Property ones, e.g. support #negative?
+	    - #scan emits :(non)posixclass, :<type> instead of :set, :char_(non)<type>
+	* Changed Expression emissions for some escape sequences
+	  - EscapeSequence::Codepoint, CodepointList, Hex and Octal are now all used
+	  - they already existed, but were all parsed as EscapeSequence::Literal
+	  - e.g. \x97 is now EscapeSequence::Hex instead of EscapeSequence::Literal 
 	* Changed naming of many property tokens (emitted for \p{...})
 	  - if you work with these tokens, see PR #56 for details
-	* Added support for all previously missing properties (about 250)
-	* Added Expression::UnicodeProperty#shortcut (e.g. returns 'm' for '\p{mark}')
+	  - e.g. :punct_dash is now :dash_punctuation
 	* Fixed ruby version mapping of some properties
 	* Fixed scanning of some property spellings, e.g. with dashes
 	* Fixed some incorrect property alias normalizations
-	* Improved the speed of the properties machine
+	* Added support for all previously missing properties (about 250)
+	* Added Expression::UnicodeProperty#shortcut (e.g. returns 'm' for '\p{mark}')
 	* Bumped version to XXX
 
 Sun Apr 29 2018 Janosch Müller <janosch84@gmail.com>

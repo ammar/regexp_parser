@@ -47,8 +47,7 @@ class Regexp::Parser
   private
 
   attr_accessor :root, :node, :nesting,
-                :options_stack, :switching_options, :conditional_nesting,
-                :current_set
+                :options_stack, :switching_options, :conditional_nesting
 
   def options_from_input(input)
     return {} unless input.is_a?(::Regexp)
@@ -63,7 +62,26 @@ class Regexp::Parser
   def nest(exp)
     nesting.push(exp)
     node << exp
+    update_transplanted_subtree(exp, node)
     self.node = exp
+  end
+
+  # subtrees are transplanted to build Alternations, Intersections, Ranges
+  def update_transplanted_subtree(exp, new_parent)
+    exp.nesting_level = new_parent.nesting_level + 1
+    exp.respond_to?(:each) &&
+      exp.each { |subexp| update_transplanted_subtree(subexp, exp) }
+  end
+
+  def decrease_nesting
+    while nesting.last.is_a?(SequenceOperation)
+      nesting.pop
+      self.node = nesting.last
+    end
+    nesting.pop
+    yield(node) if block_given?
+    self.node = nesting.last
+    self.node = node.last if node.last.is_a?(SequenceOperation)
   end
 
   def nest_conditional(exp)
@@ -73,6 +91,8 @@ class Regexp::Parser
   end
 
   def parse_token(token)
+    close_completed_character_set_range
+
     case token.type
     when :meta;         meta(token)
     when :quantifier;   quantifier(token)
@@ -80,12 +100,14 @@ class Regexp::Parser
     when :escape;       escape(token)
     when :group;        group(token)
     when :assertion;    group(token)
-    when :set, :subset; set(token)
+    when :set;          set(token)
     when :type;         type(token)
     when :backref;      backref(token)
     when :conditional;  conditional(token)
     when :keep;         keep(token)
 
+    when :posixclass, :nonposixclass
+      posixclass(token)
     when :property, :nonproperty
       property(token)
 
@@ -104,17 +126,15 @@ class Regexp::Parser
     when :open
       open_set(token)
     when :close
-      close_set(token)
+      close_set
     when :negate
       negate_set
-    when :member, :range, :escape, :collation, :equivalent
-      append_set(token)
-    when *Token::Escape::All
-      append_set(token)
-    when *Token::CharacterSet::All
-      append_set(token)
-    when *Token::UnicodeProperty::All
-      append_set(token)
+    when :range
+      range(token)
+    when :intersection
+      intersection(token)
+    when :collation, :equivalent
+      node << Literal.new(token, active_opts)
     else
       raise UnknownTokenError.new('CharacterSet', token)
     end
@@ -125,19 +145,7 @@ class Regexp::Parser
     when :dot
       node << CharacterType::Any.new(token, active_opts)
     when :alternation
-      if node.token == :alternation
-      elsif node.last.is_a?(Alternation)
-        self.node = node.last
-      else
-        alt = Alternation.new(token, active_opts)
-        seq = Alternative.new(alt.level, alt.set_level, alt.conditional_level)
-        node.expressions.count.times { seq.insert(node.expressions.pop) }
-        alt.alternative(seq)
-
-        node << alt
-        self.node = alt
-      end
-      node.alternative
+      sequence_operation(Alternation, token)
     else
       raise UnknownTokenError.new('Meta', token)
     end
@@ -215,6 +223,10 @@ class Regexp::Parser
     else
       raise UnknownTokenError.new('Conditional', token)
     end
+  end
+
+  def posixclass(token)
+    node << PosixClass.new(token)
   end
 
   include Regexp::Expression::UnicodeProperty
@@ -348,12 +360,19 @@ class Regexp::Parser
       node << EscapeSequence::Newline.new(token, active_opts)
     when :carriage
       node << EscapeSequence::Return.new(token, active_opts)
-    when :space
-      node << EscapeSequence::Space.new(token, active_opts)
     when :tab
       node << EscapeSequence::Tab.new(token, active_opts)
     when :vertical_tab
       node << EscapeSequence::VerticalTab.new(token, active_opts)
+
+    when :hex
+      node << EscapeSequence::Hex.new(token, active_opts)
+    when :octal
+      node << EscapeSequence::Octal.new(token, active_opts)
+    when :codepoint
+      node << EscapeSequence::Codepoint.new(token, active_opts)
+    when :codepoint_list
+      node << EscapeSequence::CodepointList.new(token, active_opts)
 
     when :control
       if token.text =~ /\A(?:\\C-\\M|\\c\\M)/
@@ -532,35 +551,49 @@ class Regexp::Parser
   end
 
   def close_group
-    nesting.pop
     options_stack.pop unless switching_options
     self.switching_options = false
-
-    self.node = nesting.last
-    self.node = node.last if node.last and node.last.is_a?(Alternation)
+    decrease_nesting
   end
 
   def open_set(token)
     token.token = :character
-
-    if token.type == :subset
-      current_set << CharacterSubSet.new(token, active_opts)
-    else
-      self.current_set = CharacterSet.new(token, active_opts)
-      node << current_set
-    end
+    nest(CharacterSet.new(token, active_opts))
   end
 
   def negate_set
-    current_set.negate
+    node.negate
   end
 
-  def append_set(token)
-    current_set << token.text
+  def close_set
+    decrease_nesting(&:close)
   end
 
-  def close_set(token)
-    current_set.close
+  def range(token)
+    exp = CharacterSet::Range.new(token, active_opts)
+    exp << node.expressions.pop
+    nest(exp)
+  end
+
+  def close_completed_character_set_range
+    decrease_nesting if node.is_a?(CharacterSet::Range) && node.complete?
+  end
+
+  def intersection(token)
+    sequence_operation(CharacterSet::Intersection, token)
+  end
+
+  def sequence_operation(klass, token)
+    if node.last.is_a?(klass)
+      self.node = node.last
+    elsif !node.is_a?(klass)
+      operator = klass.new(token, active_opts)
+      sequence = operator.add_sequence
+      sequence.expressions = node.expressions
+      node.expressions = []
+      nest(operator)
+    end
+    node.add_sequence
   end
 
   def active_opts

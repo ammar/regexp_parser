@@ -10,8 +10,6 @@ module Regexp::Syntax
       implements :nonproperty, UnicodeProperty::V2_0_0
 
       implements :type,        CharacterType::Clustered
-      implements :set,         CharacterSet::Clustered
-      implements :subset,      CharacterSet::Clustered
 
       excludes   :property,    :newline
       excludes   :nonproperty, :newline

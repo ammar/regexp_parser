@@ -49,7 +49,7 @@ module RegexpParserTest
         return super if PATTERN !~ message
 
         warning = message.chomp
-        @warnings << warning if @whitelist.none?(&warning.method(:end_with?))
+        @warnings << warning if @whitelist.none?(&warning.method(:include?))
 
         self
       end

@@ -1,6 +1,7 @@
 %%{
   machine re_scanner;
-  include re_property "property.rl";
+  include re_char_type "char_type.rl";
+  include re_property  "property.rl";
 
   dot                   = '.';
   backslash             = '\\';
@@ -35,22 +36,14 @@
   collating_sequence    = '[.' . (alpha | [\-])+ . '.]';
   character_equivalent  = '[=' . alpha . '=]';
 
-  char_type             = [dDhHsSwWRX];
-
   line_anchor           = beginning_of_line | end_of_line;
   anchor_char           = [AbBzZG];
 
-  escaped_ascii         = [abefnrstv];
+  escaped_ascii         = [abefnrtv];
   octal_sequence        = [0-7]{1,3};
 
   hex_sequence          = 'x' . xdigit{1,2};
   hex_sequence_err      = 'x' . [^0-9a-fA-F{];
-  wide_hex_sequence     = 'x' . '{' . xdigit{1,8} . '}';
-
-  hex_or_not            = (xdigit|[^0-9a-fA-F}]); # note closing curly at end
-
-  wide_hex_seq_invalid  = 'x' . '{' . hex_or_not{1,9};
-  wide_hex_seq_empty    = 'x' . '{' . (space+)? . '}';
 
   codepoint_single      = 'u' . xdigit{4};
   codepoint_list        = 'u{' . xdigit{1,5} . (space . xdigit{1,5})* . '}';
@@ -110,6 +103,7 @@
 
   group_type            = group_atomic | group_passive | group_absence | group_named;
 
+  keep_mark             = 'K';
 
   assertion_type        = assertion_lookahead  | assertion_nlookahead |
                           assertion_lookbehind | assertion_nlookbehind;
@@ -127,8 +121,10 @@
   utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf)+;
   utf8_byte_sequence    = utf8_2_byte | utf8_3_byte | utf8_4_byte;
 
-  non_literal_escape    = char_type | anchor_char | escaped_ascii |
-                          group_ref | [xucCM];
+  non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
+                          group_ref | keep_mark | [xucCM];
+
+  non_set_escape        = (anchor_char | group_ref | keep_mark | [0-9cCM])-'b';
 
   # EOF error, used where it can be detected
   action premature_end_error {
@@ -150,11 +146,11 @@
   # closing bracket of the set.
   # --------------------------------------------------------------------------
   character_set := |*
-    ']' {
-      set_type  = set_depth > 1 ? :subset : :set
-      set_depth -= 1; in_set = set_depth > 0 ? true : false
+    set_close > (set_meta, 2) {
+      set_depth -= 1
+      in_set = set_depth > 0 ? true : false
 
-      emit(set_type, :close, *text(data, ts, te))
+      emit(:set, :close, *text(data, ts, te))
 
       if set_depth == 0
         fgoto main;
@@ -164,11 +160,11 @@
     };
 
     '-]' { # special case, emits two tokens
-      set_type  = set_depth > 1 ? :subset : :set
-      set_depth -= 1; in_set = set_depth > 0 ? true : false
+      set_depth -= 1
+      in_set = set_depth > 0 ? true : false
 
-      emit(set_type, :member, copy(data, ts..te-2), ts, te)
-      emit(set_type, :close,  copy(data, ts+1..te-1), ts, te)
+      emit(:literal, :literal, copy(data, ts..te-2), ts, te)
+      emit(:set, :close, copy(data, ts+1..te-1), ts, te)
 
       if set_depth == 0
         fgoto main;
@@ -177,59 +173,70 @@
       end
     };
 
+    '-&&' { # special case, emits two tokens
+      emit(:literal, :literal, '-', ts, te)
+      emit(:set, :intersection, '&&', ts, te)
+    };
+
     '^' {
       text = text(data, ts, te).first
       if tokens.last[1] == :open
-        emit(set_type, :negate, text, ts, te)
+        emit(:set, :negate, text, ts, te)
       else
-        emit(set_type, :member, text, ts, te)
+        emit(:literal, :literal, text, ts, te)
       end
     };
 
-    alnum . '-' . alnum {
-      emit(set_type, :range, *text(data, ts, te))
+    '-' {
+      text = text(data, ts, te).first
+      # ranges cant start with a subset or intersection/negation/range operator
+      if tokens.last[0] == :set
+        emit(:literal, :literal, text, ts, te)
+      else
+        emit(:set, :range, text, ts, te)
+      end
     };
 
+    # Unlike ranges, intersections can start or end at set boundaries, whereupon
+    # they match nothing: r = /[a&&]/; [r =~ ?a, r =~ ?&] # => [nil, nil]
     '&&' {
-      emit(set_type, :intersection, *text(data, ts, te))
+      emit(:set, :intersection, *text(data, ts, te))
     };
 
-    '\\' {
+    backslash {
       fcall set_escape_sequence;
     };
 
-    '[' >(open_bracket, 1) {
-      set_depth += 1; in_set = true
-      set_type  = set_depth > 1 ? :subset : :set
+    set_open >(open_bracket, 1) {
+      set_depth += 1
 
-      emit(set_type, :open, *text(data, ts, te))
+      emit(:set, :open, *text(data, ts, te))
       fcall character_set;
     };
 
     class_posix >(open_bracket, 1) @eof(premature_end_error) {
       text = text(data, ts, te).first
 
+      type = :posixclass
       class_name = text[2..-3]
       if class_name[0].chr == '^'
-        class_name = "non#{class_name[1..-1]}"
+        class_name = class_name[1..-1]
+        type = :nonposixclass
       end
 
-      token_sym = "class_#{class_name}".to_sym
-      emit(set_type, token_sym, text, ts, te)
+      emit(type, class_name.to_sym, text, ts, te)
     };
 
     collating_sequence >(open_bracket, 1) @eof(premature_end_error) {
-      emit(set_type, :collation, *text(data, ts, te))
+      emit(:set, :collation, *text(data, ts, te))
     };
 
     character_equivalent >(open_bracket, 1) @eof(premature_end_error) {
-      emit(set_type, :equivalent, *text(data, ts, te))
+      emit(:set, :equivalent, *text(data, ts, te))
     };
 
-    # exclude the closing bracket as a cleaner workaround for dealing with the
-    # ambiguity caused upon exit from the unicode properties machine
-    meta_char -- ']' {
-      emit(set_type, :member, *text(data, ts, te))
+    meta_char > (set_meta, 1) {
+      emit(:literal, :literal, *text(data, ts, te))
     };
 
     any            |
@@ -237,63 +244,22 @@
     utf8_2_byte    |
     utf8_3_byte    |
     utf8_4_byte    {
-      emit(set_type, :member, *text(data, ts, te))
+      emit(:literal, :literal, *text(data, ts, te))
     };
   *|;
 
   # set escapes scanner
   # --------------------------------------------------------------------------
   set_escape_sequence := |*
-    'b' > (escaped_set_alpha, 2) {
-      emit(set_type, :backspace, *text(data, ts, te, 1))
+    non_set_escape > (escaped_set_alpha, 2) {
+      emit(:escape, :literal, *text(data, ts, te, 1))
       fret;
     };
 
-    char_type > (escaped_set_alpha, 4) {
-      case text = text(data, ts, te, 1).first
-      when '\d'; emit(set_type, :type_digit,     text, ts-1, te)
-      when '\D'; emit(set_type, :type_nondigit,  text, ts-1, te)
-      when '\h'; emit(set_type, :type_hex,       text, ts-1, te)
-      when '\H'; emit(set_type, :type_nonhex,    text, ts-1, te)
-      when '\s'; emit(set_type, :type_space,     text, ts-1, te)
-      when '\S'; emit(set_type, :type_nonspace,  text, ts-1, te)
-      when '\w'; emit(set_type, :type_word,      text, ts-1, te)
-      when '\W'; emit(set_type, :type_nonword,   text, ts-1, te)
-      when '\R'; emit(set_type, :type_linebreak, text, ts-1, te)
-      when '\X'; emit(set_type, :type_xgrapheme, text, ts-1, te)
-      end
-      fret;
-    };
-
-    hex_sequence . '-\\' . hex_sequence {
-      emit(set_type, :range_hex, *text(data, ts, te, 1))
-      fret;
-    };
-
-    hex_sequence {
-      emit(set_type, :member_hex, *text(data, ts, te, 1))
-      fret;
-    };
-
-    meta_char | [\\\]\-\,] {
-      emit(set_type, :escape, *text(data, ts, te, 1))
-      fret;
-    };
-
-    property_char > (escaped_set_alpha, 3) {
+    any > (escaped_set_alpha, 1) {
       fhold;
       fnext character_set;
-      fcall unicode_property;
-    };
-
-    # special case exclusion of escaped dash, could be cleaner.
-    (ascii_print - char_type -- [\-}]) > (escaped_set_alpha, 1) |
-    ascii_nonprint            |
-    utf8_2_byte               |
-    utf8_3_byte               |
-    utf8_4_byte               {
-      emit(set_type, :escape, *text(data, ts, te, 1))
-      fret;
+      fcall escape_sequence;
     };
   *|;
 
@@ -338,11 +304,11 @@
       # it is a word boundary anchor. A syntax might "normalize" it if needed.
       case text = text(data, ts, te, 1).first
       when '\a'; emit(:escape, :bell,           text, ts-1, te)
+      when '\b'; emit(:escape, :backspace,      text, ts-1, te)
       when '\e'; emit(:escape, :escape,         text, ts-1, te)
       when '\f'; emit(:escape, :form_feed,      text, ts-1, te)
       when '\n'; emit(:escape, :newline,        text, ts-1, te)
       when '\r'; emit(:escape, :carriage,       text, ts-1, te)
-      when '\s'; emit(:escape, :space,          text, ts-1, te)
       when '\t'; emit(:escape, :tab,            text, ts-1, te)
       when '\v'; emit(:escape, :vertical_tab,   text, ts-1, te)
       end
@@ -364,17 +330,7 @@
       fret;
     };
 
-    wide_hex_sequence > (escaped_alpha, 5) $eof(premature_end_error) {
-      emit(:escape, :hex_wide, *text(data, ts, te, 1))
-      fret;
-    };
-
     hex_sequence_err @invalid_sequence_error {
-      fret;
-    };
-
-    (wide_hex_seq_invalid | wide_hex_seq_empty) {
-      raise InvalidSequenceError.new("wide hex sequence")
       fret;
     };
 
@@ -408,9 +364,15 @@
       fret;
     };
 
+    char_type_char > (escaped_alpha, 2) {
+      fhold;
+      fnext *(in_set ? fentry(character_set) : fentry(main));
+      fcall char_type;
+    };
+
     property_char > (escaped_alpha, 2) {
       fhold;
-      fnext main;
+      fnext *(in_set ? fentry(character_set) : fentry(main));
       fcall unicode_property;
     };
 
@@ -466,7 +428,7 @@
       emit(:anchor, :eol, *text(data, ts, te))
     };
 
-    backslash . 'K' > (backslashed, 4) {
+    backslash . keep_mark > (backslashed, 4) {
       emit(:keep, :mark, *text(data, ts, te))
     };
 
@@ -484,38 +446,13 @@
       end
     };
 
-    # Character types
-    #   \d, \D    digit, non-digit
-    #   \h, \H    hex, non-hex
-    #   \s, \S    space, non-space
-    #   \w, \W    word, non-word
-    # ------------------------------------------------------------------------
-    backslash . char_type > (backslashed, 2) {
-      case text = text(data, ts, te).first
-      when '\\d'; emit(:type, :digit,      text, ts, te)
-      when '\\D'; emit(:type, :nondigit,   text, ts, te)
-      when '\\h'; emit(:type, :hex,        text, ts, te)
-      when '\\H'; emit(:type, :nonhex,     text, ts, te)
-      when '\\s'; emit(:type, :space,      text, ts, te)
-      when '\\S'; emit(:type, :nonspace,   text, ts, te)
-      when '\\w'; emit(:type, :word,       text, ts, te)
-      when '\\W'; emit(:type, :nonword,    text, ts, te)
-      when '\\R'; emit(:type, :linebreak,  text, ts, te)
-      when '\\X'; emit(:type, :xgrapheme,  text, ts, te)
-      else
-        raise ScannerError.new(
-          "Unexpected character in type at #{text} (char #{ts})")
-      end
-    };
-
-
     # Character sets
     # ------------------------------------------------------------------------
     set_open {
-      set_depth += 1; in_set = true
-      set_type  = set_depth > 1 ? :subset : :set
+      set_depth += 1
+      in_set = true
 
-      emit(set_type, :open, *text(data, ts, te))
+      emit(:set, :open, *text(data, ts, te))
       fcall character_set;
     };
 
@@ -859,8 +796,11 @@ class Regexp::Scanner
     self.group_depth = 0
     self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
 
-    in_set, set_depth, set_type = false, 0, :set
-    in_conditional, conditional_depth, conditional_stack = false, 0, []
+    in_set = false
+    set_depth = 0
+    in_conditional = false
+    conditional_depth = 0
+    conditional_stack = []
 
     %% write data;
     %% write init;

@@ -17,7 +17,7 @@ class ScannerMeta < Test::Unit::TestCase
       5   => [:meta,        :alternation,             '|',    6, 7],
       8   => [:meta,        :alternation,             '|',    9, 10],
       11  => [:escape,      :alternation,             '\|',   12, 14],
-      15  => [:set,         :member,                  '|',    17, 18],
+      15  => [:literal,     :literal,                 '|',    17, 18],
     },
   }
 

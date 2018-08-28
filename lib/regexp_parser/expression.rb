@@ -3,7 +3,7 @@ module Regexp::Expression
   class Base
     attr_accessor :type, :token
     attr_accessor :text, :ts
-    attr_accessor :level, :set_level, :conditional_level
+    attr_accessor :level, :set_level, :conditional_level, :nesting_level
 
     attr_accessor :quantifier
     attr_accessor :options
@@ -16,6 +16,7 @@ module Regexp::Expression
       self.level             = token.level
       self.set_level         = token.set_level
       self.conditional_level = token.conditional_level
+      self.nesting_level     = 0
       self.quantifier        = nil
       self.options           = options
     end
@@ -169,6 +170,7 @@ require 'regexp_parser/expression/methods/strfregexp'
 require 'regexp_parser/expression/quantifier'
 require 'regexp_parser/expression/subexpression'
 require 'regexp_parser/expression/sequence'
+require 'regexp_parser/expression/sequence_operation'
 
 require 'regexp_parser/expression/classes/alternation'
 require 'regexp_parser/expression/classes/anchor'
@@ -179,7 +181,10 @@ require 'regexp_parser/expression/classes/free_space'
 require 'regexp_parser/expression/classes/group'
 require 'regexp_parser/expression/classes/keep'
 require 'regexp_parser/expression/classes/literal'
+require 'regexp_parser/expression/classes/posix_class'
 require 'regexp_parser/expression/classes/property'
 require 'regexp_parser/expression/classes/root'
 require 'regexp_parser/expression/classes/set'
+require 'regexp_parser/expression/classes/set/intersection'
+require 'regexp_parser/expression/classes/set/range'
 require 'regexp_parser/expression/classes/type'

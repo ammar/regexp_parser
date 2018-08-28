@@ -28,9 +28,7 @@ class TestSyntaxV1_8 < Test::Unit::TestCase
 
       quantifier: [
         Quantifier::Possessive
-      ].flatten,
-
-      subset: nil
+      ].flatten
     },
   }
 
