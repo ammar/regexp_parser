@@ -18,11 +18,13 @@ UPCOMING
 	  - e.g. :punct_dash is now :dash_punctuation
 	* Changed (?m) and the likes to emit as :options_switch token
 	  - allows differentiating from group-local :options, e.g. (?m:.)
+	* Changed Backreference::Number#number from String to Integer
 	* Fixed ruby version mapping of some properties
 	* Fixed scanning of some property spellings, e.g. with dashes
 	* Fixed some incorrect property alias normalizations
 	* Added support for all previously missing properties (about 250)
 	* Added Expression::UnicodeProperty#shortcut (e.g. returns 'm' for '\p{mark}')
+	* Added #number, #name and/or #nest_level to all backref/call expressions
 	* Bumped version to XXX
 
 Sun Apr 29 2018 Janosch Müller <janosch84@gmail.com>

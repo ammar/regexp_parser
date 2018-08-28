@@ -1,7 +1,15 @@
 module Regexp::Expression
-
   module Backreference
     class Base < Regexp::Expression::Base; end
+
+    class Number < Backreference::Base
+      attr_reader :number
+
+      def initialize(token, options = {})
+        @number = token.text[token.token.equal?(:number) ? 1..-1 : 3..-2].to_i
+        super
+      end
+    end
 
     class Name < Backreference::Base
       attr_reader :name
@@ -12,31 +20,28 @@ module Regexp::Expression
       end
     end
 
-    class Number < Backreference::Base
-      attr_reader :number
+    class NumberCall         < Backreference::Number; end
+    class NumberRelative     < Backreference::Number; end
+    class NumberCallRelative < Backreference::Number; end
+    class NameCall < Backreference::Name; end
+
+    class NumberNestLevel < Backreference::Base
+      attr_reader :number, :nest_level
 
       def initialize(token, options = {})
-        @number = token.text[token.token.equal?(:number) ? 1..-1 : 3..-2]
+        @number, @nest_level = token.text[3..-2].split(/(?=[+-])/).map(&:to_i)
         super
       end
     end
 
-    class NumberRelative      < Backreference::Number; end
-
-    class NameNestLevel       < Backreference::Base; end
-    class NumberNestLevel     < Backreference::Base; end
-
-    class NameCall < Backreference::Base
-      attr_reader :name
+    class NameNestLevel < Backreference::Base
+      attr_reader :name, :nest_level
 
       def initialize(token, options = {})
-        @name = token.text[3..-2]
+        @name, nest_level = token.text[3..-2].split(/(?=[+-])/)
+        @nest_level = nest_level.to_i
         super
       end
     end
-
-    class NumberCall          < Backreference::Base; end
-    class NumberCallRelative  < Backreference::Base; end
   end
-
 end

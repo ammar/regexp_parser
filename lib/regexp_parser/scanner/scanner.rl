@@ -628,10 +628,10 @@
       when /^\\k'[^\d-](\w+)?[+\-]\d+'/ # single-quotes
         emit(:backref, :name_nest_ref_sq,  text, ts, te)
 
-      when /^\\([gk])<\d+[+\-]\d+>/ # angle-brackets
+      when /^\\([gk])<-?\d+[+\-]\d+>/ # angle-brackets
         emit(:backref, :number_nest_ref_ab,  text, ts, te)
 
-      when /^\\([gk])'\d+[+\-]\d+'/ # single-quotes
+      when /^\\([gk])'-?\d+[+\-]\d+'/ # single-quotes
         emit(:backref, :number_nest_ref_sq,  text, ts, te)
 
       else
