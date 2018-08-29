@@ -21,14 +21,11 @@ module Regexp::Expression
       self.options           = options
     end
 
-    def clone
-      copy = dup
-
-      copy.text       = (text        ? text.dup         : nil)
-      copy.options    = (options     ? options.dup      : nil)
-      copy.quantifier = (quantifier  ? quantifier.clone : nil)
-
-      copy
+    def initialize_clone(other)
+      other.text       = (text        ? text.dup         : nil)
+      other.options    = (options     ? options.dup      : nil)
+      other.quantifier = (quantifier  ? quantifier.clone : nil)
+      super
     end
 
     def to_re(format = :full)

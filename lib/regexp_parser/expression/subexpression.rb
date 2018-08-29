@@ -10,10 +10,9 @@ module Regexp::Expression
     end
 
     # Override base method to clone the expressions as well.
-    def clone
-      copy = super
-      copy.expressions = expressions.map(&:clone)
-      copy
+    def initialize_clone(other)
+      other.expressions = expressions.map(&:clone)
+      super
     end
 
     def <<(exp)

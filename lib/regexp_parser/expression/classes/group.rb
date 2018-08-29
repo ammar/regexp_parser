@@ -29,10 +29,9 @@ module Regexp::Expression
         super
       end
 
-      def clone
-        copy = super
-        copy.instance_variable_set(:@name, name.dup)
-        copy
+      def initialize_clone(other)
+        other.instance_variable_set(:@name, name.dup)
+        super
       end
     end
 

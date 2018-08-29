@@ -11,10 +11,9 @@ module Regexp::Expression
       @max   = max
     end
 
-    def clone
-      copy = dup
-      copy.instance_variable_set(:@text, text.dup)
-      copy
+    def initialize_clone(other)
+      other.instance_variable_set(:@text, text.dup)
+      super
     end
 
     def to_s
