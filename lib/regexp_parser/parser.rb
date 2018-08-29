@@ -471,7 +471,7 @@ class Regexp::Parser
       mode = :greedy
     end
 
-    range = range_text.gsub(/\{|\}/, '').split(',', 2).each {|i| i.strip}
+    range = range_text.gsub(/\{|\}/, '').split(',', 2)
     min = range[0].empty? ? 0 : range[0]
     max = range[1] ? (range[1].empty? ? -1 : range[1]) : min
 
