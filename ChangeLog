@@ -25,6 +25,7 @@ UPCOMING
 	* Added support for all previously missing properties (about 250)
 	* Added Expression::UnicodeProperty#shortcut (e.g. returns 'm' for '\p{mark}')
 	* Added #number, #name and/or #nest_level to all backref/call expressions
+	# Added #number and #number_at_level to Group::Capture and Named expressions
 	* Bumped version to XXX
 
 Sun Apr 29 2018 Janosch Müller <janosch84@gmail.com>

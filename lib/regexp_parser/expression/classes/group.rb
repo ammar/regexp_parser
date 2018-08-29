@@ -1,27 +1,27 @@
 module Regexp::Expression
-
   module Group
     class Base < Regexp::Expression::Subexpression
-      def capturing?
-        [:capture, :named].include?(token)
-      end
-
-      def comment?
-        type == :comment
-      end
-
       def to_s(format = :full)
         "#{text}#{expressions.join})#{quantifier_affix(format)}"
       end
+
+      def capturing?; false end
+
+      def comment?; false end
     end
 
-    class Atomic    < Group::Base; end
-    class Capture   < Group::Base; end
-    class Passive   < Group::Base; end
-    class Options   < Group::Base; end
-    class Absence   < Group::Base; end
+    class Atomic  < Group::Base; end
+    class Passive < Group::Base; end
+    class Options < Group::Base; end
+    class Absence < Group::Base; end
 
-    class Named     < Group::Capture
+    class Capture < Group::Base
+      attr_accessor :number, :number_at_level
+
+      def capturing?; true end
+    end
+
+    class Named < Group::Capture
       attr_reader :name
 
       def initialize(token, options = {})
@@ -40,6 +40,8 @@ module Regexp::Expression
       def to_s(_format = :full)
         text.dup
       end
+
+      def comment?; true end
     end
   end
 
@@ -52,5 +54,4 @@ module Regexp::Expression
     class Lookbehind          < Assertion::Base; end
     class NegativeLookbehind  < Assertion::Base; end
   end
-
 end

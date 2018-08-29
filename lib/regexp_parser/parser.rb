@@ -33,6 +33,8 @@ class Regexp::Parser
     self.switching_options = false
     self.conditional_nesting = []
 
+    self.captured_group_counts = Hash.new(0)
+
     Regexp::Lexer.scan(input, syntax) do |token|
       parse_token(token)
     end
@@ -47,7 +49,8 @@ class Regexp::Parser
   private
 
   attr_accessor :root, :node, :nesting,
-                :options_stack, :switching_options, :conditional_nesting
+                :options_stack, :switching_options, :conditional_nesting,
+                :captured_group_counts
 
   def options_from_input(input)
     return {} unless input.is_a?(::Regexp)
@@ -540,6 +543,12 @@ class Regexp::Parser
       raise UnknownTokenError.new('Group type open', token)
     end
 
+    if exp.capturing?
+      exp.number          = total_captured_group_count + 1
+      exp.number_at_level = captured_group_count_at_level + 1
+      count_captured_group
+    end
+
     # Push the active options to the stack again. This way we can simply pop the
     # stack for any group we close, no matter if it had its own options or not.
     options_stack << active_opts
@@ -595,5 +604,17 @@ class Regexp::Parser
 
   def active_opts
     options_stack.last
+  end
+
+  def total_captured_group_count
+    captured_group_counts.values.reduce(0, :+)
+  end
+
+  def captured_group_count_at_level
+    captured_group_counts[node.level]
+  end
+
+  def count_captured_group
+    captured_group_counts[node.level] += 1
   end
 end # module Regexp::Parser

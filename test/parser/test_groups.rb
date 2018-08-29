@@ -244,4 +244,24 @@ class TestParserGroups < Test::Unit::TestCase
       end
     end
   end
+
+  def test_parse_group_number
+    t = RP.parse('(a)(?=b)((?:c)(d|(e)))')
+    assert_equal 1,     t[0].number
+    assert_equal false, t[1].respond_to?(:number)
+    assert_equal 2,     t[2].number
+    assert_equal false, t[2][0].respond_to?(:number)
+    assert_equal 3,     t[2][1].number
+    assert_equal 4,     t[2][1][0][1][0].number
+  end
+
+  def test_parse_group_number_at_level
+    t = RP.parse('(a)(?=b)((?:c)(d|(e)))')
+    assert_equal 1,     t[0].number_at_level
+    assert_equal false, t[1].respond_to?(:number_at_level)
+    assert_equal 2,     t[2].number_at_level
+    assert_equal false, t[2][0].respond_to?(:number_at_level)
+    assert_equal 1,     t[2][1].number_at_level
+    assert_equal 1,     t[2][1][0][1][0].number_at_level
+  end
 end
