@@ -67,8 +67,8 @@ module Regexp::Syntax
         [:backref, :name_ref]
       when :name_call_ab, :name_call_sq
         [:backref, :name_call]
-      when :name_nest_ref_ab, :name_nest_ref_sq
-        [:backref, :name_nest_ref]
+      when :name_recursion_ref_ab, :name_recursion_ref_sq
+        [:backref, :name_recursion_ref]
       when :number_ref_ab, :number_ref_sq
         [:backref, :number_ref]
       when :number_call_ab, :number_call_sq
@@ -77,8 +77,8 @@ module Regexp::Syntax
         [:backref, :number_rel_ref]
       when :number_rel_call_ab, :number_rel_call_sq
         [:backref, :number_rel_call]
-      when :number_nest_ref_ab, :number_nest_ref_sq
-        [:backref, :number_nest_ref]
+      when :number_recursion_ref_ab, :number_recursion_ref_sq
+        [:backref, :number_recursion_ref]
       else
         [type, token]
       end

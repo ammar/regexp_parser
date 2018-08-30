@@ -5,9 +5,9 @@ module Regexp::Syntax
       Name      = [:name_ref]
       Number    = [:number, :number_ref, :number_rel_ref]
 
-      NestLevel = [:name_nest_ref, :number_nest_ref]
+      RecursionLevel = [:name_recursion_ref, :number_recursion_ref]
 
-      All = Name + Number + NestLevel
+      All = Name + Number + RecursionLevel
       Type = :backref
     end
 

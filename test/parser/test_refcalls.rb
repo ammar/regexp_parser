@@ -105,66 +105,66 @@ class TestParserRefcalls < Test::Unit::TestCase
     assert_equal(-1,   exp.number)
   end
 
-  def test_parse_backref_name_nest_level_ab
+  def test_parse_backref_name_recursion_level_ab
     root = RP.parse('(?<X>abc)\k<X-0>', 'ruby/1.9')
     exp  = root.expressions.at(1)
 
-    assert_instance_of Backreference::NameNestLevel, exp
+    assert_instance_of Backreference::NameRecursionLevel, exp
     assert_equal 'X',  exp.name
-    assert_equal 0,    exp.nest_level
+    assert_equal 0,    exp.recursion_level
   end
 
-  def test_parse_backref_name_nest_level_sq
+  def test_parse_backref_name_recursion_level_sq
     root = RP.parse("(?<X>abc)\\k'X-0'", 'ruby/1.9')
     exp  = root.expressions.at(1)
 
-    assert_instance_of Backreference::NameNestLevel, exp
+    assert_instance_of Backreference::NameRecursionLevel, exp
     assert_equal 'X',  exp.name
-    assert_equal 0,    exp.nest_level
+    assert_equal 0,    exp.recursion_level
   end
 
-  def test_parse_backref_number_nest_level_ab
+  def test_parse_backref_number_recursion_level_ab
     root = RP.parse('(abc)\k<1-0>', 'ruby/1.9')
     exp  = root.expressions.at(1)
 
-    assert_instance_of Backreference::NumberNestLevel, exp
+    assert_instance_of Backreference::NumberRecursionLevel, exp
     assert_equal 1,    exp.number
-    assert_equal 0,    exp.nest_level
+    assert_equal 0,    exp.recursion_level
   end
 
-  def test_parse_backref_number_nest_level_sq
+  def test_parse_backref_number_recursion_level_sq
     root = RP.parse("(abc)\\k'1-0'", 'ruby/1.9')
     exp  = root.expressions.at(1)
 
-    assert_instance_of Backreference::NumberNestLevel, exp
+    assert_instance_of Backreference::NumberRecursionLevel, exp
     assert_equal 1,    exp.number
-    assert_equal 0,    exp.nest_level
+    assert_equal 0,    exp.recursion_level
   end
 
-  def test_parse_backref_negative_number_nest_level
+  def test_parse_backref_negative_number_recursion_level
     root = RP.parse("(abc)\\k'-1+0'", 'ruby/1.9')
     exp  = root.expressions.at(1)
 
-    assert_instance_of Backreference::NumberNestLevel, exp
+    assert_instance_of Backreference::NumberRecursionLevel, exp
     assert_equal(-1,   exp.number)
-    assert_equal 0,    exp.nest_level
+    assert_equal 0,    exp.recursion_level
   end
 
-  def test_parse_backref_number_positive_nest_level
+  def test_parse_backref_number_positive_recursion_level
     root = RP.parse("(abc)\\k'1+1'", 'ruby/1.9')
     exp  = root.expressions.at(1)
 
-    assert_instance_of Backreference::NumberNestLevel, exp
+    assert_instance_of Backreference::NumberRecursionLevel, exp
     assert_equal 1,    exp.number
-    assert_equal 1,    exp.nest_level
+    assert_equal 1,    exp.recursion_level
   end
 
-  def test_parse_backref_number_negative_nest_level
+  def test_parse_backref_number_negative_recursion_level
     root = RP.parse("(abc)\\k'1-1'", 'ruby/1.9')
     exp  = root.expressions.at(1)
 
-    assert_instance_of Backreference::NumberNestLevel, exp
+    assert_instance_of Backreference::NumberRecursionLevel, exp
     assert_equal 1,    exp.number
-    assert_equal(-1,   exp.nest_level)
+    assert_equal(-1,   exp.recursion_level)
   end
 end

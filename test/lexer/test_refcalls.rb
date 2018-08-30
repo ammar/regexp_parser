@@ -27,11 +27,11 @@ class LexerRefCalls < Test::Unit::TestCase
     "(abc)\\g'-1'"    => [3, :backref, :number_rel_call,    "\\g'-1'",    5, 11, 0, 0, 0],
 
     # Group back-references, with nesting level
-    '(?<X>abc)\k<X-0>'  => [3, :backref, :name_nest_ref,    '\k<X-0>',    9, 16, 0, 0, 0],
-    "(?<X>abc)\\k'X-0'" => [3, :backref, :name_nest_ref,    "\\k'X-0'",   9, 16, 0, 0, 0],
+    '(?<X>abc)\k<X-0>'  => [3, :backref, :name_recursion_ref,    '\k<X-0>',    9, 16, 0, 0, 0],
+    "(?<X>abc)\\k'X-0'" => [3, :backref, :name_recursion_ref,    "\\k'X-0'",   9, 16, 0, 0, 0],
 
-    '(abc)\k<1-0>'      => [3, :backref, :number_nest_ref,  '\k<1-0>',    5, 12, 0, 0, 0],
-    "(abc)\\k'1-0'"     => [3, :backref, :number_nest_ref,  "\\k'1-0'",   5, 12, 0, 0, 0],
+    '(abc)\k<1-0>'      => [3, :backref, :number_recursion_ref,  '\k<1-0>',    5, 12, 0, 0, 0],
+    "(abc)\\k'1-0'"     => [3, :backref, :number_recursion_ref,  "\\k'1-0'",   5, 12, 0, 0, 0],
   }
 
   tests.each_with_index do |(pattern, (index, type, token, text, ts, te, level, set_level, conditional_level)), count|

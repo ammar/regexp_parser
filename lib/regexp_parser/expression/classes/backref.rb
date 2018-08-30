@@ -25,21 +25,21 @@ module Regexp::Expression
     class NumberCallRelative < Backreference::Number; end
     class NameCall < Backreference::Name; end
 
-    class NumberNestLevel < Backreference::Base
-      attr_reader :number, :nest_level
+    class NumberRecursionLevel < Backreference::Base
+      attr_reader :number, :recursion_level
 
       def initialize(token, options = {})
-        @number, @nest_level = token.text[3..-2].split(/(?=[+-])/).map(&:to_i)
+        @number, @recursion_level = token.text[3..-2].split(/(?=[+-])/).map(&:to_i)
         super
       end
     end
 
-    class NameNestLevel < Backreference::Base
-      attr_reader :name, :nest_level
+    class NameRecursionLevel < Backreference::Base
+      attr_reader :name, :recursion_level
 
       def initialize(token, options = {})
-        @name, nest_level = token.text[3..-2].split(/(?=[+-])/)
-        @nest_level = nest_level.to_i
+        @name, recursion_level = token.text[3..-2].split(/(?=[+-])/)
+        @recursion_level = recursion_level.to_i
         super
       end
     end

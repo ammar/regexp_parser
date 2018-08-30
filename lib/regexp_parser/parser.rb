@@ -158,16 +158,16 @@ class Regexp::Parser
     case token.token
     when :name_ref
       node << Backreference::Name.new(token, active_opts)
-    when :name_nest_ref
-      node << Backreference::NameNestLevel.new(token, active_opts)
+    when :name_recursion_ref
+      node << Backreference::NameRecursionLevel.new(token, active_opts)
     when :name_call
       node << Backreference::NameCall.new(token, active_opts)
     when :number, :number_ref
       node << Backreference::Number.new(token, active_opts)
     when :number_rel_ref
       node << Backreference::NumberRelative.new(token, active_opts)
-    when :number_nest_ref
-      node << Backreference::NumberNestLevel.new(token, active_opts)
+    when :number_recursion_ref
+      node << Backreference::NumberRecursionLevel.new(token, active_opts)
     when :number_call
       node << Backreference::NumberCall.new(token, active_opts)
     when :number_rel_call
