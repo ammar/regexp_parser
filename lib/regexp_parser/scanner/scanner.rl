@@ -46,7 +46,7 @@
   hex_sequence_err      = 'x' . [^0-9a-fA-F{];
 
   codepoint_single      = 'u' . xdigit{4};
-  codepoint_list        = 'u{' . xdigit{1,5} . (space . xdigit{1,5})* . '}';
+  codepoint_list        = 'u{' . xdigit{1,6} . (space . xdigit{1,6})* . '}';
   codepoint_sequence    = codepoint_single | codepoint_list;
 
   control_sequence      = ('c' | 'C-') . (backslash . 'M-')?;
