@@ -1,10 +1,12 @@
 UPCOMING
 
-	* Breaking changes to character set and property handling:
-	* Changed parsing of sets (a.k.a. character classes or "bracket expressions")
+	* Several breaking changes, mostly to character sets and properties
+
+	* Changed handling of sets (a.k.a. character classes or "bracket expressions")
 	  - see PR #55 / issue #47 for details
 	  - sets are now parsed to expression trees like other nestable expressions
 	  - #scan now emits the same tokens as outside sets (no longer :set, :member)
+	  - CharacterSet#members has been removed
 	  - new Range and Intersection classes represent corresponding syntax features
 	  - a new PosixClass expression class represents e.g. [[:ascii:]]
 	    - PosixClass instances behave like Property ones, e.g. support #negative?
@@ -16,17 +18,19 @@ UPCOMING
 	* Changed naming of many property tokens (emitted for \p{...})
 	  - if you work with these tokens, see PR #56 for details
 	  - e.g. :punct_dash is now :dash_punctuation
-	* Changed (?m) and the likes to emit as :options_switch token
+	* Changed (?m) and the likes to emit as :options_switch token (@4ade4d1)
 	  - allows differentiating from group-local :options, e.g. (?m:.)
-	* Changed Backreference::Number#number from String to Integer
+	* Changed name of Backreference::*NestLevel to *RecursionLevel (@4184339)
+	* Changed Backreference::Number#number from String to Integer (@40a2231)
+
 	* Fixed ruby version mapping of some properties
 	* Fixed scanning of some property spellings, e.g. with dashes
 	* Fixed some incorrect property alias normalizations
+
 	* Added support for all previously missing properties (about 250)
 	* Added Expression::UnicodeProperty#shortcut (e.g. returns 'm' for '\p{mark}')
-	* Added #number, #name and/or #nest_level to all backref/call expressions
-	# Added #number and #number_at_level to Group::Capture and Named expressions
-	* Bumped version to XXX
+	* Added #number/#name/#recursion_level to all backref/call expressions (@174bf21)
+	* Added #number and #number_at_level to capturing group expressions (@40a2231)
 
 Sun Apr 29 2018 Janosch Müller <janosch84@gmail.com>
 
