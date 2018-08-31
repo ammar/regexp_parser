@@ -577,7 +577,8 @@ class Regexp::Parser
 
   def range(token)
     exp = CharacterSet::Range.new(token, active_opts)
-    exp << node.expressions.pop
+    scope = node.last.is_a?(CharacterSet::IntersectedSequence) ? node.last : node
+    exp << scope.expressions.pop
     nest(exp)
   end
 

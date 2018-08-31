@@ -1,5 +1,7 @@
 require File.expand_path('../../../helpers', __FILE__)
 
+# edge cases with `...-&&...` and `...&&-...` are checked in test_ranges.rb
+
 class ParserSetIntersections < Test::Unit::TestCase
   def test_parse_set_intersection
     root = RP.parse('[a&&z]')
@@ -47,6 +49,30 @@ class ParserSetIntersections < Test::Unit::TestCase
     refute       set.matches?('a')
     refute       set.matches?('&')
     assert       set.matches?('b')
+  end
+
+  def test_parse_set_intersection_trailing_range
+    root = RP.parse('[a&&a-z]')
+    set  = root[0]
+    ints = set[0]
+
+    assert_equal 1, set.count
+    assert_equal CharacterSet::Intersection, ints.class
+    assert_equal 2, ints.count
+
+    seq1, seq2 = ints.expressions
+    assert_equal CharacterSet::IntersectedSequence, seq1.class
+    assert_equal 1, seq1.count
+    assert_equal 'a', seq1.first.to_s
+    assert_equal Literal, seq1.first.class
+    assert_equal CharacterSet::IntersectedSequence, seq2.class
+    assert_equal 1, seq2.count
+    assert_equal 'a-z', seq2.first.to_s
+    assert_equal CharacterSet::Range, seq2.first.class
+
+    assert       set.matches?('a')
+    refute       set.matches?('&')
+    refute       set.matches?('b')
   end
 
   def test_parse_set_intersection_type
