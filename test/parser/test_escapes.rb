@@ -47,11 +47,35 @@ class TestParserEscapes < Test::Unit::TestCase
     end
   end
 
+  def test_parse_chars_and_codepoints
+    root = RP.parse(/\n\?\101\x42\u0043\u{44 45}/)
+
+    assert_equal "\n",       root[0].char
+    assert_equal 10,         root[0].codepoint
+
+    assert_equal "?",        root[1].char
+    assert_equal 63,         root[1].codepoint
+
+    assert_equal "A",        root[2].char
+    assert_equal 65,         root[2].codepoint
+
+    assert_equal "B",        root[3].char
+    assert_equal 66,         root[3].codepoint
+
+    assert_equal "C",        root[4].char
+    assert_equal 67,         root[4].codepoint
+
+    assert_equal ["D", "E"], root[5].chars
+    assert_equal [68, 69],   root[5].codepoints
+  end
+
   def test_parse_escape_control_sequence_lower
     root = RP.parse(/a\\\c2b/)
 
     assert_equal EscapeSequence::Control, root[2].class
     assert_equal '\\c2',                  root[2].text
+    assert_equal "\u0012",                root[2].char
+    assert_equal 18,                      root[2].codepoint
   end
 
   def test_parse_escape_control_sequence_upper
@@ -59,6 +83,8 @@ class TestParserEscapes < Test::Unit::TestCase
 
     assert_equal EscapeSequence::Control, root[2].class
     assert_equal '\\C-C',                 root[2].text
+    assert_equal "\u0003",                root[2].char
+    assert_equal 3,                       root[2].codepoint
   end
 
   def test_parse_escape_meta_sequence
@@ -66,6 +92,8 @@ class TestParserEscapes < Test::Unit::TestCase
 
     assert_equal EscapeSequence::Meta, root[2].class
     assert_equal '\\M-Z',              root[2].text
+    assert_equal "\u00DA",             root[2].char
+    assert_equal 218,                  root[2].codepoint
   end
 
   def test_parse_escape_meta_control_sequence
@@ -73,6 +101,8 @@ class TestParserEscapes < Test::Unit::TestCase
 
     assert_equal EscapeSequence::MetaControl, root[2].class
     assert_equal '\\M-\\C-X',                 root[2].text
+    assert_equal "\u0098",                    root[2].char
+    assert_equal 152,                         root[2].codepoint
   end
 
   def test_parse_lower_c_meta_control_sequence
@@ -80,6 +110,8 @@ class TestParserEscapes < Test::Unit::TestCase
 
     assert_equal EscapeSequence::MetaControl, root[2].class
     assert_equal '\\M-\\cX',                  root[2].text
+    assert_equal "\u0098",                    root[2].char
+    assert_equal 152,                         root[2].codepoint
   end
 
   def test_parse_escape_reverse_meta_control_sequence
@@ -87,6 +119,8 @@ class TestParserEscapes < Test::Unit::TestCase
 
     assert_equal EscapeSequence::MetaControl, root[2].class
     assert_equal '\\C-\\M-X',                 root[2].text
+    assert_equal "\u0098",                    root[2].char
+    assert_equal 152,                         root[2].codepoint
   end
 
   def test_parse_escape_reverse_lower_c_meta_control_sequence
@@ -94,6 +128,7 @@ class TestParserEscapes < Test::Unit::TestCase
 
     assert_equal EscapeSequence::MetaControl, root[2].class
     assert_equal '\\c\\M-X',                  root[2].text
+    assert_equal "\u0098",                    root[2].char
+    assert_equal 152,                         root[2].codepoint
   end
-
 end

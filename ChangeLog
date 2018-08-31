@@ -30,6 +30,7 @@ UPCOMING
 
 	* Added support for all previously missing properties (about 250)
 	* Added Expression::UnicodeProperty#shortcut (e.g. returns 'm' for '\p{mark}')
+	* Added #char(s) and #codepoint(s) methods to all EscapeSequence expressions
 	* Added #number/#name/#recursion_level to all backref/call expressions (@174bf21)
 	* Added #number and #number_at_level to capturing group expressions (@40a2231)
 
