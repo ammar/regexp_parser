@@ -11,10 +11,6 @@ class TestParserEscapes < Test::Unit::TestCase
     /a\tc/    => [1, :escape,   :tab,               EscapeSequence::Tab],
     /a\vc/    => [1, :escape,   :vertical_tab,      EscapeSequence::VerticalTab],
 
-    # special cases
-    /a\bc/    => [1, :anchor,   :word_boundary,     Anchor::WordBoundary],
-    /a\sc/    => [1, :type,     :space,             CharacterType::Space],
-
     # meta character escapes
     /a\.c/    => [1, :escape,   :dot,               EscapeSequence::Literal],
     /a\?c/    => [1, :escape,   :zero_or_one,       EscapeSequence::Literal],
