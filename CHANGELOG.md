@@ -1,4 +1,4 @@
-## [Unreleased]
+## [1.0.0] - 2018-09-01 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 This release includes several breaking changes, mostly to character sets, #map and properties.
 
