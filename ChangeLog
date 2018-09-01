@@ -27,6 +27,7 @@ UPCOMING
 	* Fixed scanning of some property spellings, e.g. with dashes
 	* Fixed some incorrect property alias normalizations
 	* Fixed scanning of codepoint escapes with 6 digits (e.g. \u{10FFFF})
+	* Fixed scanning of \R and \X within sets; they act as literals there
 
 	* Added support for all previously missing properties (about 250)
 	* Added Expression::UnicodeProperty#shortcut (e.g. returns 'm' for '\p{mark}')

@@ -124,7 +124,8 @@
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
                           group_ref | keep_mark | [xucCM];
 
-  non_set_escape        = (anchor_char | group_ref | keep_mark | [0-9cCM])-'b';
+  non_set_escape        = (anchor_char - 'b') | group_ref | keep_mark |
+                          multi_codepoint_char_type | [0-9cCM];
 
   # EOF error, used where it can be detected
   action premature_end_error {

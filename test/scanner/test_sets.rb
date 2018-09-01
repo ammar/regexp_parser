@@ -48,8 +48,8 @@ class ScannerSets < Test::Unit::TestCase
     '[\w]'                  => [1, :type,   :word,            '\w',         1, 3],
     '[\W]'                  => [1, :type,   :nonword,         '\W',         1, 3],
 
-    '[\R]'                  => [1, :type,   :linebreak,       '\R',         1, 3],
-    '[\X]'                  => [1, :type,   :xgrapheme,       '\X',         1, 3],
+    '[\R]'                  => [1, :escape, :literal,         '\R',         1, 3],
+    '[\X]'                  => [1, :escape, :literal,         '\X',         1, 3],
 
     '[a-b]'                 => [1, :literal, :literal,        'a',          1, 2],
     '[a-c]'                 => [2, :set,     :range,          '-',          2, 3],

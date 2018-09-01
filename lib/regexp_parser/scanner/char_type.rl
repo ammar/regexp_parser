@@ -1,7 +1,10 @@
 %%{
   machine re_char_type;
 
-  char_type_char = [dDhHsSwWRX];
+  single_codepoint_char_type = [dDhHsSwW];
+  multi_codepoint_char_type  = [RX];
+
+  char_type_char = single_codepoint_char_type | multi_codepoint_char_type;
 
   # Char types scanner
   # --------------------------------------------------------------------------
