@@ -44,7 +44,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed scanning of codepoint escapes with 6 digits (e.g. \u{10FFFF})
 - Fixed scanning of \R and \X within sets; they act as literals there
 
-## [0.5.0] - 2018-04-29 - Janosch Müller <janosch84@gmail.com>
+## [0.5.0] - 2018-04-29 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Changed
 
@@ -66,20 +66,20 @@ This release includes several breaking changes, mostly to character sets, #map a
 
 - Added full signature support to collection methods of Expressions (@aa7c55a)
 
-## [0.4.13] - 2018-04-04 - ammarabuali@gmail.com <ammarabuali@gmail.com>
+## [0.4.13] - 2018-04-04 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Added ruby version files for 2.2.10 and 2.3.7
 
-## [0.4.12] - 2018-03-30 - Janosch Müller <janosch84@gmail.com>
+## [0.4.12] - 2018-03-30 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 - Added ruby version files for 2.4.4 and 2.5.1
 
-## [0.4.11] - 2018-03-04 - Janosch Müller <janosch84@gmail.com>
+## [0.4.11] - 2018-03-04 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 - Fixed UnknownSyntaxNameError introduced in v0.4.10 if
   the gems parent dir tree included a 'ruby' dir
 
-## [0.4.10] - 2018-03-04 - Janosch Müller <janosch84@gmail.com>
+## [0.4.10] - 2018-03-04 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 - Added ruby version file for 2.6.0
 - Added support for Emoji properties (available in Ruby since 2.5.0)
@@ -88,15 +88,15 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed parsing of the special Assigned property
 - Fixed scanning of InCyrillic_Supplement property
 
-## [0.4.9] - 2017-12-25 - Ammar Ali <ammarabuali@gmail.com>
+## [0.4.9] - 2017-12-25 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Added ruby version file for 2.5.0
 
-## [0.4.8] - 2017-12-18 - Janosch Müller <janosch84@gmail.com>
+## [0.4.8] - 2017-12-18 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 - Added ruby version files for 2.2.9, 2.3.6, and 2.4.3
 
-## [0.4.7] - 2017-10-15 - Janosch Müller <janosch84@gmail.com>
+## [0.4.7] - 2017-10-15 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 - Fixed a thread safety issue (issue #45)
 - Some public class methods that were only reliable for
@@ -108,56 +108,56 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed a Parser bug where the #number attribute of traditional
   numerical backreferences was not set correctly (commit 851b620)
 
-## [0.4.6] - 2017-09-18 - Janosch Müller <janosch84@gmail.com>
+## [0.4.6] - 2017-09-18 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 - Added Parser support for hex escapes in sets (PR #36)
 - Added Parser support for octal escapes (PR #37)
 - Added support for cluster types \R and \X (PR #38)
 - Added support for more metacontrol notations (PR #39)
 
-## [0.4.5] - 2017-09-17 - Ammar Ali <ammarabuali@gmail.com>
+## [0.4.5] - 2017-09-17 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Thanks to Janosch Müller (https://github.com/janosch-x):
   * Support ruby 2.2.7 (PR #42)
 - Added ruby version files for 2.2.8, 2.3.5, and 2.4.2
 
-## [0.4.4] - 2017-07-10 - Ammar Ali <ammarabuali@gmail.com>
+## [0.4.4] - 2017-07-10 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Thanks to Janosch Müller (https://github.com/janosch-x):
   * Add support for new absence operator (PR #33)
 - Thanks to Bartek Bułat (https://github.com/barthez):
   * Add support for Ruby 2.3.4 version (PR #40)
 
-## [0.4.3] - 2017-03-24 - Ammar Ali <ammarabuali@gmail.com>
+## [0.4.3] - 2017-03-24 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Added ruby version file for 2.4.1
 
-## [0.4.2] - 2017-01-10 - Ammar Ali <ammarabuali@gmail.com>
+## [0.4.2] - 2017-01-10 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Thanks to Janosch Müller (https://github.com/janosch-x):
   * Support ruby 2.4 (PR #30)
   * Improve codepoint handling (PR #27)
 
-## [0.4.1] - 2016-11-22 - Ammar Ali <ammarabuali@gmail.com>
+## [0.4.1] - 2016-11-22 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Updated ruby version file for 2.3.3
 
-## [0.4.0] - 2016-11-20 - Ammar Ali <ammarabuali@gmail.com>
+## [0.4.0] - 2016-11-20 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Added Syntax.supported? method
 - Updated ruby versions for latest releases; 2.1.10, 2.2.6, and 2.3.2
 
-## [0.3.6] - 2016-06-08 - Ammar Ali <ammarabuali@gmail.com>
+## [0.3.6] - 2016-06-08 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Thanks to John Backus (https://github.com/backus):
   * Remove warnings (PR #26)
 
-## [0.3.5] - 2016-05-30 - Ammar Ali <ammarabuali@gmail.com>
+## [0.3.5] - 2016-05-30 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Thanks to John Backus (https://github.com/backus):
   * Fix parsing of /\xFF/n (hex:escape) (PR #24)
 
-## [0.3.4] - 2016-05-25 - Ammar Ali <ammarabuali@gmail.com>
+## [0.3.4] - 2016-05-25 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Thanks to John Backus (https://github.com/backus):
   * Fix warnings (PR #19)
@@ -166,7 +166,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed mistyped \h and \H character types (issue #21)
 - Added ancestry syntax files for latest rubies (issue #22)
 
-## [0.3.3] - 2016-04-26 - Ammar Ali <ammarabuali@gmail.com>
+## [0.3.3] - 2016-04-26 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Thanks to John Backus (https://github.com/backus):
   * Fixed scanning of zero length comments (PR #12)
@@ -174,7 +174,7 @@ This release includes several breaking changes, mostly to character sets, #map a
   * Fixed to_s for modified interval quantifiers (PR #17)
 - Added a note about MRI implementation quirks to Scanner section
 
-## [0.3.2] - 2016-01-01 - Ammar Ali <ammarabuali@gmail.com>
+## [0.3.2] - 2016-01-01 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Updated ruby versions for latest releases; 2.1.8, 2.2.4, and 2.3.0
 - Fixed class name for UnknownSyntaxNameError exception
@@ -201,7 +201,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Updated README
 - Update tokens and scanner with new additions in Unicode 7.0.
 
-## [0.1.6] - 2014-10-06 - Ammar Ali <ammarabuali@gmail.com>
+## [0.1.6] - 2014-10-06 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Fixed test and gem building rake tasks and extracted the gem
   specification from the Rakefile into a .gemspec file.
@@ -219,7 +219,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 
 - Fixed a bug where character types were not being correctly scanned within character sets. e.g. in [\d], two tokens were scanned; one for the backslash '\' and one for the 'd'
 
-## [0.1.5] - 2014-01-14 - Ammar Ali <ammarabuali@gmail.com>
+## [0.1.5] - 2014-01-14 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Correct ChangeLog.
 - Added syntax stubs for ruby versions 2.0 and 2.1
@@ -237,6 +237,6 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Added control (\cc and \C-c) and meta (\M-c) escapes to 1.8 syntax
 - The default syntax is now the one of the running ruby version in both the lexer and the parser.
 
-## [0.1.0] - 2010-11-21 - Ammar Ali <ammarabuali@gmail.com>
+## [0.1.0] - 2010-11-21 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 - Initial release
