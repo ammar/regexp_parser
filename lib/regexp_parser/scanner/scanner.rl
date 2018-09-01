@@ -245,7 +245,9 @@
     utf8_2_byte    |
     utf8_3_byte    |
     utf8_4_byte    {
-      emit(:literal, :literal, *text(data, ts, te))
+      char, *rest = *text(data, ts, te)
+      char.force_encoding('utf-8') if char.respond_to?(:force_encoding)
+      emit(:literal, :literal, char, *rest)
     };
   *|;
 

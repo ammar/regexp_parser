@@ -103,4 +103,9 @@ class ScannerSets < Test::Unit::TestCase
     end
   end
 
+  def test_set_literal_encoding
+    text = RS.scan("[\xF0\x9F\x98\xB2]")[1][2].to_s
+    assert_equal "\xF0\x9F\x98\xB2".force_encoding('utf-8'), text
+    assert_equal 'UTF-8', text.encoding.to_s
+  end
 end
