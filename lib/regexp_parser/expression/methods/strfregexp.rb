@@ -103,7 +103,7 @@ module Regexp::Expression
     def strfregexp_tree(format = '%a', include_self = true, separator = "\n")
       output = include_self ? [self.strfregexp(format)] : []
 
-      output += map do |exp, index|
+      output += flat_map do |exp, index|
         exp.strfregexp(format, (include_self ? 1 : 0), index)
       end
 

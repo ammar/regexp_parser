@@ -1,6 +1,6 @@
 UPCOMING
 
-	* Several breaking changes, mostly to character sets and properties
+	* Several breaking changes, mostly to character sets, #map and properties
 
 	* Changed handling of sets (a.k.a. character classes or "bracket expressions")
 	  - see PR #55 / issue #47 for details
@@ -11,6 +11,9 @@ UPCOMING
 	  - a new PosixClass expression class represents e.g. [[:ascii:]]
 	    - PosixClass instances behave like Property ones, e.g. support #negative?
 	    - #scan emits :(non)posixclass, :<type> instead of :set, :char_(non)<type>
+	* Changed Subexpression#map to act like regular Enumerable#map
+	  - the old behavior is available as Subexpression#flat_map
+	  - e.g. parse(/[a]/).map(&:to_s) == ["[a]"]; used to be ["[a]", "a"]
 	* Changed Expression emissions for some escape sequences
 	  - EscapeSequence::Codepoint, CodepointList, Hex and Octal are now all used
 	  - they already existed, but were all parsed as EscapeSequence::Literal

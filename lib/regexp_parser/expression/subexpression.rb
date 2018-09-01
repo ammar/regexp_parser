@@ -24,8 +24,8 @@ module Regexp::Expression
       end
     end
 
-    %w[[] all? any? at count each each_with_index empty?
-       fetch find first index join last length values_at].each do |m|
+    %w[[] all? any? at collect count each each_with_index empty?
+       fetch find first index join last length map values_at].each do |m|
       define_method(m) { |*args, &block| expressions.send(m, *args, &block) }
     end
 

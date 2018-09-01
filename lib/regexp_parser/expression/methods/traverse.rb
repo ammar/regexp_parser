@@ -45,7 +45,7 @@ module Regexp::Expression
     # Returns a new array with the results of calling the given block once
     # for every expression. If a block is not given, returns an array with
     # each expression and its level index as an array.
-    def map(include_self = false, &block)
+    def flat_map(include_self = false, &block)
       result = []
 
       each_expression(include_self) do |exp, index|

@@ -86,10 +86,10 @@ class SubexpressionTraverse < Test::Unit::TestCase
     assert_equal [0, 0, 1, 0, 2], indices
   end
 
-  def test_subexpression_map_without_block
+  def test_subexpression_flat_map_without_block
     root = RP.parse(/a(b([c-e]+))?/)
 
-    array = root.map
+    array = root.flat_map
 
     assert_equal Array, array.class
     assert_equal 8, array.length
@@ -102,35 +102,35 @@ class SubexpressionTraverse < Test::Unit::TestCase
     end
   end
 
-  def test_subexpression_map_without_block_include_self
+  def test_subexpression_flat_map_without_block_include_self
     root = RP.parse(/a(b([c-e]+))?/)
 
-    array = root.map(true)
+    array = root.flat_map(true)
 
     assert_equal Array, array.class
     assert_equal 9, array.length
   end
 
-  def test_subexpression_map_indices
+  def test_subexpression_flat_map_indices
     root = RP.parse(/a(b([c-e]+))?f*g/)
 
-    indices = root.map {|exp, index| index}
+    indices = root.flat_map {|exp, index| index}
 
     assert_equal [0, 1, 0, 1, 0, 0, 0, 1, 2, 3], indices
   end
 
-  def test_subexpression_map_indices_include_self
+  def test_subexpression_flat_map_indices_include_self
     root = RP.parse(/a(b([c-e]+))?f*g/)
 
-    indices = root.map(true) {|exp, index| index}
+    indices = root.flat_map(true) {|exp, index| index}
 
     assert_equal [0, 0, 1, 0, 1, 0, 0, 0, 1, 2, 3], indices
   end
 
-  def test_subexpression_map_expressions
+  def test_subexpression_flat_map_expressions
     root = RP.parse(/a(b(c(d)))/)
 
-    levels = root.map {|exp, index|
+    levels = root.flat_map {|exp, index|
       [exp.level, exp.text] if exp.terminal?
     }.compact
 
@@ -139,10 +139,10 @@ class SubexpressionTraverse < Test::Unit::TestCase
       ], levels
   end
 
-  def test_subexpression_map_expressions_include_self
+  def test_subexpression_flat_map_expressions_include_self
     root = RP.parse(/a(b(c(d)))/)
 
-    levels = root.map(true) {|exp, index|
+    levels = root.flat_map(true) {|exp, index|
       [exp.level, exp.to_s]
     }.compact
 
