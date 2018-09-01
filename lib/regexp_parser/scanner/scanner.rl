@@ -113,13 +113,12 @@
                           curlies | parantheses | brackets |
                           line_anchor | quantifier_greedy;
 
-  ascii_print           = ((0x20..0x7e) - meta_char)+;
-  ascii_nonprint        = (0x01..0x1f | 0x7f)+;
+  ascii_print           = ((0x20..0x7e) - meta_char);
+  ascii_nonprint        = (0x01..0x1f | 0x7f);
 
-  utf8_2_byte           = (0xc2..0xdf 0x80..0xbf)+;
-  utf8_3_byte           = (0xe0..0xef 0x80..0xbf 0x80..0xbf)+;
-  utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf)+;
-  utf8_byte_sequence    = utf8_2_byte | utf8_3_byte | utf8_4_byte;
+  utf8_2_byte           = (0xc2..0xdf 0x80..0xbf);
+  utf8_3_byte           = (0xe0..0xef 0x80..0xbf 0x80..0xbf);
+  utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf);
 
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
                           group_ref | keep_mark | [xucCM];

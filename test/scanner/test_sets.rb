@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require File.expand_path("../../helpers", __FILE__)
 
 class ScannerSets < Test::Unit::TestCase
@@ -19,6 +21,8 @@ class ScannerSets < Test::Unit::TestCase
     '[}]'                   => [1, :literal, :literal,        '}',          1, 2],
     '[<]'                   => [1, :literal, :literal,        '<',          1, 2],
     '[>]'                   => [1, :literal, :literal,        '>',          1, 2],
+
+    '[äöü]'                 => [2, :literal, :literal,        'ö',          3, 5],
 
     '[\x20]'                => [1, :escape, :hex,             '\x20',       1, 5],
 
@@ -104,8 +108,12 @@ class ScannerSets < Test::Unit::TestCase
   end
 
   def test_set_literal_encoding
-    text = RS.scan("[\xF0\x9F\x98\xB2]")[1][2].to_s
-    assert_equal "\xF0\x9F\x98\xB2".force_encoding('utf-8'), text
+    text = RS.scan('[a]')[1][2].to_s
+    assert_equal 'a',     text
+    assert_equal 'UTF-8', text.encoding.to_s
+
+    text = RS.scan('[😲]')[1][2].to_s
+    assert_equal '😲',     text
     assert_equal 'UTF-8', text.encoding.to_s
   end
 end
