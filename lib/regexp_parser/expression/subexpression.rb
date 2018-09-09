@@ -29,6 +29,12 @@ module Regexp::Expression
       define_method(m) { |*args, &block| expressions.send(m, *args, &block) }
     end
 
+    def dig(*indices)
+      exp = self
+      indices.each { |idx| exp = exp.nil? || exp.terminal? ? nil : exp[idx] }
+      exp
+    end
+
     def te
       ts + to_s.length
     end

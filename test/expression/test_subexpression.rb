@@ -46,4 +46,13 @@ class ExpressionSubexpression < Test::Unit::TestCase
 
     assert tests.empty?
   end
+
+  def test_subexpression_dig
+    root = RP.parse(/(((a)))/)
+
+    assert_equal '(((a)))', root.dig(0).to_s
+    assert_equal 'a',       root.dig(0, 0, 0, 0).to_s
+    assert_nil              root.dig(0, 0, 0, 0, 0)
+    assert_nil              root.dig(3, 7)
+  end
 end

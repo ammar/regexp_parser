@@ -58,6 +58,5 @@ module Regexp::Expression
 
       result
     end
-
   end
 end
