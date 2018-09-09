@@ -27,13 +27,13 @@ module Regexp::Expression
         expressions.last << exp
       end
 
-      def branch(exp = nil)
+      def branch
         raise TooManyBranches.new if branches.length == 2
 
         sequence = Branch.new(level, set_level, conditional_level + 1)
 
         expressions << sequence
-        branches << expressions.last
+        branches << sequence
       end
 
       def quantify(token, text, min = nil, max = nil, mode = :greedy)
@@ -45,5 +45,4 @@ module Regexp::Expression
       end
     end
   end
-
 end
