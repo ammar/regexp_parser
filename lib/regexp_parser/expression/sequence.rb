@@ -4,8 +4,8 @@ module Regexp::Expression
   # quantifiers, as it applies them to its last element instead of itself as
   # a whole subexpression.
   #
-  # Used as the base class for the Alternation alternatives and Conditional
-  # branches.
+  # Used as the base class for the Alternation alternatives, Conditional
+  # branches, and CharacterSet::Intersection intersected sequences.
   class Sequence < Regexp::Expression::Subexpression
     def initialize(level, set_level, conditional_level)
       super Regexp::Token.new(
