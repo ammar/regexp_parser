@@ -317,7 +317,7 @@ _Note that not all of these are available in all versions of Ruby_
 | Syntax Feature                        | Examples                                                | &#x22ef; |
 | ------------------------------------- | ------------------------------------------------------- |:--------:|
 | **Alternation**                       | `a\|b\|c`                                               | &#x2713; |
-| **Anchors**                           | `^`, `$`, `\b`                                          | &#x2713; |
+| **Anchors**                           | `\A`, `^`, `\b`                                         | &#x2713; |
 | **Character Classes**                 | `[abc]`, `[^\\]`, `[a-d&&g-h]`, `[a=e=b]`               | &#x2713; |
 | **Character Types**                   | `\d`, `\H`, `\s`                                        | &#x2713; |
 | **Cluster Types**                     | `\R`, `\X`                                              | &#x2713; |
@@ -341,7 +341,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Capturing**_           | `(abc)`                                                 | &#x2713; |
 | &emsp;&nbsp;_**Comments**_            | `(?# comment text)`                                     | &#x2713; |
 | &emsp;&nbsp;_**Named**_               | `(?<name>abc)`, `(?'name'abc)`                          | &#x2713; |
-| &emsp;&nbsp;_**Options**_             | `(?mi-x:abc)`, `(?a:\s\w+)`                             | &#x2713; |
+| &emsp;&nbsp;_**Options**_             | `(?mi-x:abc)`, `(?a:\s\w+)`, `(?i)`                     | &#x2713; |
 | &emsp;&nbsp;_**Passive**_             | `(?:abc)`                                               | &#x2713; |
 | &emsp;&nbsp;_**Subexp. Calls**_       | `\g<name>`, `\g<1>`                                     | &#x2713; |
 | **Keep**                              | `\K`, `(ab\Kc\|d\Ke)f`                                  | &#x2713; |
@@ -357,14 +357,14 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Meta**_                | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
-| **Unicode Properties**                | _<sub>([Unicode 7.0.0](http://www.unicode.org/versions/Unicode7.0.0/))</sub>_ | &#x22f1; |
-| &emsp;&nbsp;_**Age**_                 | `\p{Age=5.2}`, `\P{age=7.0}`                            | &#x2713; |
-| &emsp;&nbsp;_**Blocks**_              | `\p{InArmenian}`, `\P{InKhmer}`                         | &#x2713; |
-| &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`                                | &#x2713; |
-| &emsp;&nbsp;_**Derived**_             | `\p{Math}`, `\P{Lowercase}`                             | &#x2713; |
-| &emsp;&nbsp;_**General Categories**_  | `\p{Lu}`, `\P{Cs}`                                      | &#x2713; |
-| &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`                            | &#x2713; |
-| &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`                              | &#x2713; |
+| **Unicode Properties**                | _<sub>([Unicode 10.0.0](http://www.unicode.org/versions/Unicode10.0.0/))</sub>_ | &#x22f1; |
+| &emsp;&nbsp;_**Age**_                 | `\p{Age=5.2}`, `\P{age=7.0}`, `\p{^age=8.0}`            | &#x2713; |
+| &emsp;&nbsp;_**Blocks**_              | `\p{InArmenian}`, `\P{InKhmer}`, `\p{^InThai}`          | &#x2713; |
+| &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`, `\p{^Alnum}`                  | &#x2713; |
+| &emsp;&nbsp;_**Derived**_             | `\p{Math}`, `\P{Lowercase}`, `\p{^Cased}`               | &#x2713; |
+| &emsp;&nbsp;_**General Categories**_  | `\p{Lu}`, `\P{Cs}`, \p{^sc}                             | &#x2713; |
+| &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`, \p{^Greek}                | &#x2713; |
+| &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`, \p{^Hyphen}                 | &#x2713; |
 
 ##### Inapplicable Features
 
