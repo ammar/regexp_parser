@@ -2,8 +2,10 @@
 
 ### Added
 
-- Added Group::Options#option_modifications
-- Added Subexpression#dig
+- Added `Group::Options#option_modifications`
+  - shows the options enabled or disabled by the given options group
+  - as with all other expressions, `#options` shows the overall active options
+- Added `Subexpression#dig`, acts like [`Array#dig`](http://ruby-doc.org/core-2.5.0/Array.html#method-i-dig)
 
 ## [1.0.0] - 2018-09-01 - [Janosch Müller](mailto:janosch84@gmail.com)
 
@@ -12,50 +14,50 @@ This release includes several breaking changes, mostly to character sets, #map a
 ### Changed
 
 - Changed handling of sets (a.k.a. character classes or "bracket expressions")
-  * see PR #55 / issue #47 for details
+  * see PR [#55](https://github.com/ammar/regexp_parser/pull/55) / issue [#47](https://github.com/ammar/regexp_parser/issues/47) for details
   * sets are now parsed to expression trees like other nestable expressions
-  * #scan now emits the same tokens as outside sets (no longer :set, :member)
-  * CharacterSet#members has been removed
-  * new Range and Intersection classes represent corresponding syntax features
-  * a new PosixClass expression class represents e.g. [[:ascii:]]
-    * PosixClass instances behave like Property ones, e.g. support #negative?
-    * #scan emits :(non)posixclass, :<type> instead of :set, :char_(non)<type>
-- Changed Subexpression#map to act like regular Enumerable#map
-  * the old behavior is available as Subexpression#flat_map
-  * e.g. parse(/[a]/).map(&:to_s) == ["[a]"]; used to be ["[a]", "a"]
-- Changed Expression emissions for some escape sequences
-  * EscapeSequence::Codepoint, CodepointList, Hex and Octal are now all used
-  * they already existed, but were all parsed as EscapeSequence::Literal
-  * e.g. \x97 is now EscapeSequence::Hex instead of EscapeSequence::Literal
-- Changed naming of many property tokens (emitted for \p{...})
-  * if you work with these tokens, see PR #56 for details
-  * e.g. :punct_dash is now :dash_punctuation
-- Changed (?m) and the likes to emit as :options_switch token (@4ade4d1)
-  * allows differentiating from group-local :options, e.g. (?m:.)
-- Changed name of Backreference::..NestLevel to ..RecursionLevel (@4184339)
-- Changed Backreference::Number#number from String to Integer (@40a2231)
+  * `#scan` now emits the same tokens as outside sets (no longer `:set, :member`)
+  * `CharacterSet#members` has been removed
+  * new `Range` and `Intersection` classes represent corresponding syntax features
+  * a new `PosixClass` expression class represents e.g. `[[:ascii:]]`
+    * `PosixClass` instances behave like `Property` ones, e.g. support `#negative?`
+    * `#scan` emits `:(non)posixclass, :<type>` instead of `:set, :char_(non)<type>`
+- Changed `Subexpression#map` to act like regular `Enumerable#map`
+  * the old behavior is available as `Subexpression#flat_map`
+  * e.g. `parse(/[a]/).map(&:to_s) == ["[a]"]`; used to be `["[a]", "a"]`
+- Changed expression emissions for some escape sequences
+  * `EscapeSequence::Codepoint`, `CodepointList`, `Hex` and `Octal` are now all used
+  * they already existed, but were all parsed as `EscapeSequence::Literal`
+  * e.g. `\x97` is now `EscapeSequence::Hex` instead of `EscapeSequence::Literal`
+- Changed naming of many property tokens (emitted for `\p{...}`)
+  * if you work with these tokens, see PR [#56](https://github.com/ammar/regexp_parser/pull/56) for details
+  * e.g. `:punct_dash` is now `:dash_punctuation`
+- Changed `(?m)` and the likes to emit as `:options_switch` token (@4ade4d1)
+  * allows differentiating from group-local `:options`, e.g. `(?m:.)`
+- Changed name of `Backreference::..NestLevel` to `..RecursionLevel` (@4184339)
+- Changed B`ackreference::Number#number` from `String` to `Integer` (@40a2231)
 
 ### Added
 
 - Added support for all previously missing properties (about 250)
-- Added Expression::UnicodeProperty#shortcut (e.g. returns "m" for "\p{mark}")
-- Added #char(s) and #codepoint(s) methods to all EscapeSequence expressions
-- Added #number/#name/#recursion_level to all backref/call expressions (@174bf21)
-- Added #number and #number_at_level to capturing group expressions (@40a2231)
+- Added `Expression::UnicodeProperty#shortcut` (e.g. returns "m" for `\p{mark}`)
+- Added `#char(s)` and `#codepoint(s)` methods to all `EscapeSequence` expressions
+- Added `#number`/`#name`/`#recursion_level` to all backref/call expressions (@174bf21)
+- Added `#number` and `#number_at_level` to capturing group expressions (@40a2231)
 
 ### Fixed
 
-- Fixed ruby version mapping of some properties
+- Fixed Ruby version mapping of some properties
 - Fixed scanning of some property spellings, e.g. with dashes
 - Fixed some incorrect property alias normalizations
-- Fixed scanning of codepoint escapes with 6 digits (e.g. \u{10FFFF})
-- Fixed scanning of \R and \X within sets; they act as literals there
+- Fixed scanning of codepoint escapes with 6 digits (e.g. `\u{10FFFF}`)
+- Fixed scanning of `\R` and `\X` within sets; they act as literals there
 
 ## [0.5.0] - 2018-04-29 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Changed
 
-- Changed handling of Ruby versions (PR #53)
+- Changed handling of Ruby versions (PR [#53](https://github.com/ammar/regexp_parser/pull/53))
   * New Ruby versions are now supported by default
   * Some deep-lying APIs have changed, which should not affect most users:
     * `Regexp::Syntax::VERSIONS` is gone
