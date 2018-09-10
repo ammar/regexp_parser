@@ -12,8 +12,10 @@ module Regexp::Expression
 
     class Atomic  < Group::Base; end
     class Passive < Group::Base; end
-    class Options < Group::Base; end
     class Absence < Group::Base; end
+    class Options < Group::Base
+      attr_accessor :option_modifications
+    end
 
     class Capture < Group::Base
       attr_accessor :number, :number_at_level

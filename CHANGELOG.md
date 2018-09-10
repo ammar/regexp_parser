@@ -2,6 +2,7 @@
 
 ### Added
 
+- Added Group::Options#option_modifications
 - Added Subexpression#dig
 
 ## [1.0.0] - 2018-09-01 - [Janosch Müller](mailto:janosch84@gmail.com)

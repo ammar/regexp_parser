@@ -496,25 +496,34 @@ class Regexp::Parser
     negative ||= ''
     self.switching_options = token.token.equal?(:options_switch)
 
-    new_options = active_opts.dup
+    option_mods = {}
+    new_active_opts = active_opts.dup
 
     # Negative options have precedence. E.g. /(?i-i)a/ is case-sensitive.
     %w[i m x].each do |flag|
-      new_options[flag.to_sym] = true if positive.include?(flag)
-      new_options.delete(flag.to_sym) if negative.include?(flag)
+      if positive.include?(flag)
+        option_mods[flag.to_sym] = new_active_opts[flag.to_sym] = true
+      end
+      if negative.include?(flag)
+        option_mods[flag.to_sym] = false
+        new_active_opts.delete(flag.to_sym)
+      end
     end
 
     # Any encoding flag overrides all previous encoding flags. If there are
     # multiple encoding flags in an options string, the last one wins.
     # E.g. /(?dau)\w/ matches UTF8 chars but /(?dua)\w/ only ASCII chars.
     if (flag = positive.reverse[/[adu]/])
-      %w[a d u].each { |key| new_options.delete(key.to_sym) }
-      new_options[flag.to_sym] = true
+      %w[a d u].each { |key| new_active_opts.delete(key.to_sym) }
+      option_mods[flag.to_sym] = new_active_opts[flag.to_sym] = true
     end
 
-    options_stack << new_options
+    options_stack << new_active_opts
 
-    nest(Group::Options.new(token, active_opts))
+    options_group = Group::Options.new(token, active_opts)
+    options_group.option_modifications = option_mods
+
+    nest(options_group)
   end
 
   def open_group(token)

@@ -19,6 +19,9 @@ class TestParserGroups < Test::Unit::TestCase
     assert_equal true,  t.expressions[0].m?
     assert_equal false, t.expressions[0].i?
     assert_equal false, t.expressions[0].x?
+
+    assert_equal true,  t.expressions[0].option_modifications[:m]
+    assert_equal nil,   t.expressions[0].option_modifications[:i]
   end
 
   def test_parse_self_defeating_option_group
@@ -27,6 +30,9 @@ class TestParserGroups < Test::Unit::TestCase
     assert_equal false, t.expressions[0].m?
     assert_equal false, t.expressions[0].i?
     assert_equal false, t.expressions[0].x?
+
+    assert_equal false, t.expressions[0].option_modifications[:m]
+    assert_equal nil,   t.expressions[0].option_modifications[:i]
   end
 
   def test_parse_nested_options_activate_one
@@ -39,6 +45,10 @@ class TestParserGroups < Test::Unit::TestCase
     assert_equal true,  t.expressions[0].expressions[1].m?
     assert_equal false, t.expressions[0].expressions[1].i?
     assert_equal true,  t.expressions[0].expressions[1].x?
+
+    assert_equal true,  t.expressions[0].expressions[1].option_modifications[:m]
+    assert_equal nil,   t.expressions[0].expressions[1].option_modifications[:i]
+    assert_equal nil,   t.expressions[0].expressions[1].option_modifications[:x]
   end
 
   def test_parse_nested_options_deactivate_one
@@ -51,6 +61,10 @@ class TestParserGroups < Test::Unit::TestCase
     assert_equal false, t.expressions[0].expressions[1].m?
     assert_equal false, t.expressions[0].expressions[1].i?
     assert_equal true,  t.expressions[0].expressions[1].x?
+
+    assert_equal false, t.expressions[0].expressions[1].option_modifications[:i]
+    assert_equal nil,   t.expressions[0].expressions[1].option_modifications[:m]
+    assert_equal nil,   t.expressions[0].expressions[1].option_modifications[:x]
   end
 
   def test_parse_nested_options_invert_all
@@ -63,6 +77,10 @@ class TestParserGroups < Test::Unit::TestCase
     assert_equal true,  t.expressions[0].expressions[1].m?
     assert_equal false, t.expressions[0].expressions[1].i?
     assert_equal false, t.expressions[0].expressions[1].x?
+
+    assert_equal true,  t.expressions[0].expressions[1].option_modifications[:m]
+    assert_equal false, t.expressions[0].expressions[1].option_modifications[:i]
+    assert_equal false, t.expressions[0].expressions[1].option_modifications[:x]
   end
 
   def test_parse_nested_options_affect_literal_subexpressions
@@ -88,6 +106,10 @@ class TestParserGroups < Test::Unit::TestCase
     assert_equal false, t.expressions[1].m?
     assert_equal true,  t.expressions[1].i?
     assert_equal false, t.expressions[1].x?
+
+    assert_equal true,  t.expressions[1].option_modifications[:i]
+    assert_equal false, t.expressions[1].option_modifications[:m]
+    assert_equal nil,   t.expressions[1].option_modifications[:x]
   end
 
   def test_parse_option_switch_affects_following_expressions
