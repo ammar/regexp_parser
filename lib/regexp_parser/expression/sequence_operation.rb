@@ -15,10 +15,7 @@ module Regexp::Expression
     end
 
     def add_sequence
-      exp = self.class::OPERAND.new(level, set_level, conditional_level)
-      exp.nesting_level = nesting_level + 1
-      expressions << exp
-      exp
+      self.class::OPERAND.add_to(self)
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)

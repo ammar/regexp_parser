@@ -6,6 +6,7 @@
   - shows the options enabled or disabled by the given options group
   - as with all other expressions, `#options` shows the overall active options
 - Added `Subexpression#dig`, acts like [`Array#dig`](http://ruby-doc.org/core-2.5.0/Array.html#method-i-dig)
+- `Root` and `Sequence` expressions now support the same constructor signature as all other expressions
 
 ## [1.0.0] - 2018-09-01 - [Janosch Müller](mailto:janosch84@gmail.com)
 

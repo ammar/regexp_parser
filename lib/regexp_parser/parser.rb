@@ -23,7 +23,7 @@ class Regexp::Parser
   end
 
   def parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
-    root = Root.new(options_from_input(input))
+    root = Root.build(options_from_input(input))
 
     self.root = root
     self.node = root

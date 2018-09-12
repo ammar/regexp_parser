@@ -11,12 +11,7 @@ module Regexp::Expression
     class Branch    < Regexp::Expression::Sequence; end
 
     class Expression < Regexp::Expression::Subexpression
-      attr_reader :branches, :condition
-
-      def initialize(token, options = {})
-        super
-        @branches  = []
-      end
+      attr_reader :condition
 
       def condition=(exp)
         @condition = exp
@@ -27,13 +22,14 @@ module Regexp::Expression
         expressions.last << exp
       end
 
-      def branch
+      def add_sequence
         raise TooManyBranches.new if branches.length == 2
+        Branch.add_to(self, { conditional_level: conditional_level + 1 })
+      end
+      alias :branch :add_sequence
 
-        sequence = Branch.new(level, set_level, conditional_level + 1)
-
-        expressions << sequence
-        branches << sequence
+      def branches
+        expressions - [condition]
       end
 
       def quantify(token, text, min = nil, max = nil, mode = :greedy)
