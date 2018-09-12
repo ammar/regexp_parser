@@ -1,5 +1,4 @@
 module Regexp::Expression
-
   module Conditional
     class TooManyBranches < StandardError
       def initialize
@@ -7,8 +6,16 @@ module Regexp::Expression
       end
     end
 
-    class Condition < Regexp::Expression::Base; end
-    class Branch    < Regexp::Expression::Sequence; end
+    class Condition < Regexp::Expression::Base
+      # Name or number of the referenced capturing group that determines state.
+      # Returns a String if reference is by name, Integer if by number.
+      def reference
+        ref = text.tr("'<>()", "")
+        ref =~ /\D/ ? ref : Integer(ref)
+      end
+    end
+
+    class Branch < Regexp::Expression::Sequence; end
 
     class Expression < Regexp::Expression::Subexpression
       attr_reader :condition
@@ -30,6 +37,10 @@ module Regexp::Expression
 
       def branches
         expressions - [condition]
+      end
+
+      def reference
+        condition.reference
       end
 
       def quantify(token, text, min = nil, max = nil, mode = :greedy)

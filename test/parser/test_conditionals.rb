@@ -11,11 +11,11 @@ class TestParserConditionals < Test::Unit::TestCase
     assert exp.is_a?(Conditional::Expression),
            "Expected Condition, but got #{exp.class.name}"
 
-    assert_equal exp.type,   :conditional
-    assert_equal exp.token,  :open
-    assert_equal exp.text,   '(?'
+    assert_equal exp.type,      :conditional
+    assert_equal exp.token,     :open
+    assert_equal exp.text,      '(?'
+    assert_equal exp.reference, 'A'
   end
-
 
   def test_parse_conditional_condition
     regexp = /(?<A>a)(?(<A>)T|F)/
@@ -26,9 +26,25 @@ class TestParserConditionals < Test::Unit::TestCase
     assert exp.is_a?(Conditional::Condition),
            "Expected Condition, but got #{exp.class.name}"
 
-    assert_equal exp.type,   :conditional
-    assert_equal exp.token,  :condition
-    assert_equal exp.text,   '(<A>)'
+    assert_equal exp.type,      :conditional
+    assert_equal exp.token,     :condition
+    assert_equal exp.text,      '(<A>)'
+    assert_equal exp.reference, 'A'
+  end
+
+  def test_parse_conditional_condition_with_number_ref
+    regexp = /(a)(?(1)T|F)/
+
+    root = RP.parse(regexp, 'ruby/2.0')
+    exp  = root[1].condition
+
+    assert exp.is_a?(Conditional::Condition),
+           "Expected Condition, but got #{exp.class.name}"
+
+    assert_equal exp.type,      :conditional
+    assert_equal exp.token,     :condition
+    assert_equal exp.text,      '(1)'
+    assert_equal exp.reference, 1
   end
 
 
