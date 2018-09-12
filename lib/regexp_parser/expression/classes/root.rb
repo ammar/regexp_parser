@@ -20,8 +20,5 @@ module Regexp::Expression
         Regexp::Token.new(:expression, :root, '', 0)
       end
     end
-
-    alias ignore_case? case_insensitive?
-    alias extended?    free_spacing?
   end
 end
