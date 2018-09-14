@@ -72,16 +72,16 @@ module Regexp::Expression
     end
 
     def greedy?
-      quantified? and quantifier.mode == :greedy
+      quantified? and quantifier.greedy?
     end
 
     def reluctant?
-      quantified? and quantifier.mode == :reluctant
+      quantified? and quantifier.reluctant?
     end
     alias :lazy? :reluctant?
 
     def possessive?
-      quantified? and quantifier.mode == :possessive
+      quantified? and quantifier.possessive?
     end
 
     def multiline?

@@ -1,6 +1,7 @@
 module Regexp::Expression
-
   class Quantifier
+    MODES = [:greedy, :possessive, :reluctant]
+
     attr_reader :token, :text, :min, :max, :mode
 
     def initialize(token, text, min, max, mode)
@@ -30,6 +31,7 @@ module Regexp::Expression
         max:   max,
       }
     end
-  end
 
+    MODES.each { |m| define_method("#{m}?") { mode.equal?(m) } }
+  end
 end

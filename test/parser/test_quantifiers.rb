@@ -12,6 +12,13 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,             exp.quantifier.min
     assert_equal 1,             exp.quantifier.max
     assert_equal :greedy,       exp.quantifier.mode
+    assert_equal true,          exp.quantifier.greedy?
+    assert_equal true,          exp.greedy?
+
+    assert_equal false,         exp.quantifier.reluctant?
+    assert_equal false,         exp.reluctant?
+    assert_equal false,         exp.quantifier.possessive?
+    assert_equal false,         exp.possessive?
   end
 
   def test_parse_zero_or_one_reluctant
@@ -23,7 +30,13 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,             exp.quantifier.min
     assert_equal 1,             exp.quantifier.max
     assert_equal :reluctant,    exp.quantifier.mode
+    assert_equal true,          exp.quantifier.reluctant?
     assert_equal true,          exp.reluctant?
+
+    assert_equal false,         exp.quantifier.greedy?
+    assert_equal false,         exp.greedy?
+    assert_equal false,         exp.quantifier.possessive?
+    assert_equal false,         exp.possessive?
   end
 
   def test_parse_zero_or_one_possessive
@@ -35,7 +48,13 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,             exp.quantifier.min
     assert_equal 1,             exp.quantifier.max
     assert_equal :possessive,   exp.quantifier.mode
+    assert_equal true,          exp.quantifier.possessive?
     assert_equal true,          exp.possessive?
+
+    assert_equal false,         exp.quantifier.greedy?
+    assert_equal false,         exp.greedy?
+    assert_equal false,         exp.quantifier.reluctant?
+    assert_equal false,         exp.reluctant?
   end
 
   # *: zero-or-more
@@ -48,6 +67,8 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,             exp.quantifier.min
     assert_equal(-1,            exp.quantifier.max)
     assert_equal :greedy,       exp.quantifier.mode
+    assert_equal true,          exp.quantifier.greedy?
+    assert_equal true,          exp.greedy?
   end
 
   def test_parse_zero_or_more_reluctant
@@ -59,6 +80,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,             exp.quantifier.min
     assert_equal(-1,            exp.quantifier.max)
     assert_equal :reluctant,    exp.quantifier.mode
+    assert_equal true,          exp.quantifier.reluctant?
     assert_equal true,          exp.reluctant?
   end
 
@@ -71,6 +93,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,             exp.quantifier.min
     assert_equal(-1,            exp.quantifier.max)
     assert_equal :possessive,   exp.quantifier.mode
+    assert_equal true,          exp.quantifier.possessive?
     assert_equal true,          exp.possessive?
   end
 
@@ -84,6 +107,8 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 1,             exp.quantifier.min
     assert_equal(-1,            exp.quantifier.max)
     assert_equal :greedy,       exp.quantifier.mode
+    assert_equal true,          exp.quantifier.greedy?
+    assert_equal true,          exp.greedy?
   end
 
   def test_parse_one_or_more_reluctant
@@ -95,6 +120,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 1,             exp.quantifier.min
     assert_equal(-1,            exp.quantifier.max)
     assert_equal :reluctant,    exp.quantifier.mode
+    assert_equal true,          exp.quantifier.reluctant?
     assert_equal true,          exp.reluctant?
   end
 
@@ -107,6 +133,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 1,             exp.quantifier.min
     assert_equal(-1,            exp.quantifier.max)
     assert_equal :possessive,   exp.quantifier.mode
+    assert_equal true,          exp.quantifier.possessive?
     assert_equal true,          exp.possessive?
   end
 
@@ -120,6 +147,8 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 2,         exp.quantifier.min
     assert_equal 4,         exp.quantifier.max
     assert_equal :greedy,   exp.quantifier.mode
+    assert_equal true,      exp.quantifier.greedy?
+    assert_equal true,      exp.greedy?
   end
 
   def test_parse_intervals_min_max_reluctant
@@ -131,6 +160,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 3,           exp.quantifier.min
     assert_equal 5,           exp.quantifier.max
     assert_equal :reluctant,  exp.quantifier.mode
+    assert_equal true,        exp.quantifier.reluctant?
     assert_equal true,        exp.reluctant?
   end
 
@@ -143,6 +173,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 2,           exp.quantifier.min
     assert_equal 4,           exp.quantifier.max
     assert_equal :possessive, exp.quantifier.mode
+    assert_equal true,        exp.quantifier.possessive?
     assert_equal true,        exp.possessive?
   end
 
@@ -156,6 +187,8 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 2,         exp.quantifier.min
     assert_equal(-1,        exp.quantifier.max)
     assert_equal :greedy,   exp.quantifier.mode
+    assert_equal true,      exp.quantifier.greedy?
+    assert_equal true,      exp.greedy?
   end
 
   def test_parse_intervals_min_only_reluctant
@@ -168,6 +201,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 2,           exp.quantifier.min
     assert_equal(-1,          exp.quantifier.max)
     assert_equal :reluctant,  exp.quantifier.mode
+    assert_equal true,        exp.quantifier.reluctant?
     assert_equal true,        exp.reluctant?
   end
 
@@ -181,6 +215,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 3,           exp.quantifier.min
     assert_equal(-1,          exp.quantifier.max)
     assert_equal :possessive, exp.quantifier.mode
+    assert_equal true,        exp.quantifier.possessive?
     assert_equal true,        exp.possessive?
   end
 
@@ -194,6 +229,8 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,         exp.quantifier.min
     assert_equal 2,         exp.quantifier.max
     assert_equal :greedy,   exp.quantifier.mode
+    assert_equal true,      exp.quantifier.greedy?
+    assert_equal true,      exp.greedy?
   end
 
   def test_parse_intervals_max_only_reluctant
@@ -205,6 +242,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,           exp.quantifier.min
     assert_equal 4,           exp.quantifier.max
     assert_equal :reluctant,  exp.quantifier.mode
+    assert_equal true,        exp.quantifier.reluctant?
     assert_equal true,        exp.reluctant?
   end
 
@@ -217,6 +255,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 0,           exp.quantifier.min
     assert_equal 3,           exp.quantifier.max
     assert_equal :possessive, exp.quantifier.mode
+    assert_equal true,        exp.quantifier.possessive?
     assert_equal true,        exp.possessive?
   end
 
@@ -230,6 +269,8 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 2,         exp.quantifier.min
     assert_equal 2,         exp.quantifier.max
     assert_equal :greedy,   exp.quantifier.mode
+    assert_equal true,      exp.quantifier.greedy?
+    assert_equal true,      exp.greedy?
   end
 
   def test_parse_intervals_exact_reluctant
@@ -241,6 +282,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 3,           exp.quantifier.min
     assert_equal 3,           exp.quantifier.max
     assert_equal :reluctant,  exp.quantifier.mode
+    assert_equal true,        exp.quantifier.reluctant?
     assert_equal true,        exp.reluctant?
   end
 
@@ -253,7 +295,7 @@ class TestRegexpParserQuantifiers < Test::Unit::TestCase
     assert_equal 3,           exp.quantifier.min
     assert_equal 3,           exp.quantifier.max
     assert_equal :possessive, exp.quantifier.mode
+    assert_equal true,        exp.quantifier.possessive?
     assert_equal true,        exp.possessive?
   end
-
 end
