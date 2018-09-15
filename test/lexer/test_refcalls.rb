@@ -26,6 +26,9 @@ class LexerRefCalls < Test::Unit::TestCase
     '(abc)\g<-1>'     => [3, :backref, :number_rel_call,    '\g<-1>',     5, 11, 0, 0, 0],
     "(abc)\\g'-1'"    => [3, :backref, :number_rel_call,    "\\g'-1'",    5, 11, 0, 0, 0],
 
+    '(abc)\g<+1>'     => [3, :backref, :number_rel_call,    '\g<+1>',     5, 11, 0, 0, 0],
+    "(abc)\\g'+1'"    => [3, :backref, :number_rel_call,    "\\g'+1'",    5, 11, 0, 0, 0],
+
     # Group back-references, with nesting level
     '(?<X>abc)\k<X-0>'  => [3, :backref, :name_recursion_ref,    '\k<X-0>',    9, 16, 0, 0, 0],
     "(?<X>abc)\\k'X-0'" => [3, :backref, :name_recursion_ref,    "\\k'X-0'",   9, 16, 0, 0, 0],

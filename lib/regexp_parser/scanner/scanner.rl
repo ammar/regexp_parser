@@ -582,14 +582,14 @@
       when /^\\([gk])''/ # single quotes
         empty_backref_error("ref/call (sq)")
 
-      when /^\\([gk])<[^\d-](\w+)?>/ # angle-brackets
+      when /^\\([gk])<[^\d+-]\w*>/ # angle-brackets
         if $1 == 'k'
           emit(:backref, :name_ref_ab, text, ts, te)
         else
           emit(:backref, :name_call_ab, text, ts, te)
         end
 
-      when /^\\([gk])'[^\d-](\w+)?'/ #single quotes
+      when /^\\([gk])'[^\d+-]\w*'/ #single quotes
         if $1 == 'k'
           emit(:backref, :name_ref_sq, text, ts, te)
         else
@@ -610,30 +610,30 @@
           emit(:backref, :number_call_sq, text, ts, te)
         end
 
-      when /^\\([gk])<-\d+>/ # angle-brackets
+      when /^\\(?:g<\+|g<-|(k)<-)\d+>/ # angle-brackets
         if $1 == 'k'
           emit(:backref, :number_rel_ref_ab, text, ts, te)
         else
           emit(:backref, :number_rel_call_ab, text, ts, te)
         end
 
-      when /^\\([gk])'-\d+'/ # single quotes
+      when /^\\(?:g'\+|g'-|(k)'-)\d+'/ # single quotes
         if $1 == 'k'
           emit(:backref, :number_rel_ref_sq, text, ts, te)
         else
           emit(:backref, :number_rel_call_sq, text, ts, te)
         end
 
-      when /^\\k<[^\d-](\w+)?[+\-]\d+>/ # angle-brackets
+      when /^\\k<[^\d+\-]\w*[+\-]\d+>/ # angle-brackets
         emit(:backref, :name_recursion_ref_ab, text, ts, te)
 
-      when /^\\k'[^\d-](\w+)?[+\-]\d+'/ # single-quotes
+      when /^\\k'[^\d+\-]\w*[+\-]\d+'/ # single-quotes
         emit(:backref, :name_recursion_ref_sq, text, ts, te)
 
-      when /^\\([gk])<-?\d+[+\-]\d+>/ # angle-brackets
+      when /^\\([gk])<[+\-]?\d+[+\-]\d+>/ # angle-brackets
         emit(:backref, :number_recursion_ref_ab, text, ts, te)
 
-      when /^\\([gk])'-?\d+[+\-]\d+'/ # single-quotes
+      when /^\\([gk])'[+\-]?\d+[+\-]\d+'/ # single-quotes
         emit(:backref, :number_recursion_ref_sq, text, ts, te)
 
       else

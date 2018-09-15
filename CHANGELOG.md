@@ -12,6 +12,7 @@
 ### Fixed
 
 - Fixed parsing of quantified conditional expressions (quantifiers were assigned to the wrong expression)
+- Fixed scanning and parsing of forward-referring subexpression calls (e.g. `\g<+1>`)
 - `Root` and `Sequence` expressions now support the same constructor signature as all other expressions
 
 ## [1.0.0] - 2018-09-01 - [Janosch Müller](mailto:janosch84@gmail.com)

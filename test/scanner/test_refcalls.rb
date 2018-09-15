@@ -1,7 +1,6 @@
 require File.expand_path("../../helpers", __FILE__)
 
 class ScannerRefCalls < Test::Unit::TestCase
-
   tests = {
     # Traditional numerical group back-reference
     '(abc)\1'           => [3, :backref, :number,                  '\1',         5, 7],
@@ -26,6 +25,9 @@ class ScannerRefCalls < Test::Unit::TestCase
     '(abc)\g<-1>'       => [3, :backref, :number_rel_call_ab,      '\g<-1>',     5, 11],
     "(abc)\\g'-1'"      => [3, :backref, :number_rel_call_sq,      "\\g'-1'",    5, 11],
 
+    '\g<+1>(abc)'       => [0, :backref, :number_rel_call_ab,      '\g<+1>',     0, 6],
+    "\\g'+1'(abc)"      => [0, :backref, :number_rel_call_sq,      "\\g'+1'",    0, 6],
+
     # Group back-references, with recursion level
     '(?<X>abc)\k<X-0>'  => [3, :backref, :name_recursion_ref_ab,   '\k<X-0>',    9, 16],
     "(?<X>abc)\\k'X-0'" => [3, :backref, :name_recursion_ref_sq,   "\\k'X-0'",   9, 16],
@@ -47,5 +49,4 @@ class ScannerRefCalls < Test::Unit::TestCase
       assert_equal text,  pattern[ts, te]
     end
   end
-
 end
