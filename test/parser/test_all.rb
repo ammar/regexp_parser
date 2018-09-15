@@ -1,9 +1,9 @@
 require File.expand_path("../../helpers", __FILE__)
 
-%w{
+%w[
   alternation anchors errors escapes free_space groups
   posix_classes properties quantifiers refcalls sets types
-}.each do|tc|
+].each do |tc|
   require File.expand_path("../test_#{tc}", __FILE__)
 end
 
@@ -11,7 +11,7 @@ require File.expand_path('../set/test_ranges.rb', __FILE__)
 require File.expand_path('../set/test_intersections.rb', __FILE__)
 
 if RUBY_VERSION >= '2.0.0'
-  %w{conditionals keep}.each do|tc|
+  %w[conditionals keep].each do |tc|
     require File.expand_path("../test_#{tc}", __FILE__)
   end
 end
