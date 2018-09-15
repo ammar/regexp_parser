@@ -47,7 +47,6 @@ class TestParserConditionals < Test::Unit::TestCase
     assert_equal exp.reference, 1
   end
 
-
   def test_parse_conditional_nested_groups
     regexp = /((a)|(b)|((?(2)(c(d|e)+)?|(?(3)f|(?(4)(g|(h)(i)))))))/
 
@@ -107,7 +106,6 @@ class TestParserConditionals < Test::Unit::TestCase
     end
   end
 
-
   def test_parse_conditional_nested_alternation
     regexp = /(a)(?(1)(b|c|d)|(e|f|g))(h)(?(2)(i|j|k)|(l|m|n))|o|p/
 
@@ -129,7 +127,6 @@ class TestParserConditionals < Test::Unit::TestCase
       assert_equal alt_count,   exp.alternatives.length
     end
   end
-
 
   def test_parse_conditional_extra_separator
     regexp = /(?<A>a)(?(<A>)T|)/
@@ -153,6 +150,30 @@ class TestParserConditionals < Test::Unit::TestCase
     assert_equal '',  seq_2.to_s
   end
 
+  def test_parse_conditional_quantified
+    regexp = /(foo)(?(1)\d|(\w)){42}/
+
+    root = RP.parse(regexp, 'ruby/2.0')
+    conditional = root[1]
+
+    assert conditional.quantified?
+    assert_equal '{42}', conditional.quantifier.text
+    refute conditional.branches.any?(&:quantified?)
+  end
+
+  def test_parse_conditional_branch_content_quantified
+    regexp = /(foo)(?(1)\d{23}|(\w){42})/
+
+    root = RP.parse(regexp, 'ruby/2.0')
+    conditional = root[1]
+
+    refute conditional.quantified?
+    refute conditional.branches.any?(&:quantified?)
+    assert conditional.branches[0][0].quantified?
+    assert_equal '{23}', conditional.branches[0][0].quantifier.text
+    assert conditional.branches[1][0].quantified?
+    assert_equal '{42}', conditional.branches[1][0].quantifier.text
+  end
 
   # For source (text) expressions only, ruby raises an error otherwise.
   def test_parse_conditional_excessive_branches
@@ -162,5 +183,4 @@ class TestParserConditionals < Test::Unit::TestCase
       RP.parse(regexp, 'ruby/2.0')
     }
   end
-
 end

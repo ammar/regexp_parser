@@ -89,8 +89,7 @@ class Regexp::Parser
 
   def nest_conditional(exp)
     conditional_nesting.push(exp)
-    node << exp
-    self.node = exp
+    nest(exp)
   end
 
   def parse_token(token)
@@ -216,6 +215,7 @@ class Regexp::Parser
       self.node = conditional_nesting.last.branches.last
     when :close
       conditional_nesting.pop
+      decrease_nesting
 
       self.node =
         if conditional_nesting.empty?

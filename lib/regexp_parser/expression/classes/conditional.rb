@@ -43,10 +43,6 @@ module Regexp::Expression
         condition.reference
       end
 
-      def quantify(token, text, min = nil, max = nil, mode = :greedy)
-        branches.last.last.quantify(token, text, min, max, mode)
-      end
-
       def to_s(_format = :full)
         text + condition.text + branches.join('|') + ')'
       end
