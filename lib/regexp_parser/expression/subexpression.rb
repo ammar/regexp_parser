@@ -25,8 +25,12 @@ module Regexp::Expression
     end
 
     %w[[] all? any? at collect count each each_with_index empty?
-       fetch find first index join last length map values_at].each do |m|
-      define_method(m) { |*args, &block| expressions.send(m, *args, &block) }
+       fetch find first index join last length map values_at].each do |method|
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        def #{method}(*args, &block)
+          expressions.#{method}(*args, &block)
+        end
+      RUBY
     end
 
     def dig(*indices)

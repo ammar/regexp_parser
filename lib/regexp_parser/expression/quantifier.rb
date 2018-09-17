@@ -32,6 +32,12 @@ module Regexp::Expression
       }
     end
 
-    MODES.each { |m| define_method("#{m}?") { mode.equal?(m) } }
+    MODES.each do |mode|
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        def #{mode}?
+          mode.equal?(:#{mode})
+        end
+      RUBY
+    end
   end
 end
