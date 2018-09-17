@@ -39,5 +39,6 @@ module Regexp::Expression
         end
       RUBY
     end
+    alias :lazy? :reluctant?
   end
 end

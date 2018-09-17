@@ -2,7 +2,7 @@
 
 ### Added
 
-- Added `Quantifier` methods `#greedy?`, `#possessive?`, `#reluctant?`
+- Added `Quantifier` methods `#greedy?`, `#possessive?`, `#reluctant?`/`#lazy?`
 - Added `Group::Options#option_modifications`
   - shows the options enabled or disabled by the given options group
   - as with all other expressions, `#options` shows the overall active options
