@@ -1,4 +1,4 @@
-## [Unreleased]
+## [1.1.0] - 2018-09-17 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
 
