@@ -14,7 +14,7 @@ module Regexp::Expression
     class Passive < Group::Base; end
     class Absence < Group::Base; end
     class Options < Group::Base
-      attr_accessor :option_modifications
+      attr_accessor :option_changes
     end
 
     class Capture < Group::Base

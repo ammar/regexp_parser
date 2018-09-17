@@ -496,16 +496,16 @@ class Regexp::Parser
     negative ||= ''
     self.switching_options = token.token.equal?(:options_switch)
 
-    option_mods = {}
+    opt_changes = {}
     new_active_opts = active_opts.dup
 
     # Negative options have precedence. E.g. /(?i-i)a/ is case-sensitive.
     %w[i m x].each do |flag|
       if positive.include?(flag)
-        option_mods[flag.to_sym] = new_active_opts[flag.to_sym] = true
+        opt_changes[flag.to_sym] = new_active_opts[flag.to_sym] = true
       end
       if negative.include?(flag)
-        option_mods[flag.to_sym] = false
+        opt_changes[flag.to_sym] = false
         new_active_opts.delete(flag.to_sym)
       end
     end
@@ -515,13 +515,13 @@ class Regexp::Parser
     # E.g. /(?dau)\w/ matches UTF8 chars but /(?dua)\w/ only ASCII chars.
     if (flag = positive.reverse[/[adu]/])
       %w[a d u].each { |key| new_active_opts.delete(key.to_sym) }
-      option_mods[flag.to_sym] = new_active_opts[flag.to_sym] = true
+      opt_changes[flag.to_sym] = new_active_opts[flag.to_sym] = true
     end
 
     options_stack << new_active_opts
 
     options_group = Group::Options.new(token, active_opts)
-    options_group.option_modifications = option_mods
+    options_group.option_changes = opt_changes
 
     nest(options_group)
   end
