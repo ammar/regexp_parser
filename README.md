@@ -2,14 +2,14 @@
 
 [![Gem Version](https://badge.fury.io/rb/regexp_parser.svg)](http://badge.fury.io/rb/regexp_parser) [![Build Status](https://secure.travis-ci.org/ammar/regexp_parser.svg?branch=master)](http://travis-ci.org/ammar/regexp_parser) [![Code Climate](https://codeclimate.com/github/ammar/regexp_parser.svg)](https://codeclimate.com/github/ammar/regexp_parser/badges)
 
-A ruby gem for tokenizing, parsing, and transforming regular expressions.
+A Ruby gem for tokenizing, parsing, and transforming regular expressions.
 
 * Multilayered
-  * A scanner/tokenizer based on [ragel](http://www.colm.net/open-source/ragel/)
+  * A scanner/tokenizer based on [Ragel](http://www.colm.net/open-source/ragel/)
   * A lexer that produces a "stream" of token objects.
   * A parser that produces a "tree" of Expression objects (OO API)
-* Runs on ruby 1.9, 2.x, and jruby (1.9 mode) runtimes.
-* Recognizes ruby 1.8, 1.9, and 2.x regular expressions [See Supported Syntax](#supported-syntax)
+* Runs on Ruby 1.9, 2.x, and JRuby (1.9 mode) runtimes.
+* Recognizes Ruby 1.8, 1.9, and 2.x regular expressions [See Supported Syntax](#supported-syntax)
 
 
 _For examples of regexp_parser in use, see [Example Projects](#example-projects)._
@@ -46,7 +46,7 @@ The three main modules are **Scanner**, **Lexer**, and **Parser**. Each of them
 provides a single method that takes a regular expression (as a RegExp object or
 a string) and returns its results. The **Lexer** and the **Parser** accept an
 optional second argument that specifies the syntax version, like 'ruby/2.0',
-which defaults to the host ruby version (using RUBY_VERSION).
+which defaults to the host Ruby version (using RUBY_VERSION).
 
 Here are the basic usage examples:
 
@@ -77,7 +77,7 @@ called with the results as follows:
 ## Components
 
 ### Scanner
-A ragel generated scanner that recognizes the cumulative syntax of all
+A Ragel-generated scanner that recognizes the cumulative syntax of all
 supported syntax versions. It breaks a given expression's text into the
 smallest parts, and identifies their type, token, text, and start/end
 offsets within the pattern.
@@ -123,7 +123,7 @@ Regexp::Scanner.scan( /(cat?([bhm]at)){3,5}/ ).map {|token| token[2]}
     balancing punctuation and premature end of pattern. Flavor validity checks
     are performed in the lexer, which uses a syntax object.
 
-  * If the input is a ruby **Regexp** object, the scanner calls #source on it to
+  * If the input is a Ruby **Regexp** object, the scanner calls #source on it to
     get its string representation. #source does not include the options of
     the expression (m, i, and x). To include the options in the scan, #to_s
     should be called on the **Regexp** before passing it to the scanner or the
@@ -188,7 +188,7 @@ ruby_18.implements? :conditional, :condition               # => false
 Sits on top of the scanner and performs lexical analysis on the tokens that
 it emits. Among its tasks are; breaking quantified literal runs, collecting the
 emitted token attributes into Token objects, calculating their nesting depth,
-normalizing tokens for the parser, and checkng if the tokens are implemented by
+normalizing tokens for the parser, and checking if the tokens are implemented by
 the given syntax version.
 
 See the [Token Objects](https://github.com/ammar/regexp_parser/wiki/Token-Objects)
@@ -196,7 +196,7 @@ wiki page for more information on Token objects.
 
 
 #### Example
-The following example lexes the given pattern, checks it against the ruby 1.9
+The following example lexes the given pattern, checks it against the Ruby 1.9
 syntax, and prints the token objects' text indented to their level.
 
 ```ruby
@@ -224,7 +224,7 @@ end
 
 A one-liner that returns an array of the textual parts of the given pattern.
 Compare the output with that of the one-liner example of the **Scanner**; notably
-how the sequence 'cat' is treated. The 't' is seperated because it's followed
+how the sequence 'cat' is treated. The 't' is separated because it's followed
 by a quantifier that only applies to it.
 
 ```ruby
@@ -233,7 +233,7 @@ Regexp::Lexer.scan( /(cat?([b]at)){3,5}/ ).map {|token| token.text}
 ```
 
 #### Notes
-  * The syntax argument is optional. It defaults to the version of the ruby
+  * The syntax argument is optional. It defaults to the version of the Ruby
     interpreter in use, as returned by RUBY_VERSION.
 
   * The lexer normalizes some tokens, as noted in the Syntax section above.
@@ -308,8 +308,8 @@ Expression class. See the next section for details._
 
 
 ## Supported Syntax
-The three modules support all the regular expression syntax features of Ruby 1.8
-, 1.9, and 2.x:
+The three modules support all the regular expression syntax features of Ruby 1.8,
+1.9, and 2.x:
 
 _Note that not all of these are available in all versions of Ruby_
 
@@ -318,7 +318,7 @@ _Note that not all of these are available in all versions of Ruby_
 | ------------------------------------- | ------------------------------------------------------- |:--------:|
 | **Alternation**                       | `a\|b\|c`                                               | &#x2713; |
 | **Anchors**                           | `\A`, `^`, `\b`                                         | &#x2713; |
-| **Character Classes**                 | `[abc]`, `[^\\]`, `[a-d&&g-h]`, `[a=e=b]`               | &#x2713; |
+| **Character Classes**                 | `[abc]`, `[^\\]`, `[a-d&&aeiou]`, `[a=e=b]`             | &#x2713; |
 | **Character Types**                   | `\d`, `\H`, `\s`                                        | &#x2713; |
 | **Cluster Types**                     | `\R`, `\X`                                              | &#x2713; |
 | **Conditional Exps.**                 | `(?(cond)yes-subexp)`, `(?(cond)yes-subexp\|no-subexp)` | &#x2713; |
@@ -362,9 +362,9 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Blocks**_              | `\p{InArmenian}`, `\P{InKhmer}`, `\p{^InThai}`          | &#x2713; |
 | &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`, `\p{^Alnum}`                  | &#x2713; |
 | &emsp;&nbsp;_**Derived**_             | `\p{Math}`, `\P{Lowercase}`, `\p{^Cased}`               | &#x2713; |
-| &emsp;&nbsp;_**General Categories**_  | `\p{Lu}`, `\P{Cs}`, \p{^sc}                             | &#x2713; |
-| &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`, \p{^Greek}                | &#x2713; |
-| &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`, \p{^Hyphen}                 | &#x2713; |
+| &emsp;&nbsp;_**General Categories**_  | `\p{Lu}`, `\P{Cs}`, `\p{^sc}`                           | &#x2713; |
+| &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`, `\p{^Greek}`              | &#x2713; |
+| &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`, `\p{^Hyphen}`               | &#x2713; |
 
 ##### Inapplicable Features
 
@@ -389,9 +389,9 @@ or incorrectly return tokens/objects as literals._
 ## Testing
 To run the tests simply run rake from the root directory, as 'test' is the default task.
 
-It generates the scanner's code from the ragel source files and runs all the tests, thus it requires ragel to be installed.
+It generates the scanner's code from the Ragel source files and runs all the tests, thus it requires Ragel to be installed.
 
-The tests use ruby's test/unit. They can also be run with:
+The tests use Ruby's test/unit. They can also be run with:
 
 ```
 bin/test
@@ -409,16 +409,16 @@ It is sometimes helpful during development to focus on a specific test case, for
 bin/test test/expression/test_base.rb -n test_expression_to_re
 ```
 
-Note that changes to ragel files will not be reflected when using `bin/test`, so you might want to run:
+Note that changes to Ragel files will not be reflected when using `bin/test`, so you might want to run:
 
 ```
 rake ragel:rb && bin/test test/scanner/test_properties.rb
 ```
 
 ## Building
-Building the scanner and the gem requires [ragel](http://www.colm.net/open-source/ragel/) to be
+Building the scanner and the gem requires [Ragel](http://www.colm.net/open-source/ragel/) to be
 installed. The build tasks will automatically invoke the 'ragel:rb' task to generate the
-ruby scanner code.
+Ruby scanner code.
 
 
 The project uses the standard rubygems package tasks, so:
