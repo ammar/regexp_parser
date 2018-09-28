@@ -18,13 +18,6 @@ module Regexp::Expression
     class Branch < Regexp::Expression::Sequence; end
 
     class Expression < Regexp::Expression::Subexpression
-      attr_reader :condition
-
-      def condition=(exp)
-        @condition = exp
-        expressions << exp
-      end
-
       def <<(exp)
         expressions.last << exp
       end
@@ -35,16 +28,25 @@ module Regexp::Expression
       end
       alias :branch :add_sequence
 
+      def condition=(exp)
+        expressions.delete(condition)
+        expressions.unshift(exp)
+      end
+
+      def condition
+        find { |subexp| subexp.is_a?(Condition) }
+      end
+
       def branches
-        expressions - [condition]
+        select { |subexp| subexp.is_a?(Sequence) }
       end
 
       def reference
         condition.reference
       end
 
-      def to_s(_format = :full)
-        text + condition.text + branches.join('|') + ')'
+      def to_s(format = :full)
+        "#{text}#{condition}#{branches.join('|')})#{quantifier_affix(format)}"
       end
     end
   end

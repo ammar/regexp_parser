@@ -127,7 +127,7 @@ module Regexp::Expression
     end
     alias :=~ :match
 
-    def to_h
+    def attributes
       {
         type:              type,
         token:             token,
@@ -141,6 +141,7 @@ module Regexp::Expression
         quantifier:        quantified? ? quantifier.to_h : nil,
       }
     end
+    alias :to_h :attributes
   end
 
   def self.parsed(exp)

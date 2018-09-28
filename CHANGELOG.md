@@ -1,3 +1,16 @@
+## [1.2.0] - 2018-09-28 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Added
+
+- `Subexpression` (branch node) includes `Enumerable`, allowing to `#select` children etc.
+
+### Fixed
+
+- Fixed missing quantifier in `Conditional::Expression` methods `#to_s`, `#to_re`
+- `Conditional::Condition` no longer lives outside the recursive `#expressions` tree
+  - it used to be the only expression stored in a custom ivar, complicating traversal
+  - its setter and getter (`#condition=`, `#condition`) still work as before
+
 ## [1.1.0] - 2018-09-17 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added

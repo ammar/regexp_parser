@@ -1,6 +1,8 @@
 module Regexp::Expression
 
   class Subexpression < Regexp::Expression::Base
+    include Enumerable
+
     attr_accessor :expressions
 
     def initialize(token, options = {})
@@ -24,8 +26,7 @@ module Regexp::Expression
       end
     end
 
-    %w[[] all? any? at collect count each each_with_index empty?
-       fetch find first index join last length map values_at].each do |method|
+    %w[[] at each empty? fetch index join last length values_at].each do |method|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{method}(*args, &block)
           expressions.#{method}(*args, &block)
@@ -51,7 +52,7 @@ module Regexp::Expression
     end
 
     def to_h
-      super.merge({
+      attributes.merge({
         text:        to_s(:base),
         expressions: expressions.map(&:to_h)
       })

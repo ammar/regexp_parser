@@ -157,7 +157,8 @@ class TestParserConditionals < Test::Unit::TestCase
     conditional = root[1]
 
     assert conditional.quantified?
-    assert_equal '{42}', conditional.quantifier.text
+    assert_equal '{42}',              conditional.quantifier.text
+    assert_equal '(?(1)\d|(\w)){42}', conditional.to_s
     refute conditional.branches.any?(&:quantified?)
   end
 
