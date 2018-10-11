@@ -10,8 +10,7 @@ class TestSyntaxV1_9_1 < Test::Unit::TestCase
   tests = {
     implements: {
       escape: [
-        Escape::Backreference + Escape::ASCII + Escape::Meta + Escape::Unicode +
-        Escape::Hex + Escape::Octal
+        Escape::ASCII + Escape::Meta + Escape::Unicode + Escape::Hex + Escape::Octal
       ].flatten,
 
       type: [

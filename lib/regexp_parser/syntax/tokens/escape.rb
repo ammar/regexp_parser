@@ -1,10 +1,7 @@
 module Regexp::Syntax
   module Token
-
     module Escape
-      Basic     = [:backslash, :literal]
-
-      Backreference = [:digit]
+      Basic = [:backslash, :literal]
 
       Control = [:control, :meta_sequence]
 
@@ -24,11 +21,10 @@ module Regexp::Syntax
 
       Octal = [:octal]
 
-      All   = Basic + Backreference + ASCII + Meta
+      All   = Basic + ASCII + Meta
       Type  = :escape
     end
 
     Map[Escape::Type] = Escape::All
-
   end
 end

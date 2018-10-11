@@ -5,7 +5,7 @@ module Regexp::Syntax
       OpenClose = [:open, :close]
 
       Basic     = [:negate, :range]
-      Extended  = Basic + [:intersection, :backspace]
+      Extended  = Basic + [:intersection]
 
       All = Basic + Extended
       Type = :set

@@ -8,8 +8,7 @@ module Regexp::Syntax
       implements :backref, [:number]
       implements :posixclass, PosixClass::Standard
       implements :escape,
-        Escape::Basic + Escape::Backreference +
-        Escape::ASCII + Escape::Meta + Escape::Control
+        Escape::Basic + Escape::ASCII + Escape::Meta + Escape::Control
 
       implements :group, Group::All
 
