@@ -11,7 +11,9 @@ class TestSyntaxV1_8 < Test::Unit::TestCase
     implements: {
       assertion:    [Assertion::Lookahead].flatten,
       backref:      [:number],
-      escape:       [Escape::All].flatten,
+      escape:       [
+        Escape::Basic + Escape::ASCII + Escape::Meta + Escape::Control
+      ].flatten,
       group:        [Group::V1_8_6].flatten,
       quantifier:   [
           Quantifier::Greedy + Quantifier::Reluctant +

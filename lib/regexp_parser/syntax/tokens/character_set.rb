@@ -1,13 +1,10 @@
 module Regexp::Syntax
   module Token
-
     module CharacterSet
-      OpenClose = [:open, :close]
-
-      Basic     = [:negate, :range]
+      Basic     = [:open, :close, :negate, :range]
       Extended  = Basic + [:intersection]
 
-      All = Basic + Extended
+      All = Extended
       Type = :set
     end
 

@@ -1,6 +1,5 @@
 module Regexp::Syntax
   module Token
-
     module Keep
       Mark = [:mark]
 
@@ -9,6 +8,5 @@ module Regexp::Syntax
     end
 
     Map[Keep::Type] = Keep::All
-
   end
 end

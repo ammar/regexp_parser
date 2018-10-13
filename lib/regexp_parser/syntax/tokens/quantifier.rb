@@ -1,6 +1,5 @@
 module Regexp::Syntax
   module Token
-
     module Quantifier
       Greedy    = [
         :zero_or_one,
@@ -32,6 +31,5 @@ module Regexp::Syntax
     end
 
     Map[Quantifier::Type] = Quantifier::All
-
   end
 end

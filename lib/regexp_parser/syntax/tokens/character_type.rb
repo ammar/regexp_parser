@@ -1,6 +1,5 @@
 module Regexp::Syntax
   module Token
-
     module CharacterType
       Basic     = []
       Extended  = [:digit, :nondigit, :space, :nonspace, :word, :nonword]
@@ -13,6 +12,5 @@ module Regexp::Syntax
     end
 
     Map[CharacterType::Type] = CharacterType::All
-
   end
 end

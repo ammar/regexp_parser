@@ -1,6 +1,5 @@
 module Regexp::Syntax
   module Token
-
     module Backreference
       Name      = [:name_ref]
       Number    = [:number, :number_ref, :number_rel_ref]
@@ -21,6 +20,5 @@ module Regexp::Syntax
 
     Map[Backreference::Type] = Backreference::All +
                                SubexpressionCall::All
-
   end
 end

@@ -1,6 +1,5 @@
 module Regexp::Syntax
   module Token
-
     module Group
       Basic     = [:capture, :close]
       Extended  = Basic + [:options, :options_switch]
@@ -20,6 +19,5 @@ module Regexp::Syntax
     end
 
     Map[Group::Type] = Group::All
-
   end
 end

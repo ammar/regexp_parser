@@ -7,21 +7,15 @@ module Regexp::Syntax
       implements :assertion, Assertion::Lookahead
       implements :backref, [:number]
       implements :posixclass, PosixClass::Standard
+      implements :group, Group::All
+      implements :meta, Meta::Extended
+      implements :set, CharacterSet::All
+      implements :type, CharacterType::Extended
       implements :escape,
         Escape::Basic + Escape::ASCII + Escape::Meta + Escape::Control
-
-      implements :group, Group::All
-
-      implements :meta, Meta::Extended
-
       implements :quantifier,
         Quantifier::Greedy + Quantifier::Reluctant +
         Quantifier::Interval + Quantifier::IntervalReluctant
-
-      implements :set, CharacterSet::OpenClose + CharacterSet::Extended
-
-      implements :type,
-        CharacterType::Extended
     end
   end
 end

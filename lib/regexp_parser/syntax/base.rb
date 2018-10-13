@@ -18,6 +18,10 @@ module Regexp::Syntax
       implements Token::FreeSpace::Type, Token::FreeSpace::All
     end
 
+    def features
+      @implements
+    end
+
     def implementations(type)
       @implements[type] ||= Set.new
     end

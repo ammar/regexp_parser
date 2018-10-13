@@ -1,3 +1,9 @@
+## [Unreleased]
+
+### Added
+
+- `Syntax#features` returns a `Hash` of all types and tokens supported by a given `Syntax`
+
 ## [1.2.0] - 2018-09-28 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added

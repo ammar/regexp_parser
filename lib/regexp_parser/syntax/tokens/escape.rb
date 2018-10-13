@@ -21,7 +21,7 @@ module Regexp::Syntax
 
       Octal = [:octal]
 
-      All   = Basic + ASCII + Meta
+      All   = Basic + Control + ASCII + Unicode + Meta + Hex + Octal
       Type  = :escape
     end
 

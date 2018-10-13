@@ -1,6 +1,5 @@
 module Regexp::Syntax
   module Token
-
     module Anchor
       Basic       = [:bol, :eol]
       Extended    = Basic + [:word_boundary, :nonword_boundary]
@@ -12,6 +11,5 @@ module Regexp::Syntax
     end
 
     Map[Anchor::Type] = Anchor::All
-
   end
 end

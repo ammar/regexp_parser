@@ -3,26 +3,14 @@ module Regexp::Syntax
     def initialize
       super
 
-      implements :assertion, Assertion::Lookbehind +
-        SubexpressionCall::All
-
-      implements :backref, Backreference::All +
-        SubexpressionCall::All
-
+      implements :assertion, Assertion::Lookbehind
+      implements :backref, Backreference::All + SubexpressionCall::All
       implements :posixclass, PosixClass::Extensions
-
       implements :nonposixclass, PosixClass::All
-
       implements :escape, Escape::Unicode + Escape::Hex + Escape::Octal
-
       implements :type, CharacterType::Hex
-
-      implements :property,
-        UnicodeProperty::V1_9_0
-
-      implements :nonproperty,
-        UnicodeProperty::V1_9_0
-
+      implements :property, UnicodeProperty::V1_9_0
+      implements :nonproperty, UnicodeProperty::V1_9_0
       implements :quantifier,
         Quantifier::Possessive + Quantifier::IntervalPossessive
     end

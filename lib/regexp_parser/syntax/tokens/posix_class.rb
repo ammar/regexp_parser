@@ -1,8 +1,8 @@
 module Regexp::Syntax
   module Token
     module PosixClass
-      Standard  = [:alnum, :alpha, :blank, :cntrl, :digit, :graph,
-                   :lower, :print, :punct, :space, :upper, :xdigit]
+      Standard = [:alnum, :alpha, :blank, :cntrl, :digit, :graph,
+                  :lower, :print, :punct, :space, :upper, :xdigit]
 
       Extensions = [:ascii, :word]
 
@@ -10,6 +10,7 @@ module Regexp::Syntax
       Type = :posixclass
       NonType = :nonposixclass
     end
+
     Map[PosixClass::Type]    = PosixClass::All
     Map[PosixClass::NonType] = PosixClass::All
   end

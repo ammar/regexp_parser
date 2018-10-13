@@ -8,7 +8,6 @@ module Regexp::Syntax
       implements :conditional, Conditional::All
       implements :property,    UnicodeProperty::V2_0_0
       implements :nonproperty, UnicodeProperty::V2_0_0
-
       implements :type,        CharacterType::Clustered
 
       excludes   :property,    :newline

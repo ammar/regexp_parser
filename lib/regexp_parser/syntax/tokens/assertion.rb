@@ -1,6 +1,5 @@
 module Regexp::Syntax
   module Token
-
     module Assertion
       Lookahead = [:lookahead, :nlookahead]
       Lookbehind = [:lookbehind, :nlookbehind]
@@ -10,6 +9,5 @@ module Regexp::Syntax
     end
 
     Map[Assertion::Type] = Assertion::All
-
   end
 end

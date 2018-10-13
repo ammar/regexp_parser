@@ -1,13 +1,12 @@
 module Regexp::Syntax
   module Token
-
     module UnicodeProperty
       CharType_V1_9_0 = [:alnum, :alpha, :ascii, :blank, :cntrl, :digit, :graph,
-                       :lower, :print, :punct, :space, :upper, :word, :xdigit]
+                         :lower, :print, :punct, :space, :upper, :word, :xdigit]
 
       CharType_V2_5_0 = [:xposixpunct]
 
-      POSIX  = [:any, :assigned, :newline]
+      POSIX = [:any, :assigned, :newline]
 
       module Category
         Letter        = [:letter, :uppercase_letter, :lowercase_letter,
@@ -36,14 +35,12 @@ module Regexp::Syntax
               Symbol + Separator + Codepoint
       end
 
-      # As of ruby version 1.9.3
       Age_V1_9_3 = [:'age=1.1', :'age=2.0', :'age=2.1', :'age=3.0', :'age=3.1',
                     :'age=3.2', :'age=4.0', :'age=4.1', :'age=5.0', :'age=5.1',
                     :'age=5.2', :'age=6.0']
 
       Age_V2_0_0 = [:'age=6.1']
 
-      # These were merged (from Onigmo) in the branch for 2.2.0
       Age_V2_2_0 = [:'age=6.2', :'age=6.3', :'age=7.0']
 
       Age_V2_3_0 = [:'age=8.0']
@@ -291,8 +288,6 @@ module Regexp::Syntax
 
       UnicodeBlock_V1_9_0 = [
         :in_alphabetic_presentation_forms,
-        :in_arabic_presentation_forms_a,
-        :in_arabic_presentation_forms_b,
         :in_arabic,
         :in_armenian,
         :in_arrows,
@@ -350,17 +345,12 @@ module Regexp::Syntax
         :in_khmer_symbols,
         :in_khmer,
         :in_lao,
-        :in_latin_1_supplement,
-        :in_latin_extended_a,
-        :in_latin_extended_b,
         :in_latin_extended_additional,
         :in_letterlike_symbols,
         :in_limbu,
         :in_low_surrogates,
         :in_malayalam,
         :in_mathematical_operators,
-        :in_miscellaneous_mathematical_symbols_a,
-        :in_miscellaneous_mathematical_symbols_b,
         :in_miscellaneous_symbols_and_arrows,
         :in_miscellaneous_symbols,
         :in_miscellaneous_technical,
@@ -378,8 +368,6 @@ module Regexp::Syntax
         :in_spacing_modifier_letters,
         :in_specials,
         :in_superscripts_and_subscripts,
-        :in_supplemental_arrows_a,
-        :in_supplemental_arrows_b,
         :in_supplemental_mathematical_operators,
         :in_syriac,
         :in_tagalog,
@@ -610,7 +598,8 @@ module Regexp::Syntax
 
       Emoji = Emoji_V2_5_0
 
-      V1_9_0 = CharType_V1_9_0 + POSIX + Category::All + Derived_V1_9_0 + Script_V1_9_0 + UnicodeBlock_V1_9_0
+      V1_9_0 = Category::All + POSIX + CharType_V1_9_0 + Derived_V1_9_0 + Script_V1_9_0 + UnicodeBlock_V1_9_0
+
       V1_9_3 = Age_V1_9_3 + Script_V1_9_3
 
       V2_0_0 = Age_V2_0_0 + Derived_V2_0_0 + Script_V2_0_0 + UnicodeBlock_V2_0_0
@@ -623,7 +612,7 @@ module Regexp::Syntax
 
       V2_5_0 = Age_V2_5_0 + CharType_V2_5_0 + Derived_V2_5_0 + Emoji_V2_5_0 + Script_V2_5_0 + UnicodeBlock_V2_5_0
 
-      All  = V1_9_0 + V1_9_3 + V2_0_0 + V2_2_0 + V2_3_0 + V2_4_0 + V2_5_0
+      All = V1_9_0 + V1_9_3 + V2_0_0 + V2_2_0 + V2_3_0 + V2_4_0 + V2_5_0
 
       Type = :property
       NonType = :nonproperty
@@ -631,6 +620,5 @@ module Regexp::Syntax
 
     Map[UnicodeProperty::Type] = UnicodeProperty::All
     Map[UnicodeProperty::NonType] = UnicodeProperty::All
-
   end
 end
