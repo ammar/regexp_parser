@@ -808,6 +808,9 @@ class Regexp::Scanner
     %% write init;
     %% write exec;
 
+    # to avoid "warning: assigned but unused variable - testEof"
+    testEof = testEof
+
     if cs == re_scanner_error
       text = ts ? copy(data, ts-1..-1) : data.pack('c*')
       raise ScannerError.new("Scan error at '#{text}'")
