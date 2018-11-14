@@ -1,8 +1,15 @@
 ## [Unreleased]
 
+### [1.3.0] - 2018-11-14 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Added
 
 - `Syntax#features` returns a `Hash` of all types and tokens supported by a given `Syntax`
+
+### Fixed
+
+- Thanks to [Akira Matsuda](https://github.com/amatsuda)
+  * eliminated warning "assigned but unused variable - testEof"
 
 ## [1.2.0] - 2018-09-28 - [Janosch Müller](mailto:janosch84@gmail.com)
 
@@ -153,15 +160,15 @@ This release includes several breaking changes, mostly to character sets, #map a
 
 ## [0.4.5] - 2017-09-17 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
-- Thanks to Janosch Müller (https://github.com/janosch-x):
+- Thanks to [Janosch Müller](https://github.com/janosch-x):
   * Support ruby 2.2.7 (PR #42)
 - Added ruby version files for 2.2.8, 2.3.5, and 2.4.2
 
 ## [0.4.4] - 2017-07-10 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
-- Thanks to Janosch Müller (https://github.com/janosch-x):
+- Thanks to [Janosch Müller](https://github.com/janosch-x):
   * Add support for new absence operator (PR #33)
-- Thanks to Bartek Bułat (https://github.com/barthez):
+- Thanks to [Bartek Bułat](https://github.com/barthez):
   * Add support for Ruby 2.3.4 version (PR #40)
 
 ## [0.4.3] - 2017-03-24 - [Ammar Ali](mailto:ammarabuali@gmail.com)
@@ -170,7 +177,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 
 ## [0.4.2] - 2017-01-10 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
-- Thanks to Janosch Müller (https://github.com/janosch-x):
+- Thanks to [Janosch Müller](https://github.com/janosch-x):
   * Support ruby 2.4 (PR #30)
   * Improve codepoint handling (PR #27)
 
@@ -185,26 +192,26 @@ This release includes several breaking changes, mostly to character sets, #map a
 
 ## [0.3.6] - 2016-06-08 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
-- Thanks to John Backus (https://github.com/backus):
+- Thanks to [John Backus](https://github.com/backus):
   * Remove warnings (PR #26)
 
 ## [0.3.5] - 2016-05-30 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
-- Thanks to John Backus (https://github.com/backus):
+- Thanks to [John Backus](https://github.com/backus):
   * Fix parsing of /\xFF/n (hex:escape) (PR #24)
 
 ## [0.3.4] - 2016-05-25 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
-- Thanks to John Backus (https://github.com/backus):
+- Thanks to [John Backus](https://github.com/backus):
   * Fix warnings (PR #19)
-- Thanks to Dana Scheider (https://github.com/danascheider):
+- Thanks to [Dana Scheider](https://github.com/danascheider):
   * Correct error in README (PR #20)
 - Fixed mistyped \h and \H character types (issue #21)
 - Added ancestry syntax files for latest rubies (issue #22)
 
 ## [0.3.3] - 2016-04-26 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
-- Thanks to John Backus (https://github.com/backus):
+- Thanks to [John Backus](https://github.com/backus):
   * Fixed scanning of zero length comments (PR #12)
   * Fixed missing escape:codepoint_list syntax token (PR #14)
   * Fixed to_s for modified interval quantifiers (PR #17)
