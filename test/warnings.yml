@@ -1,7 +1,4 @@
 ---
-# Unused variable emitted by ragel
-- "assigned but unused variable - testEof"
-
 # Unavoidable warnings in character range tests
 - "character class has duplicated range"
 - "character class has '-' without escape"
