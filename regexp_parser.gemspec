@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
 
   gem.summary       = "Scanner, lexer, parser for ruby's regular expressions"
   gem.description   = 'A library for tokenizing, lexing, and parsing Ruby regular expressions.'
-  gem.homepage      = 'http://github.com/ammar/regexp_parser'
+  gem.homepage      = 'https://github.com/ammar/regexp_parser'
 
   if gem.respond_to?(:metadata)
     gem.metadata    = { 'issue_tracker' => 'https://github.com/ammar/regexp_parser/issues' }
