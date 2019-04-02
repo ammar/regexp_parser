@@ -1,6 +1,8 @@
 module Regexp::Syntax
   module Token
     module UnicodeProperty
+      all = proc { |name| constants.grep(/#{name}/).flat_map(&method(:const_get)) }
+
       CharType_V1_9_0 = [:alnum, :alpha, :ascii, :blank, :cntrl, :digit, :graph,
                          :lower, :print, :punct, :space, :upper, :word, :xdigit]
 
@@ -49,7 +51,9 @@ module Regexp::Syntax
 
       Age_V2_5_0 = [:'age=10.0']
 
-      Age = Age_V1_9_3 + Age_V2_0_0 + Age_V2_2_0 + Age_V2_3_0 + Age_V2_4_0 + Age_V2_5_0
+      Age_V2_6_0 = [:'age=11.0']
+
+      Age = all[:Age_V]
 
       Derived_V1_9_0 = [
         :ascii_hex_digit,
@@ -118,7 +122,7 @@ module Regexp::Syntax
         :regional_indicator
       ]
 
-      Derived = Derived_V1_9_0 + Derived_V2_0_0 + Derived_V2_4_0 + Derived_V2_5_0
+      Derived = all[:Derived_V]
 
       Script_V1_9_0 = [
         :arabic,
@@ -283,8 +287,17 @@ module Regexp::Syntax
         :zanabazar_square,
       ]
 
-      Script = Script_V1_9_0 + Script_V1_9_3 + Script_V2_0_0 +
-               Script_V2_2_0 + Script_V2_3_0 + Script_V2_4_0 + Script_V2_5_0
+      Script_V2_6_0 = [
+        :dogra,
+        :gunjala_gondi,
+        :hanifi_rohingya,
+        :makasar,
+        :medefaidrin,
+        :old_sogdian,
+        :sogdian,
+      ]
+
+      Script = all[:Script_V]
 
       UnicodeBlock_V1_9_0 = [
         :in_alphabetic_presentation_forms,
@@ -585,8 +598,21 @@ module Regexp::Syntax
         :in_zanabazar_square,
       ]
 
-      UnicodeBlock = UnicodeBlock_V1_9_0 + UnicodeBlock_V2_0_0 + UnicodeBlock_V2_2_0 +
-                     UnicodeBlock_V2_3_0 + UnicodeBlock_V2_4_0 + UnicodeBlock_V2_5_0
+      UnicodeBlock_V2_6_0 = [
+        :in_chess_symbols,
+        :in_dogra,
+        :in_georgian_extended,
+        :in_gunjala_gondi,
+        :in_hanifi_rohingya,
+        :in_indic_siyaq_numbers,
+        :in_makasar,
+        :in_mayan_numerals,
+        :in_medefaidrin,
+        :in_old_sogdian,
+        :in_sogdian,
+      ]
+
+      UnicodeBlock = all[:UnicodeBlock_V]
 
       Emoji_V2_5_0 = [
         :emoji,
@@ -596,23 +622,18 @@ module Regexp::Syntax
         :emoji_presentation,
       ]
 
-      Emoji = Emoji_V2_5_0
+      Emoji = all[:Emoji_V]
 
-      V1_9_0 = Category::All + POSIX + CharType_V1_9_0 + Derived_V1_9_0 + Script_V1_9_0 + UnicodeBlock_V1_9_0
+      V1_9_0 = Category::All + POSIX + all[:V1_9_0]
+      V1_9_3 = all[:V1_9_3]
+      V2_0_0 = all[:V2_0_0]
+      V2_2_0 = all[:V2_2_0]
+      V2_3_0 = all[:V2_3_0]
+      V2_4_0 = all[:V2_4_0]
+      V2_5_0 = all[:V2_5_0]
+      V2_6_0 = all[:V2_6_0]
 
-      V1_9_3 = Age_V1_9_3 + Script_V1_9_3
-
-      V2_0_0 = Age_V2_0_0 + Derived_V2_0_0 + Script_V2_0_0 + UnicodeBlock_V2_0_0
-
-      V2_2_0 = Age_V2_2_0 + Script_V2_2_0 + UnicodeBlock_V2_2_0
-
-      V2_3_0 = Age_V2_3_0 + Script_V2_3_0 + UnicodeBlock_V2_3_0
-
-      V2_4_0 = Age_V2_4_0 + Derived_V2_4_0 + Script_V2_4_0 + UnicodeBlock_V2_4_0
-
-      V2_5_0 = Age_V2_5_0 + CharType_V2_5_0 + Derived_V2_5_0 + Emoji_V2_5_0 + Script_V2_5_0 + UnicodeBlock_V2_5_0
-
-      All = V1_9_0 + V1_9_3 + V2_0_0 + V2_2_0 + V2_3_0 + V2_4_0 + V2_5_0
+      All = all[/^V\d+_\d+_\d+$/]
 
       Type = :property
       NonType = :nonproperty

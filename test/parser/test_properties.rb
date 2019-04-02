@@ -17,6 +17,7 @@ class ParserProperties < Test::Unit::TestCase
     'xidc',
     'XID_Continue',
     'Emoji',
+    'InChessSymbols',
   ]
 
   modes.each do |mode|
@@ -24,7 +25,7 @@ class ParserProperties < Test::Unit::TestCase
 
     example_props.each do |property|
       define_method "test_parse_#{token_type}_#{property}" do
-        t = RP.parse "ab\\#{mode}{#{property}}", 'ruby/2.5'
+        t = RP.parse "ab\\#{mode}{#{property}}", '*'
 
         assert t.expressions.last.is_a?(UnicodeProperty::Base),
                "Expected property, but got #{t.expressions.last.class.name}"

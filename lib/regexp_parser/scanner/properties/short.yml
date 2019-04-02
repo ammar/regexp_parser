@@ -44,6 +44,7 @@ dep: deprecated
 deva: devanagari
 di: default_ignorable_code_point
 dia: diacritic
+dogr: dogra
 dsrt: deseret
 dupl: duployan
 egyp: egyptian_hieroglyphs
@@ -52,6 +53,7 @@ ethi: ethiopic
 ext: extender
 geor: georgian
 glag: glagolitic
+gong: gunjala_gondi
 gonm: masaram_gondi
 goth: gothic
 gran: grantha
@@ -105,11 +107,13 @@ lyci: lycian
 lydi: lydian
 m: mark
 mahj: mahajani
+maka: makasar
 mand: mandaic
 mani: manichaean
 marc: marchen
 mc: spacing_mark
 me: enclosing_mark
+medf: medefaidrin
 mend: mende_kikakui
 merc: meroitic_cursive
 mero: meroitic_hieroglyphs
@@ -168,6 +172,7 @@ qaai: inherited
 qmark: quotation_mark
 ri: regional_indicator
 rjng: rejang
+rohg: hanifi_rohingya
 runr: runic
 s: symbol
 samr: samaritan
@@ -184,6 +189,8 @@ sinh: sinhala
 sk: modifier_symbol
 sm: math_symbol
 so: other_symbol
+sogd: sogdian
+sogo: old_sogdian
 sora: sora_sompeng
 soyo: soyombo
 sterm: sentence_terminal

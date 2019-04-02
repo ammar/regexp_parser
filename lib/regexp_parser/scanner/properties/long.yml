@@ -5,6 +5,7 @@
 adlam: adlam
 age=1.1: age=1.1
 age=10.0: age=10.0
+age=11.0: age=11.0
 age=2.0: age=2.0
 age=2.1: age=2.1
 age=3.0: age=3.0
@@ -81,6 +82,7 @@ deseret: deseret
 devanagari: devanagari
 diacritic: diacritic
 digit: digit
+dogra: dogra
 duployan: duployan
 egyptianhieroglyphs: egyptian_hieroglyphs
 elbasan: elbasan
@@ -104,9 +106,11 @@ graphemeextend: grapheme_extend
 graphemelink: grapheme_link
 greek: greek
 gujarati: gujarati
+gunjalagondi: gunjala_gondi
 gurmukhi: gurmukhi
 han: han
 hangul: hangul
+hanifirohingya: hanifi_rohingya
 hanunoo: hanunoo
 hatran: hatran
 hebrew: hebrew
@@ -160,6 +164,7 @@ inchakma: in_chakma
 incham: in_cham
 incherokee: in_cherokee
 incherokeesupplement: in_cherokee_supplement
+inchesssymbols: in_chess_symbols
 incjkcompatibility: in_cjk_compatibility
 incjkcompatibilityforms: in_cjk_compatibility_forms
 incjkcompatibilityideographs: in_cjk_compatibility_ideographs
@@ -197,6 +202,7 @@ indeseret: in_deseret
 indevanagari: in_devanagari
 indevanagariextended: in_devanagari_extended
 indingbats: in_dingbats
+indogra: in_dogra
 indominotiles: in_domino_tiles
 induployan: in_duployan
 inearlydynasticcuneiform: in_early_dynastic_cuneiform
@@ -215,6 +221,7 @@ ingeneralpunctuation: in_general_punctuation
 ingeometricshapes: in_geometric_shapes
 ingeometricshapesextended: in_geometric_shapes_extended
 ingeorgian: in_georgian
+ingeorgianextended: in_georgian_extended
 ingeorgiansupplement: in_georgian_supplement
 inglagolitic: in_glagolitic
 inglagoliticsupplement: in_glagolitic_supplement
@@ -223,6 +230,7 @@ ingrantha: in_grantha
 ingreekandcoptic: in_greek_and_coptic
 ingreekextended: in_greek_extended
 ingujarati: in_gujarati
+ingunjalagondi: in_gunjala_gondi
 ingurmukhi: in_gurmukhi
 inhalfwidthandfullwidthforms: in_halfwidth_and_fullwidth_forms
 inhangulcompatibilityjamo: in_hangul_compatibility_jamo
@@ -230,6 +238,7 @@ inhanguljamo: in_hangul_jamo
 inhanguljamoextendeda: in_hangul_jamo_extended_a
 inhanguljamoextendedb: in_hangul_jamo_extended_b
 inhangulsyllables: in_hangul_syllables
+inhanifirohingya: in_hanifi_rohingya
 inhanunoo: in_hanunoo
 inhatran: in_hatran
 inhebrew: in_hebrew
@@ -240,6 +249,7 @@ inhiragana: in_hiragana
 inideographicdescriptioncharacters: in_ideographic_description_characters
 inideographicsymbolsandpunctuation: in_ideographic_symbols_and_punctuation
 inimperialaramaic: in_imperial_aramaic
+inindicsiyaqnumbers: in_indic_siyaq_numbers
 ininscriptionalpahlavi: in_inscriptional_pahlavi
 ininscriptionalparthian: in_inscriptional_parthian
 inipaextensions: in_ipa_extensions
@@ -279,6 +289,7 @@ inlycian: in_lycian
 inlydian: in_lydian
 inmahajani: in_mahajani
 inmahjongtiles: in_mahjong_tiles
+inmakasar: in_makasar
 inmalayalam: in_malayalam
 inmandaic: in_mandaic
 inmanichaean: in_manichaean
@@ -286,6 +297,8 @@ inmarchen: in_marchen
 inmasaramgondi: in_masaram_gondi
 inmathematicalalphanumericsymbols: in_mathematical_alphanumeric_symbols
 inmathematicaloperators: in_mathematical_operators
+inmayannumerals: in_mayan_numerals
+inmedefaidrin: in_medefaidrin
 inmeeteimayek: in_meetei_mayek
 inmeeteimayekextensions: in_meetei_mayek_extensions
 inmendekikakui: in_mende_kikakui
@@ -322,6 +335,7 @@ inolditalic: in_old_italic
 inoldnortharabian: in_old_north_arabian
 inoldpermic: in_old_permic
 inoldpersian: in_old_persian
+inoldsogdian: in_old_sogdian
 inoldsoutharabian: in_old_south_arabian
 inoldturkic: in_old_turkic
 inopticalcharacterrecognition: in_optical_character_recognition
@@ -354,6 +368,7 @@ insiddham: in_siddham
 insinhala: in_sinhala
 insinhalaarchaicnumbers: in_sinhala_archaic_numbers
 insmallformvariants: in_small_form_variants
+insogdian: in_sogdian
 insorasompeng: in_sora_sompeng
 insoyombo: in_soyombo
 inspacingmodifierletters: in_spacing_modifier_letters
@@ -431,6 +446,7 @@ lowercaseletter: lowercase_letter
 lycian: lycian
 lydian: lydian
 mahajani: mahajani
+makasar: makasar
 malayalam: malayalam
 mandaic: mandaic
 manichaean: manichaean
@@ -439,6 +455,7 @@ mark: mark
 masaramgondi: masaram_gondi
 math: math
 mathsymbol: math_symbol
+medefaidrin: medefaidrin
 meeteimayek: meetei_mayek
 mendekikakui: mende_kikakui
 meroiticcursive: meroitic_cursive
@@ -467,6 +484,7 @@ olditalic: old_italic
 oldnortharabian: old_north_arabian
 oldpermic: old_permic
 oldpersian: old_persian
+oldsogdian: old_sogdian
 oldsoutharabian: old_south_arabian
 oldturkic: old_turkic
 openpunctuation: open_punctuation
@@ -515,6 +533,7 @@ siddham: siddham
 signwriting: signwriting
 sinhala: sinhala
 softdotted: soft_dotted
+sogdian: sogdian
 sorasompeng: sora_sompeng
 soyombo: soyombo
 space: space

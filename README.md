@@ -357,7 +357,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Meta**_                | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
-| **Unicode Properties**                | _<sub>([Unicode 10.0.0](http://www.unicode.org/versions/Unicode10.0.0/))</sub>_ | &#x22f1; |
+| **Unicode Properties**                | _<sub>([Unicode 11.0.0](http://www.unicode.org/versions/Unicode11.0.0/))</sub>_ | &#x22f1; |
 | &emsp;&nbsp;_**Age**_                 | `\p{Age=5.2}`, `\P{age=7.0}`, `\p{^age=8.0}`            | &#x2713; |
 | &emsp;&nbsp;_**Blocks**_              | `\p{InArmenian}`, `\P{InKhmer}`, `\p{^InThai}`          | &#x2713; |
 | &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`, `\p{^Alnum}`                  | &#x2713; |
