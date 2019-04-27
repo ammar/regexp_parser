@@ -391,28 +391,22 @@ To run the tests simply run rake from the root directory, as 'test' is the defau
 
 It generates the scanner's code from the Ragel source files and runs all the tests, thus it requires Ragel to be installed.
 
-The tests use Ruby's test/unit. They can also be run with:
+The tests use RSpec. They can also be run with the test runner that whitelists some warnings:
 
 ```
 bin/test
 ```
 
-The test runner accepts all arguments accepted by test/unit.  You can run a specific test like so:
+You can run a specific test like so:
 
 ```
-bin/test test/scanner/test_properties.rb
+bin/test spec/scanner/properties_spec.rb
 ```
 
-It is sometimes helpful during development to focus on a specific test case, for example:
+Note that changes to Ragel files will not be reflected when running `rspec` or `bin/test`, so you might want to run:
 
 ```
-bin/test test/expression/test_base.rb -n test_expression_to_re
-```
-
-Note that changes to Ragel files will not be reflected when using `bin/test`, so you might want to run:
-
-```
-rake ragel:rb && bin/test test/scanner/test_properties.rb
+rake ragel:rb && bin/test spec/scanner/properties_spec.rb
 ```
 
 ## Building

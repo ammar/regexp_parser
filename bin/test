@@ -1,17 +1,19 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+spec_dir = File.expand_path('../../spec', __FILE__)
+
+$LOAD_PATH.unshift(spec_dir)
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 
 require 'yaml'
 
-require_relative '../test/support/disable_autotest'
-require_relative '../test/support/warning_extractor'
-require_relative '../test/support/runner'
+require_relative '../spec/support/warning_extractor'
+require_relative '../spec/support/runner'
 
-tests = ARGV.empty? ? %w[test/test_all.rb] : ARGV
+specs = ARGV.empty? ? Dir["#{spec_dir}/**/*_spec.rb"] : ARGV
 warning_whitelist = Set.new(
-  YAML.load_file(File.expand_path('../../test/warnings.yml', __FILE__))
+  YAML.load_file(File.expand_path('../../spec/warnings.yml', __FILE__))
 )
 
-RegexpParserTest::Runner.new(tests, warning_whitelist).run
+RegexpParserSpec::Runner.new(specs, warning_whitelist).run
