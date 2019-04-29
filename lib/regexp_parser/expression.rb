@@ -62,13 +62,26 @@ module Regexp::Expression
       self.quantifier = Quantifier.new(token, text, min, max, mode)
     end
 
+    def unquantified_clone
+      clone.tap { |exp| exp.quantifier = nil }
+    end
+
     def quantified?
       !quantifier.nil?
     end
 
+    # Deprecated. Prefer `#repetitions` which has a more uniform interface.
     def quantity
       return [nil,nil] unless quantified?
       [quantifier.min, quantifier.max]
+    end
+
+    def repetitions
+      return 1..1 unless quantified?
+      min = quantifier.min
+      max = quantifier.max < 0 ? Float::INFINITY : quantifier.max
+      # fix Range#minmax - https://bugs.ruby-lang.org/issues/15807
+      (min..max).tap { |r| r.define_singleton_method(:minmax) { [min, max] } }
     end
 
     def greedy?
@@ -161,10 +174,6 @@ module Regexp::Expression
 
 end # module Regexp::Expression
 
-require 'regexp_parser/expression/methods/tests'
-require 'regexp_parser/expression/methods/traverse'
-require 'regexp_parser/expression/methods/strfregexp'
-
 require 'regexp_parser/expression/quantifier'
 require 'regexp_parser/expression/subexpression'
 require 'regexp_parser/expression/sequence'
@@ -186,3 +195,8 @@ require 'regexp_parser/expression/classes/set'
 require 'regexp_parser/expression/classes/set/intersection'
 require 'regexp_parser/expression/classes/set/range'
 require 'regexp_parser/expression/classes/type'
+
+require 'regexp_parser/expression/methods/match_length'
+require 'regexp_parser/expression/methods/strfregexp'
+require 'regexp_parser/expression/methods/tests'
+require 'regexp_parser/expression/methods/traverse'

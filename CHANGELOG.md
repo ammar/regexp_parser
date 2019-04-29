@@ -4,6 +4,11 @@
 
 - Added `#referenced_expression` for backrefs, subexp calls and conditionals
   * returns the `Group` expression that has been referenced via name or number
+- Added `Expression#repetitions`
+  * returns a `Range` of allowed repetitions (`1..1` if there is no quantifier)
+  * like `#quantity` but with a more uniform interface
+- Added `Expression#match_length`
+  * inspect and iterate over String lengths matched by the Expression
 
 ### Fixed
 
