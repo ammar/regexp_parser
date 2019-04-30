@@ -19,12 +19,14 @@ module Regexp::Expression
 
     class Capture < Group::Base
       attr_accessor :number, :number_at_level
+      alias identifier number
 
       def capturing?; true end
     end
 
     class Named < Group::Capture
       attr_reader :name
+      alias identifier name
 
       def initialize(token, options = {})
         @name = token.text[3..-2]

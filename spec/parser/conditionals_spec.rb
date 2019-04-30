@@ -9,10 +9,10 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
 
     expect(exp).to be_a(Conditional::Expression)
 
-    expect(:conditional).to eq exp.type
-    expect(:open).to eq exp.token
-    expect('(?').to eq exp.text
-    expect('A').to eq exp.reference
+    expect(exp.type).to eq :conditional
+    expect(exp.token).to eq :open
+    expect(exp.text).to eq '(?'
+    expect(exp.reference).to eq 'A'
   end
 
   specify('parse conditional condition') do
@@ -23,10 +23,11 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
 
     expect(exp).to be_a(Conditional::Condition)
 
-    expect(:conditional).to eq exp.type
-    expect(:condition).to eq exp.token
-    expect('(<A>)').to eq exp.text
-    expect('A').to eq exp.reference
+    expect(exp.type).to eq :conditional
+    expect(exp.token).to eq :condition
+    expect(exp.text).to eq '(<A>)'
+    expect(exp.reference).to eq 'A'
+    expect(exp.referenced_expression.to_s).to eq '(?<A>a)'
   end
 
   specify('parse conditional condition with number ref') do
@@ -37,10 +38,11 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
 
     expect(exp).to be_a(Conditional::Condition)
 
-    expect(:conditional).to eq exp.type
-    expect(:condition).to eq exp.token
-    expect('(1)').to eq exp.text
-    expect(1).to eq exp.reference
+    expect(exp.type).to eq :conditional
+    expect(exp.token).to eq :condition
+    expect(exp.text).to eq '(1)'
+    expect(exp.reference).to eq 1
+    expect(exp.referenced_expression.to_s).to eq '(a)'
   end
 
   specify('parse conditional nested groups') do

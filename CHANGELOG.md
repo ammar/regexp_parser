@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Added
+
+- Added `#referenced_expression` for backrefs, subexp calls and conditionals
+  * returns the `Group` expression that has been referenced via name or number
+
 ### [1.4.0] - 2019-04-02 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added

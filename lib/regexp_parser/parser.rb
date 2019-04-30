@@ -39,6 +39,8 @@ class Regexp::Parser
       parse_token(token)
     end
 
+    assign_referenced_expressions
+
     if block_given?
       block.call(root)
     else
@@ -163,14 +165,18 @@ class Regexp::Parser
       node << Backreference::NameCall.new(token, active_opts)
     when :number, :number_ref
       node << Backreference::Number.new(token, active_opts)
-    when :number_rel_ref
-      node << Backreference::NumberRelative.new(token, active_opts)
     when :number_recursion_ref
       node << Backreference::NumberRecursionLevel.new(token, active_opts)
     when :number_call
       node << Backreference::NumberCall.new(token, active_opts)
+    when :number_rel_ref
+      node << Backreference::NumberRelative.new(token, active_opts).tap do |exp|
+        assign_effective_number(exp)
+      end
     when :number_rel_call
-      node << Backreference::NumberCallRelative.new(token, active_opts)
+      node << Backreference::NumberCallRelative.new(token, active_opts).tap do |exp|
+        assign_effective_number(exp)
+      end
     else
       raise UnknownTokenError.new('Backreference', token)
     end
@@ -626,5 +632,21 @@ class Regexp::Parser
 
   def count_captured_group
     captured_group_counts[node.level] += 1
+  end
+
+  def assign_effective_number(exp)
+    exp.effective_number =
+      exp.number + total_captured_group_count + (exp.number < 0 ? 1 : 0)
+  end
+
+  def assign_referenced_expressions
+    targets = {}
+    root.each_expression do |exp|
+      exp.is_a?(Group::Capture) && targets[exp.identifier] = exp
+    end
+    root.each_expression do |exp|
+      exp.respond_to?(:reference) &&
+        exp.referenced_expression = targets[exp.reference]
+    end
   end
 end # module Regexp::Parser
