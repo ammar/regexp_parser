@@ -5,6 +5,14 @@
 - Added `#referenced_expression` for backrefs, subexp calls and conditionals
   * returns the `Group` expression that has been referenced via name or number
 
+### Fixed
+
+- Fixed `#clone` results for `Sequences`, e.g. alternations and conditionals
+  * the inner `#text` was cloned onto the `Sequence` and thus duplicated
+- Fixed inconsistent `#to_s` output for `Sequences`
+  * used to return only the "specific" text, e.g. "|" for an alternation
+  * now includes nested expressions like all other `Subexpressions`
+
 ### [1.4.0] - 2019-04-02 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added

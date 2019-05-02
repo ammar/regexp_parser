@@ -44,10 +44,6 @@ module Regexp::Expression
       end
     end
 
-    def text
-      to_s
-    end
-
     def starts_at
       expressions.first.starts_at
     end

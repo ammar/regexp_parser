@@ -5,6 +5,8 @@ RSpec.describe('Expression#clone') do
     root = RP.parse(/^(?i:a)b+$/i)
     copy = root.clone
 
+    expect(copy.to_s).to eq root.to_s
+
     expect(root.object_id).not_to eq copy.object_id
     expect(root.text).to eq copy.text
     expect(root.text.object_id).not_to eq copy.text.object_id
@@ -29,6 +31,8 @@ RSpec.describe('Expression#clone') do
     root = RP.parse(/^a(b([cde])f)g$/)
     copy = root.clone
 
+    expect(copy.to_s).to eq root.to_s
+
     expect(root).to respond_to(:expressions)
     expect(copy).to respond_to(:expressions)
     expect(root.expressions.object_id).not_to eq copy.expressions.object_id
@@ -44,6 +48,8 @@ RSpec.describe('Expression#clone') do
     root = RP.parse('^(?<somename>a)+bc$')
     copy = root.clone
 
+    expect(copy.to_s).to eq root.to_s
+
     root_1 = root[1]
     copy_1 = copy[1]
 
@@ -53,6 +59,52 @@ RSpec.describe('Expression#clone') do
     expect(root_1.expressions.object_id).not_to eq copy_1.expressions.object_id
     copy_1.expressions.each_with_index do |exp, index|
       expect(root_1[index].object_id).not_to eq exp.object_id
+    end
+  end
+
+  specify('Sequence#clone') do
+    root = RP.parse(/(a|b)/)
+    copy = root.clone
+
+    # regression test
+    expect(copy.to_s).to eq root.to_s
+
+    root_seq_op = root[0][0]
+    copy_seq_op = copy[0][0]
+    root_seq_1 = root[0][0][0]
+    copy_seq_1 = copy[0][0][0]
+
+    expect(root_seq_op.object_id).not_to eq copy_seq_op.object_id
+    expect(root_seq_1.object_id).not_to eq copy_seq_1.object_id
+    copy_seq_1.expressions.each_with_index do |exp, index|
+      expect(root_seq_1[index].object_id).not_to eq exp.object_id
+    end
+  end
+
+  describe('Base#unquantified_clone') do
+    it 'produces a clone' do
+      root = RP.parse(/^a(b([cde])f)g$/)
+      copy = root.unquantified_clone
+
+      expect(copy.to_s).to eq root.to_s
+
+      expect(copy.object_id).not_to eq root.object_id
+    end
+
+    it 'does not carry over the callee quantifier' do
+      expect(RP.parse(/a{3}/)[0]).to be_quantified
+      expect(RP.parse(/a{3}/)[0].unquantified_clone).not_to be_quantified
+
+      expect(RP.parse(/[a]{3}/)[0]).to be_quantified
+      expect(RP.parse(/[a]{3}/)[0].unquantified_clone).not_to be_quantified
+
+      expect(RP.parse(/(a|b){3}/)[0]).to be_quantified
+      expect(RP.parse(/(a|b){3}/)[0].unquantified_clone).not_to be_quantified
+    end
+
+    it 'keeps quantifiers of callee children' do
+      expect(RP.parse(/(a{3}){3}/)[0][0]).to be_quantified
+      expect(RP.parse(/(a{3}){3}/)[0].unquantified_clone[0]).to be_quantified
     end
   end
 end

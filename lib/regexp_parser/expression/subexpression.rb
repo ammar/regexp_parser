@@ -46,9 +46,7 @@ module Regexp::Expression
 
     def to_s(format = :full)
       # Note: the format does not get passed down to subexpressions.
-      # Note: cant use #text accessor, b/c it is overriden as def text; to_s end
-      # in Expression::Sequence, causing infinite recursion. Clean-up needed.
-      "#{@text}#{expressions.join}#{quantifier_affix(format)}"
+      "#{expressions.join}#{quantifier_affix(format)}"
     end
 
     def to_h

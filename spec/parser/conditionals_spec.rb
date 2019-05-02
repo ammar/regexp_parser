@@ -11,7 +11,7 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
 
     expect(exp.type).to eq :conditional
     expect(exp.token).to eq :open
-    expect(exp.text).to eq '(?'
+    expect(exp.to_s).to eq '(?(<A>)T|F)'
     expect(exp.reference).to eq 'A'
   end
 
@@ -25,7 +25,7 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
 
     expect(exp.type).to eq :conditional
     expect(exp.token).to eq :condition
-    expect(exp.text).to eq '(<A>)'
+    expect(exp.to_s).to eq '(<A>)'
     expect(exp.reference).to eq 'A'
     expect(exp.referenced_expression.to_s).to eq '(?<A>a)'
   end
@@ -40,7 +40,7 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
 
     expect(exp.type).to eq :conditional
     expect(exp.token).to eq :condition
-    expect(exp.text).to eq '(1)'
+    expect(exp.to_s).to eq '(1)'
     expect(exp.reference).to eq 1
     expect(exp.referenced_expression.to_s).to eq '(a)'
   end
@@ -68,11 +68,11 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
     expect(conditional.length).to eq 3
 
     expect(conditional[0]).to be_instance_of(Conditional::Condition)
-    expect(conditional[0].text).to eq '(2)'
+    expect(conditional[0].to_s).to eq '(2)'
 
     condition = conditional.condition
     expect(condition).to be_instance_of(Conditional::Condition)
-    expect(condition.text).to eq '(2)'
+    expect(condition.to_s).to eq '(2)'
 
     branches = conditional.branches
     expect(branches.length).to eq 2
@@ -96,7 +96,7 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
       branch_count, exp = example
 
       expect(exp).to be_instance_of(Conditional::Expression)
-      expect(exp.condition.text).to eq "(#{index})"
+      expect(exp.condition.to_s).to eq "(#{index})"
       expect(exp.branches.length).to eq branch_count
     end
   end
@@ -152,7 +152,7 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
     conditional = root[1]
 
     expect(conditional).to be_quantified
-    expect(conditional.quantifier.text).to eq '{42}'
+    expect(conditional.quantifier.to_s).to eq '{42}'
     expect(conditional.to_s).to eq '(?(1)\\d|(\\w)){42}'
     expect(conditional.branches.any?(&:quantified?)).to be false
   end
@@ -166,9 +166,9 @@ RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
     expect(conditional).not_to be_quantified
     expect(conditional.branches.any?(&:quantified?)).to be false
     expect(conditional.branches[0][0]).to be_quantified
-    expect(conditional.branches[0][0].quantifier.text).to eq '{23}'
+    expect(conditional.branches[0][0].quantifier.to_s).to eq '{23}'
     expect(conditional.branches[1][0]).to be_quantified
-    expect(conditional.branches[1][0].quantifier.text).to eq '{42}'
+    expect(conditional.branches[1][0].quantifier.to_s).to eq '{42}'
   end
 
   specify('parse conditional excessive branches') do

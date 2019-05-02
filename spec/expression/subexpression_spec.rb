@@ -16,25 +16,23 @@ RSpec.describe(Regexp::Expression::Subexpression) do
   end
 
   specify('#nesting_level') do
-    root = RP.parse(/a(b(c\d|[ef-g[h]]))/)
+    root = RP.parse(/a(b(\d|[ef-g[h]]))/)
 
     tests = {
-      'a'         => 1,
-      'b'         => 2,
-      '|'         => 3,
-      'c\d'       => 4, # first alternative
-      'c'         => 5,
-      '\d'        => 5,
-      '[ef-g[h]]' => 4, # second alternative
-      'e'         => 5,
-      '-'         => 5,
-      'f'         => 6,
-      'g'         => 6,
-      'h'         => 6,
+      'a'            => 1,
+      'b'            => 2,
+      '\d|[ef-g[h]]' => 3, # alternation
+      '\d'           => 4, # first alternative
+      '[ef-g[h]]'    => 4, # second alternative
+      'e'            => 5,
+      'f-g'          => 5,
+      'f'            => 6,
+      'g'            => 6,
+      'h'            => 6,
     }
 
     root.each_expression do |exp|
-      next unless expected_nesting_level = tests.delete(exp.text)
+      next unless expected_nesting_level = tests.delete(exp.to_s)
       expect(expected_nesting_level).to eq exp.nesting_level
     end
 

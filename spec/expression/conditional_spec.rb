@@ -6,14 +6,6 @@ RSpec.describe(Regexp::Expression::Conditional, if: ruby_version_at_least('2.0.0
   let(:cond_2) { root[2][1][2][0] }
   let(:cond_3) { root[2][1][2][0][2][0] }
 
-  def is_conditional_condition?(exp)
-    exp.is_a?(Conditional::Condition)
-  end
-
-  def is_conditional_branch?(exp)
-    exp.is_a?(Conditional::Branch)
-  end
-
   specify('root level') do
     [
       '^',
@@ -25,7 +17,7 @@ RSpec.describe(Regexp::Expression::Conditional, if: ruby_version_at_least('2.0.0
       expect(root[i].to_s).to eq t
     end
 
-    expect(root[2][0].text).to eq 'b'
+    expect(root[2][0].to_s).to eq 'b'
     expect(root[2][0].conditional_level).to eq 0
   end
 
@@ -33,15 +25,15 @@ RSpec.describe(Regexp::Expression::Conditional, if: ruby_version_at_least('2.0.0
     condition = cond_1.condition
     branch_1 = cond_1.branches.first
 
-    expect(is_conditional_condition?(condition)).to be true
-    expect(condition.text).to eq '(1)'
+    expect(condition).to be_a Conditional::Condition
+    expect(condition.to_s).to eq '(1)'
     expect(condition.conditional_level).to eq 1
 
-    expect(is_conditional_branch?(branch_1)).to be true
-    expect(branch_1.text).to eq 'c'
+    expect(branch_1).to be_a Conditional::Branch
+    expect(branch_1.to_s).to eq 'c'
     expect(branch_1.conditional_level).to eq 1
 
-    expect(branch_1.first.text).to eq 'c'
+    expect(branch_1.first.to_s).to eq 'c'
     expect(branch_1.first.conditional_level).to eq 1
   end
 
@@ -50,21 +42,21 @@ RSpec.describe(Regexp::Expression::Conditional, if: ruby_version_at_least('2.0.0
     branch_1 = cond_2.branches.first
     branch_2 = cond_2.branches.last
 
-    expect(cond_2.text).to eq '(?'
+    expect(cond_2.to_s).to start_with '(?'
     expect(cond_2.conditional_level).to eq 1
 
-    expect(is_conditional_condition?(condition)).to be true
-    expect(condition.text).to eq '(2)'
+    expect(condition).to be_a Conditional::Condition
+    expect(condition.to_s).to eq '(2)'
     expect(condition.conditional_level).to eq 2
 
-    expect(is_conditional_branch?(branch_1)).to be true
-    expect(branch_1.text).to eq 'd'
+    expect(branch_1).to be_a Conditional::Branch
+    expect(branch_1.to_s).to eq 'd'
     expect(branch_1.conditional_level).to eq 2
 
-    expect(branch_1.first.text).to eq 'd'
+    expect(branch_1.first.to_s).to eq 'd'
     expect(branch_1.first.conditional_level).to eq 2
 
-    expect(branch_2.first.text).to eq '(?'
+    expect(branch_2.first.to_s).to start_with '(?'
     expect(branch_2.first.conditional_level).to eq 2
   end
 
@@ -73,26 +65,25 @@ RSpec.describe(Regexp::Expression::Conditional, if: ruby_version_at_least('2.0.0
     branch_1 = cond_3.branches.first
     branch_2 = cond_3.branches.last
 
-    expect(is_conditional_condition?(condition)).to be true
-    expect(condition.text).to eq '(3)'
+    expect(condition).to be_a Conditional::Condition
+    expect(condition.to_s).to eq '(3)'
     expect(condition.conditional_level).to eq 3
 
-    expect(cond_3.text).to eq '(?'
     expect(cond_3.to_s).to eq '(?(3)e|f)'
     expect(cond_3.conditional_level).to eq 2
 
-    expect(is_conditional_branch?(branch_1)).to be true
-    expect(branch_1.text).to eq 'e'
+    expect(branch_1).to be_a Conditional::Branch
+    expect(branch_1.to_s).to eq 'e'
     expect(branch_1.conditional_level).to eq 3
 
-    expect(branch_1.first.text).to eq 'e'
+    expect(branch_1.first.to_s).to eq 'e'
     expect(branch_1.first.conditional_level).to eq 3
 
-    expect(is_conditional_branch?(branch_2)).to be true
-    expect(branch_2.text).to eq 'f'
+    expect(branch_2).to be_a Conditional::Branch
+    expect(branch_2.to_s).to eq 'f'
     expect(branch_2.conditional_level).to eq 3
 
-    expect(branch_2.first.text).to eq 'f'
+    expect(branch_2.first.to_s).to eq 'f'
     expect(branch_2.first.conditional_level).to eq 3
   end
 end
