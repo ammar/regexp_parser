@@ -21,10 +21,10 @@ module Regexp::Expression
       self.options           = options
     end
 
-    def initialize_clone(other)
-      other.text       = (text        ? text.dup         : nil)
-      other.options    = (options     ? options.dup      : nil)
-      other.quantifier = (quantifier  ? quantifier.clone : nil)
+    def initialize_clone(orig)
+      self.text       = (orig.text       ? orig.text.dup         : nil)
+      self.options    = (orig.options    ? orig.options.dup      : nil)
+      self.quantifier = (orig.quantifier ? orig.quantifier.clone : nil)
       super
     end
 

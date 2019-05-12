@@ -12,8 +12,8 @@ module Regexp::Expression
       @max   = max
     end
 
-    def initialize_clone(other)
-      other.instance_variable_set(:@text, text.dup)
+    def initialize_clone(orig)
+      @text = orig.text.dup
       super
     end
 

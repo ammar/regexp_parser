@@ -33,8 +33,8 @@ module Regexp::Expression
         super
       end
 
-      def initialize_clone(other)
-        other.instance_variable_set(:@name, name.dup)
+      def initialize_clone(orig)
+        @name = orig.name.dup
         super
       end
     end

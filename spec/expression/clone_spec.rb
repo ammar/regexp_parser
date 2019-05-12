@@ -25,6 +25,10 @@ RSpec.describe('Expression#clone') do
     expect(root_2.quantifier.text).to eq copy_2.quantifier.text
     expect(root_2.quantifier.text.object_id).not_to eq copy_2.quantifier.text.object_id
     expect(root_2.quantifier.object_id).not_to eq copy_2.quantifier.object_id
+
+    # regression test
+    expect { root_2.clone }.not_to change { root_2.quantifier.object_id }
+    expect { root_2.clone }.not_to change { root_2.quantifier.text.object_id }
   end
 
   specify('Subexpression#clone') do
@@ -42,6 +46,9 @@ RSpec.describe('Expression#clone') do
     copy[2].each_with_index do |exp, index|
       expect(root[2][index].object_id).not_to eq exp.object_id
     end
+
+    # regression test
+    expect { root.clone }.not_to change { root.expressions.object_id }
   end
 
   specify('Group::Named#clone') do
@@ -60,6 +67,9 @@ RSpec.describe('Expression#clone') do
     copy_1.expressions.each_with_index do |exp, index|
       expect(root_1[index].object_id).not_to eq exp.object_id
     end
+
+    # regression test
+    expect { root_1.clone }.not_to change { root_1.name.object_id }
   end
 
   specify('Sequence#clone') do

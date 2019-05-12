@@ -3,20 +3,24 @@
 ### Added
 
 - Added `#referenced_expression` for backrefs, subexp calls and conditionals
-  * returns the `Group` expression that has been referenced via name or number
+  * returns the `Group` expression that is being referenced via name or number
 - Added `Expression#repetitions`
   * returns a `Range` of allowed repetitions (`1..1` if there is no quantifier)
   * like `#quantity` but with a more uniform interface
 - Added `Expression#match_length`
-  * inspect and iterate over String lengths matched by the Expression
+  * allows to inspect and iterate over String lengths matched by the Expression
 
 ### Fixed
 
+- Fixed `Expression#clone` "direction"
+  * it used to dup ivars onto the callee, leaving only the clone referencing the original objects
+  * this will affect you if you call `#eql?`/`#equal?` on expressions or use them as Hash keys
 - Fixed `#clone` results for `Sequences`, e.g. alternations and conditionals
   * the inner `#text` was cloned onto the `Sequence` and thus duplicated
+  * e.g. `Regexp::Parser.parse(/(a|bc)/).clone.to_s # => (aa|bcbc)`
 - Fixed inconsistent `#to_s` output for `Sequences`
-  * used to return only the "specific" text, e.g. "|" for an alternation
-  * now includes nested expressions like all other `Subexpressions`
+  * it used to return only the "specific" text, e.g. "|" for an alternation
+  * now it includes nested expressions as it does for all other `Subexpressions`
 
 ### [1.4.0] - 2019-04-02 - [Janosch Müller](mailto:janosch84@gmail.com)
 

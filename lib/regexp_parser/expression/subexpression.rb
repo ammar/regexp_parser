@@ -12,8 +12,8 @@ module Regexp::Expression
     end
 
     # Override base method to clone the expressions as well.
-    def initialize_clone(other)
-      other.expressions = expressions.map(&:clone)
+    def initialize_clone(orig)
+      self.expressions = orig.expressions.map(&:clone)
       super
     end
 
