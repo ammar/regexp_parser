@@ -114,22 +114,20 @@ module Regexp::Expression
     alias :x? :free_spacing?
     alias :extended? :free_spacing?
 
-    if RUBY_VERSION >= '2.0'
-      def default_classes?
-        options[:d] == true
-      end
-      alias :d? :default_classes?
-
-      def ascii_classes?
-        options[:a] == true
-      end
-      alias :a? :ascii_classes?
-
-      def unicode_classes?
-        options[:u] == true
-      end
-      alias :u? :unicode_classes?
+    def default_classes?
+      options[:d] == true
     end
+    alias :d? :default_classes?
+
+    def ascii_classes?
+      options[:a] == true
+    end
+    alias :a? :ascii_classes?
+
+    def unicode_classes?
+      options[:u] == true
+    end
+    alias :u? :unicode_classes?
 
     def matches?(string)
       Regexp.new(to_s) =~ string ? true : false

@@ -97,20 +97,12 @@ class Regexp::Lexer
       lead = text.sub(/.\z/mu, "")
       last = text[/.\z/mu] || ''
 
-      if RUBY_VERSION >= '1.9'
-        lead_length = lead.bytesize
-        last_length = last.bytesize
-      else
-        lead_length = lead.length
-        last_length = last.length
-      end
-
       tokens.pop
       tokens << Regexp::Token.new(:literal, :literal, lead, token.ts,
-                (token.te - last_length), nesting, set_nesting, conditional_nesting)
+                (token.te - last.bytesize), nesting, set_nesting, conditional_nesting)
 
       tokens << Regexp::Token.new(:literal, :literal, last,
-                (token.ts + lead_length),
+                (token.ts + lead.bytesize),
                 token.te, nesting, set_nesting, conditional_nesting)
     end
   end

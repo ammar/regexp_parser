@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Conditional parsing', if: ruby_version_at_least('2.0.0')) do
+RSpec.describe('Conditional parsing') do
   specify('parse conditional') do
     regexp = Regexp.new('(?<A>a)(?(<A>)T|F)/')
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Conditional scanning', if: ruby_version_at_least('2.0.0')) do
+RSpec.describe('Conditional scanning') do
   tests = {
     '(a)(?(1)T|F)1'          => [3,  :conditional,  :open,             '(?',  3,  5],
     '(a)(?(1)T|F)2'          => [4,  :conditional,  :condition_open,   '(',   5,  6],

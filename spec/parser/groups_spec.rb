@@ -169,7 +169,7 @@ RSpec.describe('Group parsing') do
     expect(group2[2].x?).to be false
   end
 
-  specify('parse options dau', if: ruby_version_at_least('2.0.0')) do
+  specify('parse options dau') do
     t = RP.parse('(?dua:abc)')
 
     expect(t[0].d?).to be false
@@ -177,7 +177,7 @@ RSpec.describe('Group parsing') do
     expect(t[0].u?).to be false
   end
 
-  specify('parse nested options dau', if: ruby_version_at_least('2.0.0')) do
+  specify('parse nested options dau') do
     t = RP.parse('(?u:a(?d:b))')
 
     expect(t[0].u?).to be true
@@ -189,7 +189,7 @@ RSpec.describe('Group parsing') do
     expect(t[0][1].u?).to be false
   end
 
-  specify('parse nested options da', if: ruby_version_at_least('2.0.0')) do
+  specify('parse nested options da') do
     t = RP.parse('(?di-xm:a(?da-x:b))')
 
     expect(t[0].d?).to be true

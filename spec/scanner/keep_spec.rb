@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Keep scanning', if: ruby_version_at_least('2.0.0')) do
+RSpec.describe('Keep scanning') do
   specify('scan keep token') do
     tokens = RS.scan(/ab\Kcd/)
     result = tokens.at(1)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Keep parsing', if: ruby_version_at_least('2.0.0')) do
+RSpec.describe('Keep parsing') do
   specify('parse keep') do
     regexp = /ab\Kcd/
     root = RP.parse(regexp)

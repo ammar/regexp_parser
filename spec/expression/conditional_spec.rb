@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe(Regexp::Expression::Conditional, if: ruby_version_at_least('2.0.0')) do
+RSpec.describe(Regexp::Expression::Conditional) do
   let(:root)   { RP.parse('^(a(b))(b(?(1)c|(?(2)d|(?(3)e|f)))g)$') }
   let(:cond_1) { root[2][1] }
   let(:cond_2) { root[2][1][2][0] }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Conditional lexing', if: ruby_version_at_least('2.0.0')) do
+RSpec.describe('Conditional lexing') do
   # Basic lexer output and nesting tests
   tests = {
     '(?<A>a)(?(<A>)b|c)'  => [3, :conditional, :open,       '(?',     7,  9, 0, 0, 0],

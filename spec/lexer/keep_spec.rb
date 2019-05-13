@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Keep lexing', if: ruby_version_at_least('2.0.0')) do
+RSpec.describe('Keep lexing') do
   specify('lex keep token') do
     regexp = /ab\Kcd/
     tokens = RL.lex(regexp)

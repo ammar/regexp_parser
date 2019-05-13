@@ -2,16 +2,6 @@ require 'spec_helper'
 
 RSpec.describe('Group scanning') do
   tests = {
-    # Options
-    '(?-mix:abc)'     => [0, :group,     :options,        '(?-mix:',    0, 7],
-    '(?m-ix:abc)'     => [0, :group,     :options,        '(?m-ix:',    0, 7],
-    '(?mi-x:abc)'     => [0, :group,     :options,        '(?mi-x:',    0, 7],
-    '(?mix:abc)'      => [0, :group,     :options,        '(?mix:',     0, 6],
-    '(?m:)'           => [0, :group,     :options,        '(?m:',       0, 4],
-    '(?i:)'           => [0, :group,     :options,        '(?i:',       0, 4],
-    '(?x:)'           => [0, :group,     :options,        '(?x:',       0, 4],
-    '(?mix)'          => [0, :group,     :options_switch, '(?mix',      0, 5],
-
     # Group types
     '(?>abc)'         => [0, :group,     :atomic,         '(?>',        0, 3],
     '(abc)'           => [0, :group,     :capture,        '(',          0, 1],
@@ -35,24 +25,28 @@ RSpec.describe('Group scanning') do
     '(?!abc)'         => [0, :assertion, :nlookahead,     '(?!',        0, 3],
     '(?<=abc)'        => [0, :assertion, :lookbehind,     '(?<=',       0, 4],
     '(?<!abc)'        => [0, :assertion, :nlookbehind,    '(?<!',       0, 4],
-  }
 
-  if ruby_version_at_least('2.0.0')
-    tests.merge!(
-      # New options
-      '(?d-mix:abc)'  => [0, :group,     :options,        '(?d-mix:',   0, 8],
-      '(?a-mix:abc)'  => [0, :group,     :options,        '(?a-mix:',   0, 8],
-      '(?u-mix:abc)'  => [0, :group,     :options,        '(?u-mix:',   0, 8],
-      '(?da-m:abc)'   => [0, :group,     :options,        '(?da-m:',    0, 7],
-      '(?du-x:abc)'   => [0, :group,     :options,        '(?du-x:',    0, 7],
-      '(?dau-i:abc)'  => [0, :group,     :options,        '(?dau-i:',   0, 8],
-      '(?dau:abc)'    => [0, :group,     :options,        '(?dau:',     0, 6],
-      '(?d:)'         => [0, :group,     :options,        '(?d:',       0, 4],
-      '(?a:)'         => [0, :group,     :options,        '(?a:',       0, 4],
-      '(?u:)'         => [0, :group,     :options,        '(?u:',       0, 4],
-      '(?dau)'        => [0, :group,     :options_switch, '(?dau',      0, 5],
-    )
-  end
+    # Options
+    '(?-mix:abc)'     => [0, :group,     :options,        '(?-mix:',    0, 7],
+    '(?m-ix:abc)'     => [0, :group,     :options,        '(?m-ix:',    0, 7],
+    '(?mi-x:abc)'     => [0, :group,     :options,        '(?mi-x:',    0, 7],
+    '(?mix:abc)'      => [0, :group,     :options,        '(?mix:',     0, 6],
+    '(?m:)'           => [0, :group,     :options,        '(?m:',       0, 4],
+    '(?i:)'           => [0, :group,     :options,        '(?i:',       0, 4],
+    '(?x:)'           => [0, :group,     :options,        '(?x:',       0, 4],
+    '(?mix)'          => [0, :group,     :options_switch, '(?mix',      0, 5],
+    '(?d-mix:abc)'    => [0, :group,     :options,        '(?d-mix:',   0, 8],
+    '(?a-mix:abc)'    => [0, :group,     :options,        '(?a-mix:',   0, 8],
+    '(?u-mix:abc)'    => [0, :group,     :options,        '(?u-mix:',   0, 8],
+    '(?da-m:abc)'     => [0, :group,     :options,        '(?da-m:',    0, 7],
+    '(?du-x:abc)'     => [0, :group,     :options,        '(?du-x:',    0, 7],
+    '(?dau-i:abc)'    => [0, :group,     :options,        '(?dau-i:',   0, 8],
+    '(?dau:abc)'      => [0, :group,     :options,        '(?dau:',     0, 6],
+    '(?d:)'           => [0, :group,     :options,        '(?d:',       0, 4],
+    '(?a:)'           => [0, :group,     :options,        '(?a:',       0, 4],
+    '(?u:)'           => [0, :group,     :options,        '(?u:',       0, 4],
+    '(?dau)'          => [0, :group,     :options_switch, '(?dau',      0, 5],
+  }
 
   if ruby_version_at_least('2.4.1')
     tests.merge!(

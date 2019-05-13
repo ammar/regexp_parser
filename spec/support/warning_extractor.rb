@@ -22,9 +22,7 @@ module RegexpParserSpec
 
         yield
 
-        if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.0.0')
-          assert_no_warnings($stderr.warnings)
-        end
+        assert_no_warnings($stderr.warnings)
       ensure
         $stderr = original
       end

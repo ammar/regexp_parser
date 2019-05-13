@@ -39,15 +39,7 @@ require 'regexp_parser/syntax/tokens/unicode_property'
 # into the All and Types constants.
 module Regexp::Syntax
   module Token
-    if RUBY_VERSION >= '1.9'
-      All = Map.map {|k,v| v}.flatten.uniq.sort
-    else
-      All = Map.map {|k,v| v}.flatten.uniq
-    end
-
-    Types = Map.keys
-
-    All.freeze
-    Types.freeze
+    All   = Map.values.flatten.uniq.sort.freeze
+    Types = Map.keys.freeze
   end
 end
