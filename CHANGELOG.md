@@ -21,6 +21,8 @@
 - Fixed inconsistent `#to_s` output for `Sequences`
   * it used to return only the "specific" text, e.g. "|" for an alternation
   * now it includes nested expressions as it does for all other `Subexpressions`
+- Fixed quantification of codepoint lists with more than one entry (`\u{62 63 64}+`)
+  * quantifiers apply only to the last entry, so this token is now split up if quantified
 
 ### [1.4.0] - 2019-04-02 - [Janosch Müller](mailto:janosch84@gmail.com)
 
@@ -97,7 +99,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Changed `(?m)` and the likes to emit as `:options_switch` token (@4ade4d1)
   * allows differentiating from group-local `:options`, e.g. `(?m:.)`
 - Changed name of `Backreference::..NestLevel` to `..RecursionLevel` (@4184339)
-- Changed B`ackreference::Number#number` from `String` to `Integer` (@40a2231)
+- Changed `Backreference::Number#number` from `String` to `Integer` (@40a2231)
 
 ### Added
 

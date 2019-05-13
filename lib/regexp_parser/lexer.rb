@@ -22,6 +22,7 @@ class Regexp::Lexer
     self.nesting = 0
     self.set_nesting = 0
     self.conditional_nesting = 0
+    self.shift = 0
 
     last = nil
     Regexp::Scanner.scan(input) do |type, token, text, ts, te|
@@ -30,11 +31,13 @@ class Regexp::Lexer
 
       ascend(type, token)
 
-      break_literal(last) if type == :quantifier and
-        last and last.type == :literal
+      if type == :quantifier and last
+        break_literal(last)        if last.type == :literal
+        break_codepoint_list(last) if last.token == :codepoint_list
+      end
 
-      current = Regexp::Token.new(type, token, text, ts, te,
-                nesting, set_nesting, conditional_nesting)
+      current = Regexp::Token.new(type, token, text, ts + shift, te + shift,
+                                  nesting, set_nesting, conditional_nesting)
 
       current = merge_literal(current) if type == :literal and
         set_nesting == 0 and
@@ -65,7 +68,7 @@ class Regexp::Lexer
 
   private
 
-  attr_accessor :tokens, :nesting, :set_nesting, :conditional_nesting
+  attr_accessor :tokens, :nesting, :set_nesting, :conditional_nesting, :shift
 
   def ascend(type, token)
     case type
@@ -92,19 +95,31 @@ class Regexp::Lexer
   # called by scan to break a literal run that is longer than one character
   # into two separate tokens when it is followed by a quantifier
   def break_literal(token)
-    text = token.text
-    if text.scan(/./mu).length > 1
-      lead = text.sub(/.\z/mu, "")
-      last = text[/.\z/mu] || ''
+    lead, last, _ = token.text.partition(/.\z/mu)
+    return if lead.empty?
 
-      tokens.pop
-      tokens << Regexp::Token.new(:literal, :literal, lead, token.ts,
-                (token.te - last.bytesize), nesting, set_nesting, conditional_nesting)
+    tokens.pop
+    tokens << Regexp::Token.new(:literal, :literal, lead,
+              token.ts, (token.te - last.bytesize),
+              nesting, set_nesting, conditional_nesting)
+    tokens << Regexp::Token.new(:literal, :literal, last,
+              (token.ts + lead.bytesize), token.te,
+              nesting, set_nesting, conditional_nesting)
+  end
 
-      tokens << Regexp::Token.new(:literal, :literal, last,
-                (token.ts + lead.bytesize),
-                token.te, nesting, set_nesting, conditional_nesting)
-    end
+  def break_codepoint_list(token)
+    lead, _, tail = token.text.rpartition(' ')
+    return if lead.empty?
+
+    tokens.pop
+    tokens << Regexp::Token.new(:escape, :codepoint_list, lead + '}',
+              token.ts, (token.te - tail.length),
+              nesting, set_nesting, conditional_nesting)
+    tokens << Regexp::Token.new(:escape, :codepoint_list, '\u{' + tail,
+              (token.ts + lead.length + 1), (token.te + 3),
+              nesting, set_nesting, conditional_nesting)
+
+    self.shift = shift + 3 # one space less, but extra \, u, {, and }
   end
 
   # called by scan to merge two consecutive literals. this happens when tokens
