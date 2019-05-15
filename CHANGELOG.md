@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+### [1.5.0] - 2019-05-14 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Added
 
 - Added `#referenced_expression` for backrefs, subexp calls and conditionals
