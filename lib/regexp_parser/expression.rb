@@ -129,15 +129,6 @@ module Regexp::Expression
     end
     alias :u? :unicode_classes?
 
-    def matches?(string)
-      Regexp.new(to_s) =~ string ? true : false
-    end
-
-    def match(string, offset)
-      Regexp.new(to_s).match(string, offset)
-    end
-    alias :=~ :match
-
     def attributes
       {
         type:              type,
@@ -194,6 +185,7 @@ require 'regexp_parser/expression/classes/set/intersection'
 require 'regexp_parser/expression/classes/set/range'
 require 'regexp_parser/expression/classes/type'
 
+require 'regexp_parser/expression/methods/match'
 require 'regexp_parser/expression/methods/match_length'
 require 'regexp_parser/expression/methods/strfregexp'
 require 'regexp_parser/expression/methods/tests'
