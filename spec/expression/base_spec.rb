@@ -77,4 +77,18 @@ RSpec.describe(Regexp::Expression::Base) do
     expect([root[2][1].coded_offset, root[2][1].to_s]).to eq ['@6+4', '(c?)']
     expect([root[2][1][0].coded_offset, root[2][1][0].to_s]).to eq ['@7+2', 'c?']
   end
+
+  specify('#quantity') do
+    expect(RP.parse(/aa/)[0].quantity).to eq [nil, nil]
+    expect(RP.parse(/a?/)[0].quantity).to eq [0, 1]
+    expect(RP.parse(/a*/)[0].quantity).to eq [0, -1]
+    expect(RP.parse(/a+/)[0].quantity).to eq [1, -1]
+  end
+
+  specify('#repetitions') do
+    expect(RP.parse(/aa/)[0].repetitions).to eq 1..1
+    expect(RP.parse(/a?/)[0].repetitions).to eq 0..1
+    expect(RP.parse(/a*/)[0].repetitions).to eq 0..(Float::INFINITY)
+    expect(RP.parse(/a+/)[0].repetitions).to eq 1..(Float::INFINITY)
+  end
 end

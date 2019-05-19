@@ -30,6 +30,12 @@ RSpec.describe(Regexp::MatchLength) do
     specify('absence group') { expect(ML.of('(?~abc)').minmax).to eq [0, Float::INFINITY] }
   end
 
+  specify('raises for missing references') do
+    exp = RP.parse(/(a)\1/).last
+    exp.referenced_expression = nil
+    expect { exp.match_length }.to raise_error(ArgumentError)
+  end
+
   describe('::of') do
     it('works with Regexps') { expect(ML.of(/foo/).minmax).to eq [3, 3] }
     it('works with Strings') { expect(ML.of('foo').minmax).to eq [3, 3] }
@@ -136,6 +142,13 @@ RSpec.describe(Regexp::MatchLength) do
 
     it 'never stops iterating for infinite match lengths' do
       expect(ML.of(/a*/).endless_each.first(3000).size).to eq 3000
+    end
+  end
+
+  describe('#inspect') do
+    it 'is nice' do
+      result = RP.parse(/a{2,4}/)[0].match_length
+      expect(result.inspect).to eq '#<Regexp::MatchLength<Literal> min=2 max=4>'
     end
   end
 end

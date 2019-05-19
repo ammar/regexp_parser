@@ -93,5 +93,7 @@ RSpec.describe('ExpressionTests') do
     expect(seq_2.last.one_of?(meta: [:*], anchor: :eos)).to be true
     expect(seq_2.last.one_of?(meta: [:*], anchor: [:bos])).to be false
     expect(seq_2.last.one_of?(meta: [:*], anchor: %i[bos eos])).to be true
+
+    expect { root.one_of?(Object.new) }.to raise_error(ArgumentError)
   end
 end

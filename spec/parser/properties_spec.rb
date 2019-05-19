@@ -37,11 +37,7 @@ RSpec.describe('Property parsing') do
 
   specify('parse all properties of current ruby') do
     unsupported = RegexpPropertyValues.all_for_current_ruby.reject do |prop|
-      begin
-        RP.parse("\\p{#{prop}}")
-      rescue SyntaxError, StandardError
-        nil
-      end
+      RP.parse("\\p{#{prop}}") rescue false
     end
     expect(unsupported).to be_empty
   end

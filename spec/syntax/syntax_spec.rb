@@ -41,4 +41,8 @@ RSpec.describe(Regexp::Syntax) do
 
     expect(Regexp::Syntax.version_class('ruby/2.3')).to eq Regexp::Syntax::V2_3
   end
+
+  specify('raises for unknown constant lookups') do
+    expect { Regexp::Syntax::V1 }.to raise_error(/V1/)
+  end
 end

@@ -75,32 +75,23 @@ module Regexp::Expression
     def one_of?(scope, top = true)
       case scope
       when Array
-        if scope.include?(:*)
-          return (scope.include?(token) or scope.include?(:*))
-        else
-          return scope.include?(token)
-        end
+        scope.include?(:*) || scope.include?(token)
 
       when Hash
         if scope.has_key?(:*)
           test_type = scope.has_key?(type) ? type : :*
-          return one_of?(scope[test_type], false)
+          one_of?(scope[test_type], false)
         else
-          return (scope.has_key?(type) and one_of?(scope[type], false))
+          scope.has_key?(type) && one_of?(scope[type], false)
         end
 
       when Symbol
-        return true if scope == :*
-
-        return is?(scope) unless top
-        return type?(scope) if top
+        scope.equal?(:*) || (top ? type?(scope) : is?(scope))
 
       else
-        raise "Array, Hash, or Symbol expected, #{scope.class.name} given"
+        raise ArgumentError,
+              "Array, Hash, or Symbol expected, #{scope.class.name} given"
       end
-
-      false
     end
-
   end
 end

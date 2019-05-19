@@ -65,6 +65,9 @@ RSpec.describe('Escape parsing') do
 
     expect(root[5].chars).to eq %w[D E]
     expect(root[5].codepoints).to eq [68, 69]
+
+    expect { root[5].char }.to raise_error(/#chars/)
+    expect { root[5].codepoint }.to raise_error(/#codepoints/)
   end
 
   specify('parse escape control sequence lower') do

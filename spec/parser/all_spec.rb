@@ -2,7 +2,11 @@ require 'spec_helper'
 
 RSpec.describe(Regexp::Parser) do
   specify('parse returns a root expression') do
-    expect(RP.parse('abc')).to be_instance_of(Regexp::Expression::Root)
+    expect(RP.parse('abc')).to be_instance_of(Root)
+  end
+
+  specify('parse can be called with block') do
+    expect(RP.parse('abc') { |root| root.class }).to eq Root
   end
 
   specify('parse root contains expressions') do
