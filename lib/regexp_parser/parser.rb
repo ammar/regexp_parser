@@ -215,9 +215,9 @@ class Regexp::Parser
       nest_conditional(Conditional::Expression.new(token, active_opts))
     when :condition
       conditional_nesting.last.condition = Conditional::Condition.new(token, active_opts)
-      conditional_nesting.last.branch
+      conditional_nesting.last.add_sequence(active_opts)
     when :separator
-      conditional_nesting.last.branch
+      conditional_nesting.last.add_sequence(active_opts)
       self.node = conditional_nesting.last.branches.last
     when :close
       conditional_nesting.pop
@@ -235,7 +235,7 @@ class Regexp::Parser
   end
 
   def posixclass(token)
-    node << PosixClass.new(token)
+    node << PosixClass.new(token, active_opts)
   end
 
   include Regexp::Expression::UnicodeProperty
@@ -505,7 +505,6 @@ class Regexp::Parser
     opt_changes = {}
     new_active_opts = active_opts.dup
 
-    # Negative options have precedence. E.g. /(?i-i)a/ is case-sensitive.
     %w[i m x].each do |flag|
       if positive.include?(flag)
         opt_changes[flag.to_sym] = new_active_opts[flag.to_sym] = true
@@ -516,9 +515,6 @@ class Regexp::Parser
       end
     end
 
-    # Any encoding flag overrides all previous encoding flags. If there are
-    # multiple encoding flags in an options string, the last one wins.
-    # E.g. /(?dau)\w/ matches UTF8 chars but /(?dua)\w/ only ASCII chars.
     if (flag = positive.reverse[/[adu]/])
       %w[a d u].each { |key| new_active_opts.delete(key.to_sym) }
       opt_changes[flag.to_sym] = new_active_opts[flag.to_sym] = true
@@ -610,12 +606,12 @@ class Regexp::Parser
       self.node = node.last
     elsif !node.is_a?(klass)
       operator = klass.new(token, active_opts)
-      sequence = operator.add_sequence
+      sequence = operator.add_sequence(active_opts)
       sequence.expressions = node.expressions
       node.expressions = []
       nest(operator)
     end
-    node.add_sequence
+    node.add_sequence(active_opts)
   end
 
   def active_opts

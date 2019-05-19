@@ -18,13 +18,14 @@ module Regexp::Expression
     end
 
     class << self
-      def add_to(subexpression, options = {})
+      def add_to(subexpression, params = {}, active_opts = {})
         sequence = at_levels(
           subexpression.level,
           subexpression.set_level,
-          options[:conditional_level] || subexpression.conditional_level
+          params[:conditional_level] || subexpression.conditional_level
         )
         sequence.nesting_level = subexpression.nesting_level + 1
+        sequence.options = active_opts
         subexpression.expressions << sequence
         sequence
       end

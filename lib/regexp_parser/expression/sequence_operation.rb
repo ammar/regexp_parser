@@ -14,8 +14,8 @@ module Regexp::Expression
       expressions.last << exp
     end
 
-    def add_sequence
-      self.class::OPERAND.add_to(self)
+    def add_sequence(active_opts = {})
+      self.class::OPERAND.add_to(self, {}, active_opts)
     end
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)

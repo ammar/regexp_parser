@@ -26,9 +26,10 @@ module Regexp::Expression
         expressions.last << exp
       end
 
-      def add_sequence
+      def add_sequence(active_opts = {})
         raise TooManyBranches.new if branches.length == 2
-        Branch.add_to(self, { conditional_level: conditional_level + 1 })
+        params = { conditional_level: conditional_level + 1 }
+        Branch.add_to(self, params, active_opts)
       end
       alias :branch :add_sequence
 

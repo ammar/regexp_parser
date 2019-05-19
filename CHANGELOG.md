@@ -1,5 +1,14 @@
 ## [Unreleased]
 
+### Fixed
+
+- Fixed `#options` (and thus `#i?`, `#u?` etc.) not being set for some expressions:
+  * posix classes
+  * alternation branches
+  * conditional branches
+  * character set intersection branches
+  * (options were already correct for any children of such branches)
+
 ### [1.5.0] - 2019-05-14 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
