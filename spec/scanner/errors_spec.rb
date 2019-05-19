@@ -51,5 +51,9 @@ RSpec.describe(Regexp::Scanner) do
   include_examples 'scan error', RS::InvalidGroupOption, 'invalid neg option', '(?-foo)'
   include_examples 'scan error', RS::InvalidGroupOption, 'invalid neg option', '(?-u)'
   include_examples 'scan error', RS::InvalidGroupOption, 'invalid neg option', '(?-mixu)'
+  include_examples 'scan error', RS::InvalidBackrefError, 'empty backref', '\k<>'
+  include_examples 'scan error', RS::InvalidBackrefError, 'empty backref', '\k\'\''
+  include_examples 'scan error', RS::InvalidBackrefError, 'empty refcall', '\g<>'
+  include_examples 'scan error', RS::InvalidBackrefError, 'empty refcall', '\g\'\''
   include_examples 'scan error', RS::UnknownUnicodePropertyError, 'unknown property', '\p{foobar}'
 end

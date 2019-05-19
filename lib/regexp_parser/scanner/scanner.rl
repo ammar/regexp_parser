@@ -533,14 +533,13 @@
       when '(?>';  emit(:group, :atomic,       text, ts, te)
       when '(?~';  emit(:group, :absence,      text, ts, te)
 
-      when /^\(\?<(\w*)>/
-        empty_name_error(:group, 'named group (ab)') if $1.empty?
+      when /^\(\?(?:<>|'')/
+        validation_error(:group, 'named group', 'name is empty')
 
+      when /^\(\?<\w*>/
         emit(:group, :named_ab,  text, ts, te)
 
-      when /^\(\?'(\w*)'/
-        empty_name_error(:group, 'named group (sq)') if $1.empty?
-
+      when /^\(\?'\w*'/
         emit(:group, :named_sq,  text, ts, te)
 
       else
@@ -581,11 +580,8 @@
     # ------------------------------------------------------------------------
     backslash . (group_name_ref | group_number_ref) > (backslashed, 4) {
       case text = text(data, ts, te).first
-      when /^\\([gk])<>/ # angle brackets
-        empty_backref_error("ref/call (ab)")
-
-      when /^\\([gk])''/ # single quotes
-        empty_backref_error("ref/call (sq)")
+      when /^\\([gk])(<>|'')/ # angle brackets
+        validation_error(:backref, 'ref/call', 'ref ID is empty')
 
       when /^\\([gk])<[^\d+-]\w*>/ # angle-brackets
         if $1 == 'k'
@@ -938,15 +934,4 @@ class Regexp::Scanner
 
     raise error # unless @@config.validation_ignore
   end
-
-  # Used for references with an empty name or number
-  def empty_backref_error(type, what)
-    validation_error(:backref, what, 'ref ID is empty')
-  end
-
-  # Used for named expressions with an empty name
-  def empty_name_error(type, what)
-    validation_error(type, what, 'name is empty')
-  end
-
 end # module Regexp::Scanner
