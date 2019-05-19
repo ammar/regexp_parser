@@ -82,7 +82,8 @@
   assertion_lookbehind  = '?<=';
   assertion_nlookbehind = '?<!';
 
-  group_options         = '?' . [\-mixdau];
+  # try to treat every other group head as options group, like Ruby
+  group_options         = '?' . ( [^!#'():<=>~]+ . ':'? ) ?;
 
   group_ref             = [gk];
   group_name_char       = (alnum | '_');
@@ -496,7 +497,11 @@
     #   (?imxdau-imx:subexp)  option on/off for subexp
     # ------------------------------------------------------------------------
     group_open . group_options >group_opened {
-      p = scan_options(p, data, ts, te)
+      text = text(data, ts, te).first
+      if text[2..-1] =~ /([^\-mixdau:]|^$)|-.*([dau])/
+        raise InvalidGroupOption.new($1 || "-#{$2}", text)
+      end
+      emit_options(text, ts, te)
     };
 
     # Assertions
@@ -858,60 +863,6 @@ class Regexp::Scanner
                 :in_group, :group_depth,
                 :free_spacing, :spacing_stack
 
-  # Ragel's regex-based scan of the group options introduced a lot of
-  # ambiguity, so we just ask it to find the beginning of what looks
-  # like an options run and handle the rest in here.
-  def scan_options(p, data, ts, te)
-    text = text(data, ts, te).first
-
-    options_char, options_length = true, 0
-
-    # Copy while we have option characters. There is no maximum length,
-    # as ruby allows things like '(?xxxxxxxxx-xxxxxxxxxxxxx:abc)'.
-    negative_options = false
-    while options_char
-      if data[te + options_length]
-        c = data[te + options_length].chr
-
-        if c =~ /[-mixdau]/
-          negative_options = true if c == '-'
-
-          raise InvalidGroupOption.new(c, text) if negative_options and
-            c =~ /[dau]/
-
-          text << c ; p += 1 ; options_length += 1
-        else
-          options_char = false
-        end
-      else
-        raise PrematureEndError.new("expression options `#{text}'")
-      end
-    end
-
-    if data[te + options_length]
-      c = data[te + options_length].chr
-
-      if c == ':'
-        # Include the ':' in the options text
-        text << c ; p += 1 ; options_length += 1
-        emit_options(text, ts, te + options_length)
-
-      elsif c == ')'
-        # Don't include the closing ')', let group_close handle it.
-        emit_options(text, ts, te + options_length)
-
-      else
-        # Plain Regexp reports this as 'undefined group option'
-        raise ScannerError.new(
-          "Unexpected `#{c}' in options sequence, ':' or ')' expected")
-      end
-    else
-      raise PrematureEndError.new("expression options `#{text}'")
-    end
-
-    p # return the new value of the data pointer
-  end
-
   # Copy from ts to te from data as text
   def copy(data, range)
     data[range].pack('c*')
@@ -945,27 +896,27 @@ class Regexp::Scanner
   def emit_options(text, ts, te)
     token = nil
 
-    if text =~ /\(\?([mixdau]*)-?([mix]*)(:)?/
-      positive, negative, group_local = $1, $2, $3
+    # Ruby allows things like '(?-xxxx)' or '(?xx-xx--xx-:abc)'.
+    text =~ /\(\?([mixdau]*)(-(?:[mix]*))*(:)?/
+    positive, negative, group_local = $1, $2, $3
 
-      if positive.include?('x')
-        self.free_spacing = true
-      end
+    if positive.include?('x')
+      self.free_spacing = true
+    end
 
-      # If the x appears in both, treat it like ruby does, the second cancels
-      # the first.
-      if negative.include?('x')
-        self.free_spacing = false
-      end
+    # If the x appears in both, treat it like ruby does, the second cancels
+    # the first.
+    if negative && negative.include?('x')
+      self.free_spacing = false
+    end
 
-      if group_local
-        spacing_stack << {:free_spacing => free_spacing, :depth => group_depth}
-        token = :options
-      else
-        # switch for parent group level
-        spacing_stack.last[:free_spacing] = free_spacing
-        token = :options_switch
-      end
+    if group_local
+      spacing_stack << {:free_spacing => free_spacing, :depth => group_depth}
+      token = :options
+    else
+      # switch for parent group level
+      spacing_stack.last[:free_spacing] = free_spacing
+      token = :options_switch
     end
 
     emit(:group, token, text, ts, te)

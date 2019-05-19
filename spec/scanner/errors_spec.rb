@@ -1,90 +1,55 @@
 require 'spec_helper'
 
-RSpec.describe('Scanning errors') do
-  specify('scanner unbalanced set') do
-    expect { RS.scan('[[:alpha:]') }.to raise_error(RS::PrematureEndError)
+RSpec.describe(Regexp::Scanner) do
+  RSpec.shared_examples 'scan error' do |error, issue, source|
+    it "raises #{error} for #{issue}" do
+      expect { RS.scan(source) }.to raise_error(error)
+    end
   end
 
-  specify('scanner unbalanced group') do
-    expect { RS.scan('(abc') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner unbalanced interval') do
-    expect { RS.scan('a{1,2') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner eof in property') do
-    expect { RS.scan('\\p{asci') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner incomplete property') do
-    expect { RS.scan('\\p{ascii abc') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner unknown property') do
-    expect { RS.scan('\\p{foobar}') }.to raise_error(RS::UnknownUnicodePropertyError)
-  end
-
-  specify('scanner incomplete options') do
-    expect { RS.scan('(?mix abc)') }.to raise_error(RS::ScannerError)
-  end
-
-  specify('scanner eof options') do
-    expect { RS.scan('(?mix') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner incorrect options') do
-    expect { RS.scan('(?mix^bc') }.to raise_error(RS::ScannerError)
-  end
-
-  specify('scanner eof escape') do
-    expect { RS.scan('\\') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner eof in hex escape') do
-    expect { RS.scan('\\x') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner eof in codepoint escape') do
-    expect { RS.scan('\\u') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\u0') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\u00') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\u000') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\u{') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\u{00') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\u{0000') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\u{0000 ') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\u{0000 0000') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner eof in control sequence') do
-    expect { RS.scan('\\c') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\c\\M') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\c\\M-') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\C') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\C-') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\C-\\M') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\C-\\M-') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner eof in meta sequence') do
-    expect { RS.scan('\\M') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\M-') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\M-\\') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\M-\\c') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\M-\\C') }.to raise_error(RS::PrematureEndError)
-    expect { RS.scan('\\M-\\C-') }.to raise_error(RS::PrematureEndError)
-  end
-
-  specify('scanner invalid hex escape') do
-    expect { RS.scan('\\xZ') }.to raise_error(RS::InvalidSequenceError)
-    expect { RS.scan('\\xZ0') }.to raise_error(RS::InvalidSequenceError)
-  end
-
-  specify('scanner invalid named group') do
-    expect { RS.scan("(?'')") }.to raise_error(RS::InvalidGroupError)
-    expect { RS.scan("(?''empty-name)") }.to raise_error(RS::InvalidGroupError)
-    expect { RS.scan('(?<>)') }.to raise_error(RS::InvalidGroupError)
-    expect { RS.scan('(?<>empty-name)') }.to raise_error(RS::InvalidGroupError)
-  end
+  include_examples 'scan error', RS::PrematureEndError, 'unbalanced set', '[a'
+  include_examples 'scan error', RS::PrematureEndError, 'unbalanced set', '[[:alpha:]'
+  include_examples 'scan error', RS::PrematureEndError, 'unbalanced group', '(abc'
+  include_examples 'scan error', RS::PrematureEndError, 'unbalanced interval', 'a{1,2'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in property', '\p{asci'
+  include_examples 'scan error', RS::PrematureEndError, 'incomplete property', '\p{ascii abc'
+  include_examples 'scan error', RS::PrematureEndError, 'eof options', '(?mix'
+  include_examples 'scan error', RS::PrematureEndError, 'eof escape', '\\'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in hex escape', '\x'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u0'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u00'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u000'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u{'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u{00'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u{0000'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u{0000 '
+  include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u{0000 0000'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\c'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\c\\M'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\c\\M-'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C-'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C-\\M'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C-\\M-'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\\'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\\c'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\\C'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\\C-'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid hex', '\xZ'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid hex', '\xZ0'
+  include_examples 'scan error', RS::InvalidGroupError, 'invalid group', "(?'')"
+  include_examples 'scan error', RS::InvalidGroupError, 'invalid group', "(?''empty-name)"
+  include_examples 'scan error', RS::InvalidGroupError, 'invalid group', '(?<>)'
+  include_examples 'scan error', RS::InvalidGroupError, 'invalid group', '(?<>empty-name)'
+  include_examples 'scan error', RS::InvalidGroupOption, 'invalid option', '(?foo)'
+  include_examples 'scan error', RS::InvalidGroupOption, 'invalid option', '(?mix abc)'
+  include_examples 'scan error', RS::InvalidGroupOption, 'invalid option', '(?mix^bc'
+  include_examples 'scan error', RS::InvalidGroupOption, 'invalid option', '(?)'
+  include_examples 'scan error', RS::InvalidGroupOption, 'invalid neg option', '(?-foo)'
+  include_examples 'scan error', RS::InvalidGroupOption, 'invalid neg option', '(?-u)'
+  include_examples 'scan error', RS::InvalidGroupOption, 'invalid neg option', '(?-mixu)'
+  include_examples 'scan error', RS::UnknownUnicodePropertyError, 'unknown property', '\p{foobar}'
 end

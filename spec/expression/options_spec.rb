@@ -30,6 +30,16 @@ RSpec.describe('Expression#options') do
     expect(exp.options).to eq({})
   end
 
+  it 'correctly handles multiple negative option parts' do
+    regexp = /(?--m--mx--) . /mx
+    expect(regexp).to match ' . '
+    expect(regexp).not_to match '.'
+    expect(regexp).not_to match "\n"
+
+    exp = RP.parse(regexp)[2]
+    expect(exp.options).to eq({})
+  end
+
   it 'gives correct precedence when encountering multiple encoding flags' do
     # Any encoding flag overrides all previous encoding flags. If there are
     # multiple encoding flags in an options string, the last one wins.
