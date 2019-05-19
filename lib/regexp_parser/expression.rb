@@ -97,38 +97,6 @@ module Regexp::Expression
       quantified? and quantifier.possessive?
     end
 
-    def multiline?
-      options[:m] == true
-    end
-    alias :m? :multiline?
-
-    def case_insensitive?
-      options[:i] == true
-    end
-    alias :i? :case_insensitive?
-    alias :ignore_case? :case_insensitive?
-
-    def free_spacing?
-      options[:x] == true
-    end
-    alias :x? :free_spacing?
-    alias :extended? :free_spacing?
-
-    def default_classes?
-      options[:d] == true
-    end
-    alias :d? :default_classes?
-
-    def ascii_classes?
-      options[:a] == true
-    end
-    alias :a? :ascii_classes?
-
-    def unicode_classes?
-      options[:u] == true
-    end
-    alias :u? :unicode_classes?
-
     def attributes
       {
         type:              type,
@@ -187,6 +155,7 @@ require 'regexp_parser/expression/classes/type'
 
 require 'regexp_parser/expression/methods/match'
 require 'regexp_parser/expression/methods/match_length'
+require 'regexp_parser/expression/methods/options'
 require 'regexp_parser/expression/methods/strfregexp'
 require 'regexp_parser/expression/methods/tests'
 require 'regexp_parser/expression/methods/traverse'
