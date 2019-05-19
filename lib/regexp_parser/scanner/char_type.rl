@@ -21,9 +21,6 @@
       when '\W'; emit(:type, :nonword,    text, ts - 1, te)
       when '\R'; emit(:type, :linebreak,  text, ts - 1, te)
       when '\X'; emit(:type, :xgrapheme,  text, ts - 1, te)
-      else
-        raise ScannerError.new(
-          "Unexpected character in type at #{text} (char #{ts})")
       end
       fret;
     };

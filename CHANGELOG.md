@@ -10,6 +10,7 @@
   * (options were already correct for any children of such branches)
 - Fixed `#options` not respecting all negative options in weird cases like '(?u-m-x)'
 - Fixed `Scanner` allowing negative encoding options if there were no positive options, e.g. '(?-u)'
+- Fixed `ScannerError` for some valid meta/control sequences such as '\\C-\\\\'
 - Fixed `Expression#match` and `#=~` not working with a single argument
 
 ### [1.5.0] - 2019-05-14 - [Janosch Müller](mailto:janosch84@gmail.com)

@@ -49,9 +49,9 @@
   codepoint_list        = 'u{' . xdigit{1,6} . (space . xdigit{1,6})* . '}';
   codepoint_sequence    = codepoint_single | codepoint_list;
 
-  control_sequence      = ('c' | 'C-') . (backslash . 'M-')?;
+  control_sequence      = ('c' | 'C-') . (backslash . 'M-')? . backslash? . any;
 
-  meta_sequence         = 'M-' . (backslash . control_sequence)?;
+  meta_sequence         = 'M-' . (backslash . ('c' | 'C-'))? . backslash? . any;
 
   zero_or_one           = '?' | '??' | '?+';
   zero_or_more          = '*' | '*?' | '*+';
@@ -136,7 +136,7 @@
   # Invalid sequence error, used from sequences, like escapes and sets
   action invalid_sequence_error {
     text = ts ? copy(data, ts-1..-1) : data.pack('c*')
-    raise InvalidSequenceError.new('sequence', text)
+    validation_error(:sequence, 'sequence', text)
   }
 
   # group (nesting) and set open/close actions
@@ -338,32 +338,12 @@
     };
 
     control_sequence >(escaped_alpha, 4) $eof(premature_end_error) {
-      if data[te]
-        c = data[te].chr
-        if c =~ /[\x00-\x7F]/
-          emit(:escape, :control, copy(data, ts-1..te), ts-1, te+1)
-          p += 1
-        else
-          raise InvalidSequenceError.new("control sequence")
-        end
-      else
-        raise PrematureEndError.new("control sequence")
-      end
+      emit_meta_control_sequence(data, ts, te, :control)
       fret;
     };
 
     meta_sequence >(backslashed, 3) $eof(premature_end_error) {
-      if data[te]
-        c = data[te].chr
-        if c =~ /[\x00-\x7F]/
-          emit(:escape, :meta_sequence, copy(data, ts-1..te), ts-1, te+1)
-          p += 1
-        else
-          raise InvalidSequenceError.new("meta sequence")
-        end
-      else
-        raise PrematureEndError.new("meta sequence")
-      end
+      emit_meta_control_sequence(data, ts, te, :meta_sequence)
       fret;
     };
 
@@ -443,9 +423,6 @@
       when '\\b'; emit(:anchor, :word_boundary,      text, ts, te)
       when '\\B'; emit(:anchor, :nonword_boundary,   text, ts, te)
       when '\\G'; emit(:anchor, :match_start,        text, ts, te)
-      else
-        raise ScannerError.new(
-          "Unexpected character in anchor at #{text} (char #{ts})")
       end
     };
 
@@ -542,9 +519,6 @@
       when /^\(\?'\w*'/
         emit(:group, :named_sq,  text, ts, te)
 
-      else
-        raise ScannerError.new(
-          "Unknown subexpression group format '#{text}'")
       end
     };
 
@@ -637,9 +611,6 @@
       when /^\\([gk])'[+\-]?\d+[+\-]\d+'/ # single-quotes
         emit(:backref, :number_recursion_ref_sq, text, ts, te)
 
-      else
-        raise ScannerError.new(
-          "Unknown backreference format '#{text}'")
       end
     };
 
@@ -918,6 +889,13 @@ class Regexp::Scanner
     emit(:group, token, text, ts, te)
   end
 
+  def emit_meta_control_sequence(data, ts, te, token)
+    if data.last < 0x00 || data.last > 0x7F
+      validation_error(:sequence, 'escape', token.to_s)
+    end
+    emit(:escape, token, *text(data, ts, te, 1))
+  end
+
   # Centralizes and unifies the handling of validation related
   # errors.
   def validation_error(type, what, reason)
@@ -928,8 +906,6 @@ class Regexp::Scanner
       error = InvalidBackrefError.new(what, reason)
     when :sequence
       error = InvalidSequenceError.new(what, reason)
-    else
-      error = ValidationError.new('expression')
     end
 
     raise error # unless @@config.validation_ignore

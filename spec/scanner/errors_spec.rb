@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe(Regexp::Scanner) do
   RSpec.shared_examples 'scan error' do |error, issue, source|
-    it "raises #{error} for #{issue}" do
+    it "raises #{error} for #{issue} `#{source}`" do
       expect { RS.scan(source) }.to raise_error(error)
     end
   end
@@ -26,20 +26,29 @@ RSpec.describe(Regexp::Scanner) do
   include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u{0000 '
   include_examples 'scan error', RS::PrematureEndError, 'eof in cp escape', '\u{0000 0000'
   include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\c'
-  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\c\\M'
-  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\c\\M-'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\c\M'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\c\M-'
   include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C'
   include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C-'
-  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C-\\M'
-  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C-\\M-'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C-\M'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in c-seq', '\C-\M-'
   include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M'
   include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-'
   include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\\'
-  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\\c'
-  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\\C'
-  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\\C-'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\c'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\C'
+  include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\C-'
   include_examples 'scan error', RS::InvalidSequenceError, 'invalid hex', '\xZ'
   include_examples 'scan error', RS::InvalidSequenceError, 'invalid hex', '\xZ0'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid c-seq', '\cü'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid c-seq', '\c\M-ü'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid c-seq', '\C-ü'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid c-seq', '\C-\M-ü'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid m-seq', '\M-ü'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid m-seq', '\M-\cü'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid m-seq', '\M-\C-ü'
+  include_examples 'scan error', RS::ScannerError, 'invalid c-seq', '\Ca'
+  include_examples 'scan error', RS::ScannerError, 'invalid m-seq', '\Ma'
   include_examples 'scan error', RS::InvalidGroupError, 'invalid group', "(?'')"
   include_examples 'scan error', RS::InvalidGroupError, 'invalid group', "(?''empty-name)"
   include_examples 'scan error', RS::InvalidGroupError, 'invalid group', '(?<>)'
