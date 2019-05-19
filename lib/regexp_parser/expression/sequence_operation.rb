@@ -18,10 +18,6 @@ module Regexp::Expression
       self.class::OPERAND.add_to(self, {}, active_opts)
     end
 
-    def quantify(token, text, min = nil, max = nil, mode = :greedy)
-      sequences.last.last.quantify(token, text, min, max, mode)
-    end
-
     def to_s(format = :full)
       sequences.map { |e| e.to_s(format) }.join(text)
     end

@@ -39,10 +39,6 @@ class Regexp::Lexer
       current = Regexp::Token.new(type, token, text, ts + shift, te + shift,
                                   nesting, set_nesting, conditional_nesting)
 
-      current = merge_literal(current) if type == :literal and
-        set_nesting == 0 and
-        last and last.type == :literal
-
       current = merge_condition(current) if type == :conditional and
         [:condition, :condition_close].include?(token)
 
@@ -120,23 +116,6 @@ class Regexp::Lexer
               nesting, set_nesting, conditional_nesting)
 
     self.shift = shift + 3 # one space less, but extra \, u, {, and }
-  end
-
-  # called by scan to merge two consecutive literals. this happens when tokens
-  # get normalized (as in the case of posix/bre) and end up becoming literals.
-  def merge_literal(current)
-    last = tokens.pop
-
-    Regexp::Token.new(
-      :literal,
-      :literal,
-      last.text + current.text,
-      last.ts,
-      current.te,
-      nesting,
-      set_nesting,
-      conditional_nesting,
-    )
   end
 
   def merge_condition(current)

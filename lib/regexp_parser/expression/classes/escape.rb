@@ -60,10 +60,6 @@ module Regexp::Expression
         codepoint.chr('utf-8')
       end
 
-      def codepoint
-        raise NotImplementedError, 'implement in subclass'
-      end
-
       private
 
       def control_sequence_to_s(control_sequence)

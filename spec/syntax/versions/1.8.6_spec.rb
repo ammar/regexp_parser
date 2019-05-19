@@ -22,15 +22,9 @@ RSpec.describe(Regexp::Syntax::V1_8_6) do
     expected = method != :excludes
 
     types.each do |type, tokens|
-      if tokens.nil? || tokens.empty?
-        specify("syntax_V1_8_#{method}_#{type}") do
-          expect(syntax.implements?(type, nil)).to eq expected
-        end
-      else
-        tokens.each do |token|
-          specify("syntax_V1_8_#{method}_#{type}_#{token}") do
-            expect(syntax.implements?(type, token)).to eq expected
-          end
+      tokens.each do |token|
+        specify("syntax_V1_8_#{method}_#{type}_#{token}") do
+          expect(syntax.implements?(type, token)).to eq expected
         end
       end
     end

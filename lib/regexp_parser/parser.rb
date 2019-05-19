@@ -602,9 +602,7 @@ class Regexp::Parser
   end
 
   def sequence_operation(klass, token)
-    if node.last.is_a?(klass)
-      self.node = node.last
-    elsif !node.is_a?(klass)
+    unless node.is_a?(klass)
       operator = klass.new(token, active_opts)
       sequence = operator.add_sequence(active_opts)
       sequence.expressions = node.expressions

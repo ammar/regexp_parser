@@ -1,5 +1,4 @@
 module Regexp::Expression
-
   class Base
 
     #   %l  Level (depth) of the expression. Returns 'root' for the root
