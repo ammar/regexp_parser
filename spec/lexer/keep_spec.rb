@@ -1,22 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe('Keep lexing') do
-  specify('lex keep token') do
-    regexp = /ab\Kcd/
-    tokens = RL.lex(regexp)
+  include_examples 'lex', /ab\Kcd/,            1, :keep, :mark, '\K', 2,  4,  0, 0, 0
 
-    expect(tokens[1].type).to eq :keep
-    expect(tokens[1].token).to eq :mark
-  end
-
-  specify('lex keep nested') do
-    regexp = /(a\Kb)|(c\\\Kd)ef/
-    tokens = RL.lex(regexp)
-
-    expect(tokens[2].type).to eq :keep
-    expect(tokens[2].token).to eq :mark
-
-    expect(tokens[9].type).to eq :keep
-    expect(tokens[9].token).to eq :mark
-  end
+  include_examples 'lex', /(a\Kb)|(c\\\Kd)ef/, 2, :keep, :mark, '\K', 2,  4,  1, 0, 0
+  include_examples 'lex', /(a\Kb)|(c\\\Kd)ef/, 9, :keep, :mark, '\K', 11, 13, 1, 0, 0
 end
