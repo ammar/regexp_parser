@@ -140,37 +140,31 @@
   }
 
   # group (nesting) and set open/close actions
-  action group_opened { self.group_depth = group_depth + 1; in_group = true }
-  action group_closed { self.group_depth = group_depth - 1; in_group = group_depth > 0 ? true : false }
+  action group_opened { self.group_depth = group_depth + 1 }
+  action group_closed { self.group_depth = group_depth - 1 }
+  action set_opened   { self.set_depth   = set_depth   + 1 }
+  action set_closed   { self.set_depth   = set_depth   - 1 }
 
   # Character set scanner, continues consuming characters until it meets the
   # closing bracket of the set.
   # --------------------------------------------------------------------------
   character_set := |*
-    set_close > (set_meta, 2) {
-      set_depth -= 1
-      in_set = set_depth > 0 ? true : false
-
+    set_close > (set_meta, 2) @set_closed {
       emit(:set, :close, *text(data, ts, te))
-
-      if set_depth == 0
-        fgoto main;
-      else
+      if in_set?
         fret;
+      else
+        fgoto main;
       end
     };
 
-    '-]' { # special case, emits two tokens
-      set_depth -= 1
-      in_set = set_depth > 0 ? true : false
-
-      emit(:literal, :literal, copy(data, ts..te-2), ts, te-1)
-      emit(:set, :close, copy(data, ts+1..te-1), ts+1, te)
-
-      if set_depth == 0
-        fgoto main;
-      else
+    '-]' @set_closed { # special case, emits two tokens
+      emit(:literal, :literal, copy(data, ts..te-2), ts, te - 1)
+      emit(:set, :close, copy(data, ts+1..te-1), ts + 1, te)
+      if in_set?
         fret;
+      else
+        fgoto main;
       end
     };
 
@@ -208,14 +202,12 @@
       fcall set_escape_sequence;
     };
 
-    set_open >(open_bracket, 1) {
-      set_depth += 1
-
+    set_open >(open_bracket, 1) >set_opened {
       emit(:set, :open, *text(data, ts, te))
       fcall character_set;
     };
 
-    class_posix >(open_bracket, 1) @eof(premature_end_error) {
+    class_posix >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
       text = text(data, ts, te).first
 
       type = :posixclass
@@ -228,11 +220,11 @@
       emit(type, class_name.to_sym, text, ts, te)
     };
 
-    collating_sequence >(open_bracket, 1) @eof(premature_end_error) {
+    collating_sequence >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
       emit(:set, :collation, *text(data, ts, te))
     };
 
-    character_equivalent >(open_bracket, 1) @eof(premature_end_error) {
+    character_equivalent >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
       emit(:set, :equivalent, *text(data, ts, te))
     };
 
@@ -349,13 +341,13 @@
 
     char_type_char > (escaped_alpha, 2) {
       fhold;
-      fnext *(in_set ? fentry(character_set) : fentry(main));
+      fnext *(in_set? ? fentry(character_set) : fentry(main));
       fcall char_type;
     };
 
     property_char > (escaped_alpha, 2) {
       fhold;
-      fnext *(in_set ? fentry(character_set) : fentry(main));
+      fnext *(in_set? ? fentry(character_set) : fentry(main));
       fcall unicode_property;
     };
 
@@ -393,8 +385,7 @@
     };
 
     alternation {
-      if in_conditional and conditional_stack.length > 0 and
-         conditional_stack.last[1] == group_depth
+      if conditional_stack.last == group_depth
         emit(:conditional, :separator, *text(data, ts, te))
       else
         emit(:meta, :alternation, *text(data, ts, te))
@@ -428,10 +419,7 @@
 
     # Character sets
     # ------------------------------------------------------------------------
-    set_open {
-      set_depth += 1
-      in_set = true
-
+    set_open >set_opened {
       emit(:set, :open, *text(data, ts, te))
       fcall character_set;
     };
@@ -443,9 +431,7 @@
     conditional {
       text = text(data, ts, te).first
 
-      in_conditional = true unless in_conditional
-      conditional_depth += 1
-      conditional_stack << [conditional_depth, group_depth]
+      conditional_stack << group_depth
 
       emit(:conditional, :open, text[0..-2], ts, te-1)
       emit(:conditional, :condition_open, '(', te-1, te)
@@ -528,20 +514,13 @@
     };
 
     group_close @group_closed {
-      if in_conditional and conditional_stack.last and
-         conditional_stack.last[1] == (group_depth + 1)
-
-        emit(:conditional, :close, *text(data, ts, te))
+      if conditional_stack.last == group_depth + 1
         conditional_stack.pop
-
-        if conditional_stack.length == 0
-          in_conditional = false
-        end
+        emit(:conditional, :close, *text(data, ts, te))
       else
-        if spacing_stack.length > 1 and
-          spacing_stack.last[:depth] == (group_depth + 1)
+        if spacing_stack.length > 1 &&
+           spacing_stack.last[:depth] == group_depth + 1
           spacing_stack.pop
-
           self.free_spacing = spacing_stack.last[:free_spacing]
         end
 
@@ -758,7 +737,7 @@ class Regexp::Scanner
       input = input_object
       self.free_spacing = false
     end
-
+    self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
 
     data  = input.unpack("c*") if input.is_a?(String)
     eof   = data.length
@@ -766,15 +745,9 @@ class Regexp::Scanner
     self.tokens = []
     self.block  = block_given? ? block : nil
 
-    self.in_group = false
+    self.set_depth = 0
     self.group_depth = 0
-    self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
-
-    in_set = false
-    set_depth = 0
-    in_conditional = false
-    conditional_depth = 0
-    conditional_stack = []
+    self.conditional_stack = []
 
     %% write data;
     %% write init;
@@ -789,9 +762,9 @@ class Regexp::Scanner
     end
 
     raise PrematureEndError.new("(missing group closing paranthesis) "+
-          "[#{in_group}:#{group_depth}]") if in_group
+          "[#{group_depth}]") if in_group?
     raise PrematureEndError.new("(missing set closing bracket) "+
-          "[#{in_set}:#{set_depth}]") if in_set
+          "[#{set_depth}]") if in_set?
 
     # when the entire expression is a literal run
     emit_literal if literal
@@ -826,9 +799,16 @@ class Regexp::Scanner
 
   private
 
-  attr_accessor :tokens, :literal, :block,
-                :in_group, :group_depth,
-                :free_spacing, :spacing_stack
+  attr_accessor :tokens, :literal, :block, :free_spacing, :spacing_stack,
+                :group_depth, :set_depth, :conditional_stack
+
+  def in_group?
+    group_depth > 0
+  end
+
+  def in_set?
+    set_depth > 0
+  end
 
   # Copy from ts to te from data as text
   def copy(data, range)
