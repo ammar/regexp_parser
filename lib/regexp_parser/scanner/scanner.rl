@@ -164,8 +164,8 @@
       set_depth -= 1
       in_set = set_depth > 0 ? true : false
 
-      emit(:literal, :literal, copy(data, ts..te-2), ts, te)
-      emit(:set, :close, copy(data, ts+1..te-1), ts, te)
+      emit(:literal, :literal, copy(data, ts..te-2), ts, te-1)
+      emit(:set, :close, copy(data, ts+1..te-1), ts+1, te)
 
       if set_depth == 0
         fgoto main;

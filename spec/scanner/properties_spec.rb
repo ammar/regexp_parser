@@ -1,307 +1,269 @@
 require 'spec_helper'
 
 RSpec.describe('Property scanning') do
-  tests = {
-    'Alnum'                               => :alnum,
+  include_examples 'scan property', 'Alnum',                    :alnum
 
-    'XPosixPunct'                         => :xposixpunct,
+  include_examples 'scan property', 'XPosixPunct',              :xposixpunct
 
-    'Newline'                             => :newline,
+  include_examples 'scan property', 'Newline',                  :newline
 
-    'Any'                                 => :any,
+  include_examples 'scan property', 'Any',                      :any
 
-    'Assigned'                            => :assigned,
+  include_examples 'scan property', 'Assigned',                 :assigned
 
-    'L'                                   => :letter,
-    'Letter'                              => :letter,
+  include_examples 'scan property', 'L',                        :letter
+  include_examples 'scan property', 'Letter',                   :letter
 
-    'Lu'                                  => :uppercase_letter,
-    'Uppercase_Letter'                    => :uppercase_letter,
+  include_examples 'scan property', 'Lu',                       :uppercase_letter
+  include_examples 'scan property', 'Uppercase_Letter',         :uppercase_letter
 
-    'Ll'                                  => :lowercase_letter,
-    'Lowercase_Letter'                    => :lowercase_letter,
+  include_examples 'scan property', 'Ll',                       :lowercase_letter
+  include_examples 'scan property', 'Lowercase_Letter',         :lowercase_letter
 
-    'Lt'                                  => :titlecase_letter,
-    'Titlecase_Letter'                    => :titlecase_letter,
+  include_examples 'scan property', 'Lt',                       :titlecase_letter
+  include_examples 'scan property', 'Titlecase_Letter',         :titlecase_letter
 
-    'Lm'                                  => :modifier_letter,
-    'Modifier_Letter'                     => :modifier_letter,
+  include_examples 'scan property', 'Lm',                       :modifier_letter
+  include_examples 'scan property', 'Modifier_Letter',          :modifier_letter
 
-    'Lo'                                  => :other_letter,
-    'Other_Letter'                        => :other_letter,
+  include_examples 'scan property', 'Lo',                       :other_letter
+  include_examples 'scan property', 'Other_Letter',             :other_letter
 
-    'M'                                   => :mark,
-    'Mark'                                => :mark,
+  include_examples 'scan property', 'M',                        :mark
+  include_examples 'scan property', 'Mark',                     :mark
 
-    'Mn'                                  => :nonspacing_mark,
-    'Nonspacing_Mark'                     => :nonspacing_mark,
+  include_examples 'scan property', 'Mn',                       :nonspacing_mark
+  include_examples 'scan property', 'Nonspacing_Mark',          :nonspacing_mark
 
-    'Mc'                                  => :spacing_mark,
-    'Spacing_Mark'                        => :spacing_mark,
+  include_examples 'scan property', 'Mc',                       :spacing_mark
+  include_examples 'scan property', 'Spacing_Mark',             :spacing_mark
 
-    'Me'                                  => :enclosing_mark,
-    'Enclosing_Mark'                      => :enclosing_mark,
+  include_examples 'scan property', 'Me',                       :enclosing_mark
+  include_examples 'scan property', 'Enclosing_Mark',           :enclosing_mark
 
-    'N'                                   => :number,
-    'Number'                              => :number,
+  include_examples 'scan property', 'N',                        :number
+  include_examples 'scan property', 'Number',                   :number
 
-    'Nd'                                  => :decimal_number,
-    'Decimal_Number'                      => :decimal_number,
+  include_examples 'scan property', 'Nd',                       :decimal_number
+  include_examples 'scan property', 'Decimal_Number',           :decimal_number
 
-    'Nl'                                  => :letter_number,
-    'Letter_Number'                       => :letter_number,
+  include_examples 'scan property', 'Nl',                       :letter_number
+  include_examples 'scan property', 'Letter_Number',            :letter_number
 
-    'No'                                  => :other_number,
-    'Other_Number'                        => :other_number,
+  include_examples 'scan property', 'No',                       :other_number
+  include_examples 'scan property', 'Other_Number',             :other_number
 
-    'P'                                   => :punctuation,
-    'Punctuation'                         => :punctuation,
+  include_examples 'scan property', 'P',                        :punctuation
+  include_examples 'scan property', 'Punctuation',              :punctuation
 
-    'Pc'                                  => :connector_punctuation,
-    'Connector_Punctuation'               => :connector_punctuation,
+  include_examples 'scan property', 'Pc',                       :connector_punctuation
+  include_examples 'scan property', 'Connector_Punctuation',    :connector_punctuation
 
-    'Pd'                                  => :dash_punctuation,
-    'Dash_Punctuation'                    => :dash_punctuation,
+  include_examples 'scan property', 'Pd',                       :dash_punctuation
+  include_examples 'scan property', 'Dash_Punctuation',         :dash_punctuation
 
-    'Ps'                                  => :open_punctuation,
-    'Open_Punctuation'                    => :open_punctuation,
+  include_examples 'scan property', 'Ps',                       :open_punctuation
+  include_examples 'scan property', 'Open_Punctuation',         :open_punctuation
 
-    'Pe'                                  => :close_punctuation,
-    'Close_Punctuation'                   => :close_punctuation,
+  include_examples 'scan property', 'Pe',                       :close_punctuation
+  include_examples 'scan property', 'Close_Punctuation',        :close_punctuation
 
-    'Pi'                                  => :initial_punctuation,
-    'Initial_Punctuation'                 => :initial_punctuation,
+  include_examples 'scan property', 'Pi',                       :initial_punctuation
+  include_examples 'scan property', 'Initial_Punctuation',      :initial_punctuation
 
-    'Pf'                                  => :final_punctuation,
-    'Final_Punctuation'                   => :final_punctuation,
+  include_examples 'scan property', 'Pf',                       :final_punctuation
+  include_examples 'scan property', 'Final_Punctuation',        :final_punctuation
 
-    'Po'                                  => :other_punctuation,
-    'Other_Punctuation'                   => :other_punctuation,
+  include_examples 'scan property', 'Po',                       :other_punctuation
+  include_examples 'scan property', 'Other_Punctuation',        :other_punctuation
 
-    'S'                                   => :symbol,
-    'Symbol'                              => :symbol,
+  include_examples 'scan property', 'S',                        :symbol
+  include_examples 'scan property', 'Symbol',                   :symbol
 
-    'Sm'                                  => :math_symbol,
-    'Math_Symbol'                         => :math_symbol,
+  include_examples 'scan property', 'Sm',                       :math_symbol
+  include_examples 'scan property', 'Math_Symbol',              :math_symbol
 
-    'Sc'                                  => :currency_symbol,
-    'Currency_Symbol'                     => :currency_symbol,
+  include_examples 'scan property', 'Sc',                       :currency_symbol
+  include_examples 'scan property', 'Currency_Symbol',          :currency_symbol
 
-    'Sk'                                  => :modifier_symbol,
-    'Modifier_Symbol'                     => :modifier_symbol,
+  include_examples 'scan property', 'Sk',                       :modifier_symbol
+  include_examples 'scan property', 'Modifier_Symbol',          :modifier_symbol
 
-    'So'                                  => :other_symbol,
-    'Other_Symbol'                        => :other_symbol,
+  include_examples 'scan property', 'So',                       :other_symbol
+  include_examples 'scan property', 'Other_Symbol',             :other_symbol
 
-    'Z'                                   => :separator,
-    'Separator'                           => :separator,
+  include_examples 'scan property', 'Z',                        :separator
+  include_examples 'scan property', 'Separator',                :separator
 
-    'Zs'                                  => :space_separator,
-    'Space_Separator'                     => :space_separator,
+  include_examples 'scan property', 'Zs',                       :space_separator
+  include_examples 'scan property', 'Space_Separator',          :space_separator
 
-    'Zl'                                  => :line_separator,
-    'Line_Separator'                      => :line_separator,
+  include_examples 'scan property', 'Zl',                       :line_separator
+  include_examples 'scan property', 'Line_Separator',           :line_separator
 
-    'Zp'                                  => :paragraph_separator,
-    'Paragraph_Separator'                 => :paragraph_separator,
+  include_examples 'scan property', 'Zp',                       :paragraph_separator
+  include_examples 'scan property', 'Paragraph_Separator',      :paragraph_separator
 
-    'C'                                   => :other,
-    'Other'                               => :other,
+  include_examples 'scan property', 'C',                        :other
+  include_examples 'scan property', 'Other',                    :other
 
-    'Cc'                                  => :control,
-    'Control'                             => :control,
+  include_examples 'scan property', 'Cc',                       :control
+  include_examples 'scan property', 'Control',                  :control
 
-    'Cf'                                  => :format,
-    'Format'                              => :format,
+  include_examples 'scan property', 'Cf',                       :format
+  include_examples 'scan property', 'Format',                   :format
 
-    'Cs'                                  => :surrogate,
-    'Surrogate'                           => :surrogate,
+  include_examples 'scan property', 'Cs',                       :surrogate
+  include_examples 'scan property', 'Surrogate',                :surrogate
 
-    'Co'                                  => :private_use,
-    'Private_Use'                         => :private_use,
+  include_examples 'scan property', 'Co',                       :private_use
+  include_examples 'scan property', 'Private_Use',              :private_use
 
-    'Cn'                                  => :unassigned,
-    'Unassigned'                          => :unassigned,
+  include_examples 'scan property', 'Cn',                       :unassigned
+  include_examples 'scan property', 'Unassigned',               :unassigned
 
-    'Age=1.1'                             => :'age=1.1',
-    'Age=6.0'                             => :'age=6.0',
-    'Age=10.0'                            => :'age=10.0',
+  include_examples 'scan property', 'Age=1.1',                  :'age=1.1'
+  include_examples 'scan property', 'Age=6.0',                  :'age=6.0'
+  include_examples 'scan property', 'Age=10.0',                 :'age=10.0'
 
-    'ahex'                                => :ascii_hex_digit,
-    'ASCII_Hex_Digit'                     => :ascii_hex_digit,
+  include_examples 'scan property', 'ahex',                     :ascii_hex_digit
+  include_examples 'scan property', 'ASCII_Hex_Digit',          :ascii_hex_digit
 
-    'Alphabetic'                          => :alphabetic,
+  include_examples 'scan property', 'Alphabetic',               :alphabetic
 
-    'Cased'                               => :cased,
+  include_examples 'scan property', 'Cased',                    :cased
 
-    'cwcf'                                => :changes_when_casefolded,
-    'Changes_When_Casefolded'             => :changes_when_casefolded,
+  include_examples 'scan property', 'cwcf',                     :changes_when_casefolded
+  include_examples 'scan property', 'Changes_When_Casefolded',  :changes_when_casefolded
 
-    'cwcm'                                => :changes_when_casemapped,
-    'Changes_When_Casemapped'             => :changes_when_casemapped,
+  include_examples 'scan property', 'cwcm',                     :changes_when_casemapped
+  include_examples 'scan property', 'Changes_When_Casemapped',  :changes_when_casemapped
 
-    'cwl'                                 => :changes_when_lowercased,
-    'Changes_When_Lowercased'             => :changes_when_lowercased,
+  include_examples 'scan property', 'cwl',                      :changes_when_lowercased
+  include_examples 'scan property', 'Changes_When_Lowercased',  :changes_when_lowercased
 
-    'cwt'                                 => :changes_when_titlecased,
-    'Changes_When_Titlecased'             => :changes_when_titlecased,
+  include_examples 'scan property', 'cwt',                      :changes_when_titlecased
+  include_examples 'scan property', 'Changes_When_Titlecased',  :changes_when_titlecased
 
-    'cwu'                                 => :changes_when_uppercased,
-    'Changes_When_Uppercased'             => :changes_when_uppercased,
+  include_examples 'scan property', 'cwu',                      :changes_when_uppercased
+  include_examples 'scan property', 'Changes_When_Uppercased',  :changes_when_uppercased
 
-    'ci'                                  => :case_ignorable,
-    'Case_Ignorable'                      => :case_ignorable,
+  include_examples 'scan property', 'ci',                       :case_ignorable
+  include_examples 'scan property', 'Case_Ignorable',           :case_ignorable
 
-    'bidic'                               => :bidi_control,
-    'Bidi_Control'                        => :bidi_control,
+  include_examples 'scan property', 'bidic',                    :bidi_control
+  include_examples 'scan property', 'Bidi_Control',             :bidi_control
 
-    'Dash'                                => :dash,
+  include_examples 'scan property', 'Dash',                     :dash
 
-    'dep'                                 => :deprecated,
-    'Deprecated'                          => :deprecated,
+  include_examples 'scan property', 'dep',                      :deprecated
+  include_examples 'scan property', 'Deprecated',               :deprecated
 
-    'di'                                  => :default_ignorable_code_point,
-    'Default_Ignorable_Code_Point'        => :default_ignorable_code_point,
+  include_examples 'scan property', 'dia',                      :diacritic
+  include_examples 'scan property', 'Diacritic',                :diacritic
 
-    'dia'                                 => :diacritic,
-    'Diacritic'                           => :diacritic,
+  include_examples 'scan property', 'ext',                      :extender
+  include_examples 'scan property', 'Extender',                 :extender
 
-    'ext'                                 => :extender,
-    'Extender'                            => :extender,
+  include_examples 'scan property', 'grbase',                   :grapheme_base
+  include_examples 'scan property', 'Grapheme_Base',            :grapheme_base
 
-    'grbase'                              => :grapheme_base,
-    'Grapheme_Base'                       => :grapheme_base,
+  include_examples 'scan property', 'grext',                    :grapheme_extend
+  include_examples 'scan property', 'Grapheme_Extend',          :grapheme_extend
 
-    'grext'                               => :grapheme_extend,
-    'Grapheme_Extend'                     => :grapheme_extend,
+  include_examples 'scan property', 'grlink',                   :grapheme_link
+  include_examples 'scan property', 'Grapheme_Link',            :grapheme_link
 
-    'grlink'                              => :grapheme_link,
-    'Grapheme_Link'                       => :grapheme_link,
+  include_examples 'scan property', 'hex',                      :hex_digit
+  include_examples 'scan property', 'Hex_Digit',                :hex_digit
 
-    'hex'                                 => :hex_digit,
-    'Hex_Digit'                           => :hex_digit,
+  include_examples 'scan property', 'Hyphen',                   :hyphen
 
-    'Hyphen'                              => :hyphen,
+  include_examples 'scan property', 'idc',                      :id_continue
+  include_examples 'scan property', 'ID_Continue',              :id_continue
 
-    'idc'                                 => :id_continue,
-    'ID_Continue'                         => :id_continue,
+  include_examples 'scan property', 'ideo',                     :ideographic
+  include_examples 'scan property', 'Ideographic',              :ideographic
 
-    'ideo'                                => :ideographic,
-    'Ideographic'                         => :ideographic,
+  include_examples 'scan property', 'ids',                      :id_start
+  include_examples 'scan property', 'ID_Start',                 :id_start
 
-    'ids'                                 => :id_start,
-    'ID_Start'                            => :id_start,
+  include_examples 'scan property', 'idsb',                     :ids_binary_operator
+  include_examples 'scan property', 'IDS_Binary_Operator',      :ids_binary_operator
 
-    'idsb'                                => :ids_binary_operator,
-    'IDS_Binary_Operator'                 => :ids_binary_operator,
+  include_examples 'scan property', 'idst',                     :ids_trinary_operator
+  include_examples 'scan property', 'IDS_Trinary_Operator',     :ids_trinary_operator
 
-    'idst'                                => :ids_trinary_operator,
-    'IDS_Trinary_Operator'                => :ids_trinary_operator,
+  include_examples 'scan property', 'joinc',                    :join_control
+  include_examples 'scan property', 'Join_Control',             :join_control
 
-    'joinc'                               => :join_control,
-    'Join_Control'                        => :join_control,
+  include_examples 'scan property', 'loe',                      :logical_order_exception
+  include_examples 'scan property', 'Logical_Order_Exception',  :logical_order_exception
 
-    'loe'                                 => :logical_order_exception,
-    'Logical_Order_Exception'             => :logical_order_exception,
+  include_examples 'scan property', 'Lowercase',                :lowercase
 
-    'Lowercase'                           => :lowercase,
+  include_examples 'scan property', 'Math',                     :math
 
-    'Math'                                => :math,
+  include_examples 'scan property', 'nchar',                    :noncharacter_code_point
+  include_examples 'scan property', 'Noncharacter_Code_Point',  :noncharacter_code_point
 
-    'nchar'                               => :noncharacter_code_point,
-    'Noncharacter_Code_Point'             => :noncharacter_code_point,
+  include_examples 'scan property', 'oalpha',                   :other_alphabetic
+  include_examples 'scan property', 'Other_Alphabetic',         :other_alphabetic
 
-    'oalpha'                              => :other_alphabetic,
-    'Other_Alphabetic'                    => :other_alphabetic,
+  include_examples 'scan property', 'ogrext',                   :other_grapheme_extend
+  include_examples 'scan property', 'Other_Grapheme_Extend',    :other_grapheme_extend
 
-    'odi'                                 => :other_default_ignorable_code_point,
-    'Other_Default_Ignorable_Code_Point'  => :other_default_ignorable_code_point,
+  include_examples 'scan property', 'oidc',                     :other_id_continue
+  include_examples 'scan property', 'Other_ID_Continue',        :other_id_continue
 
-    'ogrext'                              => :other_grapheme_extend,
-    'Other_Grapheme_Extend'               => :other_grapheme_extend,
+  include_examples 'scan property', 'oids',                     :other_id_start
+  include_examples 'scan property', 'Other_ID_Start',           :other_id_start
 
-    'oidc'                                => :other_id_continue,
-    'Other_ID_Continue'                   => :other_id_continue,
+  include_examples 'scan property', 'olower',                   :other_lowercase
+  include_examples 'scan property', 'Other_Lowercase',          :other_lowercase
 
-    'oids'                                => :other_id_start,
-    'Other_ID_Start'                      => :other_id_start,
+  include_examples 'scan property', 'omath',                    :other_math
+  include_examples 'scan property', 'Other_Math',               :other_math
 
-    'olower'                              => :other_lowercase,
-    'Other_Lowercase'                     => :other_lowercase,
+  include_examples 'scan property', 'oupper',                   :other_uppercase
+  include_examples 'scan property', 'Other_Uppercase',          :other_uppercase
 
-    'omath'                               => :other_math,
-    'Other_Math'                          => :other_math,
+  include_examples 'scan property', 'patsyn',                   :pattern_syntax
+  include_examples 'scan property', 'Pattern_Syntax',           :pattern_syntax
 
-    'oupper'                              => :other_uppercase,
-    'Other_Uppercase'                     => :other_uppercase,
+  include_examples 'scan property', 'patws',                    :pattern_white_space
+  include_examples 'scan property', 'Pattern_Whitespace',       :pattern_white_space
 
-    'patsyn'                              => :pattern_syntax,
-    'Pattern_Syntax'                      => :pattern_syntax,
+  include_examples 'scan property', 'qmark',                    :quotation_mark
+  include_examples 'scan property', 'quotationmark',            :quotation_mark
 
-    'patws'                               => :pattern_white_space,
-    'Pattern_Whitespace'                  => :pattern_white_space,
+  include_examples 'scan property', 'radical',                  :radical
 
-    'qmark'                               => :quotation_mark,
-    'quotationmark'                       => :quotation_mark,
+  include_examples 'scan property', 'ri',                       :regional_indicator
+  include_examples 'scan property', 'Regional_Indicator',       :regional_indicator
 
-    'radical'                             => :radical,
+  include_examples 'scan property', 'sd',                       :soft_dotted
+  include_examples 'scan property', 'Soft-Dotted',              :soft_dotted # test dash
 
-    'ri'                                  => :regional_indicator,
-    'Regional_Indicator'                  => :regional_indicator,
+  include_examples 'scan property', 'sterm',                    :sentence_terminal
 
-    'sd'                                  => :soft_dotted,
-    'Soft-Dotted'                         => :soft_dotted, # test dash spelling
+  include_examples 'scan property', 'term',                     :terminal_punctuation
+  include_examples 'scan property', 'Terminal_Punctuation',     :terminal_punctuation
 
-    'sterm'                               => :sentence_terminal,
+  include_examples 'scan property', 'uideo',                    :unified_ideograph
+  include_examples 'scan property', 'Unified_Ideograph',        :unified_ideograph
 
-    'term'                                => :terminal_punctuation,
-    'Terminal_Punctuation'                => :terminal_punctuation,
+  include_examples 'scan property', 'Uppercase',                :uppercase
 
-    'uideo'                               => :unified_ideograph,
-    'Unified_Ideograph'                   => :unified_ideograph,
+  include_examples 'scan property', 'vs',                       :variation_selector
+  include_examples 'scan property', 'Variation_Selector',       :variation_selector
 
-    'Uppercase'                           => :uppercase,
+  include_examples 'scan property', 'wspace',                   :white_space
+  include_examples 'scan property', 'whitespace',               :white_space
 
-    'vs'                                  => :variation_selector,
-    'Variation_Selector'                  => :variation_selector,
+  include_examples 'scan property', 'xids',                     :xid_start
+  include_examples 'scan property', 'XID_Start',                :xid_start
 
-    'wspace'                              => :white_space,
-    'whitespace'                          => :white_space,
-
-    'xids'                                => :xid_start,
-    'XID_Start'                           => :xid_start,
-
-    'xidc'                                => :xid_continue,
-    'XID_Continue'                        => :xid_continue,
-  }
-
-  tests.each_with_index do |(property, token), count|
-    specify("scan_property_#{token}_#{count}") do
-      tokens = RS.scan("a\\p{#{property}}c")
-      result = tokens.at(1)
-      expect(result[0]).to eq :property
-      expect(result[1]).to eq token
-    end
-
-    specify("scan_nonproperty_#{token}_#{count}") do
-      tokens = RS.scan("a\\P{#{property}}c")
-      result = tokens.at(1)
-      expect(result[0]).to eq :nonproperty
-      expect(result[1]).to eq token
-    end
-
-    specify("scan_caret_nonproperty_#{token}_#{count}") do
-      tokens = RS.scan("a\\p{^#{property}}c")
-      result = tokens.at(1)
-      expect(result[0]).to eq :nonproperty
-      expect(result[1]).to eq token
-    end
-
-    specify("scan_double_negated_property_#{token}_#{count}") do
-      tokens = RS.scan("a\\P{^#{property}}c")
-      result = tokens.at(1)
-      expect(result[0]).to eq :property
-      expect(result[1]).to eq token
-    end
-  end
+  include_examples 'scan property', 'xidc',                     :xid_continue
+  include_examples 'scan property', 'XID_Continue',             :xid_continue
 end
