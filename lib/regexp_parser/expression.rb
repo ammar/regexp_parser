@@ -115,12 +115,14 @@ module Regexp::Expression
   end
 
   def self.parsed(exp)
+    warn('WARNING: Regexp::Expression::Base.parsed is buggy and '\
+         'will be removed in 2.0.0. Use Regexp::Parser.parse instead.')
     case exp
     when String
       Regexp::Parser.parse(exp)
     when Regexp
-      Regexp::Parser.parse(exp.source)
-    when Regexp::Expression
+      Regexp::Parser.parse(exp.source) # <- causes loss of root options
+    when Regexp::Expression            # <- never triggers
       exp
     else
       raise ArgumentError, 'Expression.parsed accepts a String, Regexp, or '\
