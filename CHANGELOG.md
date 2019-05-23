@@ -1,16 +1,15 @@
 ## [Unreleased]
 
+### [1.5.1] - 2019-05-23 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Fixed
 
 - Fixed `#options` (and thus `#i?`, `#u?` etc.) not being set for some expressions:
-  * posix classes
-  * alternation branches
-  * conditional branches
-  * character set intersection branches
-  * (options were already correct for any children of such branches)
+  * this affected posix classes as well as alternation, conditional, and intersection branches
+  * `#options` was already correct for all child expressions of such branches
+  * this only made an operational difference for posix classes as they respect encoding flags
 - Fixed `#options` not respecting all negative options in weird cases like '(?u-m-x)'
 - Fixed `Group#option_changes` not accounting for indirectly disabled (overridden) encoding flags
-  * (options were already correct for any expressions they applied to)
 - Fixed `Scanner` allowing negative encoding options if there were no positive options, e.g. '(?-u)'
 - Fixed `ScannerError` for some valid meta/control sequences such as '\\C-\\\\'
 - Fixed `Expression#match` and `#=~` not working with a single argument
