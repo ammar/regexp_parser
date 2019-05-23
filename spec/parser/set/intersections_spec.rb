@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # edge cases with `...-&&...` and `...&&-...` are checked in test_ranges.rb
 
-RSpec.describe('SetIntersection parsing') do
+RSpec.describe('CharacterSet::Intersection parsing') do
   specify('parse set intersection') do
     root = RP.parse('[a&&z]')
     set = root[0]
@@ -22,9 +22,9 @@ RSpec.describe('SetIntersection parsing') do
     expect(seq2.first.to_s).to eq 'z'
     expect(seq2.first).to be_instance_of(Literal)
 
-    expect(set.matches?('a')).to be false
-    expect(set.matches?('&')).to be false
-    expect(set.matches?('z')).to be false
+    expect(set).not_to match 'a'
+    expect(set).not_to match '&'
+    expect(set).not_to match 'z'
   end
 
   specify('parse set intersection range and subset') do
@@ -46,9 +46,9 @@ RSpec.describe('SetIntersection parsing') do
     expect(seq2.first.to_s).to eq '[^a]'
     expect(seq2.first).to be_instance_of(CharacterSet)
 
-    expect(set.matches?('a')).to be false
-    expect(set.matches?('&')).to be false
-    expect(set.matches?('b')).to be true
+    expect(set).not_to match 'a'
+    expect(set).not_to match '&'
+    expect(set).to     match 'b'
   end
 
   specify('parse set intersection trailing range') do
@@ -70,9 +70,9 @@ RSpec.describe('SetIntersection parsing') do
     expect(seq2.first.to_s).to eq 'a-z'
     expect(seq2.first).to be_instance_of(CharacterSet::Range)
 
-    expect(set.matches?('a')).to be true
-    expect(set.matches?('&')).to be false
-    expect(set.matches?('b')).to be false
+    expect(set).to     match 'a'
+    expect(set).not_to match '&'
+    expect(set).not_to match 'b'
   end
 
   specify('parse set intersection type') do
@@ -94,9 +94,9 @@ RSpec.describe('SetIntersection parsing') do
     expect(seq2.first.to_s).to eq '\\w'
     expect(seq2.first).to be_instance_of(CharacterType::Word)
 
-    expect(set.matches?('a')).to be true
-    expect(set.matches?('&')).to be false
-    expect(set.matches?('b')).to be false
+    expect(set).to     match 'a'
+    expect(set).not_to match '&'
+    expect(set).not_to match 'b'
   end
 
   specify('parse set intersection multipart') do
@@ -119,9 +119,9 @@ RSpec.describe('SetIntersection parsing') do
     expect(seq3.count).to eq 3
     expect(seq3.to_s).to eq 'efg'
 
-    expect(set.matches?('e')).to be true
-    expect(set.matches?('f')).to be true
-    expect(set.matches?('a')).to be false
-    expect(set.matches?('g')).to be false
+    expect(set).to     match 'e'
+    expect(set).to     match 'f'
+    expect(set).not_to match 'a'
+    expect(set).not_to match 'g'
   end
 end

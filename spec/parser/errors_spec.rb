@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 RSpec.describe('Parsing errors') do
-  let(:rp) { Regexp::Parser.new }
-  before { rp.parse(/foo/) }
+  let(:parser) { Regexp::Parser.new }
+  before { parser.parse(/foo/) } # initializes ivars
 
-  specify('UnknownTokenTypeError') do
-    expect { rp.send(:parse_token, Regexp::Token.new(:foo, :bar)) }
+  it('raises UnknownTokenTypeError for unknown token types') do
+    expect { parser.send(:parse_token, Regexp::Token.new(:foo, :bar)) }
       .to raise_error(Regexp::Parser::UnknownTokenTypeError)
   end
 
   RSpec.shared_examples 'UnknownTokenError' do |type, token|
-    it "raises for unkown #{type} tokens" do
-      expect { rp.send(:parse_token, Regexp::Token.new(type, :foo)) }
+    it "raises for unkown tokens of type #{type}" do
+      expect { parser.send(:parse_token, Regexp::Token.new(type, :foo)) }
         .to raise_error(Regexp::Parser::UnknownTokenError)
     end
   end

@@ -497,6 +497,9 @@ class Regexp::Parser
     end
   end
 
+  MOD_FLAGS = %w[i m x].map(&:to_sym)
+  ENC_FLAGS = %w[a d u].map(&:to_sym)
+
   def options_group(token)
     positive, negative = token.text.split('-', 2)
     negative ||= ''
@@ -505,19 +508,23 @@ class Regexp::Parser
     opt_changes = {}
     new_active_opts = active_opts.dup
 
-    %w[i m x].each do |flag|
-      if positive.include?(flag)
-        opt_changes[flag.to_sym] = new_active_opts[flag.to_sym] = true
+    MOD_FLAGS.each do |flag|
+      if positive.include?(flag.to_s)
+        opt_changes[flag] = new_active_opts[flag] = true
       end
-      if negative.include?(flag)
-        opt_changes[flag.to_sym] = false
-        new_active_opts.delete(flag.to_sym)
+      if negative.include?(flag.to_s)
+        opt_changes[flag] = false
+        new_active_opts.delete(flag)
       end
     end
 
-    if (flag = positive.reverse[/[adu]/])
-      %w[a d u].each { |key| new_active_opts.delete(key.to_sym) }
-      opt_changes[flag.to_sym] = new_active_opts[flag.to_sym] = true
+    if (enc_flag = positive.reverse[/[adu]/])
+      enc_flag = enc_flag.to_sym
+      (ENC_FLAGS - [enc_flag]).each do |other|
+        opt_changes[other] = false if new_active_opts[other]
+        new_active_opts.delete(other)
+      end
+      opt_changes[enc_flag] = new_active_opts[enc_flag] = true
     end
 
     options_stack << new_active_opts

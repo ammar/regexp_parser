@@ -14,6 +14,14 @@ RSpec.describe(Regexp::Parser) do
     expect(root.expressions).to all(be_a Regexp::Expression::Base)
   end
 
+  specify('parse root options mi') do
+    root = RP.parse(/[abc]/mi, 'ruby/1.8')
+
+    expect(root.m?).to be true
+    expect(root.i?).to be true
+    expect(root.x?).to be false
+  end
+
   specify('parse node types') do
     root = RP.parse('^(one){2,3}([^d\\]efm-qz\\,\\-]*)(ghi)+$')
 

@@ -1,31 +1,17 @@
 require 'spec_helper'
 
 RSpec.describe('Anchor parsing') do
-  tests = {
-    '^a'      => [0, :anchor,   :bol,                 Anchor::BOL],
-    'a$'      => [1, :anchor,   :eol,                 Anchor::EOL],
+  include_examples 'parse', /^a/,   0 =>  [:anchor,   :bol,               Anchor::BOL]
+  include_examples 'parse', /a$/,   1 =>  [:anchor,   :eol,               Anchor::EOL]
 
-    '\Aa'     => [0, :anchor,   :bos,                 Anchor::BOS],
-    'a\z'     => [1, :anchor,   :eos,                 Anchor::EOS],
-    'a\Z'     => [1, :anchor,   :eos_ob_eol,          Anchor::EOSobEOL],
+  include_examples 'parse', /\Aa/,  0 =>  [:anchor,   :bos,               Anchor::BOS]
+  include_examples 'parse', /a\z/,  1 =>  [:anchor,   :eos,               Anchor::EOS]
+  include_examples 'parse', /a\Z/,  1 =>  [:anchor,   :eos_ob_eol,        Anchor::EOSobEOL]
 
-    'a\b'     => [1, :anchor,   :word_boundary,       Anchor::WordBoundary],
-    'a\B'     => [1, :anchor,   :nonword_boundary,    Anchor::NonWordBoundary],
+  include_examples 'parse', /a\b/,  1 =>  [:anchor,   :word_boundary,     Anchor::WordBoundary]
+  include_examples 'parse', /a\B/,  1 =>  [:anchor,   :nonword_boundary,  Anchor::NonWordBoundary]
 
-    'a\G'     => [1, :anchor,   :match_start,         Anchor::MatchStart],
+  include_examples 'parse', /a\G/,  1 =>  [:anchor,   :match_start,       Anchor::MatchStart]
 
-    "\\\\Aa"  => [0, :escape,   :backslash,           EscapeSequence::Literal],
-  }
-
-  tests.each_with_index do |(pattern, (index, type, token, klass)), count|
-    specify("parse_anchor_#{token}_#{count}") do
-      root = RP.parse(pattern, 'ruby/1.9')
-      exp = root.expressions.at(index)
-
-      expect(exp).to be_a(klass)
-
-      expect(exp.type).to eq type
-      expect(exp.token).to eq token
-    end
-  end
+  include_examples 'parse', /\\A/,  0 =>  [:escape,   :backslash,         EscapeSequence::Literal]
 end

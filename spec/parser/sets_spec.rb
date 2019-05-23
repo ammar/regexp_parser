@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Set parsing') do
+RSpec.describe('CharacterSet parsing') do
   specify('parse set basic') do
     root = RP.parse('[ab]+')
     exp = root[0]
@@ -39,10 +39,10 @@ RSpec.describe('Set parsing') do
     expect(exp[1]).to be_instance_of(EscapeSequence::Backspace)
     expect(exp[1].text).to eq '\\b'
 
-    expect(exp.matches?('a')).to be true
-    expect(exp.matches?("\b")).to be true
-    expect(exp.matches?('b')).to be false
-    expect(exp.matches?('c')).to be true
+    expect(exp).to     match 'a'
+    expect(exp).to     match "\b"
+    expect(exp).not_to match 'b'
+    expect(exp).to     match 'c'
   end
 
   specify('parse set escape sequence hex') do

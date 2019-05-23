@@ -63,7 +63,7 @@ RSpec.shared_examples 'parse' do |pattern, checks|
       it "parses expression at #{path} as #{klass}" do
         exp = @root.dig(*path)
 
-        expect(exp).to be_a(klass)
+        expect(exp).to be_instance_of(klass)
         expect(exp.type).to eq type
         expect(exp.token).to eq token
 

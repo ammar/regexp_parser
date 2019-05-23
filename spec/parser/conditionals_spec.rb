@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe('Conditional parsing') do
   specify('parse conditional') do
-    regexp = Regexp.new('(?<A>a)(?(<A>)T|F)/')
+    regexp = /(?<A>a)(?(<A>)T|F)/
 
     root = RP.parse(regexp, 'ruby/2.0')
     exp = root[1]
@@ -16,7 +16,7 @@ RSpec.describe('Conditional parsing') do
   end
 
   specify('parse conditional condition') do
-    regexp = Regexp.new('(?<A>a)(?(<A>)T|F)/')
+    regexp = /(?<A>a)(?(<A>)T|F)/
 
     root = RP.parse(regexp, 'ruby/2.0')
     exp = root[1].condition
@@ -31,7 +31,7 @@ RSpec.describe('Conditional parsing') do
   end
 
   specify('parse conditional condition with number ref') do
-    regexp = Regexp.new('(a)(?(1)T|F)/')
+    regexp = /(a)(?(1)T|F)/
 
     root = RP.parse(regexp, 'ruby/2.0')
     exp = root[1].condition
@@ -46,7 +46,7 @@ RSpec.describe('Conditional parsing') do
   end
 
   specify('parse conditional nested groups') do
-    regexp = Regexp.new('((a)|(b)|((?(2)(c(d|e)+)?|(?(3)f|(?(4)(g|(h)(i)))))))/')
+    regexp = /((a)|(b)|((?(2)(c(d|e)+)?|(?(3)f|(?(4)(g|(h)(i)))))))/
 
     root = RP.parse(regexp, 'ruby/2.0')
 
@@ -80,7 +80,7 @@ RSpec.describe('Conditional parsing') do
   end
 
   specify('parse conditional nested') do
-    regexp = Regexp.new('(a(b(c(d)(e))))(?(1)(?(2)d|(?(3)e|f))|(?(4)(?(5)g|h)))/')
+    regexp = /(a(b(c(d)(e))))(?(1)(?(2)d|(?(3)e|f))|(?(4)(?(5)g|h)))/
 
     root = RP.parse(regexp, 'ruby/2.0')
 
@@ -102,7 +102,7 @@ RSpec.describe('Conditional parsing') do
   end
 
   specify('parse conditional nested alternation') do
-    regexp = Regexp.new('(a)(?(1)(b|c|d)|(e|f|g))(h)(?(2)(i|j|k)|(l|m|n))|o|p/')
+    regexp = /(a)(?(1)(b|c|d)|(e|f|g))(h)(?(2)(i|j|k)|(l|m|n))|o|p/
 
     root = RP.parse(regexp, 'ruby/2.0')
 
@@ -125,7 +125,7 @@ RSpec.describe('Conditional parsing') do
   end
 
   specify('parse conditional extra separator') do
-    regexp = Regexp.new('(?<A>a)(?(<A>)T|)/')
+    regexp = /(?<A>a)(?(<A>)T|)/
 
     root = RP.parse(regexp, 'ruby/2.0')
     branches = root[1].branches
@@ -146,7 +146,7 @@ RSpec.describe('Conditional parsing') do
   end
 
   specify('parse conditional quantified') do
-    regexp = Regexp.new('(foo)(?(1)\d|(\w)){42}/')
+    regexp = /(foo)(?(1)\d|(\w)){42}/
 
     root = RP.parse(regexp, 'ruby/2.0')
     conditional = root[1]
@@ -158,7 +158,7 @@ RSpec.describe('Conditional parsing') do
   end
 
   specify('parse conditional branch content quantified') do
-    regexp = Regexp.new('(foo)(?(1)\d{23}|(\w){42})/')
+    regexp = /(foo)(?(1)\d{23}|(\w){42})/
 
     root = RP.parse(regexp, 'ruby/2.0')
     conditional = root[1]

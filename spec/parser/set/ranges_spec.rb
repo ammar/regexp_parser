@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('SetRang parsing') do
+RSpec.describe('CharacterSet::Range parsing') do
   specify('parse set range') do
     root = RP.parse('[a-z]')
     set = root[0]
@@ -13,7 +13,7 @@ RSpec.describe('SetRang parsing') do
     expect(range.first).to be_instance_of(Literal)
     expect(range.last.to_s).to eq 'z'
     expect(range.last).to be_instance_of(Literal)
-    expect(set.matches?('m')).to be true
+    expect(set).to match 'm'
   end
 
   specify('parse set range hex') do
@@ -28,7 +28,7 @@ RSpec.describe('SetRang parsing') do
     expect(range.first).to be_instance_of(EscapeSequence::Hex)
     expect(range.last.to_s).to eq '\\x99'
     expect(range.last).to be_instance_of(EscapeSequence::Hex)
-    expect(set.matches?('\\x50')).to be true
+    expect(set).to match '\\x50'
   end
 
   specify('parse set range unicode') do
@@ -43,7 +43,7 @@ RSpec.describe('SetRang parsing') do
     expect(range.first).to be_instance_of(EscapeSequence::CodepointList)
     expect(range.last.to_s).to eq '\\u1234'
     expect(range.last).to be_instance_of(EscapeSequence::Codepoint)
-    expect(set.matches?('\\u600')).to be true
+    expect(set).to match '\\u600'
   end
 
   specify('parse set range edge case leading dash') do
@@ -53,7 +53,7 @@ RSpec.describe('SetRang parsing') do
 
     expect(set.count).to eq 1
     expect(range.count).to eq 2
-    expect(set.matches?('a')).to be true
+    expect(set).to match 'a'
   end
 
   specify('parse set range edge case trailing dash') do
@@ -63,7 +63,7 @@ RSpec.describe('SetRang parsing') do
 
     expect(set.count).to eq 1
     expect(range.count).to eq 2
-    expect(set.matches?('$')).to be true
+    expect(set).to match '$'
   end
 
   specify('parse set range edge case leading negate') do
@@ -71,8 +71,8 @@ RSpec.describe('SetRang parsing') do
     set = root[0]
 
     expect(set.count).to eq 2
-    expect(set.matches?('a')).to be true
-    expect(set.matches?('z')).to be false
+    expect(set).to     match 'a'
+    expect(set).not_to match 'z'
   end
 
   specify('parse set range edge case trailing negate') do
@@ -82,7 +82,7 @@ RSpec.describe('SetRang parsing') do
 
     expect(set.count).to eq 1
     expect(range.count).to eq 2
-    expect(set.matches?('$')).to be true
+    expect(set).to match '$'
   end
 
   specify('parse set range edge case leading intersection') do
@@ -91,10 +91,10 @@ RSpec.describe('SetRang parsing') do
 
     expect(set.count).to eq 1
     expect(set.first.last.to_s).to eq '-bc'
-    expect(set.matches?('-')).to be true
-    expect(set.matches?('b')).to be true
-    expect(set.matches?('a')).to be false
-    expect(set.matches?('c')).to be false
+    expect(set).to     match '-'
+    expect(set).to     match 'b'
+    expect(set).not_to match 'a'
+    expect(set).not_to match 'c'
   end
 
   specify('parse set range edge case trailing intersection') do
@@ -103,9 +103,9 @@ RSpec.describe('SetRang parsing') do
 
     expect(set.count).to eq 1
     expect(set.first.first.to_s).to eq 'bc-'
-    expect(set.matches?('-')).to be true
-    expect(set.matches?('b')).to be true
-    expect(set.matches?('a')).to be false
-    expect(set.matches?('c')).to be false
+    expect(set).to     match '-'
+    expect(set).to     match 'b'
+    expect(set).not_to match 'a'
+    expect(set).not_to match 'c'
   end
 end

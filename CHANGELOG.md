@@ -9,6 +9,8 @@
   * character set intersection branches
   * (options were already correct for any children of such branches)
 - Fixed `#options` not respecting all negative options in weird cases like '(?u-m-x)'
+- Fixed `Group#option_changes` not accounting for indirectly disabled (overridden) encoding flags
+  * (options were already correct for any expressions they applied to)
 - Fixed `Scanner` allowing negative encoding options if there were no positive options, e.g. '(?-u)'
 - Fixed `ScannerError` for some valid meta/control sequences such as '\\C-\\\\'
 - Fixed `Expression#match` and `#=~` not working with a single argument

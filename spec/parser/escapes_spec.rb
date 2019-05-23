@@ -1,49 +1,35 @@
 require 'spec_helper'
 
-RSpec.describe('Escape parsing') do
-  tests = {
-    /a\ac/          => [1, :escape, :bell,              EscapeSequence::Bell],
-    /a\ec/          => [1, :escape, :escape,            EscapeSequence::AsciiEscape],
-    /a\fc/          => [1, :escape, :form_feed,         EscapeSequence::FormFeed],
-    /a\nc/          => [1, :escape, :newline,           EscapeSequence::Newline],
-    /a\rc/          => [1, :escape, :carriage,          EscapeSequence::Return],
-    /a\tc/          => [1, :escape, :tab,               EscapeSequence::Tab],
-    /a\vc/          => [1, :escape, :vertical_tab,      EscapeSequence::VerticalTab],
+RSpec.describe('EscapeSequence parsing') do
+  include_examples 'parse', /a\ac/,          1 => [:escape, :bell,              EscapeSequence::Bell]
+  include_examples 'parse', /a\ec/,          1 => [:escape, :escape,            EscapeSequence::AsciiEscape]
+  include_examples 'parse', /a\fc/,          1 => [:escape, :form_feed,         EscapeSequence::FormFeed]
+  include_examples 'parse', /a\nc/,          1 => [:escape, :newline,           EscapeSequence::Newline]
+  include_examples 'parse', /a\rc/,          1 => [:escape, :carriage,          EscapeSequence::Return]
+  include_examples 'parse', /a\tc/,          1 => [:escape, :tab,               EscapeSequence::Tab]
+  include_examples 'parse', /a\vc/,          1 => [:escape, :vertical_tab,      EscapeSequence::VerticalTab]
 
-    # meta character escapes
-    /a\.c/          => [1, :escape, :dot,               EscapeSequence::Literal],
-    /a\?c/          => [1, :escape, :zero_or_one,       EscapeSequence::Literal],
-    /a\*c/          => [1, :escape, :zero_or_more,      EscapeSequence::Literal],
-    /a\+c/          => [1, :escape, :one_or_more,       EscapeSequence::Literal],
-    /a\|c/          => [1, :escape, :alternation,       EscapeSequence::Literal],
-    /a\(c/          => [1, :escape, :group_open,        EscapeSequence::Literal],
-    /a\)c/          => [1, :escape, :group_close,       EscapeSequence::Literal],
-    /a\{c/          => [1, :escape, :interval_open,     EscapeSequence::Literal],
-    /a\}c/          => [1, :escape, :interval_close,    EscapeSequence::Literal],
+  # meta character escapes
+  include_examples 'parse', /a\.c/,          1 => [:escape, :dot,               EscapeSequence::Literal]
+  include_examples 'parse', /a\?c/,          1 => [:escape, :zero_or_one,       EscapeSequence::Literal]
+  include_examples 'parse', /a\*c/,          1 => [:escape, :zero_or_more,      EscapeSequence::Literal]
+  include_examples 'parse', /a\+c/,          1 => [:escape, :one_or_more,       EscapeSequence::Literal]
+  include_examples 'parse', /a\|c/,          1 => [:escape, :alternation,       EscapeSequence::Literal]
+  include_examples 'parse', /a\(c/,          1 => [:escape, :group_open,        EscapeSequence::Literal]
+  include_examples 'parse', /a\)c/,          1 => [:escape, :group_close,       EscapeSequence::Literal]
+  include_examples 'parse', /a\{c/,          1 => [:escape, :interval_open,     EscapeSequence::Literal]
+  include_examples 'parse', /a\}c/,          1 => [:escape, :interval_close,    EscapeSequence::Literal]
 
-    # unicode escapes
-    /a\u0640/       => [1, :escape, :codepoint,         EscapeSequence::Codepoint],
-    /a\u{41 1F60D}/ => [1, :escape, :codepoint_list,    EscapeSequence::CodepointList],
-    /a\u{10FFFF}/   => [1, :escape, :codepoint_list,    EscapeSequence::CodepointList],
+  # unicode escapes
+  include_examples 'parse', /a\u0640/,       1 => [:escape, :codepoint,         EscapeSequence::Codepoint]
+  include_examples 'parse', /a\u{41 1F60D}/, 1 => [:escape, :codepoint_list,    EscapeSequence::CodepointList]
+  include_examples 'parse', /a\u{10FFFF}/,   1 => [:escape, :codepoint_list,    EscapeSequence::CodepointList]
 
-     # hex escapes
-    /a\xFF/n        => [1, :escape, :hex,               EscapeSequence::Hex],
+    # hex escapes
+  include_examples 'parse', /a\xFF/n,        1 => [:escape, :hex,               EscapeSequence::Hex]
 
-    # octal escapes
-    /a\177/n        => [1, :escape, :octal,             EscapeSequence::Octal],
-  }
-
-  tests.each_with_index do |(pattern, (index, type, token, klass)), count|
-    specify("parse_escape_#{token}_#{count = (count + 1)}") do
-      root = RP.parse(pattern, 'ruby/1.9')
-      exp = root.expressions.at(index)
-
-      expect(exp).to be_a(klass)
-
-      expect(exp.type).to eq type
-      expect(exp.token).to eq token
-    end
-  end
+  # octal escapes
+  include_examples 'parse', /a\177/n,        1 => [:escape, :octal,             EscapeSequence::Octal]
 
   specify('parse chars and codepoints') do
     root = RP.parse(/\n\?\101\x42\u0043\u{44 45}/)
