@@ -53,6 +53,10 @@ module Regexp::Syntax
 
       Age_V2_6_0 = [:'age=11.0']
 
+      Age_V2_6_2 = [:'age=12.0']
+
+      Age_V2_6_3 = [:'age=12.1']
+
       Age = all[:Age_V]
 
       Derived_V1_9_0 = [
@@ -295,6 +299,18 @@ module Regexp::Syntax
         :medefaidrin,
         :old_sogdian,
         :sogdian,
+      ]
+
+      Script_V2_6_2 = [
+        :egyptian_hieroglyph_format_controls,
+        :elymaic,
+        :nandinagari,
+        :nyiakeng_puachue_hmong,
+        :ottoman_siyaq_numbers,
+        :small_kana_extension,
+        :symbols_and_pictographs_extended_a,
+        :tamil_supplement,
+        :wancho,
       ]
 
       Script = all[:Script_V]
@@ -612,6 +628,18 @@ module Regexp::Syntax
         :in_sogdian,
       ]
 
+      UnicodeBlock_V2_6_2 = [
+        :in_egyptian_hieroglyph_format_controls,
+        :in_elymaic,
+        :in_nandinagari,
+        :in_nyiakeng_puachue_hmong,
+        :in_ottoman_siyaq_numbers,
+        :in_small_kana_extension,
+        :in_symbols_and_pictographs_extended_a,
+        :in_tamil_supplement,
+        :in_wancho,
+      ]
+
       UnicodeBlock = all[:UnicodeBlock_V]
 
       Emoji_V2_5_0 = [
@@ -632,6 +660,8 @@ module Regexp::Syntax
       V2_4_0 = all[:V2_4_0]
       V2_5_0 = all[:V2_5_0]
       V2_6_0 = all[:V2_6_0]
+      V2_6_2 = all[:V2_6_2]
+      V2_6_3 = all[:V2_6_3]
 
       All = all[/^V\d+_\d+_\d+$/]
 

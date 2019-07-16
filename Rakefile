@@ -74,14 +74,13 @@ namespace :props do
       puts "Wrote #{hash.count} aliases to `#{path}`"
     end
 
-    _, long_names = RegexpPropertyValues.short_and_long_names
-    long_names_to_tokens = long_names.map do |name|
-      [name.downcase.gsub(/[^0-9a-z=.]/, ''), name.downcase]
+    long_names_to_tokens = RegexpPropertyValues.all.map do |val|
+      [val.identifier, val.full_name.downcase]
     end
     write_hash_to_file.call(long_names_to_tokens, "#{dir}/long.yml")
 
     short_names_to_tokens = RegexpPropertyValues.alias_hash.map do |k, v|
-      [k.downcase.gsub(/[^0-9a-z=.]/, ''), v.downcase]
+      [k.identifier, v.full_name.downcase]
     end
     write_hash_to_file.call(short_names_to_tokens, "#{dir}/short.yml")
   end

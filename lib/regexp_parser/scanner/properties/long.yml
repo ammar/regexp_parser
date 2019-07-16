@@ -6,6 +6,8 @@ adlam: adlam
 age=1.1: age=1.1
 age=10.0: age=10.0
 age=11.0: age=11.0
+age=12.0: age=12.0
+age=12.1: age=12.1
 age=2.0: age=2.0
 age=2.1: age=2.1
 age=3.0: age=3.0
@@ -64,7 +66,6 @@ changeswhenuppercased: changes_when_uppercased
 cherokee: cherokee
 closepunctuation: close_punctuation
 cntrl: cntrl
-combiningmark: combining_mark
 common: common
 connectorpunctuation: connector_punctuation
 control: control
@@ -86,6 +87,7 @@ dogra: dogra
 duployan: duployan
 egyptianhieroglyphs: egyptian_hieroglyphs
 elbasan: elbasan
+elymaic: elymaic
 emoji: emoji
 emojicomponent: emoji_component
 emojimodifier: emoji_modifier
@@ -206,8 +208,10 @@ indogra: in_dogra
 indominotiles: in_domino_tiles
 induployan: in_duployan
 inearlydynasticcuneiform: in_early_dynastic_cuneiform
+inegyptianhieroglyphformatcontrols: in_egyptian_hieroglyph_format_controls
 inegyptianhieroglyphs: in_egyptian_hieroglyphs
 inelbasan: in_elbasan
+inelymaic: in_elymaic
 inemoticons: in_emoticons
 inenclosedalphanumerics: in_enclosed_alphanumerics
 inenclosedalphanumericsupplement: in_enclosed_alphanumeric_supplement
@@ -322,12 +326,14 @@ inmyanmar: in_myanmar
 inmyanmarextendeda: in_myanmar_extended_a
 inmyanmarextendedb: in_myanmar_extended_b
 innabataean: in_nabataean
+innandinagari: in_nandinagari
 innewa: in_newa
 innewtailue: in_new_tai_lue
 innko: in_nko
 innoblock: in_no_block
 innumberforms: in_number_forms
 innushu: in_nushu
+innyiakengpuachuehmong: in_nyiakeng_puachue_hmong
 inogham: in_ogham
 inolchiki: in_ol_chiki
 inoldhungarian: in_old_hungarian
@@ -343,6 +349,7 @@ inoriya: in_oriya
 inornamentaldingbats: in_ornamental_dingbats
 inosage: in_osage
 inosmanya: in_osmanya
+inottomansiyaqnumbers: in_ottoman_siyaq_numbers
 inpahawhhmong: in_pahawh_hmong
 inpalmyrene: in_palmyrene
 inpaucinhau: in_pau_cin_hau
@@ -368,6 +375,7 @@ insiddham: in_siddham
 insinhala: in_sinhala
 insinhalaarchaicnumbers: in_sinhala_archaic_numbers
 insmallformvariants: in_small_form_variants
+insmallkanaextension: in_small_kana_extension
 insogdian: in_sogdian
 insorasompeng: in_sora_sompeng
 insoyombo: in_soyombo
@@ -386,6 +394,7 @@ insupplementaryprivateuseareaa: in_supplementary_private_use_area_a
 insupplementaryprivateuseareab: in_supplementary_private_use_area_b
 insuttonsignwriting: in_sutton_signwriting
 insylotinagri: in_syloti_nagri
+insymbolsandpictographsextendeda: in_symbols_and_pictographs_extended_a
 insyriac: in_syriac
 insyriacsupplement: in_syriac_supplement
 intagalog: in_tagalog
@@ -397,6 +406,7 @@ intaiviet: in_tai_viet
 intaixuanjingsymbols: in_tai_xuan_jing_symbols
 intakri: in_takri
 intamil: in_tamil
+intamilsupplement: in_tamil_supplement
 intangut: in_tangut
 intangutcomponents: in_tangut_components
 intelugu: in_telugu
@@ -414,6 +424,7 @@ invariationselectors: in_variation_selectors
 invariationselectorssupplement: in_variation_selectors_supplement
 invedicextensions: in_vedic_extensions
 inverticalforms: in_vertical_forms
+inwancho: in_wancho
 inwarangciti: in_warang_citi
 inyijinghexagramsymbols: in_yijing_hexagram_symbols
 inyiradicals: in_yi_radicals
@@ -469,6 +480,7 @@ mro: mro
 multani: multani
 myanmar: myanmar
 nabataean: nabataean
+nandinagari: nandinagari
 newa: newa
 newline: newline
 newtailue: new_tai_lue
@@ -477,6 +489,7 @@ noncharactercodepoint: noncharacter_code_point
 nonspacingmark: nonspacing_mark
 number: number
 nushu: nushu
+nyiakengpuachuehmong: nyiakeng_puachue_hmong
 ogham: ogham
 olchiki: ol_chiki
 oldhungarian: old_hungarian
@@ -569,6 +582,7 @@ uppercase: uppercase
 uppercaseletter: uppercase_letter
 vai: vai
 variationselector: variation_selector
+wancho: wancho
 warangciti: warang_citi
 whitespace: white_space
 word: word

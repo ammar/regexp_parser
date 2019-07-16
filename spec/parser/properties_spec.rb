@@ -65,7 +65,7 @@ RSpec.describe('Property parsing') do
   end
 
   specify('parse property shortcut') do
-    expect(RP.parse('\p{mark}')[0].shortcut).to eq 'm'
+    expect(RP.parse('\p{lowercase_letter}')[0].shortcut).to eq 'll'
     expect(RP.parse('\p{sc}')[0].shortcut).to eq 'sc'
     expect(RP.parse('\p{in_bengali}')[0].shortcut).to be_nil
   end

@@ -31,6 +31,7 @@ cher: cherokee
 ci: case_ignorable
 cn: unassigned
 co: private_use
+combiningmark: mark
 copt: coptic
 cprt: cypriot
 cs: surrogate
@@ -49,6 +50,7 @@ dsrt: deseret
 dupl: duployan
 egyp: egyptian_hieroglyphs
 elba: elbasan
+elym: elymaic
 ethi: ethiopic
 ext: extender
 geor: georgian
@@ -72,6 +74,7 @@ hex: hex_digit
 hira: hiragana
 hluw: anatolian_hieroglyphs
 hmng: pahawh_hmong
+hmnp: nyiakeng_puachue_hmong
 hung: old_hungarian
 idc: id_continue
 ideo: ideographic
@@ -125,6 +128,7 @@ mtei: meetei_mayek
 mult: multani
 mymr: myanmar
 n: number
+nand: nandinagari
 narb: old_north_arabian
 nbat: nabataean
 nchar: noncharacter_code_point
@@ -216,6 +220,7 @@ uideo: unified_ideograph
 vaii: vai
 vs: variation_selector
 wara: warang_citi
+wcho: wancho
 wspace: white_space
 xidc: xid_continue
 xids: xid_start
