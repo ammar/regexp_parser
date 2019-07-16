@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+### [1.6.0] - 2019-06-16 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Added
 
 - Added support for 16 new unicode properties introduced in Ruby 2.6.2 and 2.6.3
