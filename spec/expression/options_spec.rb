@@ -85,44 +85,44 @@ RSpec.describe('Expression#options') do
       .and change { exp.unicode_classes? }.from(false).to(true)
   end
 
-  RSpec.shared_examples '#options' do |regexp, klass, at: []|
+  RSpec.shared_examples '#options' do |regexp, path, klass|
     it "works for expression class #{klass}" do
-      exp = RP.parse(/#{regexp.source}/i).dig(*at)
+      exp = RP.parse(/#{regexp.source}/i).dig(*path)
       expect(exp).to be_a(klass)
       expect(exp).to be_i
       expect(exp).not_to be_x
     end
   end
 
-  include_examples '#options', //, Root
-  include_examples '#options', /a/, Literal, at: [0]
-  include_examples '#options', /\A/, Anchor::Base, at: [0]
-  include_examples '#options', /\d/, CharacterType::Base, at: [0]
-  include_examples '#options', /\n/, EscapeSequence::Base, at: [0]
-  include_examples '#options', /\K/, Keep::Mark, at: [0]
-  include_examples '#options', /./, CharacterType::Any, at: [0]
-  include_examples '#options', /(a)/, Group::Base, at: [0]
-  include_examples '#options', /(a)/, Literal, at: [0, 0]
-  include_examples '#options', /(?=a)/, Assertion::Base, at: [0]
-  include_examples '#options', /(?=a)/, Literal, at: [0, 0]
-  include_examples '#options', /(a|b)/, Group::Base, at: [0]
-  include_examples '#options', /(a|b)/, Alternation, at: [0, 0]
-  include_examples '#options', /(a|b)/, Alternative, at: [0, 0, 0]
-  include_examples '#options', /(a|b)/, Literal, at: [0, 0, 0, 0]
-  include_examples '#options', /(a)\1/, Backreference::Base, at: [1]
-  include_examples '#options', /(a)\k<1>/, Backreference::Number, at: [1]
-  include_examples '#options', /(a)\g<1>/, Backreference::NumberCall, at: [1]
-  include_examples '#options', /[a]/, CharacterSet, at: [0]
-  include_examples '#options', /[a]/, Literal, at: [0, 0]
-  include_examples '#options', /[a-z]/, CharacterSet::Range, at: [0, 0]
-  include_examples '#options', /[a-z]/, Literal, at: [0, 0, 0]
-  include_examples '#options', /[a&&z]/, CharacterSet::Intersection, at: [0, 0]
-  include_examples '#options', /[a&&z]/, CharacterSet::IntersectedSequence, at: [0, 0, 0]
-  include_examples '#options', /[a&&z]/, Literal, at: [0, 0, 0, 0]
-  include_examples '#options', /[[:ascii:]]/, PosixClass, at: [0, 0]
-  include_examples '#options', /\p{word}/, UnicodeProperty::Base, at: [0]
-  include_examples '#options', /(a)(?(1)b|c)/, Conditional::Expression, at: [1]
-  include_examples '#options', /(a)(?(1)b|c)/, Conditional::Condition, at: [1, 0]
-  include_examples '#options', /(a)(?(1)b|c)/, Conditional::Branch, at: [1, 1]
-  include_examples '#options', /(a)(?(1)b|c)/, Literal, at: [1, 1, 0]
+  include_examples '#options', //, [], Root
+  include_examples '#options', /a/, [0], Literal
+  include_examples '#options', /\A/, [0], Anchor::Base
+  include_examples '#options', /\d/, [0], CharacterType::Base
+  include_examples '#options', /\n/, [0], EscapeSequence::Base
+  include_examples '#options', /\K/, [0], Keep::Mark
+  include_examples '#options', /./, [0], CharacterType::Any
+  include_examples '#options', /(a)/, [0], Group::Base
+  include_examples '#options', /(a)/, [0, 0], Literal
+  include_examples '#options', /(?=a)/, [0], Assertion::Base
+  include_examples '#options', /(?=a)/, [0, 0], Literal
+  include_examples '#options', /(a|b)/, [0], Group::Base
+  include_examples '#options', /(a|b)/, [0, 0], Alternation
+  include_examples '#options', /(a|b)/, [0, 0, 0], Alternative
+  include_examples '#options', /(a|b)/, [0, 0, 0, 0], Literal
+  include_examples '#options', /(a)\1/, [1], Backreference::Base
+  include_examples '#options', /(a)\k<1>/, [1], Backreference::Number
+  include_examples '#options', /(a)\g<1>/, [1], Backreference::NumberCall
+  include_examples '#options', /[a]/, [0], CharacterSet
+  include_examples '#options', /[a]/, [0, 0], Literal
+  include_examples '#options', /[a-z]/, [0, 0], CharacterSet::Range
+  include_examples '#options', /[a-z]/, [0, 0, 0], Literal
+  include_examples '#options', /[a&&z]/, [0, 0], CharacterSet::Intersection
+  include_examples '#options', /[a&&z]/, [0, 0, 0], CharacterSet::IntersectedSequence
+  include_examples '#options', /[a&&z]/, [0, 0, 0, 0], Literal
+  include_examples '#options', /[[:ascii:]]/, [0, 0], PosixClass
+  include_examples '#options', /\p{word}/, [0], UnicodeProperty::Base
+  include_examples '#options', /(a)(?(1)b|c)/, [1], Conditional::Expression
+  include_examples '#options', /(a)(?(1)b|c)/, [1, 0], Conditional::Condition
+  include_examples '#options', /(a)(?(1)b|c)/, [1, 1], Conditional::Branch
+  include_examples '#options', /(a)(?(1)b|c)/, [1, 1, 0], Literal
 end
