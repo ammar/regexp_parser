@@ -22,7 +22,7 @@ class Regexp::MatchLength
   end
 
   def each(opts = {})
-    return enum_for(__method__) unless block_given?
+    return enum_for(__method__, opts) unless block_given?
     limit = opts[:limit] || 1000
     yielded = 0
     (min..max).each do |num|
