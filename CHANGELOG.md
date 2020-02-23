@@ -1,5 +1,17 @@
 ## [Unreleased]
 
+### [1.7.0] - 2020-02-23 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Added
+
+- `Expression#each_expression` and `1.#traverse` can now be called without a block
+  * this returns an `Enumerator` and allows chaining, e.g. `each_expression.select`
+  * thanks to [Masataka Kuwabara](https://github.com/pocke)
+
+### Fixed
+
+- `MatchLength#each` no longer ignores the given `limit:` when called without a block
+
 ### [1.6.0] - 2019-06-16 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
