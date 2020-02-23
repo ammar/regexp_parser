@@ -14,7 +14,7 @@ module Regexp::Expression
     #
     # Returns self.
     def traverse(include_self = false, &block)
-      raise 'traverse requires a block' unless block_given?
+      return enum_for(__method__, include_self) unless block_given?
 
       block.call(:enter, self, 0) if include_self
 
@@ -37,6 +37,8 @@ module Regexp::Expression
     # Iterates over the expressions of this expression as an array, passing
     # the expression and its index within its parent to the given block.
     def each_expression(include_self = false, &block)
+      return enum_for(__method__, include_self) unless block_given?
+
       traverse(include_self) do |event, exp, index|
         yield(exp, index) unless event == :exit
       end

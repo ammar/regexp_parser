@@ -39,6 +39,17 @@ RSpec.describe('Subexpression#traverse') do
     expect(visits).to eq 9
   end
 
+  specify('Subexpression#traverse without a block') do
+    root = RP.parse(/abc/)
+    enum = root.traverse
+
+    expect(enum).to be_a(Enumerator)
+    event, expr, idx = enum.next
+    expect(event).to eq(:visit)
+    expect(expr).to be_a(Regexp::Expression::Literal)
+    expect(idx).to eq(0)
+  end
+
   specify('Subexpression#walk alias') do
     root = RP.parse(/abc/)
 
@@ -79,6 +90,16 @@ RSpec.describe('Subexpression#traverse') do
     root.each_expression(true) { |_exp, index| (indices << index) }
 
     expect(indices).to eq [0, 0, 1, 0, 2]
+  end
+
+  specify('Subexpression#each_expression without a block') do
+    root = RP.parse(/abc/)
+    enum = root.each_expression
+
+    expect(enum).to be_a(Enumerator)
+    expr, idx = enum.next
+    expect(expr).to be_a(Regexp::Expression::Literal)
+    expect(idx).to eq(0)
   end
 
   specify('Subexpression#flat_map without block') do

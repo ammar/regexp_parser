@@ -120,6 +120,13 @@ RSpec.describe(Regexp::MatchLength) do
       expect { result.next }.to raise_error(StopIteration)
     end
 
+    it 'is aware of limit option even if called without a block' do
+      result = ML.of(/a?/).each(limit: 1)
+      expect(result).to be_a(Enumerator)
+      expect(result.next).to eq 0
+      expect { result.next }.to raise_error(StopIteration)
+    end
+
     it 'is limited to 1000 iterations in case there are infinite match lengths' do
       expect(ML.of(/a*/).first(3000).size).to eq 1000
     end
