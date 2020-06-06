@@ -10,7 +10,6 @@ RSpec.describe(Regexp::Scanner) do
   include_examples 'scan error', RS::PrematureEndError, 'unbalanced set', '[a'
   include_examples 'scan error', RS::PrematureEndError, 'unbalanced set', '[[:alpha:]'
   include_examples 'scan error', RS::PrematureEndError, 'unbalanced group', '(abc'
-  include_examples 'scan error', RS::PrematureEndError, 'unbalanced interval', 'a{1,2'
   include_examples 'scan error', RS::PrematureEndError, 'eof in property', '\p{asci'
   include_examples 'scan error', RS::PrematureEndError, 'incomplete property', '\p{ascii abc'
   include_examples 'scan error', RS::PrematureEndError, 'eof options', '(?mix'

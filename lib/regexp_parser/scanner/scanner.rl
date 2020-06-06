@@ -62,8 +62,14 @@
   quantifier_possessive = '?+' | '*+' | '++';
   quantifier_mode       = '?'  | '+';
 
-  quantifier_interval   = range_open . (digit+)? . ','? . (digit+)? .
+  quantifier_exact      = range_open . (digit+) . range_close . quantifier_mode?;
+  quantifier_minimum    = range_open . (digit+) . ',' . range_close . quantifier_mode?;
+  quantifier_maximum    = range_open . ',' . (digit+) . range_close . quantifier_mode?;
+  quantifier_range      = range_open . (digit+) . ',' . (digit+) .
                           range_close . quantifier_mode?;
+
+  quantifier_interval   = quantifier_exact | quantifier_minimum |
+                          quantifier_maximum | quantifier_range;
 
   quantifiers           = quantifier_greedy | quantifier_reluctant |
                           quantifier_possessive | quantifier_interval;
@@ -113,6 +119,8 @@
   meta_char             = dot | backslash | alternation |
                           curlies | parantheses | brackets |
                           line_anchor | quantifier_greedy;
+
+  literal_delimiters    = ']' | '}' | '{}';
 
   ascii_print           = ((0x20..0x7e) - meta_char);
   ascii_nonprint        = (0x01..0x1f | 0x7f);
@@ -417,6 +425,10 @@
       end
     };
 
+    literal_delimiters {
+      append_literal(data, ts, te)
+    };
+
     # Character sets
     # ------------------------------------------------------------------------
     set_open >set_opened {
@@ -620,8 +632,13 @@
       end
     };
 
-    quantifier_interval  @err(premature_end_error) {
+    quantifier_interval  {
       emit(:quantifier, :interval, *text(data, ts, te))
+    };
+
+    # Catch unmatched curly braces as literals
+    range_open {
+      append_literal(data, ts, te)
     };
 
     # Escaped sequences
