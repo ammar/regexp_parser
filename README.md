@@ -136,11 +136,8 @@ Regexp::Scanner.scan( /(cat?([bhm]at)){3,5}/ ).map {|token| token[2]}
     to the lexer.
 
   * The MRI implementation may accept expressions that either conflict with
-    the documentation or are undocumented. The scanner does not support such
-    implementation quirks.
-    _(See issues [#3](https://github.com/ammar/regexp_parser/issues/3) and
-    [#15](https://github.com/ammar/regexp_parser/issues/15) for examples)_
-
+    the documentation or are undocumented, like `{}` and `]` _(unescaped)_.
+    The scanner will try to support as many of these cases as possible.
 
 ---
 ### Syntax
