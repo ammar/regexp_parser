@@ -30,6 +30,9 @@ RSpec.describe('Literal delimiter lexing') do
   include_examples 'lex', 'a{b}c',
     0 => [:literal,     :literal,       'a{b}c',    0,  5,  0, 0, 0]
 
+  include_examples 'lex', 'a{1,2',
+    0 => [:literal,     :literal,       'a{1,2',    0,  5,  0, 0, 0]
+
   include_examples 'lex', '({.+})',
     0 => [:group,       :capture,       '(',    0,  1,  0, 0, 0],
     1 => [:literal,     :literal,       '{',    1,  2,  1, 0, 0],

@@ -35,6 +35,7 @@ RSpec.describe('Quantifier parsing') do
   include_examples 'quantifier', /a{4}b/,    '{4}',    :greedy,     :interval,     4, 4
   include_examples 'quantifier', /a{4}?b/,   '{4}?',   :reluctant,  :interval,     4, 4
   include_examples 'quantifier', /a{4}+b/,   '{4}+',   :possessive, :interval,     4, 4
+  include_examples 'quantifier', /a{004}+b/, '{004}+', :possessive, :interval,     4, 4
 
   specify('mode-checking methods') do
     exp = RP.parse(/a??/).first

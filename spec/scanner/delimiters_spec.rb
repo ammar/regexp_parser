@@ -25,6 +25,9 @@ RSpec.describe('Literal delimiter scanning') do
   include_examples 'scan', '{{var}}',
     0 => [:literal,     :literal,       '{{var}}',  0,  7]
 
+  include_examples 'scan', 'a{1,2',
+    0 => [:literal,     :literal,       'a{1,2',    0,  5]
+
   include_examples 'scan', '({.+})',
     0 => [:group,       :capture,       '(',        0,  1],
     1 => [:literal,     :literal,       '{',        1,  2],
