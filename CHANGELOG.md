@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+### [1.7.1] - 2020-06-07 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+
+### Fixed
+
+- Support for literals that include the unescaped delimiters `{`, `}`, and `]`. These
+  delimiters are informally supported by various regexp engines.
+
 ### [1.7.0] - 2020-02-23 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
