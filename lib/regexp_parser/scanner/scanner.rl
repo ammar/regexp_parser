@@ -21,7 +21,7 @@
   set_close             = ']';
   brackets              = set_open | set_close;
 
-  comment               = ('#' . [^\n]* . '\n');
+  comment               = ('#' . [^\n]* . '\n'?);
 
   class_name_posix      = 'alnum' | 'alpha' | 'blank' |
                           'cntrl' | 'digit' | 'graph' |
@@ -120,7 +120,7 @@
 
   literal_delimiters    = ']' | '}';
 
-  ascii_print           = ((0x20..0x7e) - meta_char);
+  ascii_print           = ((0x20..0x7e) - meta_char - '#');
   ascii_nonprint        = (0x01..0x1f | 0x7f);
 
   utf8_2_byte           = (0xc2..0xdf 0x80..0xbf);
