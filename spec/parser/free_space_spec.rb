@@ -24,13 +24,34 @@ RSpec.describe('FreeSpace parsing') do
     expect(root.first.text).to eq 'a b c d'
   end
 
+  specify('parse single-line free space comments without spaces') do
+    regexp = /a#b/x
+
+    root = RP.parse(regexp)
+    expect(root.length).to eq 2
+
+    expect(root[0]).to be_instance_of(Literal)
+    expect(root[1]).to be_instance_of(Comment)
+  end
+
+  specify('parse single-line free space comments with spaces') do
+    regexp = /a # b/x
+
+    root = RP.parse(regexp)
+    expect(root.length).to eq 3
+
+    expect(root[0]).to be_instance_of(Literal)
+    expect(root[1]).to be_instance_of(WhiteSpace)
+    expect(root[2]).to be_instance_of(Comment)
+  end
+
   specify('parse free space comments') do
     regexp = /
       a   ?     # One letter
       b {2,5}   # Another one
       [c-g]  +  # A set
       (h|i|j) | # A group
-      klm *
+      klm#nospace before or after comment hash
       nop +
     /x
 
@@ -51,11 +72,11 @@ RSpec.describe('FreeSpace parsing') do
 
     alt_2 = alt.alternatives.last
     expect(alt_2).to be_instance_of(Alternative)
-    expect(alt_2.length).to eq 7
+    expect(alt_2.length).to eq 8
 
-    [0, 2, 4, 6].each { |i| expect(alt_2[i].class).to eq WhiteSpace }
+    [0, 2, 5, 7].each { |i| expect(alt_2[i].class).to eq WhiteSpace }
 
-    expect(alt_2[1]).to be_instance_of(Comment)
+    [1, 4].each { |i| expect(alt_2[i]).to be_instance_of(Comment) }
   end
 
   specify('parse free space nested comments') do
