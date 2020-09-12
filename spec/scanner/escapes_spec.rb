@@ -13,6 +13,10 @@ RSpec.describe('Escape scanning') do
 
   include_examples 'scan', 'c\qt',            1 => [:escape,  :literal,          '\q',             1,  3]
 
+  # these incomplete ref/call sequences are treated as literal escapes by Ruby
+  include_examples 'scan', 'c\gt',            1 => [:escape,  :literal,          '\g',             1,  3]
+  include_examples 'scan', 'c\kt',            1 => [:escape,  :literal,          '\k',             1,  3]
+
   include_examples 'scan', 'a\012c',          1 => [:escape,  :octal,            '\012',           1,  5]
   include_examples 'scan', 'a\0124',          1 => [:escape,  :octal,            '\012',           1,  5]
   include_examples 'scan', '\712+7',          0 => [:escape,  :octal,            '\712',           0,  4]

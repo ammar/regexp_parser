@@ -128,7 +128,7 @@
   utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf);
 
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
-                          group_ref | keep_mark | [xucCM];
+                          keep_mark | [xucCM];
 
   non_set_escape        = (anchor_char - 'b') | group_ref | keep_mark |
                           multi_codepoint_char_type | [0-9cCM];
