@@ -813,6 +813,10 @@ class Regexp::Scanner
                 :group_depth, :set_depth, :conditional_stack
 
   def free_spacing?(input_object, options)
+    if options && !input_object.is_a?(String)
+      raise ArgumentError, 'options cannot be supplied unless scanning a String'
+    end
+
     options = input_object.options if input_object.is_a?(::Regexp)
 
     return false unless options

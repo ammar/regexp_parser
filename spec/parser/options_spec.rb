@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe('passing options to parse') do
-  it 'ignores options if parsing from a Regexp' do
-    root = RP.parse(/a+/ix, options: ::Regexp::MULTILINE)
-
-    expect(root.options).to eq(i: true, x: true)
+  it 'raises if if parsing from a Regexp and options are passed' do
+    expect { RP.parse(/a+/, options: ::Regexp::EXTENDED) }.to raise_error(
+      ArgumentError,
+      'options cannot be supplied unless parsing a String'
+    )
   end
 
   it 'sets options if parsing from a String' do

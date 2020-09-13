@@ -55,6 +55,10 @@ class Regexp::Parser
                 :captured_group_counts
 
   def extract_options(input, options)
+    if options && !input.is_a?(String)
+      raise ArgumentError, 'options cannot be supplied unless parsing a String'
+    end
+
     options = input.options if input.is_a?(::Regexp)
 
     return {} unless options

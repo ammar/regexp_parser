@@ -5,18 +5,14 @@ RSpec.describe('passing options to scan') do
     expect(tokens.map { |type, token, *| [type, token] }).to eq(type_tokens)
   end
 
-  it 'ignores options if parsing from a Regexp' do
-    expect_type_tokens(
-      RS.scan(/a+#c/im, options: ::Regexp::EXTENDED),
-      [
-        %i[literal literal],
-        %i[quantifier one_or_more],
-        %i[literal literal]
-      ]
+  it 'raises if if scanning from a Regexp and options are passed' do
+    expect { RS.scan(/a+/, options: ::Regexp::EXTENDED) }.to raise_error(
+      ArgumentError,
+      'options cannot be supplied unless scanning a String'
     )
   end
 
-  it 'sets free_spacing based on options if parsing from a String' do
+  it 'sets free_spacing based on options if scanning from a String' do
     expect_type_tokens(
       RS.scan('a+#c', options: ::Regexp::MULTILINE | ::Regexp::EXTENDED),
       [
@@ -27,7 +23,7 @@ RSpec.describe('passing options to scan') do
     )
   end
 
-  it 'does not set free_spacing if parsing from a String and passing no options' do
+  it 'does not set free_spacing if scanning from a String and passing no options' do
     expect_type_tokens(
       RS.scan('a+#c'),
       [
