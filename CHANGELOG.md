@@ -1,5 +1,25 @@
 ## [Unreleased]
 
+### [1.8.0] - 2020-09-20 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Changed
+
+- dropped support for running on Ruby 1.9.x
+
+### Added
+
+- regexp flags can now be passed when parsing a `String` as regexp body
+  * see the [README](/README.md#usage) for details
+  * thanks to [Owen Stephens](https://github.com/owst)
+- bare occurrences of `\g` and `\k` are now allowed and scanned as literal escapes
+  * matches Onigmo behavior
+  * thanks for the report to [Marc-André Lafortune](https://github.com/marcandre)
+
+### Fixed
+
+- fixed parsing comments without preceding space or trailing newline in x-mode
+  * thanks to [Owen Stephens](https://github.com/owst)
+
 ### [1.7.1] - 2020-06-07 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
 ### Fixed

@@ -8,7 +8,7 @@ A Ruby gem for tokenizing, parsing, and transforming regular expressions.
   * A scanner/tokenizer based on [Ragel](http://www.colm.net/open-source/ragel/)
   * A lexer that produces a "stream" of token objects.
   * A parser that produces a "tree" of Expression objects (OO API)
-* Runs on Ruby 1.9, 2.x, and JRuby (1.9 mode) runtimes.
+* Runs on Ruby 2.x and JRuby runtimes
 * Recognizes Ruby 1.8, 1.9, and 2.x regular expressions [See Supported Syntax](#supported-syntax)
 
 
