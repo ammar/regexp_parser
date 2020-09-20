@@ -18,12 +18,12 @@ class Regexp::Parser
     end
   end
 
-  def self.parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
-    new.parse(input, syntax, &block)
+  def self.parse(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
+    new.parse(input, syntax, options: options, &block)
   end
 
-  def parse(input, syntax = "ruby/#{RUBY_VERSION}", &block)
-    root = Root.build(options_from_input(input))
+  def parse(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
+    root = Root.build(extract_options(input, options))
 
     self.root = root
     self.node = root
@@ -35,7 +35,7 @@ class Regexp::Parser
 
     self.captured_group_counts = Hash.new(0)
 
-    Regexp::Lexer.scan(input, syntax) do |token|
+    Regexp::Lexer.scan(input, syntax, options: options) do |token|
       parse_token(token)
     end
 
@@ -54,14 +54,20 @@ class Regexp::Parser
                 :options_stack, :switching_options, :conditional_nesting,
                 :captured_group_counts
 
-  def options_from_input(input)
-    return {} unless input.is_a?(::Regexp)
+  def extract_options(input, options)
+    if options && !input.is_a?(String)
+      raise ArgumentError, 'options cannot be supplied unless parsing a String'
+    end
 
-    options = {}
-    options[:i] = true if input.options & ::Regexp::IGNORECASE != 0
-    options[:m] = true if input.options & ::Regexp::MULTILINE  != 0
-    options[:x] = true if input.options & ::Regexp::EXTENDED   != 0
-    options
+    options = input.options if input.is_a?(::Regexp)
+
+    return {} unless options
+
+    enabled_options = {}
+    enabled_options[:i] = true if options & ::Regexp::IGNORECASE != 0
+    enabled_options[:m] = true if options & ::Regexp::MULTILINE  != 0
+    enabled_options[:x] = true if options & ::Regexp::EXTENDED   != 0
+    enabled_options
   end
 
   def nest(exp)

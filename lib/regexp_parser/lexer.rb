@@ -11,11 +11,11 @@ class Regexp::Lexer
 
   CLOSING_TOKENS = [:close].freeze
 
-  def self.lex(input, syntax = "ruby/#{RUBY_VERSION}", &block)
-    new.lex(input, syntax, &block)
+  def self.lex(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
+    new.lex(input, syntax, options: options, &block)
   end
 
-  def lex(input, syntax = "ruby/#{RUBY_VERSION}", &block)
+  def lex(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
     syntax = Regexp::Syntax.new(syntax)
 
     self.tokens = []
@@ -25,7 +25,7 @@ class Regexp::Lexer
     self.shift = 0
 
     last = nil
-    Regexp::Scanner.scan(input) do |type, token, text, ts, te|
+    Regexp::Scanner.scan(input, options: options) do |type, token, text, ts, te|
       type, token = *syntax.normalize(type, token)
       syntax.check! type, token
 
