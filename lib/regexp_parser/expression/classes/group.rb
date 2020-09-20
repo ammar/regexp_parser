@@ -10,9 +10,24 @@ module Regexp::Expression
       def comment?; false end
     end
 
-    class Atomic  < Group::Base; end
-    class Passive < Group::Base; end
+    class Passive < Group::Base
+      attr_writer :implicit
+
+      def to_s(format = :full)
+        if implicit?
+          "#{expressions.join}#{quantifier_affix(format)}"
+        else
+          super
+        end
+      end
+
+      def implicit?
+        @implicit ||= false
+      end
+    end
+
     class Absence < Group::Base; end
+    class Atomic  < Group::Base; end
     class Options < Group::Base
       attr_accessor :option_changes
     end

@@ -40,5 +40,14 @@ module Regexp::Expression
       RUBY
     end
     alias :lazy? :reluctant?
+
+    def ==(other)
+      other.class == self.class &&
+        other.token == token &&
+        other.mode == mode &&
+        other.min == min &&
+        other.max == max
+    end
+    alias :eq :==
   end
 end

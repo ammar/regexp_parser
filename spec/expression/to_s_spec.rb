@@ -98,6 +98,13 @@ RSpec.describe('Expression#to_s') do
     expect(Regexp.new(root.to_s, Regexp::EXTENDED).match(str)[0]).to eq multiline.match(str)[0]
   end
 
+  # special case: implicit groups used for chained quantifiers produce no parens
+  specify 'chained quantifiers #to_s' do
+    pattern = /a+{1}{2}/
+    root = RP.parse(pattern)
+    expect(root.to_s).to eq 'a+{1}{2}'
+  end
+
   # regression test for https://github.com/ammar/regexp_parser/issues/74
   specify('non-ascii comment') do
     pattern = '(?x) 😋 # 😋'
