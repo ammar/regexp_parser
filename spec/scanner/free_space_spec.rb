@@ -39,6 +39,17 @@ RSpec.describe('FreeSpace scanning') do
       11 => [:free_space, :comment,  "# B ? comment\n",      37,  51],
       17 => [:free_space, :comment,  "# C {2,3} comment\n",  66,  84],
       29 => [:free_space, :comment,  "# D|E comment\n",     100, 114]
+
+    # single line / no trailing newline (c.f. issue #66)
+    include_examples 'scan', /a # b/x,
+      0 => [:literal,    :literal,    'a',   0,  1],
+      1 => [:free_space, :whitespace, ' ',   1,  2],
+      2 => [:free_space, :comment,    "# b", 2,  5]
+
+    # without spaces (c.f. issue #66)
+    include_examples 'scan', /a#b/x,
+      0 => [:literal,    :literal,  'a',   0,  1],
+      1 => [:free_space, :comment,  "#b", 1,  3]
   end
 
   describe('scan free space inlined') do
@@ -129,5 +140,26 @@ RSpec.describe('FreeSpace scanning') do
       25 => [:group,      :close,          ')',     34, 35],
       26 => [:literal,    :literal,        'i j',   35, 38],
       27 => [:group,      :close,          ')',     38, 39]
+  end
+
+  describe('scanning `#` in regular (non-x mode)') do # c.f. issue 70
+    include_examples 'scan', /a#bcd/,
+      0 => [:literal, :literal, 'a#bcd', 0, 5]
+    include_examples 'scan', /a # bcd/,
+      0 => [:literal, :literal, 'a # bcd', 0, 7]
+
+    include_examples 'scan', /a#\d/,
+      0 => [:literal, :literal, 'a#', 0, 2],
+      1 => [:type,    :digit,   '\d', 2, 4]
+    include_examples 'scan', /a # \d/,
+      0 => [:literal, :literal, 'a # ', 0, 4],
+      1 => [:type,    :digit,   '\d',   4, 6]
+
+    include_examples 'scan', /a#()/,
+      0 => [:literal, :literal, 'a#', 0, 2],
+      1 => [:group,   :capture, '(',  2, 3]
+    include_examples 'scan', /a # ()/,
+      0 => [:literal, :literal, 'a # ', 0, 4],
+      1 => [:group,   :capture, '(',    4, 5]
   end
 end

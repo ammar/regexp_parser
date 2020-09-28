@@ -649,7 +649,9 @@
       if free_spacing
         emit(:free_space, :comment, *text(data, ts, te))
       else
-        append_literal(data, ts, te)
+        # consume only the pound sign (#) and backtrack to do regular scanning
+        append_literal(data, ts, ts + 1)
+        fexec ts + 1;
       end
     };
 
