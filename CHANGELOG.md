@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+### [1.8.1] - 2020-09-28 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Fixed
+
+- fixed scanning of comment-like text in normal mode
+  * this was an old bug, but had become more prevalent in v1.8.0
+  * thanks to [Tietew](https://github.com/Tietew) for the report
+- specified correct minimum Ruby version in gemspec
+  * it said 1.9 but really required 2.0 as of v1.8.0
+
 ### [1.8.0] - 2020-09-20 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Changed
