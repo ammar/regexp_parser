@@ -32,5 +32,5 @@ Gem::Specification.new do |gem|
 
   gem.platform      = Gem::Platform::RUBY
 
-  gem.required_ruby_version = '>= 1.9.1'
+  gem.required_ruby_version = '>= 2.0.0'
 end
