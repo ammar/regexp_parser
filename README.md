@@ -18,7 +18,7 @@ _For examples of regexp_parser in use, see [Example Projects](#example-projects)
 ---
 ## Requirements
 
-* Ruby >= 1.9
+* Ruby >= 2.0
 * Ragel >= 6.0, but only if you want to build the gem or work on the scanner.
 
 
@@ -440,13 +440,17 @@ rake install
 ## Example Projects
 Projects using regexp_parser.
 
+- [capybara](https://github.com/teamcapybara/capybara) is an integration testing tool that uses regexp_parser to convert Regexps to css/xpath selectors.
+
+- [js_regex](https://github.com/janosch-x/js_regex) converts Ruby regular expressions to JavaScript-compatible regular expressions.
+
 - [meta_re](https://github.com/ammar/meta_re) is a regular expression preprocessor with alias support.
 
 - [mutant](https://github.com/mbj/mutant) (before v0.9.0) manipulates your regular expressions (amongst others) to see if your tests cover their behavior.
 
-- [twitter-cldr-rb](https://github.com/twitter/twitter-cldr-rb) uses regexp_parser to generate examples of postal codes.
+- [rubocop](https://github.com/rubocop-hq/rubocop) is a linter for Ruby that uses regexp_parser to lint Regexps.
 
-- [js_regex](https://github.com/janosch-x/js_regex) converts Ruby regular expressions to JavaScript-compatible regular expressions.
+- [twitter-cldr-rb](https://github.com/twitter/twitter-cldr-rb) is a localization helper that uses regexp_parser to generate examples of postal codes.
 
 
 ## References
@@ -475,4 +479,4 @@ Documentation and books used while working on this project.
 
 ---
 ##### Copyright
-_Copyright (c) 2010-2019 Ammar Ali. See LICENSE file for details._
+_Copyright (c) 2010-2020 Ammar Ali. See LICENSE file for details._
