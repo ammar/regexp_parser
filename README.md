@@ -8,8 +8,8 @@ A Ruby gem for tokenizing, parsing, and transforming regular expressions.
   * A scanner/tokenizer based on [Ragel](http://www.colm.net/open-source/ragel/)
   * A lexer that produces a "stream" of token objects.
   * A parser that produces a "tree" of Expression objects (OO API)
-* Runs on Ruby 2.x and JRuby runtimes
-* Recognizes Ruby 1.8, 1.9, and 2.x regular expressions [See Supported Syntax](#supported-syntax)
+* Runs on Ruby 2.x, 3.x and JRuby runtimes
+* Recognizes Ruby 1.8, 1.9, 2.x and 3.x regular expressions [See Supported Syntax](#supported-syntax)
 
 
 _For examples of regexp_parser in use, see [Example Projects](#example-projects)._
@@ -317,7 +317,7 @@ Expression class. See the next section for details._
 
 ## Supported Syntax
 The three modules support all the regular expression syntax features of Ruby 1.8,
-1.9, and 2.x:
+1.9, 2.x and 3.x:
 
 _Note that not all of these are available in all versions of Ruby_
 

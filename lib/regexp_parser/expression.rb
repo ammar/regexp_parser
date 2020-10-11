@@ -80,10 +80,12 @@ module Regexp::Expression
       return 1..1 unless quantified?
       min = quantifier.min
       max = quantifier.max < 0 ? Float::INFINITY : quantifier.max
-      # fix Range#minmax - https://bugs.ruby-lang.org/issues/15807
-      (min..max).tap do |r|
-        r.define_singleton_method(:minmax) { [min, max] } unless RUBY_VERSION.to_f > 2.6
+      range = min..max
+      # fix Range#minmax on old Rubies - https://bugs.ruby-lang.org/issues/15807
+      if RUBY_VERSION.to_f < 2.7
+        range.define_singleton_method(:minmax) { [min, max] }
       end
+      range
     end
 
     def greedy?

@@ -74,9 +74,9 @@ module Regexp::Syntax
   end
 
   def warn_if_future_version(const_name)
-    return if comparable_version(const_name) < comparable_version('3.0.0')
+    return if comparable_version(const_name) < comparable_version('4.0.0')
 
-    warn('This library has only been tested up to Ruby 2.x, '\
+    warn('This library has only been tested up to Ruby 3.x, '\
          "but you are running with #{const_get(const_name).inspect}")
   end
 end
