@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Added
+
+- `Regexp::Expression::Base#base_length`
+  * returns the character count of an expression body, ignoring any quantifier
+
 ### [1.8.2] - 2020-10-11 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed

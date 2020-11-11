@@ -34,6 +34,10 @@ module Regexp::Expression
 
     alias :starts_at :ts
 
+    def base_length
+      to_s(:base).length
+    end
+
     def full_length
       to_s.length
     end

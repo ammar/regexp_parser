@@ -91,4 +91,14 @@ RSpec.describe(Regexp::Expression::Base) do
     expect(RP.parse(/a*/)[0].repetitions).to eq 0..(Float::INFINITY)
     expect(RP.parse(/a+/)[0].repetitions).to eq 1..(Float::INFINITY)
   end
+
+  specify('#base_length') do
+    expect(RP.parse(/(aa)/)[0].base_length).to eq 4
+    expect(RP.parse(/(aa){42}/)[0].base_length).to eq 4
+  end
+
+  specify('#full_length') do
+    expect(RP.parse(/(aa)/)[0].full_length).to eq 4
+    expect(RP.parse(/(aa){42}/)[0].full_length).to eq 8
+  end
 end
