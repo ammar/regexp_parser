@@ -18,8 +18,6 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', /[<]/,                   1 => [:literal, :literal,        '<',          1, 2]
   include_examples 'scan', /[>]/,                   1 => [:literal, :literal,        '>',          1, 2]
 
-  include_examples 'scan', /[äöü]/,                 2 => [:literal, :literal,        'ö',          3, 5]
-
   include_examples 'scan', /[\x20]/,                1 => [:escape, :hex,             '\x20',       1, 5]
 
   include_examples 'scan', '[\.]',                  1 => [:escape, :dot,             '\.',         1, 3]
@@ -89,6 +87,14 @@ RSpec.describe('Set scanning') do
     6 => [:set,    :negate,          '^',          7, 8],
     8 => [:set,    :range,           '-',          9, 10],
     10=> [:set,    :close,           ']',          11, 12]
+
+  # multi-byte characters should not affect indices
+  include_examples 'scan', /[れます]/,
+    0 => [:set,     :open,           '[',          0, 1],
+    1 => [:literal, :literal,        'れ',          1, 2],
+    2 => [:literal, :literal,        'ま',          2, 3],
+    3 => [:literal, :literal,        'す',          3, 4],
+    4 => [:set,     :close,          ']',          4, 5]
 
   specify('set literal encoding') do
     text = RS.scan('[a]')[1][2].to_s

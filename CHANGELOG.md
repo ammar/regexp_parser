@@ -1,4 +1,13 @@
-## [Unreleased]
+## [Unreleased 2.0.0]
+
+### Changed
+
+- some methods that used to return byte-based indices now return char-based indices
+  * the returned values have only changed for Regexps that contain non-ascii chars
+  * this is only a breaking change if you used such methods directly AND relied on them pointing to bytes
+  * affected methods:
+  * `Regexp::Token` `#length`, `#offset`, `#te`, `#ts`
+  * `Regexp::Expression::Base` `#full_length`, `#offset`, `#starts_at`, `#te`, `#ts`
 
 ### Added
 

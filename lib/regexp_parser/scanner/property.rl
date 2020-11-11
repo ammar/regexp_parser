@@ -14,7 +14,7 @@
   unicode_property := |*
 
     property_sequence < eof(premature_property_end) {
-      text = text(data, ts, te, 1).first
+      text = copy(data, ts-1, te)
       type = (text[1] == 'P') ^ (text[3] == '^') ? :nonproperty : :property
 
       name = data[ts+2..te-2].pack('c*').gsub(/[\^\s_\-]/, '').downcase
@@ -22,7 +22,7 @@
       token = self.class.short_prop_map[name] || self.class.long_prop_map[name]
       raise UnknownUnicodePropertyError.new(name) unless token
 
-      self.emit(type, token.to_sym, text, ts-1, te)
+      self.emit(type, token.to_sym, text)
 
       fret;
     };
