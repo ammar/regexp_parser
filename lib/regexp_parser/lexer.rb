@@ -96,10 +96,10 @@ class Regexp::Lexer
 
     tokens.pop
     tokens << Regexp::Token.new(:literal, :literal, lead,
-              token.ts, (token.te - last.bytesize),
+              token.ts, (token.te - last.length),
               nesting, set_nesting, conditional_nesting)
     tokens << Regexp::Token.new(:literal, :literal, last,
-              (token.ts + lead.bytesize), token.te,
+              (token.ts + lead.length), token.te,
               nesting, set_nesting, conditional_nesting)
   end
 
