@@ -97,4 +97,13 @@ RSpec.describe('Expression#to_s') do
 
     expect(Regexp.new(root.to_s, Regexp::EXTENDED).match(str)[0]).to eq multiline.match(str)[0]
   end
+
+  # regression test for https://github.com/ammar/regexp_parser/issues/74
+  specify('non-ascii comment') do
+    pattern = '(?x) 😋 # 😋'
+    root = RP.parse(pattern)
+    expect(root.last).to be_a Regexp::Expression::Comment
+    expect(root.last.to_s).to eq '# 😋'
+    expect(root.to_s).to eq pattern
+  end
 end

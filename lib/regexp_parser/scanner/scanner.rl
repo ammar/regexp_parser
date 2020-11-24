@@ -135,13 +135,13 @@
 
   # EOF error, used where it can be detected
   action premature_end_error {
-    text = ts ? copy(data, ts-1, -1) : data.pack('c*')
+    text = copy(data, ts ? ts-1 : 0, -1)
     raise PrematureEndError.new( text )
   }
 
   # Invalid sequence error, used from sequences, like escapes and sets
   action invalid_sequence_error {
-    text = ts ? copy(data, ts-1, -1) : data.pack('c*')
+    text = copy(data, ts ? ts-1 : 0, -1)
     validation_error(:sequence, 'sequence', text)
   }
 
@@ -243,9 +243,8 @@
     utf8_2_byte    |
     utf8_3_byte    |
     utf8_4_byte    {
-      char, *rest = copy(data, ts, te)
-      char.force_encoding('utf-8') if char.respond_to?(:force_encoding)
-      emit(:literal, :literal, char, *rest)
+      text = copy(data, ts, te)
+      emit(:literal, :literal, text)
     };
   *|;
 
@@ -357,7 +356,10 @@
       fcall unicode_property;
     };
 
-    (any -- non_literal_escape) > (escaped_alpha, 1)  {
+    (any -- non_literal_escape) |
+    utf8_2_byte                 |
+    utf8_3_byte                 |
+    utf8_4_byte                   > (escaped_alpha, 1) {
       emit(:escape, :literal, copy(data, ts-1, te))
       fret;
     };
@@ -770,7 +772,7 @@ class Regexp::Scanner
     testEof = testEof
 
     if cs == re_scanner_error
-      text = ts ? copy(data, ts-1, -1) : data.pack('c*')
+      text = copy(data, ts ? ts-1 : 0, -1)
       raise ScannerError.new("Scan error at '#{text}'")
     end
 
@@ -844,11 +846,11 @@ class Regexp::Scanner
 
   # Copy from ts to te from data as text
   def copy(data, ts, te)
-    data[ts...te].pack('c*')
+    data[ts...te].pack('c*').force_encoding('utf-8')
   end
 
   # Appends one or more characters to the literal buffer, to be emitted later
-  # by a call to emit_literal. Contents can be a mix of ASCII and UTF-8.
+  # by a call to emit_literal.
   def append_literal(data, ts, te)
     self.literal = literal || []
     literal << copy(data, ts, te)
@@ -857,8 +859,6 @@ class Regexp::Scanner
   # Emits the literal run collected by calls to the append_literal method.
   def emit_literal
     text = literal.join
-    text.force_encoding('utf-8') if text.respond_to?(:force_encoding)
-
     self.literal = nil
     emit(:literal, :literal, text)
   end

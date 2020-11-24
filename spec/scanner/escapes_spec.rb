@@ -11,7 +11,13 @@ RSpec.describe('Escape scanning') do
   include_examples 'scan', /c\tt/,            1 => [:escape,  :tab,              '\t',             1,  3]
   include_examples 'scan', /c\vt/,            1 => [:escape,  :vertical_tab,     '\v',             1,  3]
 
+  # ineffectual literal escapes
+  # these cause "Unknown escape" warnings in Ruby for ascii chars,
+  # and simply drop the backslash for non-ascii chars (/\ü/.inspect == '/ü/').
+  # In terms of matching, Ruby treats them both like non-escaped literals.
   include_examples 'scan', 'c\qt',            1 => [:escape,  :literal,          '\q',             1,  3]
+  include_examples 'scan', 'a\üc',            1 => [:escape, :literal,           '\ü',             1,  3]
+  include_examples 'scan', 'a\😋c',           1 => [:escape, :literal,            '\😋',            1,  3]
 
   # these incomplete ref/call sequences are treated as literal escapes by Ruby
   include_examples 'scan', 'c\gt',            1 => [:escape,  :literal,          '\g',             1,  3]

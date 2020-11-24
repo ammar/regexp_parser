@@ -17,7 +17,7 @@ RSpec.describe('CharacterSet::Range parsing') do
   end
 
   specify('parse set range hex') do
-    root = RP.parse('[\\x00-\\x99]')
+    root = RP.parse('[\\x00-\\x22]')
     set = root[0]
     range = set[0]
 
@@ -26,9 +26,9 @@ RSpec.describe('CharacterSet::Range parsing') do
     expect(range.count).to eq 2
     expect(range.first.to_s).to eq '\\x00'
     expect(range.first).to be_instance_of(EscapeSequence::Hex)
-    expect(range.last.to_s).to eq '\\x99'
+    expect(range.last.to_s).to eq '\\x22'
     expect(range.last).to be_instance_of(EscapeSequence::Hex)
-    expect(set).to match '\\x50'
+    expect(set).to match "\x11"
   end
 
   specify('parse set range unicode') do

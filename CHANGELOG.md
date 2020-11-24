@@ -8,11 +8,19 @@
   * affected methods:
   * `Regexp::Token` `#length`, `#offset`, `#te`, `#ts`
   * `Regexp::Expression::Base` `#full_length`, `#offset`, `#starts_at`, `#te`, `#ts`
+  * thanks to [Akinori MUSHA](https://github.com/knu) for the report
 
 ### Added
 
 - `Regexp::Expression::Base#base_length`
   * returns the character count of an expression body, ignoring any quantifier
+
+### Fixed
+
+- incorrect encoding output for non-ascii comments
+  * this led to a crash when calling `#to_s` on parse results containing such comments
+  * thanks to [Michael Glass](https://github.com/michaelglass) for the report
+- some crashes when scanning contrived patterns such as `'\😋'`
 
 ### [1.8.2] - 2020-10-11 - [Janosch Müller](mailto:janosch84@gmail.com)
 
