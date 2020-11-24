@@ -7,16 +7,6 @@ module Regexp::Expression
   # Used as the base class for the Alternation alternatives, Conditional
   # branches, and CharacterSet::Intersection intersected sequences.
   class Sequence < Regexp::Expression::Subexpression
-    # TODO: this override is here for backwards compatibility, remove in 2.0.0
-    def initialize(*args)
-      if args.count == 3
-        warn('WARNING: Sequence.new without a Regexp::Token argument is '\
-             'deprecated and will be removed in 2.0.0.')
-        return self.class.at_levels(*args)
-      end
-      super
-    end
-
     class << self
       def add_to(subexpression, params = {}, active_opts = {})
         sequence = at_levels(

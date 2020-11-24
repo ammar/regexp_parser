@@ -3,12 +3,17 @@
 ### Changed
 
 - some methods that used to return byte-based indices now return char-based indices
-  * the returned values have only changed for Regexps that contain non-ascii chars
+  * the returned values have only changed for Regexps that contain multibyte chars
   * this is only a breaking change if you used such methods directly AND relied on them pointing to bytes
   * affected methods:
   * `Regexp::Token` `#length`, `#offset`, `#te`, `#ts`
   * `Regexp::Expression::Base` `#full_length`, `#offset`, `#starts_at`, `#te`, `#ts`
   * thanks to [Akinori MUSHA](https://github.com/knu) for the report
+- removed some deprecated methods/signatures
+  * these are rarely used and have been showing deprecation warnings for a long time
+  * `Regexp::Expression::Subexpression.new` with 3 arguments
+  * `Regexp::Expression::Root.new` without a token argument
+  * `Regexp::Expression.parsed`
 
 ### Added
 
