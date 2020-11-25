@@ -19,6 +19,11 @@
 
 - `Regexp::Expression::Base#base_length`
   * returns the character count of an expression body, ignoring any quantifier
+- pragmatic, experimental support for chained quantifiers
+  * e.g.: `/^a{10}{4,6}$/` matches exactly 40, 50 or 60 `a`s
+  * successive quantifiers used to be silently dropped by the parser
+  * they are now wrapped with passive groups as if they were written `(?:a{10}){4,6}`
+  * thanks to [calfeld](https://github.com/calfeld) for reporting this a while back
 
 ### Fixed
 
