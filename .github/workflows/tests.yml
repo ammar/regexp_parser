@@ -1,0 +1,24 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ruby: [ '2.3', '2.4', '2.5', '2.6', '2.7', 'ruby-head' ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install dependencies
+        run:
+          - bundle install --jobs 4
+          - sudo apt-get install -yqq ragel
+      - name: Test with Rake
+        run: bundle exec rake test:full
