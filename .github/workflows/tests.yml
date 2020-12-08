@@ -17,8 +17,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install dependencies
-        run:
-          - bundle install --jobs 4
-          - sudo apt-get install -yqq ragel
+        run: |
+          bundle install --jobs 4
+          sudo apt-get install -yqq ragel
       - name: Test with Rake
         run: bundle exec rake test:full
