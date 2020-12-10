@@ -22,9 +22,6 @@ _For examples of regexp_parser in use, see [Example Projects](#example-projects)
 * Ragel >= 6.0, but only if you want to build the gem or work on the scanner.
 
 
-_Note: See the .travis.yml file for covered versions._
-
-
 ---
 ## Install
 
