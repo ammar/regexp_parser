@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+## [2.0.1] - 2020-12-20 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Fixed
+
+- fixed error when scanning some group names
+  * this affected names containing hyphens, digits or multibyte chars, e.g. `/(?<a1>a)/`
+  * thanks to [Daniel Gollahon](https://github.com/dgollahon) for the report
+- fixed error when scanning hex escapes with just one hex digit
+  * e.g. `/\x0A/` was scanned correctly, but the equivalent `/\xA/` was not
+  * thanks to [Daniel Gollahon](https://github.com/dgollahon) for the report
+
 ## [2.0.0] - 2020-11-25 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Changed
