@@ -3,6 +3,11 @@
   include re_char_type "char_type.rl";
   include re_property  "property.rl";
 
+  utf8_2_byte           = (0xc2..0xdf 0x80..0xbf);
+  utf8_3_byte           = (0xe0..0xef 0x80..0xbf 0x80..0xbf);
+  utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf);
+  utf8_multibyte        = utf8_2_byte | utf8_3_byte | utf8_4_byte;
+
   dot                   = '.';
   backslash             = '\\';
   alternation           = '|';
@@ -90,18 +95,19 @@
   group_options         = '?' . ( [^!#'():<=>~]+ . ':'? ) ?;
 
   group_ref             = [gk];
-  group_name_char       = (alnum | '_');
-  group_name_id         = (group_name_char . (group_name_char+)?)?;
-  group_number          = '-'? . [1-9] . ([0-9]+)?;
+  group_name_id_ab      = ([^0-9\->] | utf8_multibyte) . ([^>] | utf8_multibyte)*;
+  group_name_id_sq      = ([^0-9\-'] | utf8_multibyte) . ([^'] | utf8_multibyte)*;
+  group_number          = '-'? . [1-9] . [0-9]*;
   group_level           = [+\-] . [0-9]+;
 
-  group_name            = ('<' . group_name_id . '>') | ("'" . group_name_id . "'");
+  group_name            = ('<' . group_name_id_ab? . '>') |
+                          ("'" . group_name_id_sq? . "'");
   group_lookup          = group_name | group_number;
 
   group_named           = ('?' . group_name );
 
-  group_name_ref        = group_ref . (('<' . group_name_id . group_level? '>') |
-                                       ("'" . group_name_id . group_level? "'"));
+  group_name_ref        = group_ref . (('<' . group_name_id_ab? . group_level? '>') |
+                                       ("'" . group_name_id_sq? . group_level? "'"));
 
   group_number_ref      = group_ref . (('<' . group_number . group_level? '>') |
                                        ("'" . group_number . group_level? "'"));
@@ -122,10 +128,6 @@
 
   ascii_print           = ((0x20..0x7e) - meta_char - '#');
   ascii_nonprint        = (0x01..0x1f | 0x7f);
-
-  utf8_2_byte           = (0xc2..0xdf 0x80..0xbf);
-  utf8_3_byte           = (0xe0..0xef 0x80..0xbf 0x80..0xbf);
-  utf8_4_byte           = (0xf0..0xf4 0x80..0xbf 0x80..0xbf 0x80..0xbf);
 
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
                           keep_mark | [xucCM];
@@ -238,11 +240,7 @@
       emit(:literal, :literal, copy(data, ts, te))
     };
 
-    any            |
-    ascii_nonprint |
-    utf8_2_byte    |
-    utf8_3_byte    |
-    utf8_4_byte    {
+    any | ascii_nonprint | utf8_multibyte {
       text = copy(data, ts, te)
       emit(:literal, :literal, text)
     };
@@ -356,10 +354,7 @@
       fcall unicode_property;
     };
 
-    (any -- non_literal_escape) |
-    utf8_2_byte                 |
-    utf8_3_byte                 |
-    utf8_4_byte                   > (escaped_alpha, 1) {
+    (any -- non_literal_escape) | utf8_multibyte > (escaped_alpha, 1) {
       emit(:escape, :literal, copy(data, ts-1, te))
       fret;
     };
@@ -511,10 +506,10 @@
       when /^\(\?(?:<>|'')/
         validation_error(:group, 'named group', 'name is empty')
 
-      when /^\(\?<\w*>/
+      when /^\(\?<[^>]+>/
         emit(:group, :named_ab,  text)
 
-      when /^\(\?'\w*'/
+      when /^\(\?'[^']+'/
         emit(:group, :named_sq,  text)
 
       end
@@ -548,14 +543,16 @@
       when /^\\([gk])(<>|'')/ # angle brackets
         validation_error(:backref, 'ref/call', 'ref ID is empty')
 
-      when /^\\([gk])<[^\d+-]\w*>/ # angle-brackets
+      # TODO: finer quirks of choosing recursive or non-recursive refs/calls.
+      # e.g.: `a-1` is a valid group id: 'aa'[/(?<a-1>a)\g<a-1>/] # => 'aa'
+      when /^\\([gk])<[^\p{digit}+\->][^>+\-]*>/ # angle-brackets
         if $1 == 'k'
           emit(:backref, :name_ref_ab, text)
         else
           emit(:backref, :name_call_ab, text)
         end
 
-      when /^\\([gk])'[^\d+-]\w*'/ #single quotes
+      when /^\\([gk])'[^\p{digit}+\-'][^'+\-]*'/ # single quotes
         if $1 == 'k'
           emit(:backref, :name_ref_sq, text)
         else
@@ -590,10 +587,10 @@
           emit(:backref, :number_rel_call_sq, text)
         end
 
-      when /^\\k<[^\d+\-]\w*[+\-]\d+>/ # angle-brackets
+      when /^\\k<[^\p{digit}+\->][^>]*[+\-]\d+>/ # angle-brackets
         emit(:backref, :name_recursion_ref_ab, text)
 
-      when /^\\k'[^\d+\-]\w*[+\-]\d+'/ # single-quotes
+      when /^\\k'[^\p{digit}+\-'][^']*[+\-]\d+'/ # single-quotes
         emit(:backref, :name_recursion_ref_sq, text)
 
       when /^\\([gk])<[+\-]?\d+[+\-]\d+>/ # angle-brackets
@@ -668,11 +665,7 @@
     # Literal: any run of ASCII (pritable or non-printable), and/or UTF-8,
     # except meta characters.
     # ------------------------------------------------------------------------
-    (ascii_print -- space)+    |
-    ascii_nonprint+ |
-    utf8_2_byte+    |
-    utf8_3_byte+    |
-    utf8_4_byte+    {
+    (ascii_print -- space)+ | ascii_nonprint+ | utf8_multibyte+ {
       append_literal(data, ts, te)
     };
 

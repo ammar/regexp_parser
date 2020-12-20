@@ -5,11 +5,20 @@ RSpec.describe('Group scanning') do
   include_examples 'scan', '(?>abc)',         0 => [:group,     :atomic,         '(?>',        0, 3]
   include_examples 'scan', '(abc)',           0 => [:group,     :capture,        '(',          0, 1]
 
+  # Named groups
+  # only names that start with a hyphen or digit (ascii or other) are invalid
   include_examples 'scan', '(?<name>abc)',    0 => [:group,     :named_ab,       '(?<name>',   0, 8]
   include_examples 'scan', "(?'name'abc)",    0 => [:group,     :named_sq,       "(?'name'",   0, 8]
-
   include_examples 'scan', '(?<name_1>abc)',  0 => [:group,     :named_ab,       '(?<name_1>', 0,10]
   include_examples 'scan', "(?'name_1'abc)",  0 => [:group,     :named_sq,       "(?'name_1'", 0,10]
+  include_examples 'scan', '(?<name-1>abc)',  0 => [:group,     :named_ab,       '(?<name-1>', 0,10]
+  include_examples 'scan', "(?'name-1'abc)",  0 => [:group,     :named_sq,       "(?'name-1'", 0,10]
+  include_examples 'scan', "(?<name'1>abc)",  0 => [:group,     :named_ab,       "(?<name'1>", 0,10]
+  include_examples 'scan', "(?'name>1'abc)",  0 => [:group,     :named_sq,       "(?'name>1'", 0,10]
+  include_examples 'scan', '(?<üüuuüü>abc)',  0 => [:group,     :named_ab,       '(?<üüuuüü>', 0,10]
+  include_examples 'scan', "(?'üüuuüü'abc)",  0 => [:group,     :named_sq,       "(?'üüuuüü'", 0,10]
+  include_examples 'scan', "(?<😋1234😋>abc)",  0 => [:group,     :named_ab,       "(?<😋1234😋>", 0,10]
+  include_examples 'scan', "(?'😋1234😋'abc)",  0 => [:group,     :named_sq,       "(?'😋1234😋'", 0,10]
 
   include_examples 'scan', '(?:abc)',         0 => [:group,     :passive,        '(?:',        0, 3]
   include_examples 'scan', '(?:)',            0 => [:group,     :passive,        '(?:',        0, 3]
