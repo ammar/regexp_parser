@@ -323,7 +323,7 @@
       fret;
     };
 
-    hex_sequence > (escaped_alpha, 5) $eof(premature_end_error) {
+    hex_sequence > (escaped_alpha, 5) @eof(premature_end_error) {
       emit(:escape, :hex, copy(data, ts-1, te))
       fret;
     };
