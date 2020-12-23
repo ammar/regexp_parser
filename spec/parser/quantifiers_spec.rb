@@ -11,6 +11,7 @@ RSpec.describe('Quantifier parsing') do
       expect(exp.quantifier.min).to eq min
       expect(exp.quantifier.max).to eq max
       expect(exp.quantifier.mode).to eq mode
+      expect(exp.quantifier.text).to eq text
     end
   end
 
