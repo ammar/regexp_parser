@@ -13,6 +13,11 @@ module Regexp::Expression
     class Passive < Group::Base
       attr_writer :implicit
 
+      def initialize(*)
+        @implicit = false
+        super
+      end
+
       def to_s(format = :full)
         if implicit?
           "#{expressions.join}#{quantifier_affix(format)}"
@@ -22,7 +27,7 @@ module Regexp::Expression
       end
 
       def implicit?
-        @implicit ||= false
+        @implicit
       end
     end
 

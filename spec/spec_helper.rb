@@ -1,3 +1,4 @@
+require 'ice_nine'
 require 'regexp_parser'
 require 'regexp_property_values'
 require_relative 'support/shared_examples'
