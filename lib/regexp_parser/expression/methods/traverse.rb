@@ -36,7 +36,7 @@ module Regexp::Expression
 
     # Iterates over the expressions of this expression as an array, passing
     # the expression and its index within its parent to the given block.
-    def each_expression(include_self = false, &block)
+    def each_expression(include_self = false)
       return enum_for(__method__, include_self) unless block_given?
 
       traverse(include_self) do |event, exp, index|
@@ -47,7 +47,7 @@ module Regexp::Expression
     # Returns a new array with the results of calling the given block once
     # for every expression. If a block is not given, returns an array with
     # each expression and its level index as an array.
-    def flat_map(include_self = false, &block)
+    def flat_map(include_self = false)
       result = []
 
       each_expression(include_self) do |exp, index|

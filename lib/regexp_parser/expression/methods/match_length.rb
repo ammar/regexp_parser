@@ -32,7 +32,7 @@ class Regexp::MatchLength
     end
   end
 
-  def endless_each(&block)
+  def endless_each
     return enum_for(__method__) unless block_given?
     (min..max).each { |num| yield(num) if include?(num) }
   end
