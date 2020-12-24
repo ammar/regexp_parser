@@ -10,7 +10,7 @@ class Regexp::MatchLength
     self.exp_class = exp.class
     self.min_rep = exp.repetitions.min
     self.max_rep = exp.repetitions.max
-    if base = opts[:base]
+    if (base = opts[:base])
       self.base_min = base
       self.base_max = base
       self.reify = ->{ '.' * base }
@@ -32,7 +32,7 @@ class Regexp::MatchLength
     end
   end
 
-  def endless_each(&block)
+  def endless_each
     return enum_for(__method__) unless block_given?
     (min..max).each { |num| yield(num) if include?(num) }
   end

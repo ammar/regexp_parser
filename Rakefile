@@ -25,7 +25,7 @@ end
 
 namespace :ragel do
   desc "Process the ragel source files and output ruby code"
-  task :rb do |t|
+  task :rb do
     RAGEL_SOURCE_FILES.each do |file|
       output_file = "#{RAGEL_OUTPUT_DIR}/#{file}.rb"
       # using faster flat table driven FSM, about 25% larger code, but about 30% faster
@@ -42,7 +42,7 @@ namespace :ragel do
   end
 
   desc "Delete the ragel generated source file(s)"
-  task :clean do |t|
+  task :clean do
     RAGEL_SOURCE_FILES.each do |file|
       sh "rm -f #{RAGEL_OUTPUT_DIR}/#{file}.rb"
     end

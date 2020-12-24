@@ -32,7 +32,7 @@ RSpec.describe(Regexp::Expression::Subexpression) do
     }
 
     root.each_expression do |exp|
-      next unless expected_nesting_level = tests.delete(exp.to_s)
+      next unless (expected_nesting_level = tests.delete(exp.to_s))
       expect(expected_nesting_level).to eq exp.nesting_level
     end
 

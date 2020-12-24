@@ -8,8 +8,8 @@ module Regexp::Syntax
       @implements = { :* => [:*] }
     end
 
-    def implements?(type, token) true end
-    def implements!(type, token) true end
+    def implements?(_type, _token) true end
+    def implements!(_type, _token) true end
   end
 
 end
