@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [2.0.2] - 2020-12-25 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Fixed
+
+- fixed `FrozenError` when calling `#to_s` on a frozen `Group::Passive`
+  * thanks to [Daniel Gollahon](https://github.com/dgollahon)
+
 ## [2.0.1] - 2020-12-20 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed
