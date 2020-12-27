@@ -3,13 +3,13 @@ module Regexp::Syntax
   VERSION_REGEXP = /#{VERSION_FORMAT}/
   VERSION_CONST_REGEXP = /\AV\d+_\d+(?:_\d+)?\z/
 
-  class InvalidVersionNameError < SyntaxError
+  class InvalidVersionNameError < Regexp::Syntax::SyntaxError
     def initialize(name)
       super "Invalid version name '#{name}'. Expected format is '#{VERSION_FORMAT}'"
     end
   end
 
-  class UnknownSyntaxNameError < SyntaxError
+  class UnknownSyntaxNameError < Regexp::Syntax::SyntaxError
     def initialize(name)
       super "Unknown syntax name '#{name}'."
     end

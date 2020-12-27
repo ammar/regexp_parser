@@ -1,7 +1,7 @@
 require 'set'
 
 module Regexp::Syntax
-  class NotImplementedError < SyntaxError
+  class NotImplementedError < Regexp::Syntax::SyntaxError
     def initialize(syntax, type, token)
       super "#{syntax.class.name} does not implement: [#{type}:#{token}]"
     end

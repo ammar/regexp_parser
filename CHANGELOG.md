@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Fixed
+
+- fixed ancestry of some error classes related to syntax version lookup
+  - `NotImplementedError`, `InvalidVersionNameError`, `UnknownSyntaxNameError`
+  - they inherited from Rubys `::SyntaxError` instead of `Regexp::Syntax::SyntaxError`
+
 ## [2.0.2] - 2020-12-25 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed
