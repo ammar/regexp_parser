@@ -61,9 +61,6 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', /[[:digit:][:space:]]/,  2 => [:posixclass,    :space,    '[:space:]', 10, 19]
   include_examples 'scan', /[[:^digit:]]/,          1 => [:nonposixclass, :digit,    '[:^digit:]', 1, 11]
 
-  include_examples 'scan', /[a[.a-b.]c]/,           2 => [:set,    :collation,       '[.a-b.]',    2,  9]
-  include_examples 'scan', /[a[=e=]c]/,             2 => [:set,    :equivalent,      '[=e=]',      2,  7]
-
   include_examples 'scan', /[a-d&&g-h]/,            4 => [:set,    :intersection,    '&&',         4, 6]
   include_examples 'scan', /[a&&]/,                 2 => [:set,    :intersection,    '&&',         2, 4]
   include_examples 'scan', /[&&z]/,                 1 => [:set,    :intersection,    '&&',         1, 3]
@@ -87,6 +84,17 @@ RSpec.describe('Set scanning') do
     6 => [:set,    :negate,          '^',          7, 8],
     8 => [:set,    :range,           '-',          9, 10],
     10=> [:set,    :close,           ']',          11, 12]
+
+  # Collations/collating sequences and character equivalents are not enabled
+  # in Ruby at the moment. If they ever are, enable them in the scanner,
+  # add them to a new syntax version, and handle them in the parser. Until then,
+  # expect them to be scanned as regular subsets containing literals.
+  # include_examples 'scan', /[a[.a-b.]c]/,           2 => [:set,    :collation,       '[.a-b.]',    2,  9]
+  # include_examples 'scan', /[a[=e=]c]/,             2 => [:set,    :equivalent,      '[=e=]',      2,  7]
+  include_examples 'scan', '[a[.a-b.]c]',           2 => [:set,     :open,        '[',      2,  3]
+  include_examples 'scan', '[a[.a-b.]c]',           3 => [:literal, :literal,     '.',      3,  4]
+  include_examples 'scan', '[a[=e=]c]',             2 => [:set,     :open,        '[',      2,  3]
+  include_examples 'scan', '[a[=e=]c]',             3 => [:literal, :literal,     '=',      3,  4]
 
   # multi-byte characters should not affect indices
   include_examples 'scan', /[れます]/,

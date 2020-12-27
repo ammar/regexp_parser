@@ -2,6 +2,8 @@
 
 ### Fixed
 
+- fixed error when scanning some unlikely and redundant but valid character set patterns
+  - e.g. `/[[.a-b.]]/`, `/[[=e=]]/`,
 - fixed ancestry of some error classes related to syntax version lookup
   - `NotImplementedError`, `InvalidVersionNameError`, `UnknownSyntaxNameError`
   - they inherited from Rubys `::SyntaxError` instead of `Regexp::Syntax::SyntaxError`

@@ -143,8 +143,6 @@ class Regexp::Parser
       range(token)
     when :intersection
       intersection(token)
-    when :collation, :equivalent
-      node << Literal.new(token, active_opts)
     else
       raise UnknownTokenError.new('CharacterSet', token)
     end

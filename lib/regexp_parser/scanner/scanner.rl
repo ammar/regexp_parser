@@ -37,7 +37,7 @@
   class_posix           = ('[:' . '^'? . class_name_posix . ':]');
 
 
-  # these are not supported in ruby, and need verification
+  # these are not supported in ruby at the moment
   collating_sequence    = '[.' . (alpha | [\-])+ . '.]';
   character_equivalent  = '[=' . alpha . '=]';
 
@@ -228,13 +228,13 @@
       emit(type, class_name.to_sym, text)
     };
 
-    collating_sequence >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
-      emit(:set, :collation, copy(data, ts, te))
-    };
-
-    character_equivalent >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
-      emit(:set, :equivalent, copy(data, ts, te))
-    };
+    # These are not supported in ruby at the moment. Enable them if they are.
+    # collating_sequence >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
+    #   emit(:set, :collation, copy(data, ts, te))
+    # };
+    # character_equivalent >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
+    #   emit(:set, :equivalent, copy(data, ts, te))
+    # };
 
     meta_char > (set_meta, 1) {
       emit(:literal, :literal, copy(data, ts, te))
