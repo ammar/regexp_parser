@@ -26,10 +26,10 @@ end
 namespace :ragel do
   desc "Process the ragel source files and output ruby code"
   task :rb do
-    RAGEL_SOURCE_FILES.each do |file|
-      output_file = "#{RAGEL_OUTPUT_DIR}/#{file}.rb"
+    RAGEL_SOURCE_FILES.each do |source_file|
+      output_file = "#{RAGEL_OUTPUT_DIR}/#{source_file}.rb"
       # using faster flat table driven FSM, about 25% larger code, but about 30% faster
-      sh "ragel -F1 -R #{RAGEL_SOURCE_DIR}/#{file}.rl -o #{output_file}"
+      sh "ragel -F1 -R #{RAGEL_SOURCE_DIR}/#{source_file}.rl -o #{output_file}"
 
       contents = File.read(output_file)
 

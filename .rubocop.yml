@@ -1,0 +1,15 @@
+AllCops:
+  Exclude:
+    - '**/vendor/**/*' # vendored dependencies
+    - 'lib/regexp_parser/scanner.rb' # Ragel-generated code
+  NewCops: enable
+  RubyInterpreters:
+    - ruby
+    - rake
+  TargetRubyVersion: 2.4 # really 2.0, but 2.4 is lowest supported by rubocop
+
+# ignore weird looking regexps in specs, we have these on purpose
+Lint/DuplicateRegexpCharacterClassElement:
+  Exclude: ['spec/**/*']
+Lint/MixedRegexpCaptureTypes:
+  Exclude: ['spec/**/*']

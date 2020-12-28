@@ -7,7 +7,7 @@ module Regexp::Expression
       end
 
       def name
-        text =~ /\A\\[pP]\{([^}]+)\}\z/; $1
+        text[/\A\\[pP]\{([^}]+)\}\z/, 1]
       end
 
       def shortcut

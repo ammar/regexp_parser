@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe(Regexp::MatchLength) do
-  ML = described_class
+ML = Regexp::MatchLength
 
+RSpec.describe(Regexp::MatchLength) do
   specify('literal') { expect(ML.of(/a/).minmax).to eq [1, 1] }
   specify('literal sequence') { expect(ML.of(/abc/).minmax).to eq [3, 3] }
   specify('dot') { expect(ML.of(/./).minmax).to eq [1, 1] }

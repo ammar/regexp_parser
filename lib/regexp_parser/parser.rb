@@ -104,31 +104,27 @@ class Regexp::Parser
     close_completed_character_set_range
 
     case token.type
-    when :meta;         meta(token)
-    when :quantifier;   quantifier(token)
-    when :anchor;       anchor(token)
-    when :escape;       escape(token)
-    when :group;        group(token)
-    when :assertion;    group(token)
-    when :set;          set(token)
-    when :type;         type(token)
-    when :backref;      backref(token)
-    when :conditional;  conditional(token)
-    when :keep;         keep(token)
-
-    when :posixclass, :nonposixclass
-      posixclass(token)
-    when :property, :nonproperty
-      property(token)
-
-    when :literal
-      node << Literal.new(token, active_opts)
-    when :free_space
-      free_space(token)
-
+    when :anchor;                     anchor(token)
+    when :assertion, :group;          group(token)
+    when :backref;                    backref(token)
+    when :conditional;                conditional(token)
+    when :escape;                     escape(token)
+    when :free_space;                 free_space(token)
+    when :keep;                       keep(token)
+    when :literal;                    literal(token)
+    when :meta;                       meta(token)
+    when :posixclass, :nonposixclass; posixclass(token)
+    when :property, :nonproperty;     property(token)
+    when :quantifier;                 quantifier(token)
+    when :set;                        set(token)
+    when :type;                       type(token)
     else
       raise UnknownTokenTypeError.new(token.type, token)
     end
+  end
+
+  def literal(token)
+    node << Literal.new(token, active_opts)
   end
 
   def set(token)

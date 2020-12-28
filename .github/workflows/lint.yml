@@ -1,0 +1,32 @@
+# based on https://github.com/rails/rails/blob/4a78dcb/.github/workflows/rubocop.yml
+
+name: rubocop linting
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+    - name: Cache gems
+      uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-rubocop-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-rubocop-
+    - name: Install gems
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+    # Create a dummy scanner.rb so we don't need Ragel but require statements work
+    - name: Stub scanner.rb
+      run: 'echo "class Regexp::Scanner; end" > lib/regexp_parser/scanner.rb'
+    - name: Run rubocop
+      run: bundle exec rubocop --lint

@@ -4,7 +4,7 @@ module Regexp::Syntax
   # is useful during development, testing, and should be useful for some types
   # of transformations as well.
   class Any < Base
-    def initialize
+    def initialize # rubocop:disable Lint/MissingSuper
       @implements = { :* => [:*] }
     end
 
