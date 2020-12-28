@@ -1,12 +1,14 @@
 ## [Unreleased]
 
+## [2.0.3] - 2020-12-28 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Fixed
 
-- fixed error when scanning some unlikely and redundant but valid character set patterns
+- fixed error when scanning some unlikely and redundant but valid charset patterns
   - e.g. `/[[.a-b.]]/`, `/[[=e=]]/`,
 - fixed ancestry of some error classes related to syntax version lookup
   - `NotImplementedError`, `InvalidVersionNameError`, `UnknownSyntaxNameError`
-  - they inherited from Rubys `::SyntaxError` instead of `Regexp::Syntax::SyntaxError`
+  - they now correctly inherit from `Regexp::Syntax::SyntaxError` instead of Rubys `::SyntaxError`
 
 ## [2.0.2] - 2020-12-25 - [Janosch Müller](mailto:janosch84@gmail.com)
 

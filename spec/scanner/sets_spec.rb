@@ -91,10 +91,14 @@ RSpec.describe('Set scanning') do
   # expect them to be scanned as regular subsets containing literals.
   # include_examples 'scan', /[a[.a-b.]c]/,           2 => [:set,    :collation,       '[.a-b.]',    2,  9]
   # include_examples 'scan', /[a[=e=]c]/,             2 => [:set,    :equivalent,      '[=e=]',      2,  7]
-  include_examples 'scan', '[a[.a-b.]c]',           2 => [:set,     :open,        '[',      2,  3]
-  include_examples 'scan', '[a[.a-b.]c]',           3 => [:literal, :literal,     '.',      3,  4]
-  include_examples 'scan', '[a[=e=]c]',             2 => [:set,     :open,        '[',      2,  3]
-  include_examples 'scan', '[a[=e=]c]',             3 => [:literal, :literal,     '=',      3,  4]
+  include_examples 'scan', '[a[.a-b.]c]',
+    2 => [:set,     :open,           '[',          2,  3],
+    3 => [:literal, :literal,        '.',          3,  4],
+    4 => [:literal, :literal,        'a',          4,  5]
+  include_examples 'scan', '[a[=e=]c]',
+    2 => [:set,     :open,           '[',          2,  3],
+    3 => [:literal, :literal,        '=',          3,  4],
+    4 => [:literal, :literal,        'e',          4,  5]
 
   # multi-byte characters should not affect indices
   include_examples 'scan', /[れます]/,
