@@ -7,8 +7,8 @@ require 'bundler'
 require 'rubygems/package_task'
 
 
-RAGEL_SOURCE_DIR = File.expand_path '../lib/regexp_parser/scanner', __FILE__
-RAGEL_OUTPUT_DIR = File.expand_path '../lib/regexp_parser', __FILE__
+RAGEL_SOURCE_DIR = File.join(__dir__, 'lib/regexp_parser/scanner')
+RAGEL_OUTPUT_DIR = File.join(__dir__, 'lib/regexp_parser')
 RAGEL_SOURCE_FILES = %w{scanner} # scanner.rl includes property.rl
 
 
@@ -61,7 +61,7 @@ namespace :props do
   task :update do
     require 'regexp_property_values'
     RegexpPropertyValues.update
-    dir = File.expand_path('../lib/regexp_parser/scanner/properties', __FILE__)
+    dir = File.join(__dir__, 'lib/regexp_parser/scanner/properties')
 
     require 'psych'
     write_hash_to_file = ->(hash, path) do

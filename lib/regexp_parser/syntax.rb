@@ -2,8 +2,8 @@ module Regexp::Syntax
   class SyntaxError < StandardError; end
 end
 
-require File.expand_path('../syntax/tokens', __FILE__)
-require File.expand_path('../syntax/base', __FILE__)
-require File.expand_path('../syntax/any', __FILE__)
-require File.expand_path('../syntax/version_lookup', __FILE__)
-require File.expand_path('../syntax/versions', __FILE__)
+require_relative 'syntax/tokens'
+require_relative 'syntax/base'
+require_relative 'syntax/any'
+require_relative 'syntax/version_lookup'
+require_relative 'syntax/versions'

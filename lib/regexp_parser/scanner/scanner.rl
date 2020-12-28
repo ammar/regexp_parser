@@ -782,7 +782,7 @@ class Regexp::Scanner
 
   # lazy-load property maps when first needed
   require 'yaml'
-  PROP_MAPS_DIR = File.expand_path('../scanner/properties', __FILE__)
+  PROP_MAPS_DIR = File.join(__dir__, 'scanner', 'properties')
 
   def self.short_prop_map
     @short_prop_map ||= YAML.load_file("#{PROP_MAPS_DIR}/short.yml")
