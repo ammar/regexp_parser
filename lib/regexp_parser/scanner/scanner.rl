@@ -106,13 +106,15 @@
 
   group_named           = ('?' . group_name );
 
-  group_name_ref        = group_ref . (('<' . group_name_id_ab? . group_level? '>') |
-                                       ("'" . group_name_id_sq? . group_level? "'"));
+  group_name_backref    = 'k' . (('<' . group_name_id_ab? . group_level? '>') |
+                                 ("'" . group_name_id_sq? . group_level? "'"));
+  group_name_call       = 'g' . (('<' . group_name_id_ab? . group_level? '>') |
+                                 ("'" . group_name_id_sq? . group_level? "'"));
 
-  group_number_ref      = group_ref . (('<' . group_number . group_level? '>') |
-                                       ("'" . group_number . group_level? "'"));
-
-  whole_pattern_ref     = "g<0>" | "g'0'";
+  group_number_backref  = 'k' . (('<' . group_number . group_level? '>') |
+                                 ("'" . group_number . group_level? "'"));
+  group_number_call     = 'g' . (('<' . ((group_number . group_level?) | '0') '>') |
+                                 ("'" . ((group_number . group_level?) | '0') "'"));
 
   group_type            = group_atomic | group_passive | group_absence | group_named;
 
@@ -540,71 +542,35 @@
 
     # Group backreference, named and numbered
     # ------------------------------------------------------------------------
-    backslash . (
-      group_name_ref    |
-      group_number_ref  |
-      whole_pattern_ref
-    ) > (backslashed, 4) {
+    backslash . (group_name_backref | group_number_backref) > (backslashed, 4) {
       case text = copy(data, ts, te)
-      when /^\\([gk])(<>|'')/ # angle brackets
-        validation_error(:backref, 'ref/call', 'ref ID is empty')
+      when /^\\k(<>|'')/
+        validation_error(:backref, 'backreference', 'ref ID is empty')
+      when /^\\k(.)[^\p{digit}\-][^+\-]*\D$/
+        emit(:backref, $1 == '<' ? :name_ref_ab : :name_ref_sq, text)
+      when /^\\k(.)\d+\D$/
+        emit(:backref, $1 == '<' ? :number_ref_ab : :number_ref_sq, text)
+      when /^\\k(.)-\d+\D$/
+        emit(:backref, $1 == '<' ? :number_rel_ref_ab : :number_rel_ref_sq, text)
+      when /^\\k(.)[^\p{digit}\-].*[+\-]\d+\D$/
+        emit(:backref, $1 == '<' ? :name_recursion_ref_ab : :name_recursion_ref_sq, text)
+      when /^\\k(.)-?\d+[+\-]\d+\D$/
+        emit(:backref, $1 == '<' ? :number_recursion_ref_ab : :number_recursion_ref_sq, text)
+      end
+    };
 
-      # TODO: finer quirks of choosing recursive or non-recursive refs/calls.
-      # e.g.: `a-1` is a valid group id: 'aa'[/(?<a-1>a)\g<a-1>/] # => 'aa'
-      when /^\\([gk])<[^\p{digit}+\->][^>+\-]*>/ # angle-brackets
-        if $1 == 'k'
-          emit(:backref, :name_ref_ab, text)
-        else
-          emit(:backref, :name_call_ab, text)
-        end
-
-      when /^\\([gk])'[^\p{digit}+\-'][^'+\-]*'/ # single quotes
-        if $1 == 'k'
-          emit(:backref, :name_ref_sq, text)
-        else
-          emit(:backref, :name_call_sq, text)
-        end
-
-      when /^\\([gk])<\d+>/ # angle-brackets
-        if $1 == 'k'
-          emit(:backref, :number_ref_ab, text)
-        else
-          emit(:backref, :number_call_ab, text)
-        end
-
-      when /^\\([gk])'\d+'/ # single quotes
-        if $1 == 'k'
-          emit(:backref, :number_ref_sq, text)
-        else
-          emit(:backref, :number_call_sq, text)
-        end
-
-      when /^\\(?:g<\+|g<-|(k)<-)\d+>/ # angle-brackets
-        if $1 == 'k'
-          emit(:backref, :number_rel_ref_ab, text)
-        else
-          emit(:backref, :number_rel_call_ab, text)
-        end
-
-      when /^\\(?:g'\+|g'-|(k)'-)\d+'/ # single quotes
-        if $1 == 'k'
-          emit(:backref, :number_rel_ref_sq, text)
-        else
-          emit(:backref, :number_rel_call_sq, text)
-        end
-
-      when /^\\k<[^\p{digit}+\->][^>]*[+\-]\d+>/ # angle-brackets
-        emit(:backref, :name_recursion_ref_ab, text)
-
-      when /^\\k'[^\p{digit}+\-'][^']*[+\-]\d+'/ # single-quotes
-        emit(:backref, :name_recursion_ref_sq, text)
-
-      when /^\\([gk])<[+\-]?\d+[+\-]\d+>/ # angle-brackets
-        emit(:backref, :number_recursion_ref_ab, text)
-
-      when /^\\([gk])'[+\-]?\d+[+\-]\d+'/ # single-quotes
-        emit(:backref, :number_recursion_ref_sq, text)
-
+    # Group call, named and numbered
+    # ------------------------------------------------------------------------
+    backslash . (group_name_call | group_number_call) > (backslashed, 4) {
+      case text = copy(data, ts, te)
+      when /^\\g(<>|'')/
+        validation_error(:backref, 'subexpression call', 'ref ID is empty')
+      when /^\\g(.)[^\p{digit}+\->][^+\-]*/
+        emit(:backref, $1 == '<' ? :name_call_ab : :name_call_sq, text)
+      when /^\\g(.)\d+\D$/
+        emit(:backref, $1 == '<' ? :number_call_ab : :number_call_sq, text)
+      when /^\\g(.)[+-]\d+/
+        emit(:backref, $1 == '<' ? :number_rel_call_ab : :number_rel_call_sq, text)
       end
     };
 
