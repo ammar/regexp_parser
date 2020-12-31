@@ -21,6 +21,9 @@ RSpec.describe('RefCall scanning') do
   include_examples 'scan', '(abc)\g<1>',        3 => [:backref, :number_call_ab,          '\g<1>',      5, 10]
   include_examples 'scan', "(abc)\\g'1'",       3 => [:backref, :number_call_sq,          "\\g'1'",     5, 10]
 
+  include_examples 'scan', 'a(b|\g<0>)',        4 => [:backref, :number_call_ab,          '\g<0>',      4, 9]
+  include_examples 'scan', "a(b|\\g'0')",       4 => [:backref, :number_call_sq,          "\\g'0'",     4, 9]
+
   include_examples 'scan', '(abc)\g<-1>',       3 => [:backref, :number_rel_call_ab,      '\g<-1>',     5, 11]
   include_examples 'scan', "(abc)\\g'-1'",      3 => [:backref, :number_rel_call_sq,      "\\g'-1'",    5, 11]
 

@@ -112,6 +112,8 @@
   group_number_ref      = group_ref . (('<' . group_number . group_level? '>') |
                                        ("'" . group_number . group_level? "'"));
 
+  whole_pattern_ref     = "g<0>" | "g'0'";
+
   group_type            = group_atomic | group_passive | group_absence | group_named;
 
   keep_mark             = 'K';
@@ -538,7 +540,11 @@
 
     # Group backreference, named and numbered
     # ------------------------------------------------------------------------
-    backslash . (group_name_ref | group_number_ref) > (backslashed, 4) {
+    backslash . (
+      group_name_ref    |
+      group_number_ref  |
+      whole_pattern_ref
+    ) > (backslashed, 4) {
       case text = copy(data, ts, te)
       when /^\\([gk])(<>|'')/ # angle brackets
         validation_error(:backref, 'ref/call', 'ref ID is empty')

@@ -29,6 +29,11 @@ RSpec.describe('Refcall parsing') do
   include_examples 'parse', /(abc)\g'1'/,
     1 => [:backref, :number_call, Backreference::NumberCall, number: 1]
 
+  include_examples 'parse', '\g<0>',
+    0 => [:backref, :number_call, Backreference::NumberCall, number: 0]
+  include_examples 'parse', "\\g'0'",
+    0 => [:backref, :number_call, Backreference::NumberCall, number: 0]
+
   include_examples 'parse', /(abc)\g<-1>/,
     1 => [:backref, :number_rel_call, Backreference::NumberCallRelative, number: -1]
   include_examples 'parse', /(abc)\g'-1'/,

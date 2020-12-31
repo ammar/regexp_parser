@@ -32,6 +32,11 @@ RSpec.describe('RefCall lexing') do
   include_examples 'lex', "(abc)\\g'1'",
     3 => [:backref, :number_call,           "\\g'1'",     5, 10, 0, 0, 0]
 
+  include_examples 'lex', '\g<0>',
+    0 => [:backref, :number_call,           '\g<0>',      0,  5, 0, 0, 0]
+  include_examples 'lex', "\\g'0'",
+    0 => [:backref, :number_call,           "\\g'0'",     0,  5, 0, 0, 0]
+
   include_examples 'lex', '(abc)\g<-1>',
     3 => [:backref, :number_rel_call,       '\g<-1>',     5, 11, 0, 0, 0]
   include_examples 'lex', "(abc)\\g'-1'",
