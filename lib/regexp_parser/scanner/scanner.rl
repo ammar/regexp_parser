@@ -20,7 +20,7 @@
 
   group_open            = '(';
   group_close           = ')';
-  parantheses           = group_open | group_close;
+  parentheses           = group_open | group_close;
 
   set_open              = '[';
   set_close             = ']';
@@ -125,7 +125,7 @@
 
   # characters that 'break' a literal
   meta_char             = dot | backslash | alternation |
-                          curlies | parantheses | brackets |
+                          curlies | parentheses | brackets |
                           line_anchor | quantifier_greedy;
 
   literal_delimiters    = ']' | '}';
