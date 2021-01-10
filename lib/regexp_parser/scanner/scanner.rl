@@ -652,6 +652,7 @@
 # This file was generated from lib/regexp_parser/scanner/scanner.rl
 
 require 'regexp_parser/error'
+require 'regexp_parser/options'
 
 class Regexp::Scanner
   # General scanner error (catch all)
@@ -712,19 +713,20 @@ class Regexp::Scanner
   #
   # This method may raise errors if a syntax error is encountered.
   # --------------------------------------------------------------------------
-  def self.scan(input_object, options: nil, &block)
-    new.scan(input_object, options: options, &block)
+  def self.scan(input, options: nil, &block)
+    new.scan(input, options: options, &block)
   end
 
-  def scan(input_object, options: nil, &block)
+  def scan(input, options: nil, &block)
     self.literal = nil
     stack = []
 
-    input = input_object.is_a?(Regexp) ? input_object.source : input_object
-    self.free_spacing = free_spacing?(input_object, options)
+    source = input.is_a?(Regexp) ? input.source : input
+    opts = Regexp::Options.choose(input, options)
+    self.free_spacing = opts.free_spacing?
     self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
 
-    data  = input.unpack("c*") if input.is_a?(String)
+    data  = source.unpack("c*") if source.is_a?(String)
     eof   = data.length
 
     self.tokens = []
@@ -793,18 +795,6 @@ class Regexp::Scanner
 
   attr_accessor :tokens, :literal, :block, :free_spacing, :spacing_stack,
                 :group_depth, :set_depth, :conditional_stack, :char_pos
-
-  def free_spacing?(input_object, options)
-    if options && !input_object.is_a?(String)
-      raise ArgumentError, 'options cannot be supplied unless scanning a String'
-    end
-
-    options = input_object.options if input_object.is_a?(::Regexp)
-
-    return false unless options
-
-    options & Regexp::EXTENDED != 0
-  end
 
   def in_group?
     group_depth > 0

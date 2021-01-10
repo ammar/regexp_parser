@@ -23,7 +23,8 @@ class Regexp::Parser
   end
 
   def parse(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
-    root = Root.build(extract_options(input, options))
+    opts = Regexp::Options.choose(input, options)
+    root = Root.build(opts)
 
     self.root = root
     self.node = root
@@ -35,7 +36,7 @@ class Regexp::Parser
 
     self.captured_group_counts = Hash.new(0)
 
-    Regexp::Lexer.scan(input, syntax, options: options) do |token|
+    Regexp::Lexer.scan(input, syntax, options: opts) do |token|
       parse_token(token)
     end
 
@@ -53,22 +54,6 @@ class Regexp::Parser
   attr_accessor :root, :node, :nesting,
                 :options_stack, :switching_options, :conditional_nesting,
                 :captured_group_counts
-
-  def extract_options(input, options)
-    if options && !input.is_a?(String)
-      raise ArgumentError, 'options cannot be supplied unless parsing a String'
-    end
-
-    options = input.options if input.is_a?(::Regexp)
-
-    return {} unless options
-
-    enabled_options = {}
-    enabled_options[:i] = true if options & ::Regexp::IGNORECASE != 0
-    enabled_options[:m] = true if options & ::Regexp::MULTILINE  != 0
-    enabled_options[:x] = true if options & ::Regexp::EXTENDED   != 0
-    enabled_options
-  end
 
   def parse_token(token)
     case token.type
@@ -130,7 +115,7 @@ class Regexp::Parser
     self.switching_options = token.token.equal?(:options_switch)
 
     opt_changes = {}
-    new_active_opts = active_opts.dup
+    new_active_opts = active_opts.to_h.dup
 
     MOD_FLAGS.each do |flag|
       if positive.include?(flag.to_s)
@@ -151,10 +136,10 @@ class Regexp::Parser
       opt_changes[enc_flag] = new_active_opts[enc_flag] = true
     end
 
-    options_stack << new_active_opts
+    options_stack << Regexp::Options.new(new_active_opts)
 
     options_group = Group::Options.new(token, active_opts)
-    options_group.option_changes = opt_changes
+    options_group.option_changes = Regexp::Options.new(opt_changes)
 
     nest(options_group)
   end

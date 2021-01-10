@@ -8,7 +8,7 @@ module Regexp::Expression
   # branches, and CharacterSet::Intersection intersected sequences.
   class Sequence < Regexp::Expression::Subexpression
     class << self
-      def add_to(subexpression, params = {}, active_opts = {})
+      def add_to(subexpression, params = {}, active_opts = Regexp::Options.new)
         sequence = at_levels(
           subexpression.level,
           subexpression.set_level,

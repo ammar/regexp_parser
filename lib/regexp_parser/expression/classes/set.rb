@@ -6,7 +6,7 @@ module Regexp::Expression
     alias :negated?  :negative
     alias :closed?   :closed
 
-    def initialize(token, options = {})
+    def initialize(token, options = Regexp::Options.new)
       self.negative = false
       self.closed   = false
       super

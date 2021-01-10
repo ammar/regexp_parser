@@ -1,7 +1,7 @@
 module Regexp::Expression
 
   class Root < Regexp::Expression::Subexpression
-    def self.build(options = {})
+    def self.build(options = Regexp::Options.new)
       new(build_token, options)
     end
 

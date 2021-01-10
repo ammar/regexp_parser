@@ -6,24 +6,23 @@ class Regexp::MatchLength
     exp.match_length
   end
 
-  def initialize(exp, opts = {})
+  def initialize(exp, base: nil, base_min: nil, base_max: nil, reify: nil)
     self.exp_class = exp.class
     self.min_rep = exp.repetitions.min
     self.max_rep = exp.repetitions.max
-    if (base = opts[:base])
+    if base
       self.base_min = base
       self.base_max = base
       self.reify = ->{ '.' * base }
     else
-      self.base_min = opts.fetch(:base_min)
-      self.base_max = opts.fetch(:base_max)
-      self.reify = opts.fetch(:reify)
+      self.base_min = base_min or raise ArgumentError, 'base or base_min needed'
+      self.base_max = base_max or raise ArgumentError, 'base or base_max needed'
+      self.reify    = reify    or raise ArgumentError, 'base or reify needed'
     end
   end
 
-  def each(opts = {})
-    return enum_for(__method__, opts) unless block_given?
-    limit = opts[:limit] || 1000
+  def each(limit: 1000)
+    return enum_for(__method__, limit: limit) unless block_given?
     yielded = 0
     (min..max).each do |num|
       next unless include?(num)

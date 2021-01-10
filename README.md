@@ -73,15 +73,11 @@ called with the results as follows:
   _The result of the block is returned._
 
 All three methods accept either a `Regexp` or `String` (containing the pattern)
-- if a String is passed, `options` can be supplied:
+- custom `options` can be supplied:
 
 ```ruby
-require 'regexp_parser'
-
-Regexp::Parser.parse(
-  "a+ # Recognises a and A...",
-  options: ::Regexp::EXTENDED | ::Regexp::IGNORECASE
-)
+Regexp::Parser.parse("a # matches a and A", options: 'ix')
+Regexp::Parser.parse("a # matches a and A", options: //ix.options)
 ```
 
 ---

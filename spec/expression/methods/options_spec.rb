@@ -55,34 +55,12 @@ RSpec.describe('Expression#options') do
     expect(exp2.options).to eq(a: true)
   end
 
-  it 'is accessible via shortcuts' do
-    exp = Root.build
-
-    expect { exp.options[:i] = true }
-      .to  change { exp.i? }.from(false).to(true)
-      .and change { exp.ignore_case? }.from(false).to(true)
-      .and change { exp.case_insensitive? }.from(false).to(true)
-
-    expect { exp.options[:m] = true }
-      .to  change { exp.m? }.from(false).to(true)
-      .and change { exp.multiline? }.from(false).to(true)
-
-    expect { exp.options[:x] = true }
-      .to  change { exp.x? }.from(false).to(true)
-      .and change { exp.extended? }.from(false).to(true)
-      .and change { exp.free_spacing? }.from(false).to(true)
-
-    expect { exp.options[:a] = true }
-      .to  change { exp.a? }.from(false).to(true)
-      .and change { exp.ascii_classes? }.from(false).to(true)
-
-    expect { exp.options[:d] = true }
-      .to  change { exp.d? }.from(false).to(true)
-      .and change { exp.default_classes? }.from(false).to(true)
-
-    expect { exp.options[:u] = true }
-      .to  change { exp.u? }.from(false).to(true)
-      .and change { exp.unicode_classes? }.from(false).to(true)
+  it 'is accessible via Regexp::Options::Shorthands' do
+    exp = RP.parse(//i)
+    expect(exp.i?).to be true
+    expect(exp.ignore_case?).to be true
+    expect(exp.m?).to be false
+    expect(exp.multiline?).to be false
   end
 
   RSpec.shared_examples '#options' do |regexp, path, klass|

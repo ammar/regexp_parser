@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Added
+
+- support more ways to specify options (regexp flags) when parsing or scanning
+  * e.g. `parse(/foo/, options: 'im')`, `parse('foo', options: [:i, :m])`
+
 ## [2.1.1] - 2021-02-23 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed

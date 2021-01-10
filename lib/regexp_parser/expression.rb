@@ -1,7 +1,10 @@
 require 'regexp_parser/error'
+require 'regexp_parser/options'
 
 module Regexp::Expression
   class Base
+    include Regexp::Options::Shorthands
+
     attr_accessor :type, :token
     attr_accessor :text, :ts
     attr_accessor :level, :set_level, :conditional_level, :nesting_level
@@ -9,7 +12,7 @@ module Regexp::Expression
     attr_accessor :quantifier
     attr_accessor :options
 
-    def initialize(token, options = {})
+    def initialize(token, options = Regexp::Options.new)
       self.type              = token.type
       self.token             = token.token
       self.text              = token.text
@@ -116,7 +119,7 @@ module Regexp::Expression
         level:             level,
         set_level:         set_level,
         conditional_level: conditional_level,
-        options:           options,
+        options:           options.to_h,
         quantifier:        quantified? ? quantifier.to_h : nil,
       }
     end
@@ -149,7 +152,6 @@ require 'regexp_parser/expression/classes/type'
 
 require 'regexp_parser/expression/methods/match'
 require 'regexp_parser/expression/methods/match_length'
-require 'regexp_parser/expression/methods/options'
 require 'regexp_parser/expression/methods/strfregexp'
 require 'regexp_parser/expression/methods/tests'
 require 'regexp_parser/expression/methods/traverse'

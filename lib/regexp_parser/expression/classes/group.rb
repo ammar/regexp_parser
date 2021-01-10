@@ -53,7 +53,7 @@ module Regexp::Expression
       attr_reader :name
       alias identifier name
 
-      def initialize(token, options = {})
+      def initialize(token, options = Regexp::Options.new)
         @name = token.text[3..-2]
         super
       end

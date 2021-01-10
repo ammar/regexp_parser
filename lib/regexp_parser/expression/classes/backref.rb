@@ -13,7 +13,7 @@ module Regexp::Expression
       attr_reader :number
       alias reference number
 
-      def initialize(token, options = {})
+      def initialize(token, options = Regexp::Options.new)
         @number = token.text[token.token.equal?(:number) ? 1..-1 : 3..-2].to_i
         super
       end
@@ -23,7 +23,7 @@ module Regexp::Expression
       attr_reader :name
       alias reference name
 
-      def initialize(token, options = {})
+      def initialize(token, options = Regexp::Options.new)
         @name = token.text[3..-2]
         super
       end
@@ -41,7 +41,7 @@ module Regexp::Expression
     class NumberRecursionLevel < Backreference::Number
       attr_reader :recursion_level
 
-      def initialize(token, options = {})
+      def initialize(token, options = Regexp::Options.new)
         super
         @number, @recursion_level = token.text[3..-2].split(/(?=[+-])/).map(&:to_i)
       end
@@ -50,7 +50,7 @@ module Regexp::Expression
     class NameRecursionLevel < Backreference::Name
       attr_reader :recursion_level
 
-      def initialize(token, options = {})
+      def initialize(token, options = Regexp::Options.new)
         super
         @name, recursion_level = token.text[3..-2].split(/(?=[+-])/)
         @recursion_level = recursion_level.to_i

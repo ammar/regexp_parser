@@ -5,7 +5,7 @@ module Regexp::Expression
 
     attr_accessor :expressions
 
-    def initialize(token, options = {})
+    def initialize(token, options = Regexp::Options.new)
       super
 
       self.expressions = []
