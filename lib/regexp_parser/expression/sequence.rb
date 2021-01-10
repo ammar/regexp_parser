@@ -41,17 +41,11 @@ module Regexp::Expression
     alias :ts :starts_at
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
-      offset = -1
-      target = expressions[offset]
-      while target.is_a?(FreeSpace)
-        target = expressions[offset -= 1]
-      end
-
+      target = expressions.reverse.find { |exp| !exp.is_a?(FreeSpace) }
       target || raise(ArgumentError, "No valid target found for '#{text}' "\
                                      'quantifier')
 
       target.quantify(token, text, min, max, mode)
     end
   end
-
 end
