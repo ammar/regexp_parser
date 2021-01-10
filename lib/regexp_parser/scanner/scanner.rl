@@ -58,6 +58,8 @@
 
   meta_sequence         = 'M-' . (backslash . ('c' | 'C-'))? . backslash? . any;
 
+  sequence_char         = [CMcux];
+
   zero_or_one           = '?' | '??' | '?+';
   zero_or_more          = '*' | '*?' | '*+';
   one_or_more           = '+' | '+?' | '++';
@@ -134,10 +136,10 @@
   ascii_nonprint        = (0x01..0x1f | 0x7f);
 
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
-                          keep_mark | [xucCM];
+                          keep_mark | sequence_char;
 
   non_set_escape        = (anchor_char - 'b') | group_ref | keep_mark |
-                          multi_codepoint_char_type | [0-9cCM];
+                          multi_codepoint_char_type | [0-9];
 
   # EOF error, used where it can be detected
   action premature_end_error {
