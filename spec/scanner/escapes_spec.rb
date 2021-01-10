@@ -4,7 +4,7 @@ RSpec.describe('Escape scanning') do
   include_examples 'scan', /c\at/,            1 => [:escape,  :bell,             '\a',             1,  3]
 
   # not an escape outside a character set
-  include_examples 'scan', /c\bt/,            1 => [:anchor,  :word_boundary,    '\b',             1, 3]
+  include_examples 'scan', /c\bt/,            1 => [:anchor,  :word_boundary,    '\b',             1,  3]
 
   include_examples 'scan', /c\ft/,            1 => [:escape,  :form_feed,        '\f',             1,  3]
   include_examples 'scan', /c\nt/,            1 => [:escape,  :newline,          '\n',             1,  3]
