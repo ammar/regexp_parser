@@ -2,7 +2,6 @@ require 'regexp_parser/expression'
 
 class Regexp::Parser
   include Regexp::Expression
-  include Regexp::Syntax
 
   class ParserError < StandardError; end
 
@@ -70,39 +69,7 @@ class Regexp::Parser
     enabled_options
   end
 
-  def nest(exp)
-    nesting.push(exp)
-    node << exp
-    update_transplanted_subtree(exp, node)
-    self.node = exp
-  end
-
-  # subtrees are transplanted to build Alternations, Intersections, Ranges
-  def update_transplanted_subtree(exp, new_parent)
-    exp.nesting_level = new_parent.nesting_level + 1
-    exp.respond_to?(:each) &&
-      exp.each { |subexp| update_transplanted_subtree(subexp, exp) }
-  end
-
-  def decrease_nesting
-    while nesting.last.is_a?(SequenceOperation)
-      nesting.pop
-      self.node = nesting.last
-    end
-    nesting.pop
-    yield(node) if block_given?
-    self.node = nesting.last
-    self.node = node.last if node.last.is_a?(SequenceOperation)
-  end
-
-  def nest_conditional(exp)
-    conditional_nesting.push(exp)
-    nest(exp)
-  end
-
   def parse_token(token)
-    close_completed_character_set_range
-
     case token.type
     when :anchor;                     anchor(token)
     when :assertion, :group;          group(token)
@@ -121,38 +88,136 @@ class Regexp::Parser
     else
       raise UnknownTokenTypeError.new(token.type, token)
     end
+
+    close_completed_character_set_range
   end
 
-  def literal(token)
-    node << Literal.new(token, active_opts)
-  end
-
-  def set(token)
+  def anchor(token)
     case token.token
-    when :open
-      open_set(token)
+    when :bol;              node << Anchor::BeginningOfLine.new(token, active_opts)
+    when :bos;              node << Anchor::BOS.new(token, active_opts)
+    when :eol;              node << Anchor::EndOfLine.new(token, active_opts)
+    when :eos;              node << Anchor::EOS.new(token, active_opts)
+    when :eos_ob_eol;       node << Anchor::EOSobEOL.new(token, active_opts)
+    when :match_start;      node << Anchor::MatchStart.new(token, active_opts)
+    when :nonword_boundary; node << Anchor::NonWordBoundary.new(token, active_opts)
+    when :word_boundary;    node << Anchor::WordBoundary.new(token, active_opts)
+    else
+      raise UnknownTokenError.new('Anchor', token)
+    end
+  end
+
+  def group(token)
+    case token.token
+    when :options, :options_switch
+      options_group(token)
     when :close
-      close_set
-    when :negate
-      negate_set
-    when :range
-      range(token)
-    when :intersection
-      intersection(token)
+      close_group
+    when :comment
+      node << Group::Comment.new(token, active_opts)
     else
-      raise UnknownTokenError.new('CharacterSet', token)
+      open_group(token)
     end
   end
 
-  def meta(token)
-    case token.token
-    when :dot
-      node << CharacterType::Any.new(token, active_opts)
-    when :alternation
-      sequence_operation(Alternation, token)
-    else
-      raise UnknownTokenError.new('Meta', token)
+  MOD_FLAGS = %w[i m x].map(&:to_sym)
+  ENC_FLAGS = %w[a d u].map(&:to_sym)
+
+  def options_group(token)
+    positive, negative = token.text.split('-', 2)
+    negative ||= ''
+    self.switching_options = token.token.equal?(:options_switch)
+
+    opt_changes = {}
+    new_active_opts = active_opts.dup
+
+    MOD_FLAGS.each do |flag|
+      if positive.include?(flag.to_s)
+        opt_changes[flag] = new_active_opts[flag] = true
+      end
+      if negative.include?(flag.to_s)
+        opt_changes[flag] = false
+        new_active_opts.delete(flag)
+      end
     end
+
+    if (enc_flag = positive.reverse[/[adu]/])
+      enc_flag = enc_flag.to_sym
+      (ENC_FLAGS - [enc_flag]).each do |other|
+        opt_changes[other] = false if new_active_opts[other]
+        new_active_opts.delete(other)
+      end
+      opt_changes[enc_flag] = new_active_opts[enc_flag] = true
+    end
+
+    options_stack << new_active_opts
+
+    options_group = Group::Options.new(token, active_opts)
+    options_group.option_changes = opt_changes
+
+    nest(options_group)
+  end
+
+  def open_group(token)
+    group_class =
+      case token.token
+      when :absence;     Group::Absence
+      when :atomic;      Group::Atomic
+      when :capture;     Group::Capture
+      when :named;       Group::Named
+      when :passive;     Group::Passive
+
+      when :lookahead;   Assertion::Lookahead
+      when :lookbehind;  Assertion::Lookbehind
+      when :nlookahead;  Assertion::NegativeLookahead
+      when :nlookbehind; Assertion::NegativeLookbehind
+
+      else
+        raise UnknownTokenError.new('Group type open', token)
+      end
+
+    group = group_class.new(token, active_opts)
+
+    if group.capturing?
+      group.number          = total_captured_group_count + 1
+      group.number_at_level = captured_group_count_at_level + 1
+      count_captured_group
+    end
+
+    # Push the active options to the stack again. This way we can simply pop the
+    # stack for any group we close, no matter if it had its own options or not.
+    options_stack << active_opts
+
+    nest(group)
+  end
+
+  def total_captured_group_count
+    captured_group_counts.values.reduce(0, :+)
+  end
+
+  def captured_group_count_at_level
+    captured_group_counts[node.level]
+  end
+
+  def count_captured_group
+    captured_group_counts[node.level] += 1
+  end
+
+  def close_group
+    options_stack.pop unless switching_options
+    self.switching_options = false
+    decrease_nesting
+  end
+
+  def decrease_nesting
+    while nesting.last.is_a?(SequenceOperation)
+      nesting.pop
+      self.node = nesting.last
+    end
+    nesting.pop
+    yield(node) if block_given?
+    self.node = nesting.last
+    self.node = node.last if node.last.is_a?(SequenceOperation)
   end
 
   def backref(token)
@@ -182,31 +247,9 @@ class Regexp::Parser
     end
   end
 
-  def type(token)
-    case token.token
-    when :digit
-      node << CharacterType::Digit.new(token, active_opts)
-    when :nondigit
-      node << CharacterType::NonDigit.new(token, active_opts)
-    when :hex
-      node << CharacterType::Hex.new(token, active_opts)
-    when :nonhex
-      node << CharacterType::NonHex.new(token, active_opts)
-    when :space
-      node << CharacterType::Space.new(token, active_opts)
-    when :nonspace
-      node << CharacterType::NonSpace.new(token, active_opts)
-    when :word
-      node << CharacterType::Word.new(token, active_opts)
-    when :nonword
-      node << CharacterType::NonWord.new(token, active_opts)
-    when :linebreak
-      node << CharacterType::Linebreak.new(token, active_opts)
-    when :xgrapheme
-      node << CharacterType::ExtendedGrapheme.new(token, active_opts)
-    else
-      raise UnknownTokenError.new('CharacterType', token)
-    end
+  def assign_effective_number(exp)
+    exp.effective_number =
+      exp.number + total_captured_group_count + (exp.number < 0 ? 1 : 0)
   end
 
   def conditional(token)
@@ -234,11 +277,114 @@ class Regexp::Parser
     end
   end
 
+  def nest_conditional(exp)
+    conditional_nesting.push(exp)
+    nest(exp)
+  end
+
+  def nest(exp)
+    nesting.push(exp)
+    node << exp
+    update_transplanted_subtree(exp, node)
+    self.node = exp
+  end
+
+  # subtrees are transplanted to build Alternations, Intersections, Ranges
+  def update_transplanted_subtree(exp, new_parent)
+    exp.nesting_level = new_parent.nesting_level + 1
+    exp.respond_to?(:each) &&
+      exp.each { |subexp| update_transplanted_subtree(subexp, exp) }
+  end
+
+  def escape(token)
+    case token.token
+
+    when :backspace;      node << EscapeSequence::Backspace.new(token, active_opts)
+
+    when :escape;         node << EscapeSequence::AsciiEscape.new(token, active_opts)
+    when :bell;           node << EscapeSequence::Bell.new(token, active_opts)
+    when :form_feed;      node << EscapeSequence::FormFeed.new(token, active_opts)
+    when :newline;        node << EscapeSequence::Newline.new(token, active_opts)
+    when :carriage;       node << EscapeSequence::Return.new(token, active_opts)
+    when :tab;            node << EscapeSequence::Tab.new(token, active_opts)
+    when :vertical_tab;   node << EscapeSequence::VerticalTab.new(token, active_opts)
+
+    when :codepoint;      node << EscapeSequence::Codepoint.new(token, active_opts)
+    when :codepoint_list; node << EscapeSequence::CodepointList.new(token, active_opts)
+    when :hex;            node << EscapeSequence::Hex.new(token, active_opts)
+    when :octal;          node << EscapeSequence::Octal.new(token, active_opts)
+
+    when :control
+      if token.text =~ /\A(?:\\C-\\M|\\c\\M)/
+        node << EscapeSequence::MetaControl.new(token, active_opts)
+      else
+        node << EscapeSequence::Control.new(token, active_opts)
+      end
+
+    when :meta_sequence
+      if token.text =~ /\A\\M-\\[Cc]/
+        node << EscapeSequence::MetaControl.new(token, active_opts)
+      else
+        node << EscapeSequence::Meta.new(token, active_opts)
+      end
+
+    else
+      # treating everything else as a literal
+      node << EscapeSequence::Literal.new(token, active_opts)
+    end
+  end
+
+  def free_space(token)
+    case token.token
+    when :comment
+      node << Comment.new(token, active_opts)
+    when :whitespace
+      if node.last.is_a?(WhiteSpace)
+        node.last.merge(WhiteSpace.new(token, active_opts))
+      else
+        node << WhiteSpace.new(token, active_opts)
+      end
+    else
+      raise UnknownTokenError.new('FreeSpace', token)
+    end
+  end
+
+  def keep(token)
+    node << Keep::Mark.new(token, active_opts)
+  end
+
+  def literal(token)
+    node << Literal.new(token, active_opts)
+  end
+
+  def meta(token)
+    case token.token
+    when :dot
+      node << CharacterType::Any.new(token, active_opts)
+    when :alternation
+      sequence_operation(Alternation, token)
+    else
+      raise UnknownTokenError.new('Meta', token)
+    end
+  end
+
+  def sequence_operation(klass, token)
+    unless node.is_a?(klass)
+      operator = klass.new(token, active_opts)
+      sequence = operator.add_sequence(active_opts)
+      sequence.expressions = node.expressions
+      node.expressions = []
+      nest(operator)
+    end
+    node.add_sequence(active_opts)
+  end
+
   def posixclass(token)
     node << PosixClass.new(token, active_opts)
   end
 
   include Regexp::Expression::UnicodeProperty
+  UPTokens = Regexp::Syntax::Token::UnicodeProperty
 
   def property(token)
     case token.token
@@ -310,115 +456,14 @@ class Regexp::Parser
     when :private_use;            node << Codepoint::PrivateUse.new(token, active_opts)
     when :unassigned;             node << Codepoint::Unassigned.new(token, active_opts)
 
-    when *Token::UnicodeProperty::Age
-      node << Age.new(token, active_opts)
-
-    when *Token::UnicodeProperty::Derived
-      node << Derived.new(token, active_opts)
-
-    when *Token::UnicodeProperty::Emoji
-      node << Emoji.new(token, active_opts)
-
-    when *Token::UnicodeProperty::Script
-      node << Script.new(token, active_opts)
-
-    when *Token::UnicodeProperty::UnicodeBlock
-      node << Block.new(token, active_opts)
+    when *UPTokens::Age;          node << Age.new(token, active_opts)
+    when *UPTokens::Derived;      node << Derived.new(token, active_opts)
+    when *UPTokens::Emoji;        node << Emoji.new(token, active_opts)
+    when *UPTokens::Script;       node << Script.new(token, active_opts)
+    when *UPTokens::UnicodeBlock; node << Block.new(token, active_opts)
 
     else
       raise UnknownTokenError.new('UnicodeProperty', token)
-    end
-  end
-
-  def anchor(token)
-    case token.token
-    when :bol
-      node << Anchor::BeginningOfLine.new(token, active_opts)
-    when :eol
-      node << Anchor::EndOfLine.new(token, active_opts)
-    when :bos
-      node << Anchor::BOS.new(token, active_opts)
-    when :eos
-      node << Anchor::EOS.new(token, active_opts)
-    when :eos_ob_eol
-      node << Anchor::EOSobEOL.new(token, active_opts)
-    when :word_boundary
-      node << Anchor::WordBoundary.new(token, active_opts)
-    when :nonword_boundary
-      node << Anchor::NonWordBoundary.new(token, active_opts)
-    when :match_start
-      node << Anchor::MatchStart.new(token, active_opts)
-    else
-      raise UnknownTokenError.new('Anchor', token)
-    end
-  end
-
-  def escape(token)
-    case token.token
-
-    when :backspace
-      node << EscapeSequence::Backspace.new(token, active_opts)
-
-    when :escape
-      node << EscapeSequence::AsciiEscape.new(token, active_opts)
-    when :bell
-      node << EscapeSequence::Bell.new(token, active_opts)
-    when :form_feed
-      node << EscapeSequence::FormFeed.new(token, active_opts)
-    when :newline
-      node << EscapeSequence::Newline.new(token, active_opts)
-    when :carriage
-      node << EscapeSequence::Return.new(token, active_opts)
-    when :tab
-      node << EscapeSequence::Tab.new(token, active_opts)
-    when :vertical_tab
-      node << EscapeSequence::VerticalTab.new(token, active_opts)
-
-    when :hex
-      node << EscapeSequence::Hex.new(token, active_opts)
-    when :octal
-      node << EscapeSequence::Octal.new(token, active_opts)
-    when :codepoint
-      node << EscapeSequence::Codepoint.new(token, active_opts)
-    when :codepoint_list
-      node << EscapeSequence::CodepointList.new(token, active_opts)
-
-    when :control
-      if token.text =~ /\A(?:\\C-\\M|\\c\\M)/
-        node << EscapeSequence::MetaControl.new(token, active_opts)
-      else
-        node << EscapeSequence::Control.new(token, active_opts)
-      end
-
-    when :meta_sequence
-      if token.text =~ /\A\\M-\\[Cc]/
-        node << EscapeSequence::MetaControl.new(token, active_opts)
-      else
-        node << EscapeSequence::Meta.new(token, active_opts)
-      end
-
-    else
-      # treating everything else as a literal
-      node << EscapeSequence::Literal.new(token, active_opts)
-    end
-  end
-
-  def keep(token)
-    node << Keep::Mark.new(token, active_opts)
-  end
-
-  def free_space(token)
-    case token.token
-    when :comment
-      node << Comment.new(token, active_opts)
-    when :whitespace
-      if node.last.is_a?(WhiteSpace)
-        node.last.merge(WhiteSpace.new(token, active_opts))
-      else
-        node << WhiteSpace.new(token, active_opts)
-      end
-    else
-      raise UnknownTokenError.new('FreeSpace', token)
     end
   end
 
@@ -511,100 +556,16 @@ class Regexp::Parser
     target_node.quantify(:interval, text, min.to_i, max.to_i, mode)
   end
 
-  def group(token)
+  def set(token)
     case token.token
-    when :options, :options_switch
-      options_group(token)
-    when :close
-      close_group
-    when :comment
-      node << Group::Comment.new(token, active_opts)
+    when :open;         open_set(token)
+    when :close;        close_set
+    when :negate;       negate_set
+    when :range;        range(token)
+    when :intersection; intersection(token)
     else
-      open_group(token)
+      raise UnknownTokenError.new('CharacterSet', token)
     end
-  end
-
-  MOD_FLAGS = %w[i m x].map(&:to_sym)
-  ENC_FLAGS = %w[a d u].map(&:to_sym)
-
-  def options_group(token)
-    positive, negative = token.text.split('-', 2)
-    negative ||= ''
-    self.switching_options = token.token.equal?(:options_switch)
-
-    opt_changes = {}
-    new_active_opts = active_opts.dup
-
-    MOD_FLAGS.each do |flag|
-      if positive.include?(flag.to_s)
-        opt_changes[flag] = new_active_opts[flag] = true
-      end
-      if negative.include?(flag.to_s)
-        opt_changes[flag] = false
-        new_active_opts.delete(flag)
-      end
-    end
-
-    if (enc_flag = positive.reverse[/[adu]/])
-      enc_flag = enc_flag.to_sym
-      (ENC_FLAGS - [enc_flag]).each do |other|
-        opt_changes[other] = false if new_active_opts[other]
-        new_active_opts.delete(other)
-      end
-      opt_changes[enc_flag] = new_active_opts[enc_flag] = true
-    end
-
-    options_stack << new_active_opts
-
-    options_group = Group::Options.new(token, active_opts)
-    options_group.option_changes = opt_changes
-
-    nest(options_group)
-  end
-
-  def open_group(token)
-    case token.token
-    when :passive
-      exp = Group::Passive.new(token, active_opts)
-    when :atomic
-      exp = Group::Atomic.new(token, active_opts)
-    when :named
-      exp = Group::Named.new(token, active_opts)
-    when :capture
-      exp = Group::Capture.new(token, active_opts)
-    when :absence
-      exp = Group::Absence.new(token, active_opts)
-
-    when :lookahead
-      exp = Assertion::Lookahead.new(token, active_opts)
-    when :nlookahead
-      exp = Assertion::NegativeLookahead.new(token, active_opts)
-    when :lookbehind
-      exp = Assertion::Lookbehind.new(token, active_opts)
-    when :nlookbehind
-      exp = Assertion::NegativeLookbehind.new(token, active_opts)
-
-    else
-      raise UnknownTokenError.new('Group type open', token)
-    end
-
-    if exp.capturing?
-      exp.number          = total_captured_group_count + 1
-      exp.number_at_level = captured_group_count_at_level + 1
-      count_captured_group
-    end
-
-    # Push the active options to the stack again. This way we can simply pop the
-    # stack for any group we close, no matter if it had its own options or not.
-    options_stack << active_opts
-
-    nest(exp)
-  end
-
-  def close_group
-    options_stack.pop unless switching_options
-    self.switching_options = false
-    decrease_nesting
   end
 
   def open_set(token)
@@ -627,51 +588,45 @@ class Regexp::Parser
     nest(exp)
   end
 
-  def close_completed_character_set_range
-    decrease_nesting if node.is_a?(CharacterSet::Range) && node.complete?
-  end
-
   def intersection(token)
     sequence_operation(CharacterSet::Intersection, token)
   end
 
-  def sequence_operation(klass, token)
-    unless node.is_a?(klass)
-      operator = klass.new(token, active_opts)
-      sequence = operator.add_sequence(active_opts)
-      sequence.expressions = node.expressions
-      node.expressions = []
-      nest(operator)
+  def type(token)
+    case token.token
+    when :digit;     node << CharacterType::Digit.new(token, active_opts)
+    when :hex;       node << CharacterType::Hex.new(token, active_opts)
+    when :linebreak; node << CharacterType::Linebreak.new(token, active_opts)
+    when :nondigit;  node << CharacterType::NonDigit.new(token, active_opts)
+    when :nonhex;    node << CharacterType::NonHex.new(token, active_opts)
+    when :nonspace;  node << CharacterType::NonSpace.new(token, active_opts)
+    when :nonword;   node << CharacterType::NonWord.new(token, active_opts)
+    when :space;     node << CharacterType::Space.new(token, active_opts)
+    when :word;      node << CharacterType::Word.new(token, active_opts)
+    when :xgrapheme; node << CharacterType::ExtendedGrapheme.new(token, active_opts)
+    else
+      raise UnknownTokenError.new('CharacterType', token)
     end
-    node.add_sequence(active_opts)
+  end
+
+  def close_completed_character_set_range
+    decrease_nesting if node.is_a?(CharacterSet::Range) && node.complete?
   end
 
   def active_opts
     options_stack.last
   end
 
-  def total_captured_group_count
-    captured_group_counts.values.reduce(0, :+)
-  end
-
-  def captured_group_count_at_level
-    captured_group_counts[node.level]
-  end
-
-  def count_captured_group
-    captured_group_counts[node.level] += 1
-  end
-
-  def assign_effective_number(exp)
-    exp.effective_number =
-      exp.number + total_captured_group_count + (exp.number < 0 ? 1 : 0)
-  end
-
+  # Assigns referenced expressions to refering expressions, e.g. if there is
+  # an instance of Backreference::Number, its #referenced_expression is set to
+  # the instance of Group::Capture that it refers to via its number.
   def assign_referenced_expressions
     targets = {}
+    # find all referencable expressions
     root.each_expression do |exp|
       exp.is_a?(Group::Capture) && targets[exp.identifier] = exp
     end
+    # assign them to any refering expressions
     root.each_expression do |exp|
       exp.respond_to?(:reference) &&
         exp.referenced_expression = targets[exp.reference]
