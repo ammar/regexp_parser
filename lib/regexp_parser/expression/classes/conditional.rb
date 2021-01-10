@@ -15,6 +15,11 @@ module Regexp::Expression
         ref = text.tr("'<>()", "")
         ref =~ /\D/ ? ref : Integer(ref)
       end
+
+      def initialize_copy(orig)
+        self.referenced_expression = orig.referenced_expression.dup
+        super
+      end
     end
 
     class Branch < Regexp::Expression::Sequence; end
@@ -52,6 +57,11 @@ module Regexp::Expression
 
       def to_s(format = :full)
         "#{text}#{condition}#{branches.join('|')})#{quantifier_affix(format)}"
+      end
+
+      def initialize_copy(orig)
+        self.referenced_expression = orig.referenced_expression.dup
+        super
       end
     end
   end

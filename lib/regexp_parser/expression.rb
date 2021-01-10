@@ -21,7 +21,7 @@ module Regexp::Expression
       self.options           = options
     end
 
-    def initialize_clone(orig)
+    def initialize_copy(orig)
       self.text       = (orig.text       ? orig.text.dup         : nil)
       self.options    = (orig.options    ? orig.options.dup      : nil)
       self.quantifier = (orig.quantifier ? orig.quantifier.clone : nil)

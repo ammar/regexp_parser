@@ -2,6 +2,11 @@ module Regexp::Expression
   module Backreference
     class Base < Regexp::Expression::Base
       attr_accessor :referenced_expression
+
+      def initialize_copy(orig)
+        self.referenced_expression = orig.referenced_expression.dup
+        super
+      end
     end
 
     class Number < Backreference::Base

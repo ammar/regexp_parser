@@ -12,7 +12,7 @@ module Regexp::Expression
       @max   = max
     end
 
-    def initialize_clone(orig)
+    def initialize_copy(orig)
       @text = orig.text.dup
       super
     end

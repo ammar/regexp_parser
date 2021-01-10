@@ -72,6 +72,38 @@ RSpec.describe('Expression#clone') do
     expect { root_1.clone }.not_to(change { root_1.name.object_id })
   end
 
+  specify('Group::Options#clone') do
+    root = RP.parse('foo(?i)bar')
+    copy = root.clone
+
+    expect(copy.to_s).to eq root.to_s
+
+    root_1 = root[1]
+    copy_1 = copy[1]
+
+    expect(root_1.option_changes).to eq copy_1.option_changes
+    expect(root_1.option_changes.object_id).not_to eq copy_1.option_changes.object_id
+
+    # regression test
+    expect { root_1.clone }.not_to(change { root_1.option_changes.object_id })
+  end
+
+  specify('Backreference::Base#clone') do
+    root = RP.parse('(foo)\1')
+    copy = root.clone
+
+    expect(copy.to_s).to eq root.to_s
+
+    root_1 = root[1]
+    copy_1 = copy[1]
+
+    expect(root_1.referenced_expression.to_s).to eq copy_1.referenced_expression.to_s
+    expect(root_1.referenced_expression.object_id).not_to eq copy_1.referenced_expression.object_id
+
+    # regression test
+    expect { root_1.clone }.not_to(change { root_1.referenced_expression.object_id })
+  end
+
   specify('Sequence#clone') do
     root = RP.parse(/(a|b)/)
     copy = root.clone
