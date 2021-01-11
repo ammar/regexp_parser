@@ -330,6 +330,10 @@ class Regexp::Parser
 
     else
       # treating everything else as a literal
+      # TODO: maybe split this up a bit more in v3.0.0?
+      # E.g. escaped quantifiers or set meta chars are not the same
+      # as stuff that would be a literal even without the backslash.
+      # Right now, they all end up here.
       node << EscapeSequence::Literal.new(token, active_opts)
     end
   end

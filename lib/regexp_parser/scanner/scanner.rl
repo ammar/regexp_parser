@@ -138,8 +138,10 @@
   non_literal_escape    = char_type_char | anchor_char | escaped_ascii |
                           keep_mark | sequence_char;
 
-  non_set_escape        = (anchor_char - 'b') | group_ref | keep_mark |
-                          multi_codepoint_char_type | [0-9];
+  # escapes that also work within a character set
+  set_escape            = backslash | brackets | escaped_ascii | property_char |
+                          sequence_char | single_codepoint_char_type;
+
 
   # EOF error, used where it can be detected
   action premature_end_error {
@@ -255,15 +257,15 @@
   # set escapes scanner
   # --------------------------------------------------------------------------
   set_escape_sequence := |*
-    non_set_escape > (escaped_set_alpha, 2) {
-      emit(:escape, :literal, copy(data, ts-1, te))
-      fret;
-    };
-
-    any > (escaped_set_alpha, 1) {
+    set_escape > (escaped_set_alpha, 2) {
       fhold;
       fnext character_set;
       fcall escape_sequence;
+    };
+
+    any > (escaped_set_alpha, 1) {
+      emit(:escape, :literal, copy(data, ts-1, te))
+      fret;
     };
   *|;
 

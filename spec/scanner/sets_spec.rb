@@ -6,8 +6,18 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', /[^n]/,                  1 => [:set,    :negate,          '^',          1, 2]
 
   include_examples 'scan', /[c]/,                   1 => [:literal, :literal,        'c',          1, 2]
-  include_examples 'scan', /[\b]/,                  1 => [:escape,  :backspace,      '\b',         1, 3]
-  include_examples 'scan', /[A\bX]/,                2 => [:escape,  :backspace,      '\b',         2, 4]
+  include_examples 'scan', /[^d]/,                  2 => [:literal, :literal,        'd',          2, 3]
+
+  include_examples 'scan', /[\b]/,                  1 => [:escape, :backspace,       '\b',         1, 3]
+  include_examples 'scan', /[A\bX]/,                2 => [:escape, :backspace,       '\b',         2, 4]
+
+  include_examples 'scan', /[\a]/,                  1 => [:escape, :bell,            '\a',         1, 3]
+  include_examples 'scan', /[\e]/,                  1 => [:escape, :escape,          '\e',         1, 3]
+  include_examples 'scan', /[\f]/,                  1 => [:escape, :form_feed,       '\f',         1, 3]
+  include_examples 'scan', /[\n]/,                  1 => [:escape, :newline,         '\n',         1, 3]
+  include_examples 'scan', /[\r]/,                  1 => [:escape, :carriage,        '\r',         1, 3]
+  include_examples 'scan', /[\t]/,                  1 => [:escape, :tab,             '\t',         1, 3]
+  include_examples 'scan', /[\v]/,                  1 => [:escape, :vertical_tab,    '\v',         1, 3]
 
   include_examples 'scan', /[.]/,                   1 => [:literal, :literal,        '.',          1, 2]
   include_examples 'scan', /[?]/,                   1 => [:literal, :literal,        '?',          1, 2]
@@ -18,7 +28,6 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', /[<]/,                   1 => [:literal, :literal,        '<',          1, 2]
   include_examples 'scan', /[>]/,                   1 => [:literal, :literal,        '>',          1, 2]
 
-  include_examples 'scan', '[\.]',                  1 => [:escape, :dot,             '\.',         1, 3]
   include_examples 'scan', '[\\\\]',                1 => [:escape, :backslash,       '\\\\',       1, 3]
   include_examples 'scan', '[\u0040]',              1 => [:escape, :codepoint,       '\u0040',     1, 7]
   include_examples 'scan', '[\u{40}]',              1 => [:escape, :codepoint_list,  '\u{40}',     1, 7]
@@ -27,9 +36,21 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', '[\x20]',                1 => [:escape, :hex,             '\x20',       1, 5]
   include_examples 'scan', '[\M-Z]',                1 => [:escape, :meta_sequence,   '\M-Z',       1, 5]
   include_examples 'scan', '[\M-\C-X]',             1 => [:escape, :meta_sequence,   '\M-\C-X',    1, 8]
+  include_examples 'scan', '[\\[]',                 1 => [:escape, :set_open,        '\[',         1, 3]
+  include_examples 'scan', '[\\]]',                 1 => [:escape, :set_close,       '\]',         1, 3]
+  include_examples 'scan', '[a\-]',                 2 => [:escape, :literal,         '\-',         2, 4]
+  include_examples 'scan', '[\-c]',                 1 => [:escape, :literal,         '\-',         1, 3]
+  include_examples 'scan', '[\.]',                  1 => [:escape, :literal,         '\.',         1, 3]
+  include_examples 'scan', '[\?]',                  1 => [:escape, :literal,         '\?',         1, 3]
+  include_examples 'scan', '[\*]',                  1 => [:escape, :literal,         '\*',         1, 3]
+  include_examples 'scan', '[\+]',                  1 => [:escape, :literal,         '\+',         1, 3]
+  include_examples 'scan', '[\|]',                  1 => [:escape, :literal,         '\|',         1, 3]
+  include_examples 'scan', '[\{]',                  1 => [:escape, :literal,         '\{',         1, 3]
+  include_examples 'scan', '[\}]',                  1 => [:escape, :literal,         '\}',         1, 3]
+  include_examples 'scan', '[\(]',                  1 => [:escape, :literal,         '\(',         1, 3]
+  include_examples 'scan', '[\)]',                  1 => [:escape, :literal,         '\)',         1, 3]
   include_examples 'scan', '[\!]',                  1 => [:escape, :literal,         '\!',         1, 3]
   include_examples 'scan', '[\#]',                  1 => [:escape, :literal,         '\#',         1, 3]
-  include_examples 'scan', '[\\]]',                 1 => [:escape, :set_close,       '\]',         1, 3]
   include_examples 'scan', '[\A]',                  1 => [:escape, :literal,         '\A',         1, 3]
   include_examples 'scan', '[\z]',                  1 => [:escape, :literal,         '\z',         1, 3]
   include_examples 'scan', '[\g]',                  1 => [:escape, :literal,         '\g',         1, 3]
@@ -37,7 +58,6 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', '[\R]',                  1 => [:escape, :literal,         '\R',         1, 3]
   include_examples 'scan', '[\X]',                  1 => [:escape, :literal,         '\X',         1, 3]
   include_examples 'scan', '[\B]',                  1 => [:escape, :literal,         '\B',         1, 3]
-  include_examples 'scan', '[a\-c]',                2 => [:escape, :literal,         '\-',         2, 4]
 
   include_examples 'scan', /[\d]/,                  1 => [:type,   :digit,           '\d',         1, 3]
   include_examples 'scan', /[\da-z]/,               1 => [:type,   :digit,           '\d',         1, 3]
@@ -60,6 +80,12 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', /[a-c^]/,                4 => [:literal, :literal,        '^',          4, 5]
   include_examples 'scan', /[a-bd-f]/,              2 => [:set,     :range,          '-',          2, 3]
   include_examples 'scan', /[a-cd-f]/,              5 => [:set,     :range,          '-',          5, 6]
+  # this is a buggy range, it matches only `c`, but not `a`, `b` or `-`
+  include_examples 'scan', /[a-[c]]/,               2 => [:set,     :range,          '-',          2, 3]
+  # these are not ranges, they match `a`, `c` and `-` (or non-`-` if negated)
+  include_examples 'scan', /[[a]-[c]]/,             4 => [:literal, :literal,        '-',          4, 5]
+  include_examples 'scan', /[[a]-c]/,               4 => [:literal, :literal,        '-',          4, 5]
+  include_examples 'scan', /[^-c]/,                 2 => [:literal, :literal,        '-',          2, 3]
 
   include_examples 'scan', /[a[:digit:]c]/,         2 => [:posixclass,    :digit,    '[:digit:]',  2, 11]
   include_examples 'scan', /[[:digit:][:space:]]/,  2 => [:posixclass,    :space,    '[:space:]', 10, 19]
