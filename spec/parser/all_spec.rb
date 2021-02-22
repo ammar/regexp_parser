@@ -34,10 +34,10 @@ RSpec.describe(Regexp::Parser) do
   end
 
   specify('parse no quantifier target raises error') do
-    expect { RP.parse('?abc') }.to raise_error(ArgumentError)
+    expect { RP.parse('?abc') }.to raise_error(Regexp::Parser::Error)
   end
 
   specify('parse sequence no quantifier target raises error') do
-    expect { RP.parse('abc|?def') }.to raise_error(ArgumentError)
+    expect { RP.parse('abc|?def') }.to raise_error(Regexp::Parser::Error)
   end
 end

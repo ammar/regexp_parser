@@ -1,5 +1,5 @@
 module Regexp::Syntax
-  class SyntaxError < StandardError; end
+  class SyntaxError < Regexp::Parser::Error; end
 end
 
 require_relative 'syntax/tokens'

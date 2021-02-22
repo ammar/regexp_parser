@@ -1,6 +1,6 @@
 module Regexp::Expression
   module Conditional
-    class TooManyBranches < StandardError
+    class TooManyBranches < Regexp::Parser::Error
       def initialize
         super('The conditional expression has more than 2 branches')
       end

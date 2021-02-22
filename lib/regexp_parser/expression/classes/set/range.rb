@@ -7,7 +7,8 @@ module Regexp::Expression
       alias :ts :starts_at
 
       def <<(exp)
-        complete? && raise("Can't add more than 2 expressions to a Range")
+        complete? and raise Regexp::Parser::Error,
+          "Can't add more than 2 expressions to a Range"
         super
       end
 

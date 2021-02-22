@@ -3,7 +3,7 @@ require 'regexp_parser/expression'
 class Regexp::Parser
   include Regexp::Expression
 
-  class ParserError < StandardError; end
+  class ParserError < Regexp::Parser::Error; end
 
   class UnknownTokenTypeError < ParserError
     def initialize(type, token)
@@ -472,14 +472,8 @@ class Regexp::Parser
   end
 
   def quantifier(token)
-    offset = -1
-    target_node = node.expressions[offset]
-    while target_node.is_a?(FreeSpace)
-      target_node = node.expressions[offset -= 1]
-    end
-
-    target_node || raise(ArgumentError, 'No valid target found for '\
-                                        "'#{token.text}' ")
+    target_node = node.expressions.reverse.find { |exp| !exp.is_a?(FreeSpace) }
+    target_node or raise ParserError, "No valid target found for '#{token.text}'"
 
     # in case of chained quantifiers, wrap target in an implicit passive group
     # description of the problem: https://github.com/ammar/regexp_parser/issues/3
@@ -499,7 +493,7 @@ class Regexp::Parser
       new_group.implicit = true
       new_group << target_node
       increase_level(target_node)
-      node.expressions[offset] = new_group
+      node.expressions[node.expressions.index(target_node)] = new_group
       target_node = new_group
     end
 

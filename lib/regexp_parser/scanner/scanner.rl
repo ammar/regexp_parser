@@ -653,10 +653,10 @@
 
 class Regexp::Scanner
   # General scanner error (catch all)
-  class ScannerError < StandardError; end
+  class ScannerError < Regexp::Parser::Error; end
 
   # Base for all scanner validation errors
-  class ValidationError < StandardError
+  class ValidationError < Regexp::Parser::Error
     def initialize(reason)
       super reason
     end

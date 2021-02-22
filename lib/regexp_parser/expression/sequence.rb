@@ -42,8 +42,8 @@ module Regexp::Expression
 
     def quantify(token, text, min = nil, max = nil, mode = :greedy)
       target = expressions.reverse.find { |exp| !exp.is_a?(FreeSpace) }
-      target || raise(ArgumentError, "No valid target found for '#{text}' "\
-                                     'quantifier')
+      target or raise Regexp::Parser::Error,
+        "No valid target found for '#{text}' quantifier"
 
       target.quantify(token, text, min, max, mode)
     end
