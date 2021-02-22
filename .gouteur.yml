@@ -1,0 +1,11 @@
+repos:
+  # - uri: https://github.com/jaynetics/js_regex
+
+  - uri: https://github.com/rubocop-hq/rubocop
+    tasks: rspec --pattern "**/{,*}regexp{,*,*/**/*}_spec.rb"
+
+  - uri: https://github.com/mbj/mutant
+    tasks: rspec --pattern "**/{,*}regexp{,*,*/**/*}_spec.rb"
+
+  - uri: https://github.com/teamcapybara/capybara
+    tasks: rspec spec/regexp_dissassembler_spec.rb
