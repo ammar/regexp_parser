@@ -1,14 +1,45 @@
 ## [Unreleased]
 
+## [2.1.0] - 2021-02-22 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Added
+
+- common ancestor for all scanning/parsing/lexing errors
+  * `Regexp::Parser::Error` can now be rescued as a catch-all
+  * the following errors (and their many descendants) now inherit from it:
+    - `Regexp::Expression::Conditional::TooManyBranches`
+    - `Regexp::Parser::ParserError`
+    - `Regexp::Scanner::ScannerError`
+    - `Regexp::Scanner::ValidationError`
+    - `Regexp::Syntax::SyntaxError`
+  * it replaces `ArgumentError` in some rare cases (`Regexp::Parser.parse('?')`)
+  * thanks to [sandstrom](https://github.com/sandstrom) for the cue
+
+### Fixed
+
+- fixed scanning of whole-pattern recursion calls `\g<0>` and `\g'0'`
+  * a regression in v2.0.1 had caused them to be scanned as literals
+- fixed scanning of some backreference and subexpression call edge cases
+  * e.g. `\k<+1>`, `\g<x-1>`
+- fixed tokenization of some escapes in character sets
+  * `.`, `|`, `{`, `}`, `(`, `)`, `^`, `$`, `?`, `+`, `*`
+  * all of these correctly emitted `#type` `:literal` and `#token` `:literal` if *not* escaped
+  * if escaped, they emitted e.g. `#type` `:escape` and `#token` `:group_open` for `[\(]`
+  * the escaped versions now correctly emit `#type` `:escape` and `#token` `:literal`
+- fixed handling of control/metacontrol escapes in character sets
+  * e.g. `[\cX]`, `[\M-\C-X]`
+  * they were misread as bunch of individual literals, escapes, and ranges
+- fixed some cases where calling `#dup`/`#clone` on expressions led to shared state
+
 ## [2.0.3] - 2020-12-28 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed
 
 - fixed error when scanning some unlikely and redundant but valid charset patterns
-  - e.g. `/[[.a-b.]]/`, `/[[=e=]]/`,
+  * e.g. `/[[.a-b.]]/`, `/[[=e=]]/`,
 - fixed ancestry of some error classes related to syntax version lookup
-  - `NotImplementedError`, `InvalidVersionNameError`, `UnknownSyntaxNameError`
-  - they now correctly inherit from `Regexp::Syntax::SyntaxError` instead of Rubys `::SyntaxError`
+  * `NotImplementedError`, `InvalidVersionNameError`, `UnknownSyntaxNameError`
+  * they now correctly inherit from `Regexp::Syntax::SyntaxError` instead of Rubys `::SyntaxError`
 
 ## [2.0.2] - 2020-12-25 - [Janosch Müller](mailto:janosch84@gmail.com)
 
