@@ -1,3 +1,4 @@
+require 'regexp_parser/error'
 require 'regexp_parser/expression'
 
 class Regexp::Parser

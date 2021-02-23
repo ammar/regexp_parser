@@ -1,5 +1,6 @@
-module Regexp::Expression
+require 'regexp_parser/error'
 
+module Regexp::Expression
   class Base
     attr_accessor :type, :token
     attr_accessor :text, :ts

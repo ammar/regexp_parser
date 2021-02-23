@@ -1,3 +1,5 @@
+require 'regexp_parser/error'
+
 module Regexp::Syntax
   class SyntaxError < Regexp::Parser::Error; end
 end
