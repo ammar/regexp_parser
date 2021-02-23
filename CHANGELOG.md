@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [2.1.1] - 2021-02-23 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Fixed
+
+- fixed `NameError` when requiring only `'regexp_parser/scanner'` in v2.1.0
+  * thanks to [Jared White and Sam Ruby](https://github.com/ruby2js/ruby2js) for the report
+
 ## [2.1.0] - 2021-02-22 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
