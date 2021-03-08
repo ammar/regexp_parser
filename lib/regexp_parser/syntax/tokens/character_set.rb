@@ -1,8 +1,8 @@
 module Regexp::Syntax
   module Token
     module CharacterSet
-      Basic     = [:open, :close, :negate, :range]
-      Extended  = Basic + [:intersection]
+      Basic     = %i[open close negate range]
+      Extended  = Basic + %i[intersection]
 
       All = Extended
       Type = :set

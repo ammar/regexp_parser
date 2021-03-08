@@ -1,8 +1,8 @@
 module Regexp::Syntax
   module Token
     module Meta
-      Basic    = [:dot]
-      Extended = Basic + [:alternation]
+      Basic    = %i[dot]
+      Extended = Basic + %i[alternation]
 
       All = Extended
       Type = :meta

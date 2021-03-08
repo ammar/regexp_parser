@@ -1,10 +1,11 @@
 module Regexp::Syntax
   module Token
     module Backreference
-      Name      = [:name_ref]
-      Number    = [:number, :number_ref, :number_rel_ref]
+      Plain     = %i[number]
+      Number    = Plain + %i[number_ref number_rel_ref]
+      Name      = %i[name_ref]
 
-      RecursionLevel = [:name_recursion_ref, :number_recursion_ref]
+      RecursionLevel = %i[name_recursion_ref number_recursion_ref]
 
       All = Name + Number + RecursionLevel
       Type = :backref
@@ -12,8 +13,8 @@ module Regexp::Syntax
 
     # Type is the same as Backreference so keeping it here, for now.
     module SubexpressionCall
-      Name      = [:name_call]
-      Number    = [:number_call, :number_rel_call]
+      Name      = %i[name_call]
+      Number    = %i[number_call number_rel_call]
 
       All = Name + Number
     end

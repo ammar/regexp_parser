@@ -1,6 +1,6 @@
 module Regexp::Expression
   class Quantifier
-    MODES = [:greedy, :possessive, :reluctant]
+    MODES = %i[greedy possessive reluctant]
 
     attr_reader :token, :text, :min, :max, :mode
 

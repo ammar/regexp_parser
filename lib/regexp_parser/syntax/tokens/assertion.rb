@@ -1,8 +1,8 @@
 module Regexp::Syntax
   module Token
     module Assertion
-      Lookahead = [:lookahead, :nlookahead]
-      Lookbehind = [:lookbehind, :nlookbehind]
+      Lookahead = %i[lookahead nlookahead]
+      Lookbehind = %i[lookbehind nlookbehind]
 
       All = Lookahead + Lookbehind
       Type = :assertion

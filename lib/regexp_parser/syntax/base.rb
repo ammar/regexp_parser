@@ -59,7 +59,7 @@ module Regexp::Syntax
     def normalize_group(type, token)
       case token
       when :named_ab, :named_sq
-        [:group, :named]
+        %i[group named]
       else
         [type, token]
       end
@@ -68,21 +68,21 @@ module Regexp::Syntax
     def normalize_backref(type, token)
       case token
       when :name_ref_ab, :name_ref_sq
-        [:backref, :name_ref]
+        %i[backref name_ref]
       when :name_call_ab, :name_call_sq
-        [:backref, :name_call]
+        %i[backref name_call]
       when :name_recursion_ref_ab, :name_recursion_ref_sq
-        [:backref, :name_recursion_ref]
+        %i[backref name_recursion_ref]
       when :number_ref_ab, :number_ref_sq
-        [:backref, :number_ref]
+        %i[backref number_ref]
       when :number_call_ab, :number_call_sq
-        [:backref, :number_call]
+        %i[backref number_call]
       when :number_rel_ref_ab, :number_rel_ref_sq
-        [:backref, :number_rel_ref]
+        %i[backref number_rel_ref]
       when :number_rel_call_ab, :number_rel_call_sq
-        [:backref, :number_rel_call]
+        %i[backref number_rel_call]
       when :number_recursion_ref_ab, :number_recursion_ref_sq
-        [:backref, :number_recursion_ref]
+        %i[backref number_recursion_ref]
       else
         [type, token]
       end

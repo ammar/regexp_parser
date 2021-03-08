@@ -4,12 +4,12 @@ module Regexp::Syntax
     Map = {}
 
     module Literal
-      All = [:literal]
+      All = %i[literal]
       Type = :literal
     end
 
     module FreeSpace
-      All  = [:comment, :whitespace]
+      All  = %i[comment whitespace]
       Type = :free_space
     end
 

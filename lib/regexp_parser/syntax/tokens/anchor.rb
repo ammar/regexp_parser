@@ -1,10 +1,10 @@
 module Regexp::Syntax
   module Token
     module Anchor
-      Basic       = [:bol, :eol]
-      Extended    = Basic + [:word_boundary, :nonword_boundary]
-      String      = [:bos, :eos, :eos_ob_eol]
-      MatchStart  = [:match_start]
+      Basic       = %i[bol eol]
+      Extended    = Basic + %i[word_boundary nonword_boundary]
+      String      = %i[bos eos eos_ob_eol]
+      MatchStart  = %i[match_start]
 
       All = Extended + String + MatchStart
       Type = :anchor

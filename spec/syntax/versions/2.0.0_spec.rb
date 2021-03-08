@@ -7,7 +7,7 @@ RSpec.describe(Regexp::Syntax::V2_0_0) do
     nonproperty: T::UnicodeProperty::Age_V2_0_0
   },
   excludes: {
-    property: [:newline],
-    nonproperty: [:newline]
+    property: %i[newline],
+    nonproperty: %i[newline]
   }
 end

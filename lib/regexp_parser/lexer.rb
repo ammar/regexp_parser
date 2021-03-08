@@ -4,12 +4,14 @@
 # given syntax flavor.
 class Regexp::Lexer
 
-  OPENING_TOKENS = [
-    :capture, :passive, :lookahead, :nlookahead, :lookbehind, :nlookbehind,
-    :atomic, :options, :options_switch, :named, :absence
+  OPENING_TOKENS = %i[
+    capture passive lookahead nlookahead lookbehind nlookbehind
+    atomic options options_switch named absence
   ].freeze
 
-  CLOSING_TOKENS = [:close].freeze
+  CLOSING_TOKENS = %i[close].freeze
+
+  CONDITION_TOKENS = %i[condition condition_close].freeze
 
   def self.lex(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
     new.lex(input, syntax, options: options, &block)
@@ -40,7 +42,7 @@ class Regexp::Lexer
                                   nesting, set_nesting, conditional_nesting)
 
       current = merge_condition(current) if type == :conditional and
-        [:condition, :condition_close].include?(token)
+        CONDITION_TOKENS.include?(token)
 
       last.next = current if last
       current.previous = last if last

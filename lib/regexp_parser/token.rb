@@ -1,14 +1,14 @@
 class Regexp
 
-  TOKEN_KEYS = [
-    :type,
-    :token,
-    :text,
-    :ts,
-    :te,
-    :level,
-    :set_level,
-    :conditional_level
+  TOKEN_KEYS = %i[
+    type
+    token
+    text
+    ts
+    te
+    level
+    set_level
+    conditional_level
   ].freeze
 
   Token = Struct.new(*TOKEN_KEYS) do

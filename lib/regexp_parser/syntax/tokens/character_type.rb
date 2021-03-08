@@ -2,10 +2,10 @@ module Regexp::Syntax
   module Token
     module CharacterType
       Basic     = []
-      Extended  = [:digit, :nondigit, :space, :nonspace, :word, :nonword]
-      Hex       = [:hex, :nonhex]
+      Extended  = %i[digit nondigit space nonspace word nonword]
+      Hex       = %i[hex nonhex]
 
-      Clustered = [:linebreak, :xgrapheme]
+      Clustered = %i[linebreak xgrapheme]
 
       All = Basic + Extended + Hex + Clustered
       Type = :type

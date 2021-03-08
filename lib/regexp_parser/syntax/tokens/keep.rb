@@ -1,7 +1,7 @@
 module Regexp::Syntax
   module Token
     module Keep
-      Mark = [:mark]
+      Mark = %i[mark]
 
       All  = Mark
       Type = :keep

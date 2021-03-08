@@ -1,10 +1,10 @@
 module Regexp::Syntax
   module Token
     module PosixClass
-      Standard = [:alnum, :alpha, :blank, :cntrl, :digit, :graph,
-                  :lower, :print, :punct, :space, :upper, :xdigit]
+      Standard = %i[alnum alpha blank cntrl digit graph
+                    lower print punct space upper xdigit]
 
-      Extensions = [:ascii, :word]
+      Extensions = %i[ascii word]
 
       All = Standard + Extensions
       Type = :posixclass

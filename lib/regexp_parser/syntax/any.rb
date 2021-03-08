@@ -5,7 +5,7 @@ module Regexp::Syntax
   # of transformations as well.
   class Any < Base
     def initialize # rubocop:disable Lint/MissingSuper
-      @implements = { :* => [:*] }
+      @implements = { :* => %i[*] }
     end
 
     def implements?(_type, _token) true end
