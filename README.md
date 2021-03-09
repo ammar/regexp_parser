@@ -395,26 +395,14 @@ or incorrectly return tokens/objects as literals._
 
 
 ## Testing
-To run the tests simply run rake from the root directory, as 'test' is the default task.
+To run the tests simply run rake from the root directory.
 
-It generates the scanner's code from the Ragel source files and runs all the tests, thus it requires Ragel to be installed.
+The default task generates the scanner's code from the Ragel source files and runs all the specs, thus it requires Ragel to be installed.
 
-The tests use RSpec. They can also be run with the test runner that whitelists some warnings:
-
-```
-bin/test
-```
-
-You can run a specific test like so:
+Note that changes to Ragel files will not be reflected when running `rspec` on its own, so to run individual tests you might want to run:
 
 ```
-bin/test spec/scanner/properties_spec.rb
-```
-
-Note that changes to Ragel files will not be reflected when running `rspec` or `bin/test`, so you might want to run:
-
-```
-rake ragel:rb && bin/test spec/scanner/properties_spec.rb
+rake ragel:rb && rspec spec/scanner/properties_spec.rb
 ```
 
 ## Building

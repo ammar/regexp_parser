@@ -59,7 +59,7 @@ RSpec.describe('Nesting lexing') do
     4 => [:literal,     :literal,       'e',      4,  5, 0, 1, 0],
     5 => [:set,         :close,         ']',      5,  6, 0, 0, 0]
 
-  include_examples 'lex', /[[:word:]&&[^c]z]/,
+  include_examples 'lex', '[[:word:]&&[^c]z]',
     0 => [:set,         :open,          '[',          0,  1, 0, 0, 0],
     1 => [:posixclass,  :word,          '[:word:]',   1,  9, 0, 1, 0],
     2 => [:set,         :intersection,  '&&',         9, 11, 0, 1, 0],
@@ -70,7 +70,7 @@ RSpec.describe('Nesting lexing') do
     7 => [:literal,     :literal,       'z',         15, 16, 0, 1, 0],
     8 => [:set,         :close,         ']',         16, 17, 0, 0, 0]
 
-  include_examples 'lex', /[\p{word}&&[^c]z]/,
+  include_examples 'lex', '[\p{word}&&[^c]z]',
     0 => [:set,         :open,          '[',          0,  1, 0, 0, 0],
     1 => [:property,    :word,          '\p{word}',   1,  9, 0, 1, 0],
     2 => [:set,         :intersection,  '&&',         9, 11, 0, 1, 0],

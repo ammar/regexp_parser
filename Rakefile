@@ -1,26 +1,22 @@
+require 'bundler'
 require 'rubygems'
-
+require 'rubygems/package_task'
 require 'rake'
 require 'rake/testtask'
-
-require 'bundler'
-require 'rubygems/package_task'
-
+require 'rspec/core/rake_task'
 
 RAGEL_SOURCE_DIR = File.join(__dir__, 'lib/regexp_parser/scanner')
 RAGEL_OUTPUT_DIR = File.join(__dir__, 'lib/regexp_parser')
 RAGEL_SOURCE_FILES = %w{scanner} # scanner.rl includes property.rl
 
-
 Bundler::GemHelper.install_tasks
 
+RSpec::Core::RakeTask.new(:spec)
 
 task :default => [:'test:full']
 
 namespace :test do
-  task full: :'ragel:rb' do
-    sh 'bin/test'
-  end
+  task full: [:'ragel:rb', :spec]
 end
 
 namespace :ragel do
@@ -49,12 +45,10 @@ namespace :ragel do
   end
 end
 
-
 # Add ragel task as a prerequisite for building the gem to ensure that the
 # latest scanner code is generated and included in the build.
 desc "Runs ragel:rb before building the gem"
 task :build => ['ragel:rb']
-
 
 namespace :props do
   desc 'Write new property value hashes for the properties scanner'

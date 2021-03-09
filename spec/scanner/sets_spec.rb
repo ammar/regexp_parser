@@ -96,21 +96,21 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', /[&&z]/,                 1 => [:set,    :intersection,    '&&',         1, 3]
   include_examples 'scan', /[&&]/,                  1 => [:set,    :intersection,    '&&',         1, 3]
 
-  include_examples 'scan', /[a\p{digit}c]/,         2 => [:property,    :digit,      '\p{digit}',  2, 11]
-  include_examples 'scan', /[a\P{digit}c]/,         2 => [:nonproperty, :digit,      '\P{digit}',  2, 11]
-  include_examples 'scan', /[a\p{^digit}c]/,        2 => [:nonproperty, :digit,      '\p{^digit}', 2, 12]
-  include_examples 'scan', /[a\P{^digit}c]/,        2 => [:property,    :digit,      '\P{^digit}', 2, 12]
+  include_examples 'scan', '[a\p{digit}c]',         2 => [:property,    :digit,      '\p{digit}',  2, 11]
+  include_examples 'scan', '[a\P{digit}c]',         2 => [:nonproperty, :digit,      '\P{digit}',  2, 11]
+  include_examples 'scan', '[a\p{^digit}c]',        2 => [:nonproperty, :digit,      '\p{^digit}', 2, 12]
+  include_examples 'scan', '[a\P{^digit}c]',        2 => [:property,    :digit,      '\P{^digit}', 2, 12]
 
-  include_examples 'scan', /[a\p{ALPHA}c]/,         2 => [:property,    :alpha,      '\p{ALPHA}',  2, 11]
-  include_examples 'scan', /[a\p{P}c]/,             2 => [:property,    :punctuation,'\p{P}',      2, 7]
-  include_examples 'scan', /[a\p{P}\P{P}c]/,        3 => [:nonproperty, :punctuation,'\P{P}',      7, 12]
+  include_examples 'scan', '[a\p{ALPHA}c]',         2 => [:property,    :alpha,      '\p{ALPHA}',  2, 11]
+  include_examples 'scan', '[a\p{P}c]',             2 => [:property,    :punctuation,'\p{P}',      2, 7]
+  include_examples 'scan', '[a\p{P}\P{P}c]',        3 => [:nonproperty, :punctuation,'\P{P}',      7, 12]
 
-  include_examples 'scan', /[\x20-\x27]/,
+  include_examples 'scan', '[\x20-\x27]',
     1 => [:escape, :hex,             '\x20',       1, 5],
     2 => [:set,    :range,           '-',          5, 6],
     3 => [:escape, :hex,             '\x27',       6, 10]
 
-  include_examples 'scan', /[a-w&&[^c-g]z]/,
+  include_examples 'scan', '[a-w&&[^c-g]z]',
     5 => [:set,    :open,            '[',          6, 7],
     6 => [:set,    :negate,          '^',          7, 8],
     8 => [:set,    :range,           '-',          9, 10],

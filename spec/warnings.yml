@@ -1,8 +1,0 @@
----
-# Unavoidable warnings in character range tests
-- "character class has duplicated range"
-- "character class has '-' without escape"
-
-# Faulty warning generated only under Ruby < 2.3
-# c.f. https://bugs.ruby-lang.org/issues/10967
-- "private attribute?"
