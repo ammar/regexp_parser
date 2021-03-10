@@ -20,19 +20,19 @@ end
 
 
 # Load all the token files, they will populate the Map constant.
-require 'regexp_parser/syntax/tokens/anchor'
-require 'regexp_parser/syntax/tokens/assertion'
-require 'regexp_parser/syntax/tokens/backref'
-require 'regexp_parser/syntax/tokens/posix_class'
-require 'regexp_parser/syntax/tokens/character_set'
-require 'regexp_parser/syntax/tokens/character_type'
-require 'regexp_parser/syntax/tokens/conditional'
-require 'regexp_parser/syntax/tokens/escape'
-require 'regexp_parser/syntax/tokens/group'
-require 'regexp_parser/syntax/tokens/keep'
-require 'regexp_parser/syntax/tokens/meta'
-require 'regexp_parser/syntax/tokens/quantifier'
-require 'regexp_parser/syntax/tokens/unicode_property'
+require 'regexp_parser/syntax/token/anchor'
+require 'regexp_parser/syntax/token/assertion'
+require 'regexp_parser/syntax/token/backreference'
+require 'regexp_parser/syntax/token/posix_class'
+require 'regexp_parser/syntax/token/character_set'
+require 'regexp_parser/syntax/token/character_type'
+require 'regexp_parser/syntax/token/conditional'
+require 'regexp_parser/syntax/token/escape'
+require 'regexp_parser/syntax/token/group'
+require 'regexp_parser/syntax/token/keep'
+require 'regexp_parser/syntax/token/meta'
+require 'regexp_parser/syntax/token/quantifier'
+require 'regexp_parser/syntax/token/unicode_property'
 
 
 # After loading all the tokens the map is full. Extract all tokens and types

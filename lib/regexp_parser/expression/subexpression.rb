@@ -1,5 +1,4 @@
 module Regexp::Expression
-
   class Subexpression < Regexp::Expression::Base
     include Enumerable
 

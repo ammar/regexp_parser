@@ -1,5 +1,4 @@
 module Regexp::Expression
-
   module CharacterType
     class Base < Regexp::Expression::Base; end
 
@@ -15,5 +14,4 @@ module Regexp::Expression
     class Linebreak        < CharacterType::Base; end
     class ExtendedGrapheme < CharacterType::Base; end
   end
-
 end

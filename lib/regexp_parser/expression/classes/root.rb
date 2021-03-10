@@ -1,5 +1,4 @@
 module Regexp::Expression
-
   class Root < Regexp::Expression::Subexpression
     def self.build(options = {})
       new(build_token, options)

@@ -1,5 +1,4 @@
 module Regexp::Expression
-
   # A sequence of expressions. Differs from a Subexpressions by how it handles
   # quantifiers, as it applies them to its last element instead of itself as
   # a whole subexpression.

@@ -1,5 +1,4 @@
 module Regexp::Expression
-
   module UnicodeProperty
     class Base < Regexp::Expression::Base
       def negative?
@@ -116,5 +115,4 @@ module Regexp::Expression
     class Script  < UnicodeProperty::Base; end
     class Block   < UnicodeProperty::Base; end
   end
-
 end # module Regexp::Expression

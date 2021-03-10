@@ -1,5 +1,4 @@
 module Regexp::Expression
-
   module Anchor
     class Base < Regexp::Expression::Base; end
 
@@ -22,5 +21,4 @@ module Regexp::Expression
     EOS      = EndOfString
     EOSobEOL = EndOfStringOrBeforeEndOfLine
   end
-
 end
