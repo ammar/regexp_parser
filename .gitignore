@@ -4,6 +4,7 @@
 .ruby-version
 .tags
 .tags1
+.tool-versions
 
 Gemfile.lock
 
