@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [2.2.0] - 2021-12-04 - [Janosch Müller](mailto:janosch84@gmail.com)
+
+### Added
+
+- Added support for 13 new unicode properties introduced in Ruby 3.1.0-dev
+
 ## [2.1.1] - 2021-02-23 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed
