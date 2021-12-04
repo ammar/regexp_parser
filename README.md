@@ -360,9 +360,9 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Reluctant** (Lazy)_    | `??`, `*?`, `+?`, `{m,M}?`                              | &#x2713; |
 | &emsp;&nbsp;_**Possessive**_          | `?+`, `*+`, `++`, `{m,M}+`                              | &#x2713; |
 | **String Escapes**                    |                                                         | &#x22f1; |
-| &emsp;&nbsp;_**Control**_             | `\C-C`, `\cD`                                           | &#x2713; |
+| &emsp;&nbsp;_**Control** \[1\]_       | `\C-C`, `\cD`                                           | &#x2713; |
 | &emsp;&nbsp;_**Hex**_                 | `\x20`, `\x{701230}`                                    | &#x2713; |
-| &emsp;&nbsp;_**Meta**_                | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
+| &emsp;&nbsp;_**Meta** \[1\]_          | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
 | **Unicode Properties**                | _<sub>([Unicode 11.0.0](http://www.unicode.org/versions/Unicode11.0.0/))</sub>_ | &#x22f1; |
@@ -373,6 +373,10 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**General Categories**_  | `\p{Lu}`, `\P{Cs}`, `\p{^sc}`                           | &#x2713; |
 | &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`, `\p{^Greek}`              | &#x2713; |
 | &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`, `\p{^Hyphen}`               | &#x2713; |
+
+**\[1\]**: As of Ruby 3.1, meta and control sequences are [pre-processed to hex escapes when used in Regexp literals](
+ https://github.com/ruby/ruby/commit/11ae581a4a7f5d5f5ec6378872eab8f25381b1b9 ), so they will only reach the
+scanner and will only be emitted if a String or a Regexp that has been built with the `::new` constructor is scanned.
 
 ##### Inapplicable Features
 
@@ -386,7 +390,6 @@ expressions library (Onigmo). They are not supported by the scanner.
 
   - **Quotes**: `\Q...\E` _[[See]](https://github.com/k-takata/Onigmo/blob/7911409/doc/RE#L499)_
   - **Capture History**: `(?@...)`, `(?@<name>...)` _[[See]](https://github.com/k-takata/Onigmo/blob/7911409/doc/RE#L550)_
-
 
 See something missing? Please submit an [issue](https://github.com/ammar/regexp_parser/issues)
 

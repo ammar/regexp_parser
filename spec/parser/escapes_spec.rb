@@ -56,8 +56,20 @@ RSpec.describe('EscapeSequence parsing') do
     expect { root[5].codepoint }.to raise_error(/#codepoints/)
   end
 
+  # Meta/control espaces
+  #
+  # After the following fix in Ruby 3.1, a Regexp#source containing meta/control
+  # escapes can only be set with the Regexp::new constructor.
+  # In Regexp literals, these escapes are now pre-processed to hex escapes.
+  #
+  # https://github.com/ruby/ruby/commit/11ae581a4a7f5d5f5ec6378872eab8f25381b1b9
+  def parse_meta_control(regexp_body)
+    regexp = Regexp.new(regexp_body.force_encoding('ascii-8bit'), 'n')
+    RP.parse(regexp)
+  end
+
   specify('parse escape control sequence lower') do
-    root = RP.parse(/a\\\c2b/)
+    root = parse_meta_control('a\\\\\c2b')
 
     expect(root[2]).to be_instance_of(EscapeSequence::Control)
     expect(root[2].text).to eq '\\c2'
@@ -66,56 +78,56 @@ RSpec.describe('EscapeSequence parsing') do
   end
 
   specify('parse escape control sequence upper') do
-    root = RP.parse(/\d\\\C-C\w/)
+    root = parse_meta_control('\d\C-C\w')
 
-    expect(root[2]).to be_instance_of(EscapeSequence::Control)
-    expect(root[2].text).to eq '\\C-C'
-    expect(root[2].char).to eq "\x03"
-    expect(root[2].codepoint).to eq 3
+    expect(root[1]).to be_instance_of(EscapeSequence::Control)
+    expect(root[1].text).to eq '\\C-C'
+    expect(root[1].char).to eq "\x03"
+    expect(root[1].codepoint).to eq 3
   end
 
   specify('parse escape meta sequence') do
-    root = RP.parse(/\Z\\\M-Z/n)
+    root = parse_meta_control('\Z\M-Z')
 
-    expect(root[2]).to be_instance_of(EscapeSequence::Meta)
-    expect(root[2].text).to eq '\\M-Z'
-    expect(root[2].char).to eq "\u00DA"
-    expect(root[2].codepoint).to eq 218
+    expect(root[1]).to be_instance_of(EscapeSequence::Meta)
+    expect(root[1].text).to eq '\\M-Z'
+    expect(root[1].char).to eq "\u00DA"
+    expect(root[1].codepoint).to eq 218
   end
 
   specify('parse escape meta control sequence') do
-    root = RP.parse(/\A\\\M-\C-X/n)
+    root = parse_meta_control('\A\M-\C-X')
 
-    expect(root[2]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[2].text).to eq '\\M-\\C-X'
-    expect(root[2].char).to eq "\u0098"
-    expect(root[2].codepoint).to eq 152
+    expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
+    expect(root[1].text).to eq '\\M-\\C-X'
+    expect(root[1].char).to eq "\u0098"
+    expect(root[1].codepoint).to eq 152
   end
 
   specify('parse lower c meta control sequence') do
-    root = RP.parse(/\A\\\M-\cX/n)
+    root = parse_meta_control('\A\M-\cX')
 
-    expect(root[2]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[2].text).to eq '\\M-\\cX'
-    expect(root[2].char).to eq "\u0098"
-    expect(root[2].codepoint).to eq 152
+    expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
+    expect(root[1].text).to eq '\\M-\\cX'
+    expect(root[1].char).to eq "\u0098"
+    expect(root[1].codepoint).to eq 152
   end
 
   specify('parse escape reverse meta control sequence') do
-    root = RP.parse(/\A\\\C-\M-X/n)
+    root = parse_meta_control('\A\C-\M-X')
 
-    expect(root[2]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[2].text).to eq '\\C-\\M-X'
-    expect(root[2].char).to eq "\u0098"
-    expect(root[2].codepoint).to eq 152
+    expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
+    expect(root[1].text).to eq '\\C-\\M-X'
+    expect(root[1].char).to eq "\u0098"
+    expect(root[1].codepoint).to eq 152
   end
 
   specify('parse escape reverse lower c meta control sequence') do
-    root = RP.parse(/\A\\\c\M-X/n)
+    root = parse_meta_control('\A\c\M-X')
 
-    expect(root[2]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[2].text).to eq '\\c\\M-X'
-    expect(root[2].char).to eq "\u0098"
-    expect(root[2].codepoint).to eq 152
+    expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
+    expect(root[1].text).to eq '\\c\\M-X'
+    expect(root[1].char).to eq "\u0098"
+    expect(root[1].codepoint).to eq 152
   end
 end
