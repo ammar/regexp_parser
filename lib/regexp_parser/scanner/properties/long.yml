@@ -8,6 +8,7 @@ age=10.0: age=10.0
 age=11.0: age=11.0
 age=12.0: age=12.0
 age=12.1: age=12.1
+age=13.0: age=13.0
 age=2.0: age=2.0
 age=2.1: age=2.1
 age=3.0: age=3.0
@@ -64,6 +65,7 @@ changeswhenlowercased: changes_when_lowercased
 changeswhentitlecased: changes_when_titlecased
 changeswhenuppercased: changes_when_uppercased
 cherokee: cherokee
+chorasmian: chorasmian
 closepunctuation: close_punctuation
 cntrl: cntrl
 common: common
@@ -83,6 +85,7 @@ deseret: deseret
 devanagari: devanagari
 diacritic: diacritic
 digit: digit
+divesakuru: dives_akuru
 dogra: dogra
 duployan: duployan
 egyptianhieroglyphs: egyptian_hieroglyphs
@@ -167,6 +170,7 @@ incham: in_cham
 incherokee: in_cherokee
 incherokeesupplement: in_cherokee_supplement
 inchesssymbols: in_chess_symbols
+inchorasmian: in_chorasmian
 incjkcompatibility: in_cjk_compatibility
 incjkcompatibilityforms: in_cjk_compatibility_forms
 incjkcompatibilityideographs: in_cjk_compatibility_ideographs
@@ -181,6 +185,7 @@ incjkunifiedideographsextensionc: in_cjk_unified_ideographs_extension_c
 incjkunifiedideographsextensiond: in_cjk_unified_ideographs_extension_d
 incjkunifiedideographsextensione: in_cjk_unified_ideographs_extension_e
 incjkunifiedideographsextensionf: in_cjk_unified_ideographs_extension_f
+incjkunifiedideographsextensiong: in_cjk_unified_ideographs_extension_g
 incombiningdiacriticalmarks: in_combining_diacritical_marks
 incombiningdiacriticalmarksextended: in_combining_diacritical_marks_extended
 incombiningdiacriticalmarksforsymbols: in_combining_diacritical_marks_for_symbols
@@ -204,6 +209,7 @@ indeseret: in_deseret
 indevanagari: in_devanagari
 indevanagariextended: in_devanagari_extended
 indingbats: in_dingbats
+indivesakuru: in_dives_akuru
 indogra: in_dogra
 indominotiles: in_domino_tiles
 induployan: in_duployan
@@ -269,6 +275,7 @@ inkatakana: in_katakana
 inkatakanaphoneticextensions: in_katakana_phonetic_extensions
 inkayahli: in_kayah_li
 inkharoshthi: in_kharoshthi
+inkhitansmallscript: in_khitan_small_script
 inkhmer: in_khmer
 inkhmersymbols: in_khmer_symbols
 inkhojki: in_khojki
@@ -288,6 +295,7 @@ inlineara: in_linear_a
 inlinearbideograms: in_linear_b_ideograms
 inlinearbsyllabary: in_linear_b_syllabary
 inlisu: in_lisu
+inlisusupplement: in_lisu_supplement
 inlowsurrogates: in_low_surrogates
 inlycian: in_lycian
 inlydian: in_lydian
@@ -395,6 +403,7 @@ insupplementaryprivateuseareab: in_supplementary_private_use_area_b
 insuttonsignwriting: in_sutton_signwriting
 insylotinagri: in_syloti_nagri
 insymbolsandpictographsextendeda: in_symbols_and_pictographs_extended_a
+insymbolsforlegacycomputing: in_symbols_for_legacy_computing
 insyriac: in_syriac
 insyriacsupplement: in_syriac_supplement
 intagalog: in_tagalog
@@ -409,6 +418,7 @@ intamil: in_tamil
 intamilsupplement: in_tamil_supplement
 intangut: in_tangut
 intangutcomponents: in_tangut_components
+intangutsupplement: in_tangut_supplement
 intelugu: in_telugu
 inthaana: in_thaana
 inthai: in_thai
@@ -426,6 +436,7 @@ invedicextensions: in_vedic_extensions
 inverticalforms: in_vertical_forms
 inwancho: in_wancho
 inwarangciti: in_warang_citi
+inyezidi: in_yezidi
 inyijinghexagramsymbols: in_yijing_hexagram_symbols
 inyiradicals: in_yi_radicals
 inyisyllables: in_yi_syllables
@@ -437,6 +448,7 @@ kannada: kannada
 katakana: katakana
 kayahli: kayah_li
 kharoshthi: kharoshthi
+khitansmallscript: khitan_small_script
 khmer: khmer
 khojki: khojki
 khudawadi: khudawadi
@@ -590,5 +602,6 @@ xdigit: xdigit
 xidcontinue: xid_continue
 xidstart: xid_start
 xposixpunct: xposixpunct
+yezidi: yezidi
 yi: yi
 zanabazarsquare: zanabazar_square

@@ -57,6 +57,8 @@ module Regexp::Syntax
 
       Age_V2_6_3 = %i[age=12.1]
 
+      Age_V3_1_0 = %i[age=13.0]
+
       Age = all[:Age_V]
 
       Derived_V1_9_0 = %i[
@@ -311,6 +313,13 @@ module Regexp::Syntax
         symbols_and_pictographs_extended_a
         tamil_supplement
         wancho
+      ]
+
+      Script_V3_1_0 = %i[
+        chorasmian
+        dives_akuru
+        khitan_small_script
+        yezidi
       ]
 
       Script = all[:Script_V]
@@ -640,6 +649,17 @@ module Regexp::Syntax
         in_wancho
       ]
 
+      UnicodeBlock_V3_1_0 = %i[
+        in_chorasmian
+        in_cjk_unified_ideographs_extension_g
+        in_dives_akuru
+        in_khitan_small_script
+        in_lisu_supplement
+        in_symbols_for_legacy_computing
+        in_tangut_supplement
+        in_yezidi
+      ]
+
       UnicodeBlock = all[:UnicodeBlock_V]
 
       Emoji_V2_5_0 = %i[
@@ -662,6 +682,7 @@ module Regexp::Syntax
       V2_6_0 = all[:V2_6_0]
       V2_6_2 = all[:V2_6_2]
       V2_6_3 = all[:V2_6_3]
+      V3_1_0 = all[:V3_1_0]
 
       All = all[/^V\d+_\d+_\d+$/]
 

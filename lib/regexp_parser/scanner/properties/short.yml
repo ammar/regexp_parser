@@ -28,6 +28,7 @@ cari: carian
 cc: control
 cf: format
 cher: cherokee
+chrs: chorasmian
 ci: case_ignorable
 cn: unassigned
 co: private_use
@@ -45,12 +46,17 @@ dep: deprecated
 deva: devanagari
 di: default_ignorable_code_point
 dia: diacritic
+diak: dives_akuru
 dogr: dogra
 dsrt: deseret
 dupl: duployan
+ebase: emoji_modifier_base
+ecomp: emoji_component
 egyp: egyptian_hieroglyphs
 elba: elbasan
 elym: elymaic
+emod: emoji_modifier
+epres: emoji_presentation
 ethi: ethiopic
 ext: extender
 geor: georgian
@@ -89,6 +95,7 @@ kana: katakana
 khar: kharoshthi
 khmr: khmer
 khoj: khojki
+kits: khitan_small_script
 knda: kannada
 kthi: kaithi
 l: letter
@@ -127,7 +134,7 @@ mroo: mro
 mtei: meetei_mayek
 mult: multani
 mymr: myanmar
-n: number
+"n": number
 nand: nandinagari
 narb: old_north_arabian
 nbat: nabataean
@@ -226,6 +233,7 @@ xidc: xid_continue
 xids: xid_start
 xpeo: old_persian
 xsux: cuneiform
+yezi: yezidi
 yiii: yi
 z: separator
 zanb: zanabazar_square

@@ -28,6 +28,7 @@ RSpec.describe(Regexp::Syntax) do
   include_examples 'syntax alias', 'ruby/2.6.2',  Regexp::Syntax::V2_6_2
   include_examples 'syntax alias', 'ruby/2.6.3',  Regexp::Syntax::V2_6_3
   include_examples 'syntax alias', 'ruby/2.6',    Regexp::Syntax::V2_6_3
+  include_examples 'syntax alias', 'ruby/3.1',    Regexp::Syntax::V3_1_0
 
   specify('future alias warning') do
     expect { Regexp::Syntax.new('ruby/5.0') }
