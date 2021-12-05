@@ -64,7 +64,7 @@ RSpec.describe('EscapeSequence parsing') do
   #
   # https://github.com/ruby/ruby/commit/11ae581a4a7f5d5f5ec6378872eab8f25381b1b9
   def parse_meta_control(regexp_body)
-    regexp = Regexp.new(regexp_body.force_encoding('ascii-8bit'), 'n')
+    regexp = Regexp.new(regexp_body.force_encoding('ascii-8bit'))
     RP.parse(regexp)
   end
 

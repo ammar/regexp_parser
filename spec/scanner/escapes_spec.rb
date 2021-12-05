@@ -50,7 +50,7 @@ RSpec.describe('Escape scanning') do
   # In Regexp literals, these escapes are now pre-processed to hex escapes.
   #
   # https://github.com/ruby/ruby/commit/11ae581a4a7f5d5f5ec6378872eab8f25381b1b9
-  n = ->(regexp_body){ Regexp.new(regexp_body.force_encoding('ascii-8bit'), 'n') }
+  n = ->(regexp_body){ Regexp.new(regexp_body.force_encoding('ascii-8bit')) }
 
   include_examples 'scan', 'a\cBc',           1 => [:escape,  :control,          '\cB',            1,  4]
   include_examples 'scan', 'a\c^c',           1 => [:escape,  :control,          '\c^',            1,  4]
