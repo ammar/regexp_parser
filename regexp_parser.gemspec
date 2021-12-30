@@ -26,8 +26,6 @@ Gem::Specification.new do |gem|
                       Dir.glob('lib/**/*.yml') +
                       %w(Gemfile Rakefile LICENSE README.md CHANGELOG.md regexp_parser.gemspec)
 
-  gem.test_files    = Dir.glob('spec/**/*.rb')
-
   gem.rdoc_options  = ["--inline-source", "--charset=UTF-8"]
 
   gem.platform      = Gem::Platform::RUBY
