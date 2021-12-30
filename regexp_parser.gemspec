@@ -10,9 +10,11 @@ Gem::Specification.new do |gem|
   gem.description   = 'A library for tokenizing, lexing, and parsing Ruby regular expressions.'
   gem.homepage      = 'https://github.com/ammar/regexp_parser'
 
-  if gem.respond_to?(:metadata)
-    gem.metadata    = { 'issue_tracker' => 'https://github.com/ammar/regexp_parser/issues' }
-  end
+  gem.metadata['bug_tracker_uri'] = "#{gem.homepage}/issues"
+  gem.metadata['changelog_uri']   = "#{gem.homepage}/blob/master/CHANGELOG.md"
+  gem.metadata['homepage_uri']    = gem.homepage
+  gem.metadata['source_code_uri'] = gem.homepage
+  gem.metadata['wiki_uri']        = "#{gem.homepage}/wiki"
 
   gem.authors       = ['Ammar Ali']
   gem.email         = ['ammarabuali@gmail.com']
