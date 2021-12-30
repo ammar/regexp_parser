@@ -43,7 +43,7 @@ module Regexp::Expression
 
       # Order is important! Fields that use other fields in their
       # definition must appear before the fields they use.
-      part_keys = %w{a m b o i l x s e S y k c q Q z Z t ~t T >}
+      part_keys = %w[a m b o i l x s e S y k c q Q z Z t ~t T >]
       part.keys.each {|k| part[k] = "<?#{k}?>"}
 
       part['>'] = print_level ? ('  ' * (print_level + indent_offset)) : ''

@@ -7,7 +7,7 @@ require 'rspec/core/rake_task'
 
 RAGEL_SOURCE_DIR = File.join(__dir__, 'lib/regexp_parser/scanner')
 RAGEL_OUTPUT_DIR = File.join(__dir__, 'lib/regexp_parser')
-RAGEL_SOURCE_FILES = %w{scanner} # scanner.rl includes property.rl
+RAGEL_SOURCE_FILES = %w[scanner] # scanner.rl imports the other files
 
 Bundler::GemHelper.install_tasks
 
