@@ -437,7 +437,7 @@ Projects using regexp_parser.
 
 - [meta_re](https://github.com/ammar/meta_re) is a regular expression preprocessor with alias support.
 
-- [mutant](https://github.com/mbj/mutant) (before v0.9.0) manipulates your regular expressions (amongst others) to see if your tests cover their behavior.
+- [mutant](https://github.com/mbj/mutant) manipulates your regular expressions (amongst others) to see if your tests cover their behavior.
 
 - [rubocop](https://github.com/rubocop-hq/rubocop) is a linter for Ruby that uses regexp_parser to lint Regexps.
 
