@@ -2,15 +2,20 @@ module Regexp::Expression
   # TODO: unify naming with Token::Escape, on way or the other, in v3.0.0
   module EscapeSequence
     class Base < Regexp::Expression::Base
-      require 'yaml'
-
-      def char
-        # poor man's unescape without using eval
-        YAML.load(%Q(---\n"#{text}"\n))
-      end
-
       def codepoint
         char.ord
+      end
+
+      if ''.respond_to?(:undump)
+        def char
+          %("#{text}").undump
+        end
+      else
+        # poor man's unescape without using eval
+        require 'yaml'
+        def char
+          YAML.load(%Q(---\n"#{text}"\n))
+        end
       end
     end
 
