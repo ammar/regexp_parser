@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added support for 13 new unicode properties introduced in Ruby 3.1.0-dev
+- added support for 13 new unicode properties introduced in Ruby 3.1.0
 
 ## [2.1.1] - 2021-02-23 - [Janosch Müller](mailto:janosch84@gmail.com)
 
