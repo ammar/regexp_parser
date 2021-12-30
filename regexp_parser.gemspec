@@ -23,9 +23,7 @@ Gem::Specification.new do |gem|
 
   gem.require_paths = ['lib']
 
-  gem.files         = Dir.glob('{lib,spec}/**/*.rb') +
-                      Dir.glob('lib/**/*.rl') +
-                      Dir.glob('lib/**/*.yml') +
+  gem.files         = Dir.glob('lib/**/*.{rb,rl,yml}') +
                       %w(Gemfile Rakefile LICENSE README.md CHANGELOG.md regexp_parser.gemspec)
 
   gem.rdoc_options  = ["--inline-source", "--charset=UTF-8"]
