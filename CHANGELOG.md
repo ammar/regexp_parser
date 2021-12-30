@@ -4,6 +4,7 @@
 
 - reduced gem size by excluding specs from package
 - removed deprecated `test_files` gemspec setting
+- `yaml`/`psych` is no longer `require`d
 
 ## [2.2.0] - 2021-12-04 - [Janosch Müller](mailto:janosch84@gmail.com)
 

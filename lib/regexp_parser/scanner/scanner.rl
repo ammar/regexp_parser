@@ -759,14 +759,16 @@ class Regexp::Scanner
   end
 
   # lazy-load property maps when first needed
-  require 'yaml'
-
   def self.short_prop_map
-    @short_prop_map ||= YAML.load_file("#{__dir__}/scanner/properties/short.yml")
+    @short_prop_map ||= parse_prop_map('short')
   end
 
   def self.long_prop_map
-    @long_prop_map ||= YAML.load_file("#{__dir__}/scanner/properties/long.yml")
+    @long_prop_map ||= parse_prop_map('long')
+  end
+
+  def self.parse_prop_map(name)
+    File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
   end
 
   # Emits an array with the details of the scanned pattern
