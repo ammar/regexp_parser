@@ -9,9 +9,9 @@ RP = Regexp::Parser
 RS = Regexp::Scanner
 PV = RegexpPropertyValues
 
-def lex(*args);   Regexp::Lexer.lex(*args)    end
-def parse(*args); Regexp::Parser.parse(*args) end
-def scan(*args);  Regexp::Scanner.scan(*args) end
+def lex(...);   Regexp::Lexer.lex(...)    end
+def parse(...); Regexp::Parser.parse(...) end
+def scan(...);  Regexp::Scanner.scan(...) end
 
 require 'irb'
 IRB.start(__FILE__)
