@@ -11,8 +11,8 @@ RSpec.describe(Regexp::Syntax::Token::Map) do
   end
 
   specify('contains no duplicate tokens') do
-    latest_syntax.features.each do |type, tokens|
-      expect(tokens.uniq.count).to eq tokens.count
+    latest_syntax.features.each do |_type, tokens|
+      expect(tokens).to eq tokens.uniq
     end
   end
 

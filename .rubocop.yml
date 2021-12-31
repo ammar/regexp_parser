@@ -1,6 +1,6 @@
 AllCops:
   Exclude:
-    - '**/{tmp,vendor}/**/*' # vendored dependencies
+    - '{bin,pkg,tmp,vendor}/**/*' # vendored dependencies etc.
     - 'lib/regexp_parser/scanner.rb' # Ragel-generated code
   NewCops: enable
   RubyInterpreters:
