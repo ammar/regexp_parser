@@ -2,12 +2,17 @@ module Regexp::Syntax
   module Token
     module Backreference
       Plain     = %i[number]
-      Number    = Plain + %i[number_ref number_rel_ref]
+      NumberRef = %i[number_ref number_rel_ref]
+      Number    = Plain + NumberRef
       Name      = %i[name_ref]
 
       RecursionLevel = %i[name_recursion_ref number_recursion_ref]
 
-      All = Name + Number + RecursionLevel
+      V1_8_6 = Plain
+
+      V1_9_1 = Name + NumberRef + RecursionLevel
+
+      All = V1_8_6 + V1_9_1
       Type = :backref
     end
 

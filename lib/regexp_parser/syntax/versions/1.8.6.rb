@@ -5,7 +5,7 @@ module Regexp::Syntax
 
       implements :anchor, Anchor::All
       implements :assertion, Assertion::Lookahead
-      implements :backref, Backreference::Plain
+      implements :backref, Backreference::V1_8_6
       implements :posixclass, PosixClass::Standard
       implements :group, Group::All
       implements :meta, Meta::Extended

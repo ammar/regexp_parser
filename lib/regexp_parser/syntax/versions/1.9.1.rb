@@ -4,7 +4,7 @@ module Regexp::Syntax
       super
 
       implements :assertion, Assertion::Lookbehind
-      implements :backref, Backreference::All + SubexpressionCall::All
+      implements :backref, Backreference::V1_9_1 + SubexpressionCall::All
       implements :posixclass, PosixClass::Extensions
       implements :nonposixclass, PosixClass::All
       implements :escape, Escape::Unicode + Escape::Hex + Escape::Octal
