@@ -2,9 +2,12 @@
 
 ### Fixed
 
+- no longer depend on `set`
+  - `set` was removed from the stdlib and made a standalone gem as of Ruby 3
+  - this made it a hidden/undeclared dependency of `regexp_parser`
 - reduced gem size by excluding specs from package
 - removed deprecated `test_files` gemspec setting
-- `yaml`/`psych` is no longer `require`d
+- no longer depend on `yaml`/`psych` (except for Ruby <= 2.4)
 
 ## [2.2.0] - 2021-12-04 - [Janosch Müller](mailto:janosch84@gmail.com)
 

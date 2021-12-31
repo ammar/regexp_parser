@@ -2,12 +2,17 @@ require 'spec_helper'
 
 RSpec.describe(Regexp::Syntax::Token::Map) do
   let(:map) { Regexp::Syntax::Token::Map }
+  let(:latest_syntax) { Regexp::Syntax.new('ruby/3.1') }
 
   specify('is complete') do
-    latest_syntax = Regexp::Syntax.new('ruby/2.9')
-
     latest_syntax.features.each do |type, tokens|
       tokens.each { |token| expect(map[type]).to include(token) }
+    end
+  end
+
+  specify('contains no duplicate tokens') do
+    latest_syntax.features.each do |type, tokens|
+      expect(tokens.uniq.count).to eq tokens.count
     end
   end
 

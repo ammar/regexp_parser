@@ -1,5 +1,3 @@
-require 'set'
-
 module Regexp::Syntax
   class NotImplementedError < Regexp::Syntax::SyntaxError
     def initialize(syntax, type, token)
@@ -23,15 +21,15 @@ module Regexp::Syntax
     end
 
     def implementations(type)
-      @implements[type] ||= Set.new
+      @implements[type] ||= []
     end
 
     def implements(type, tokens)
-      implementations(type).merge(Array(tokens))
+      implementations(type).concat(Array(tokens))
     end
 
     def excludes(type, tokens)
-      implementations(type).subtract(Array(tokens))
+      Array(tokens).each { |tok| implementations(type).delete(tok) }
     end
 
     def implements?(type, token)
