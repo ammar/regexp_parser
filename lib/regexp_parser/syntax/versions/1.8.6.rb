@@ -7,7 +7,7 @@ module Regexp::Syntax
       implements :assertion, Assertion::Lookahead
       implements :backref, Backreference::V1_8_6
       implements :posixclass, PosixClass::Standard
-      implements :group, Group::All
+      implements :group, Group::V1_8_6
       implements :meta, Meta::Extended
       implements :set, CharacterSet::All
       implements :type, CharacterType::Extended
