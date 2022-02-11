@@ -1,16 +1,16 @@
-## [Unreleased]
+## [2.2.1] - 2022-02-11 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed
 
-- no longer depend on `set`
-  - `set` was removed from the stdlib and made a standalone gem as of Ruby 3
-  - this made it a hidden/undeclared dependency of `regexp_parser`
 - fixed Syntax version of absence groups (`(?~...)`)
   - the lexer accepted them for any Ruby version
   - now they are only recognized for Ruby >= 2.4.1 in which they were introduced
 - reduced gem size by excluding specs from package
 - removed deprecated `test_files` gemspec setting
 - no longer depend on `yaml`/`psych` (except for Ruby <= 2.4)
+- no longer depend on `set`
+  - `set` was removed from the stdlib and made a standalone gem as of Ruby 3
+  - this made it a hidden/undeclared dependency of `regexp_parser`
 
 ## [2.2.0] - 2021-12-04 - [Janosch Müller](mailto:janosch84@gmail.com)
 
