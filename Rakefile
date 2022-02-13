@@ -76,3 +76,12 @@ namespace :props do
     write_hash_to_file.call(short_names_to_tokens, "#{dir}/short.csv")
   end
 end
+
+namespace :visitor do
+  task :generate do
+    require 'regexp_parser/tools'
+    generator = Regexp::Tools::VisitorGenerator.new
+    File.write('lib/regexp_parser/visitor.rb', generator.visitor_code)
+    File.write('lib/regexp_parser/visitor_nodes.rb', generator.node_code)
+  end
+end
