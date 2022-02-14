@@ -1,3 +1,13 @@
+## [Unreleased]
+
+### Added
+
+- added several methods to `Syntax` to show relative feature sets
+  - `#feature_version`, `#added_features(?)`, `#removed_features(?)`, `#changes(?)`
+  - see corresponding README update for details
+- improved parsing performance through `Syntax` refactoring
+  - instead of fresh `Syntax` instances, pre-loaded constants are now re-used
+
 ## [2.2.1] - 2022-02-11 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed

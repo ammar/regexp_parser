@@ -1,21 +1,16 @@
 module Regexp::Syntax
   class V1_8_6 < Regexp::Syntax::Base
-    def initialize
-      super
-
-      implements :anchor, Anchor::All
-      implements :assertion, Assertion::Lookahead
-      implements :backref, Backreference::V1_8_6
-      implements :posixclass, PosixClass::Standard
-      implements :group, Group::V1_8_6
-      implements :meta, Meta::Extended
-      implements :set, CharacterSet::All
-      implements :type, CharacterType::Extended
-      implements :escape,
-        Escape::Basic + Escape::ASCII + Escape::Meta + Escape::Control
-      implements :quantifier,
-        Quantifier::Greedy + Quantifier::Reluctant +
-        Quantifier::Interval + Quantifier::IntervalReluctant
-    end
+    implements :anchor,     Anchor::All
+    implements :assertion,  Assertion::Lookahead
+    implements :backref,    Backreference::V1_8_6
+    implements :escape,     Escape::Basic + Escape::ASCII + Escape::Meta + Escape::Control
+    implements :free_space, Token::FreeSpace::All
+    implements :group,      Group::V1_8_6
+    implements :literal,    Token::Literal::All
+    implements :meta,       Meta::Extended
+    implements :posixclass, PosixClass::Standard
+    implements :quantifier, Quantifier::V1_8_6
+    implements :set,        CharacterSet::All
+    implements :type,       CharacterType::Extended
   end
 end

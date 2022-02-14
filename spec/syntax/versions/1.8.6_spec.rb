@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe(Regexp::Syntax::V1_8_6) do
-  include_examples 'syntax', Regexp::Syntax.new('ruby/1.8.6'),
+  include_examples 'syntax',
   implements: {
     assertion: T::Assertion::Lookahead,
     backref: T::Backreference::Plain,

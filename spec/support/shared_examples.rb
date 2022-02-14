@@ -1,8 +1,8 @@
-RSpec.shared_examples 'syntax' do |klass, opts|
+RSpec.shared_examples 'syntax' do |opts|
   opts[:implements].each do |type, tokens|
     tokens.each do |token|
       it("implements #{token} #{type}") do
-        expect(klass.implements?(type, token)).to be true
+        expect(described_class.implements?(type, token)).to be true
       end
     end
   end
@@ -10,7 +10,7 @@ RSpec.shared_examples 'syntax' do |klass, opts|
   opts[:excludes] && opts[:excludes].each do |type, tokens|
     tokens.each do |token|
       it("does not implement #{token} #{type}") do
-        expect(klass.implements?(type, token)).to be false
+        expect(described_class.implements?(type, token)).to be false
       end
     end
   end

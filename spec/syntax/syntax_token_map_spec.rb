@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe(Regexp::Syntax::Token::Map) do
   let(:map) { Regexp::Syntax::Token::Map }
-  let(:latest_syntax) { Regexp::Syntax.new('ruby/3.1') }
+  let(:latest_syntax) { Regexp::Syntax::V3_1_0 }
 
   specify('is complete') do
     latest_syntax.features.each do |type, tokens|

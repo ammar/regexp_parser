@@ -157,7 +157,7 @@ flavor). Syntax classes act as lookup tables, and are layered to create
 flavor variations. Syntax only comes into play in the lexer.
 
 #### Example
-The following instantiates syntax objects for Ruby 2.0, 1.9, 1.8, and
+The following fetches syntax objects for Ruby 2.0, 1.9, 1.8, and
 checks a few of their implementation features.
 
 ```ruby
@@ -182,6 +182,27 @@ ruby_18.implements? :quantifier,  :zero_or_one_possessive  # => false
 ruby_18.implements? :conditional, :condition               # => false
 ```
 
+Syntax objects can also be queried about their complete and relative feature sets.
+
+```ruby
+require 'regexp_parser'
+
+# Ruby 2.0 included some changes to the regexp engine
+ruby_20 = Regexp::Syntax.new 'ruby/2.0' # => Regexp::Syntax::V2_0_0
+ruby_20.changed_features?               # => true
+ruby_20.feature_version                 # => Regexp::Syntax::V2_0_0
+ruby_20.added_features                  # => { conditional: [...], ... }
+ruby_20.removed_features                # => { property: [:newline], ... }
+ruby_20.features                        # => { anchor: [...], ... }
+
+# Ruby 2.1 did not include any changes to the regexp engine
+ruby_21 = Regexp::Syntax.new 'ruby/2.1' # => Regexp::Syntax::V2_1
+ruby_21.changed_features?               # => false
+ruby_21.feature_version                 # => Regexp::Syntax::V2_0_0
+ruby_21.added_features                  # => {}
+ruby_21.removed_features                # => {}
+ruby_21.features                        # => { anchor: [...], ... }
+```
 
 #### Notes
   * Variations on a token, for example a named group with angle brackets (< and >)

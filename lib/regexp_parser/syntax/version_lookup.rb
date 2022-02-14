@@ -17,12 +17,11 @@ module Regexp::Syntax
 
   module_function
 
-  # Loads and instantiates an instance of the syntax specification class for
-  # the given syntax version name. The special names 'any' and '*' return an
-  # instance of Syntax::Any.
+  # Returns the syntax specification class for the given syntax
+  # version name. The special names 'any' and '*' return Syntax::Any.
   def new(name)
-    return Regexp::Syntax::Any.new if ['*', 'any'].include?(name.to_s)
-    version_class(name).new
+    return Regexp::Syntax::Any if ['*', 'any'].include?(name.to_s)
+    version_class(name)
   end
 
   def supported?(name)

@@ -1,7 +1,7 @@
 module Regexp::Syntax
   module Token
     module Quantifier
-      Greedy    = %i[
+      Greedy = %i[
         zero_or_one
         zero_or_more
         one_or_more
@@ -13,7 +13,7 @@ module Regexp::Syntax
         one_or_more_reluctant
       ]
 
-      Possessive  = %i[
+      Possessive = %i[
         zero_or_one_possessive
         zero_or_more_possessive
         one_or_more_possessive
@@ -23,9 +23,9 @@ module Regexp::Syntax
       IntervalReluctant    = %i[interval_reluctant]
       IntervalPossessive   = %i[interval_possessive]
 
-      IntervalAll = Interval + IntervalReluctant +
-                    IntervalPossessive
+      IntervalAll = Interval + IntervalReluctant + IntervalPossessive
 
+      V1_8_6 = Greedy + Reluctant + Interval + IntervalReluctant
       All = Greedy + Reluctant + Possessive + IntervalAll
       Type = :quantifier
     end

@@ -1,4 +1,4 @@
-# Ruby 1.8.x is no longer a supported runtime,
+# Ruby 1.x is no longer a supported runtime,
 # but its regex features are still recognized.
 #
 # Aliases for the latest patch version are provided as 'ruby/n.n',

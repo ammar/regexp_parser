@@ -3,11 +3,8 @@ module Regexp::Syntax
   # is useful during development, testing, and should be useful for some types
   # of transformations as well.
   class Any < Base
-    def initialize # rubocop:disable Lint/MissingSuper
-      @implements = { :* => %i[*] }
-    end
+    implements :*, [:*]
 
-    def implements?(_type, _token) true end
-    def implements!(_type, _token) true end
+    def self.implements?(_type, _token) true end
   end
 end
