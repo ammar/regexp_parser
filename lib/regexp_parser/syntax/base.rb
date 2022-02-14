@@ -51,19 +51,6 @@ module Regexp::Syntax
         @removed_features ||= {}
       end
 
-      def changed_features
-        { added: added_features, removed: removed_features }
-      end
-
-      def changed_features?
-        added_features.any? || removed_features.any?
-      end
-
-      # TODO: spec
-      def feature_version
-        ancestors.find(&:changed_features?)
-      end
-
       def normalize(type, token)
         case type
         when :group
@@ -105,10 +92,6 @@ module Regexp::Syntax
         else
           [type, token]
         end
-      end
-
-      def inspect
-        "#{super} (feature set of #{feature_version.to_s.split('::').last})"
       end
     end
 
