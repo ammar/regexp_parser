@@ -163,19 +163,19 @@ checks a few of their implementation features.
 ```ruby
 require 'regexp_parser'
 
-ruby_20 = Regexp::Syntax.new 'ruby/2.0'
+ruby_20 = Regexp::Syntax.for 'ruby/2.0'
 ruby_20.implements? :quantifier,  :zero_or_one             # => true
 ruby_20.implements? :quantifier,  :zero_or_one_reluctant   # => true
 ruby_20.implements? :quantifier,  :zero_or_one_possessive  # => true
 ruby_20.implements? :conditional, :condition               # => true
 
-ruby_19 = Regexp::Syntax.new 'ruby/1.9'
+ruby_19 = Regexp::Syntax.for 'ruby/1.9'
 ruby_19.implements? :quantifier,  :zero_or_one             # => true
 ruby_19.implements? :quantifier,  :zero_or_one_reluctant   # => true
 ruby_19.implements? :quantifier,  :zero_or_one_possessive  # => true
 ruby_19.implements? :conditional, :condition               # => false
 
-ruby_18 = Regexp::Syntax.new 'ruby/1.8'
+ruby_18 = Regexp::Syntax.for 'ruby/1.8'
 ruby_18.implements? :quantifier,  :zero_or_one             # => true
 ruby_18.implements? :quantifier,  :zero_or_one_reluctant   # => true
 ruby_18.implements? :quantifier,  :zero_or_one_possessive  # => false
@@ -187,7 +187,7 @@ Syntax objects can also be queried about their complete and relative feature set
 ```ruby
 require 'regexp_parser'
 
-ruby_20 = Regexp::Syntax.new 'ruby/2.0' # => Regexp::Syntax::V2_0_0
+ruby_20 = Regexp::Syntax.for 'ruby/2.0' # => Regexp::Syntax::V2_0_0
 ruby_20.added_features                  # => { conditional: [...], ... }
 ruby_20.removed_features                # => { property: [:newline], ... }
 ruby_20.features                        # => { anchor: [...], ... }

@@ -18,7 +18,7 @@ class Regexp::Lexer
   end
 
   def lex(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
-    syntax = Regexp::Syntax.new(syntax)
+    syntax = Regexp::Syntax.for(syntax)
 
     self.tokens = []
     self.nesting = 0

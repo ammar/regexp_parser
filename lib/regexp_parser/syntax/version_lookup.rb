@@ -19,8 +19,14 @@ module Regexp::Syntax
 
   # Returns the syntax specification class for the given syntax
   # version name. The special names 'any' and '*' return Syntax::Any.
-  def new(name)
+  def for(name)
     (@alias_map ||= {})[name] ||= version_class(name)
+  end
+
+  def new(name)
+    warn 'Regexp::Syntax.new is deprecated in favor of Regexp::Syntax.for. '\
+         'It does not return distinct instances and will be removed in v3.0.0.'
+    self.for(name)
   end
 
   def supported?(name)
