@@ -10,12 +10,11 @@ module Regexp::Syntax
     include Regexp::Syntax::Token
 
     class << self
-      # sum of features, including those inherited from ancestor syntax classes
-      def features
-        @features ||= begin
-          pred = ancestors[1]
-          pred < Base ? pred.features.map { |k, v| [k, v.dup] }.to_h : {}
-        end
+      attr_accessor :features
+
+      # automatically inherit features through the syntax class hierarchy
+      def inherited(subclass)
+        subclass.features = features.to_h.map { |k, v| [k, v.dup] }.to_h
       end
 
       def implements(type, tokens)
