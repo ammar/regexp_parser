@@ -1,7 +1,7 @@
 require_relative './shared'
 require 'uri'
 
-regexp = URI.regexp
+regexp = URI::DEFAULT_PARSER.make_regexp
 
 benchmark(
   caption: 'Parsing a complex Regexp (URI.regexp)',
