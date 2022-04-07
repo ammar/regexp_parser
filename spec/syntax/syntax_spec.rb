@@ -26,6 +26,8 @@ RSpec.describe(Regexp::Syntax) do
     it { expect(Regexp::Syntax.for('ruby/3.0')).to eq    Regexp::Syntax::V2_6_3 }
     it { expect(Regexp::Syntax.for('ruby/3.1.0')).to eq  Regexp::Syntax::V3_1_0 }
     it { expect(Regexp::Syntax.for('ruby/3.1')).to eq    Regexp::Syntax::V3_1_0 }
+    it { expect(Regexp::Syntax.for('ruby/3.2.0')).to eq  Regexp::Syntax::V3_2_0 }
+    it { expect(Regexp::Syntax.for('ruby/3.2')).to eq    Regexp::Syntax::V3_2_0 }
 
     it { expect(Regexp::Syntax.for('any')).to eq         Regexp::Syntax::Any }
     it { expect(Regexp::Syntax.for('*')).to eq           Regexp::Syntax::Any }

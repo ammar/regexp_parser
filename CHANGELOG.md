@@ -6,7 +6,7 @@
   - instead of fresh `Syntax` instances, pre-loaded constants are now re-used
   - this approximately doubles the parsing speed for simple regexps
 - added methods to `Syntax` classes to show relative feature sets
-  - e.g. `Syntax::Version::V3_1_0.added_features`
+  - e.g. `Regexp::Syntax::V3_2_0.added_features`
 - support for new unicode properties of Ruby 3.2 / Unicode 14.0
 
 ## [2.2.1] - 2022-02-11 - [Janosch Müller](mailto:janosch84@gmail.com)
