@@ -31,6 +31,7 @@ cn,unassigned
 co,private_use
 combiningmark,mark
 copt,coptic
+cpmn,cypro_minoan
 cprt,cypriot
 cs,surrogate
 cwcf,changes_when_casefolded
@@ -154,6 +155,7 @@ orkh,old_turkic
 orya,oriya
 osge,osage
 osma,osmanya
+ougr,old_uyghur
 oupper,other_uppercase
 p,punctuation
 palm,palmyrene
@@ -219,9 +221,11 @@ tglg,tagalog
 thaa,thaana
 tibt,tibetan
 tirh,tirhuta
+tnsa,tangsa
 ugar,ugaritic
 uideo,unified_ideograph
 vaii,vai
+vith,vithkuqi
 vs,variation_selector
 wara,warang_citi
 wcho,wancho

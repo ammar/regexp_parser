@@ -6,6 +6,7 @@ age=11.0,age=11.0
 age=12.0,age=12.0
 age=12.1,age=12.1
 age=13.0,age=13.0
+age=14.0,age=14.0
 age=2.0,age=2.0
 age=2.1,age=2.1
 age=3.0,age=3.0
@@ -72,6 +73,7 @@ coptic,coptic
 cuneiform,cuneiform
 currencysymbol,currency_symbol
 cypriot,cypriot
+cyprominoan,cypro_minoan
 cyrillic,cyrillic
 dash,dash
 dashpunctuation,dash_punctuation
@@ -136,6 +138,7 @@ inancientgreeknumbers,in_ancient_greek_numbers
 inancientsymbols,in_ancient_symbols
 inarabic,in_arabic
 inarabicextendeda,in_arabic_extended_a
+inarabicextendedb,in_arabic_extended_b
 inarabicmathematicalalphabeticsymbols,in_arabic_mathematical_alphabetic_symbols
 inarabicpresentationformsa,in_arabic_presentation_forms_a
 inarabicpresentationformsb,in_arabic_presentation_forms_b
@@ -197,6 +200,7 @@ incuneiform,in_cuneiform
 incuneiformnumbersandpunctuation,in_cuneiform_numbers_and_punctuation
 incurrencysymbols,in_currency_symbols
 incypriotsyllabary,in_cypriot_syllabary
+incyprominoan,in_cypro_minoan
 incyrillic,in_cyrillic
 incyrillicextendeda,in_cyrillic_extended_a
 incyrillicextendedb,in_cyrillic_extended_b
@@ -223,6 +227,7 @@ inenclosedideographicsupplement,in_enclosed_ideographic_supplement
 inethiopic,in_ethiopic
 inethiopicextended,in_ethiopic_extended
 inethiopicextendeda,in_ethiopic_extended_a
+inethiopicextendedb,in_ethiopic_extended_b
 inethiopicsupplement,in_ethiopic_supplement
 ingeneralpunctuation,in_general_punctuation
 ingeometricshapes,in_geometric_shapes
@@ -264,6 +269,7 @@ initialpunctuation,initial_punctuation
 injavanese,in_javanese
 inkaithi,in_kaithi
 inkanaextendeda,in_kana_extended_a
+inkanaextendedb,in_kana_extended_b
 inkanasupplement,in_kana_supplement
 inkanbun,in_kanbun
 inkangxiradicals,in_kangxi_radicals
@@ -285,6 +291,8 @@ inlatinextendedb,in_latin_extended_b
 inlatinextendedc,in_latin_extended_c
 inlatinextendedd,in_latin_extended_d
 inlatinextendede,in_latin_extended_e
+inlatinextendedf,in_latin_extended_f
+inlatinextendedg,in_latin_extended_g
 inlepcha,in_lepcha
 inletterlikesymbols,in_letterlike_symbols
 inlimbu,in_limbu
@@ -349,6 +357,7 @@ inoldpersian,in_old_persian
 inoldsogdian,in_old_sogdian
 inoldsoutharabian,in_old_south_arabian
 inoldturkic,in_old_turkic
+inolduyghur,in_old_uyghur
 inopticalcharacterrecognition,in_optical_character_recognition
 inoriya,in_oriya
 inornamentaldingbats,in_ornamental_dingbats
@@ -413,6 +422,7 @@ intaixuanjingsymbols,in_tai_xuan_jing_symbols
 intakri,in_takri
 intamil,in_tamil
 intamilsupplement,in_tamil_supplement
+intangsa,in_tangsa
 intangut,in_tangut
 intangutcomponents,in_tangut_components
 intangutsupplement,in_tangut_supplement
@@ -422,15 +432,18 @@ inthai,in_thai
 intibetan,in_tibetan
 intifinagh,in_tifinagh
 intirhuta,in_tirhuta
+intoto,in_toto
 intransportandmapsymbols,in_transport_and_map_symbols
 inugaritic,in_ugaritic
 inunifiedcanadianaboriginalsyllabics,in_unified_canadian_aboriginal_syllabics
 inunifiedcanadianaboriginalsyllabicsextended,in_unified_canadian_aboriginal_syllabics_extended
+inunifiedcanadianaboriginalsyllabicsextendeda,in_unified_canadian_aboriginal_syllabics_extended_a
 invai,in_vai
 invariationselectors,in_variation_selectors
 invariationselectorssupplement,in_variation_selectors_supplement
 invedicextensions,in_vedic_extensions
 inverticalforms,in_vertical_forms
+invithkuqi,in_vithkuqi
 inwancho,in_wancho
 inwarangciti,in_warang_citi
 inyezidi,in_yezidi
@@ -438,6 +451,7 @@ inyijinghexagramsymbols,in_yijing_hexagram_symbols
 inyiradicals,in_yi_radicals
 inyisyllables,in_yi_syllables
 inzanabazarsquare,in_zanabazar_square
+inznamennymusicalnotation,in_znamenny_musical_notation
 javanese,javanese
 joincontrol,join_control
 kaithi,kaithi
@@ -509,6 +523,7 @@ oldpersian,old_persian
 oldsogdian,old_sogdian
 oldsoutharabian,old_south_arabian
 oldturkic,old_turkic
+olduyghur,old_uyghur
 openpunctuation,open_punctuation
 oriya,oriya
 osage,osage
@@ -573,6 +588,7 @@ taitham,tai_tham
 taiviet,tai_viet
 takri,takri
 tamil,tamil
+tangsa,tangsa
 tangut,tangut
 telugu,telugu
 terminalpunctuation,terminal_punctuation
@@ -582,6 +598,7 @@ tibetan,tibetan
 tifinagh,tifinagh
 tirhuta,tirhuta
 titlecaseletter,titlecase_letter
+toto,toto
 ugaritic,ugaritic
 unassigned,unassigned
 unifiedideograph,unified_ideograph
@@ -591,6 +608,7 @@ uppercase,uppercase
 uppercaseletter,uppercase_letter
 vai,vai
 variationselector,variation_selector
+vithkuqi,vithkuqi
 wancho,wancho
 warangciti,warang_citi
 whitespace,white_space
