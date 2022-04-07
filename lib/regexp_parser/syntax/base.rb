@@ -14,6 +14,7 @@ module Regexp::Syntax
 
       # automatically inherit features through the syntax class hierarchy
       def inherited(subclass)
+        super
         subclass.features = features.to_h.map { |k, v| [k, v.dup] }.to_h
       end
 
