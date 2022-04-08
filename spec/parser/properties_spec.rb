@@ -37,7 +37,8 @@ RSpec.describe('Property parsing') do
     end
   end
 
-  if ruby_version_at_least('2.7.0')
+  # cannot test older Rubies because of https://bugs.ruby-lang.org/issues/18686
+  if ruby_version_at_least('3.2.0')
     specify('parse all properties of current ruby') do
       unsupported = RegexpPropertyValues.all_for_current_ruby.reject do |prop|
         RP.parse("\\p{#{prop}}") rescue false
