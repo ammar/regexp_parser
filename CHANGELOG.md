@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [2.3.0] - 2022-04-08 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Added
 
 - improved parsing performance through `Syntax` refactoring
