@@ -1,12 +1,13 @@
-require_relative './shared'
+require 'benchmark/ips'
+require_relative '../../lib/regexp_parser'
+
+puts 'Parsing a minimal Regexp'
 
 regexp = /./
 
-benchmark(
-  caption: 'Parsing a minimal Regexp',
-  cases: {
-    'Scanner::scan' => -> { Regexp::Scanner.scan(regexp) },
-    'Lexer::lex'    => -> { Regexp::Lexer.lex(regexp) },
-    'Parser::parse' => -> { Regexp::Parser.parse(regexp) },
-  },
-)
+Benchmark.ips do |x|
+  x.report('Scanner::scan') { Regexp::Scanner.scan(regexp) }
+  x.report('Lexer::lex')    { Regexp::Lexer.lex(regexp)    }
+  x.report('Parser::parse') { Regexp::Parser.parse(regexp) }
+  x.compare!
+end

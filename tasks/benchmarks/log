@@ -2,12 +2,13 @@ Results of rake:benchmark on ruby 3.1.0p0 (2021-12-25 revision fb4df44d16) [arm6
 
 Parsing a minimal Regexp
 
-       Scanner::scan:    31340.9 i/s
-          Lexer::lex:    29603.0 i/s - same-ish: difference falls within error
-       Parser::parse:    26792.3 i/s - 1.17x  (± 0.00) slower
+       Scanner::scan:    32710.2 i/s
+          Lexer::lex:    31091.8 i/s - same-ish: difference falls within error
+       Parser::parse:    27097.3 i/s - 1.21x  (± 0.00) slower
 
 Parsing a complex Regexp (URI.regexp)
 
-       Scanner::scan:      953.7 i/s
-          Lexer::lex:      605.7 i/s - 1.57x  (± 0.00) slower
-       Parser::parse:      328.1 i/s - 2.91x  (± 0.00) slower
+       Scanner::scan:      877.0 i/s
+          Lexer::lex:      545.2 i/s - 1.61x  (± 0.00) slower
+       Parser::parse:      294.7 i/s - 2.98x  (± 0.00) slower
+

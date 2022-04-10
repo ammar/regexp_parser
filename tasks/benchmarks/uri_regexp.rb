@@ -1,13 +1,14 @@
-require_relative './shared'
-require 'uri'
+require 'benchmark/ips'
+require_relative '../../lib/regexp_parser'
 
+puts 'Parsing a complex Regexp (URI.regexp)'
+
+require 'uri'
 regexp = URI::DEFAULT_PARSER.make_regexp
 
-benchmark(
-  caption: 'Parsing a complex Regexp (URI.regexp)',
-  cases: {
-    'Scanner::scan' => -> { Regexp::Scanner.scan(regexp) },
-    'Lexer::lex'    => -> { Regexp::Lexer.lex(regexp) },
-    'Parser::parse' => -> { Regexp::Parser.parse(regexp) },
-  },
-)
+Benchmark.ips do |x|
+  x.report('Scanner::scan') { Regexp::Scanner.scan(regexp) }
+  x.report('Lexer::lex')    { Regexp::Lexer.lex(regexp)    }
+  x.report('Parser::parse') { Regexp::Parser.parse(regexp) }
+  x.compare!
+end

@@ -8,16 +8,23 @@ end
 namespace :benchmark do
   desc 'Run all IPS benchmarks and store the comparison results in BENCHMARK.md'
   task :write_to_file do
-    $store_comparison_results = {}
+    require 'stringio'
 
-    Rake.application[:benchmark].invoke
+    string_io = StringIO.new
+    with_stdouts(STDOUT, string_io) { Rake.application[:benchmark].invoke }
 
-    File.open("#{BENCHMARKS_DIR}/log", 'w') do |f|
-      f.puts "Results of rake:benchmark on #{RUBY_DESCRIPTION}"
-
-      $store_comparison_results.each do |caption, result|
-        f.puts '', caption, '', result.strip.lines[1..-1]
-      end
-    end
+    File.write "#{BENCHMARKS_DIR}/log",
+               "Results of rake:benchmark on #{RUBY_DESCRIPTION}\n\n" +
+               string_io.string.gsub(/Warming up.*?Comparison:/m, '')
   end
+end
+
+def with_stdouts(*ios)
+  old_stdout = $stdout
+  ios.define_singleton_method(:method_missing) { |*args| each { |io| io.send(*args) } }
+  ios.define_singleton_method(:respond_to?) { |*args| IO.respond_to?(*args) }
+  $stdout = ios
+  yield
+ensure
+  $stdout = old_stdout
 end
