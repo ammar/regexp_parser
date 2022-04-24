@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [2.3.1] - 2022-04-24 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Fixed
 
 - removed five inexistent unicode properties from `Syntax#features`
