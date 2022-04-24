@@ -306,14 +306,9 @@ module Regexp::Syntax
       ]
 
       Script_V2_6_2 = %i[
-        egyptian_hieroglyph_format_controls
         elymaic
         nandinagari
         nyiakeng_puachue_hmong
-        ottoman_siyaq_numbers
-        small_kana_extension
-        symbols_and_pictographs_extended_a
-        tamil_supplement
         wancho
       ]
 

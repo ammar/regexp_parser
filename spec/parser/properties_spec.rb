@@ -47,6 +47,14 @@ RSpec.describe('Property parsing') do
     end
   end
 
+  specify('parse only properties of current ruby') do
+    syntax = Regexp::Syntax.for("ruby/#{RUBY_VERSION}")
+    excessive = syntax.features.fetch(:property, []).reject do |prop|
+      RP.parse("\\p{#{prop}}") rescue false
+    end
+    expect(excessive).to be_empty
+  end
+
   specify('parse property negative') do
     root = RP.parse('ab\p{L}cd', 'ruby/1.9')
     expect(root[1]).not_to be_negative

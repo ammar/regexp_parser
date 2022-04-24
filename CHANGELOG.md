@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Fixed
+
+- removed five inexistent unicode properties from `Syntax#features`
+  - these were never supported by Ruby but incorrectly accepted by the parser
+  - thanks to [Markus Schirp](https://github.com/mbj) for the report
+
 ## [2.3.0] - 2022-04-08 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
