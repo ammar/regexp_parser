@@ -47,16 +47,20 @@ RSpec.describe('Property parsing') do
     end
   end
 
-  specify('parse only properties of current ruby') do
-    syntax = Regexp::Syntax.for("ruby/#{RUBY_VERSION}")
-    excessive = syntax.features.fetch(:property, []).reject do |prop|
-      begin
-        Regexp.new("\\p{#{prop}}")
-      rescue RegexpError, SyntaxError # error class depends on Ruby version
-        false
+  # Ruby 2.3 supports a short prop name (sterm) without supporting the long name
+  # of the same prop (sentence_terminal). Let's ignore this unique case.
+  if ruby_version_at_least('2.4.0')
+    specify('parse only properties of current ruby') do
+      syntax = Regexp::Syntax.for("ruby/#{RUBY_VERSION}")
+      excessive = syntax.features.fetch(:property, []).reject do |prop|
+        begin
+          Regexp.new("\\p{#{prop}}")
+        rescue RegexpError, SyntaxError # error class depends on Ruby version
+          false
+        end
       end
+      expect(excessive).to be_empty
     end
-    expect(excessive).to be_empty
   end
 
   specify('parse property negative') do
