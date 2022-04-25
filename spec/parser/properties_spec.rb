@@ -50,9 +50,11 @@ RSpec.describe('Property parsing') do
   specify('parse only properties of current ruby') do
     syntax = Regexp::Syntax.for("ruby/#{RUBY_VERSION}")
     excessive = syntax.features.fetch(:property, []).reject do |prop|
-      Regexp.new("\\p{#{prop}}")
-    rescue RegexpError, SyntaxError # error class depends on Ruby version
-      false
+      begin
+        Regexp.new("\\p{#{prop}}")
+      rescue RegexpError, SyntaxError # error class depends on Ruby version
+        false
+      end
     end
     expect(excessive).to be_empty
   end
