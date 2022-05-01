@@ -42,15 +42,15 @@ RSpec.describe('Quantifier parsing') do
   include_examples 'parse', /a+{2}{3}/,
     0 => [
       :group, :passive, Group::Passive, implicit?: true, level: 0,
-      quantifier: Quantifier.new(:interval, '{3}', 3, 3, :greedy)
+      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :interval, '{3}', 0, 0, 0, 0, 0))
     ],
     [0, 0] => [
       :group, :passive, Group::Passive, implicit?: true, level: 1,
-      quantifier: Quantifier.new(:interval, '{2}', 2, 2, :greedy)
+      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :interval, '{2}', 0, 0, 0, 0, 0))
     ],
     [0, 0, 0] => [
       :literal, :literal, Literal, text: 'a', level: 2,
-      quantifier: Quantifier.new(:one_or_more, '+', 1, -1, :greedy)
+      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :one_or_more, '+', 0, 0, 0, 0, 0))
     ]
 
   specify('mode-checking methods') do

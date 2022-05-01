@@ -605,7 +605,7 @@
       end
     };
 
-    quantifier_interval  {
+    # TODO: in v3.0.0 emit token with mode included (e.g. :interval_greedy)
     quantifier_interval {
       emit(:quantifier, :interval, copy(data, ts, te))
     };

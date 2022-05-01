@@ -293,6 +293,7 @@ class Regexp::Parser
   # subtrees are transplanted to build Alternations, Intersections, Ranges
   def update_transplanted_subtree(exp, new_parent)
     exp.nesting_level = new_parent.nesting_level + 1
+    exp.quantifier.nesting_level = exp.nesting_level if exp.quantifier
     exp.respond_to?(:each) &&
       exp.each { |subexp| update_transplanted_subtree(subexp, exp) }
   end
@@ -498,61 +499,24 @@ class Regexp::Parser
       target_node = new_group
     end
 
-    case token.token
-    when :zero_or_one
-      target_node.quantify(:zero_or_one, token.text, 0, 1, :greedy)
-    when :zero_or_one_reluctant
-      target_node.quantify(:zero_or_one, token.text, 0, 1, :reluctant)
-    when :zero_or_one_possessive
-      target_node.quantify(:zero_or_one, token.text, 0, 1, :possessive)
+    # TODO: in v3.0.0, solve in scanner.rl and remove this code block
+    if token.text =~ /\{.*\?/
+      token.token = :interval_reluctant
+    elsif token.text =~ /\{.*\+/
+      token.token = :interval_possessive
+    end
 
-    when :zero_or_more
-      target_node.quantify(:zero_or_more, token.text, 0, -1, :greedy)
-    when :zero_or_more_reluctant
-      target_node.quantify(:zero_or_more, token.text, 0, -1, :reluctant)
-    when :zero_or_more_possessive
-      target_node.quantify(:zero_or_more, token.text, 0, -1, :possessive)
-
-    when :one_or_more
-      target_node.quantify(:one_or_more, token.text, 1, -1, :greedy)
-    when :one_or_more_reluctant
-      target_node.quantify(:one_or_more, token.text, 1, -1, :reluctant)
-    when :one_or_more_possessive
-      target_node.quantify(:one_or_more, token.text, 1, -1, :possessive)
-
-    when :interval
-      interval(target_node, token)
-
-    else
+    unless token.token =~ /\A(?:zero_or_one|zero_or_more|one_or_more|interval)
+                             (?:_greedy|_reluctant|_possessive)?\z/x
       raise UnknownTokenError.new('Quantifier', token)
     end
+
+    target_node.quantify(token, active_opts)
   end
 
   def increase_level(exp)
     exp.level += 1
     exp.respond_to?(:each) && exp.each { |subexp| increase_level(subexp) }
-  end
-
-  def interval(target_node, token)
-    text = token.text
-    mchr = text[text.length-1].chr =~ /[?+]/ ? text[text.length-1].chr : nil
-    case mchr
-    when '?'
-      range_text = text[0...-1]
-      mode = :reluctant
-    when '+'
-      range_text = text[0...-1]
-      mode = :possessive
-    else
-      range_text = text
-      mode = :greedy
-    end
-
-    range = range_text.gsub(/\{|\}/, '').split(',', 2)
-    min = range[0].empty? ? 0 : range[0]
-    max = range[1] ? (range[1].empty? ? -1 : range[1]) : min
-
-    target_node.quantify(:interval, text, min.to_i, max.to_i, mode)
   end
 
   def set(token)

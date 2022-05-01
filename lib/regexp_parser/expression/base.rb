@@ -16,14 +16,13 @@ module Regexp::Expression
       self.set_level         = token.set_level
       self.conditional_level = token.conditional_level
       self.nesting_level     = 0
-      self.quantifier        = nil
       self.options           = options
     end
 
     def initialize_copy(orig)
-      self.text       = (orig.text       ? orig.text.dup         : nil)
-      self.options    = (orig.options    ? orig.options.dup      : nil)
-      self.quantifier = (orig.quantifier ? orig.quantifier.clone : nil)
+      self.text       = orig.text.dup         if orig.text
+      self.options    = orig.options.dup      if orig.options
+      self.quantifier = orig.quantifier.clone if orig.quantifier
       super
     end
 
@@ -61,8 +60,8 @@ module Regexp::Expression
       !respond_to?(:expressions)
     end
 
-    def quantify(token, text, min = nil, max = nil, mode = :greedy)
-      self.quantifier = Quantifier.new(token, text, min, max, mode)
+    def quantify(*args)
+      self.quantifier = Quantifier.new(*args)
     end
 
     def unquantified_clone

@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+### Added
+
+- added some `Quantifier` instance methods
+  - `#options`, `#ts`, `#type`
+  - `#conditional_level`, `#level`, `#nesting_level` , `#set_level`
+  - this allows a more unified handling with `Expression::Base` instances
+
 ## [2.3.1] - 2022-04-24 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed

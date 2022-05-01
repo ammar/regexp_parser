@@ -1,6 +1,6 @@
 module Regexp::Expression
   class FreeSpace < Regexp::Expression::Base
-    def quantify(_token, _text, _min = nil, _max = nil, _mode = :greedy)
+    def quantify(*_args)
       raise Regexp::Parser::Error, 'Can not quantify a free space object'
     end
   end

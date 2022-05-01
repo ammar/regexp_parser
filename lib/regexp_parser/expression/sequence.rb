@@ -39,12 +39,12 @@ module Regexp::Expression
     end
     alias :ts :starts_at
 
-    def quantify(token, text, min = nil, max = nil, mode = :greedy)
+    def quantify(*args)
       target = expressions.reverse.find { |exp| !exp.is_a?(FreeSpace) }
       target or raise Regexp::Parser::Error,
         "No valid target found for '#{text}' quantifier"
 
-      target.quantify(token, text, min, max, mode)
+      target.quantify(*args)
     end
   end
 end
