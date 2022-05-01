@@ -1,7 +1,7 @@
 # Usage: https://github.com/jaynetics/gouteur/blob/main/README.md
 
 repos:
-  - uri: https://github.com/jaynetics/js_regex
+  # - uri: https://github.com/jaynetics/js_regex
 
   - uri: https://github.com/rubocop-hq/rubocop
     tasks: rspec --pattern "**/{,*}regexp{,*,*/**/*}_spec.rb"
