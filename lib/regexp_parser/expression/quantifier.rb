@@ -11,7 +11,7 @@ module Regexp::Expression
     attr_reader :min, :max, :mode
 
     def initialize(*args)
-      return deprecated_old_init(*args) if args.count == 4 || args.count == 5
+      deprecated_old_init(*args) and return if args.count == 4 || args.count == 5
 
       init_from_token_and_options(*args)
       @mode = (token[/greedy|reluctant|possessive/] || :greedy).to_sym
