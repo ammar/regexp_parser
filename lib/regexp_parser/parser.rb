@@ -484,7 +484,7 @@ class Regexp::Parser
       new_token = Regexp::Token.new(
         :group,
         :passive,
-        '', # text
+        '', # text (none because this group is implicit)
         target_node.ts,
         nil, # te (unused)
         target_node.level,
