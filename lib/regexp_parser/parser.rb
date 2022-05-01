@@ -509,6 +509,7 @@ class Regexp::Parser
 
   def increase_level(exp)
     exp.level += 1
+    exp.quantifier.level += 1 if exp.quantifier
     exp.respond_to?(:each) && exp.each { |subexp| increase_level(subexp) }
   end
 
