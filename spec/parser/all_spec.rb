@@ -22,17 +22,6 @@ RSpec.describe(Regexp::Parser) do
     expect(root.x?).to be false
   end
 
-  specify('parse node types') do
-    root = RP.parse('^(one){2,3}([^d\\]efm-qz\\,\\-]*)(ghi)+$')
-
-    expect(root[1][0]).to be_a(Literal)
-    expect(root[1]).to be_quantified
-    expect(root[2][0]).to be_a(CharacterSet)
-    expect(root[2]).not_to be_quantified
-    expect(root[3]).to be_a(Group::Capture)
-    expect(root[3]).to be_quantified
-  end
-
   specify('parse no quantifier target raises error') do
     expect { RP.parse('?abc') }.to raise_error(Regexp::Parser::Error)
   end
