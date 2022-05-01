@@ -223,7 +223,7 @@
       fcall character_set;
     };
 
-    class_posix >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
+    class_posix >(open_bracket, 1) @set_closed @eof(premature_end_error) {
       text = copy(data, ts, te)
 
       type = :posixclass
@@ -237,10 +237,10 @@
     };
 
     # These are not supported in ruby at the moment. Enable them if they are.
-    # collating_sequence >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
+    # collating_sequence >(open_bracket, 1) @set_closed @eof(premature_end_error) {
     #   emit(:set, :collation, copy(data, ts, te))
     # };
-    # character_equivalent >(open_bracket, 1) @set_closed @eof(premature_end_error)  {
+    # character_equivalent >(open_bracket, 1) @set_closed @eof(premature_end_error) {
     #   emit(:set, :equivalent, copy(data, ts, te))
     # };
 
@@ -606,6 +606,7 @@
     };
 
     quantifier_interval  {
+    quantifier_interval {
       emit(:quantifier, :interval, copy(data, ts, te))
     };
 
