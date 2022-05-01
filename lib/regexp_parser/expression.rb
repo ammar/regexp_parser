@@ -1,5 +1,6 @@
 require 'regexp_parser/error'
 
+require 'regexp_parser/expression/shared'
 require 'regexp_parser/expression/base'
 require 'regexp_parser/expression/quantifier'
 require 'regexp_parser/expression/subexpression'

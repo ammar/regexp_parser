@@ -1,22 +1,9 @@
 module Regexp::Expression
   class Base
-    attr_accessor :type, :token
-    attr_accessor :text, :ts
-    attr_accessor :level, :set_level, :conditional_level, :nesting_level
-
-    attr_accessor :quantifier
-    attr_accessor :options
+    include Regexp::Expression::Shared
 
     def initialize(token, options = {})
-      self.type              = token.type
-      self.token             = token.token
-      self.text              = token.text
-      self.ts                = token.ts
-      self.level             = token.level
-      self.set_level         = token.set_level
-      self.conditional_level = token.conditional_level
-      self.nesting_level     = 0
-      self.options           = options
+      init_from_token_and_options(token, options)
     end
 
     def initialize_copy(orig)
@@ -30,34 +17,12 @@ module Regexp::Expression
       ::Regexp.new(to_s(format))
     end
 
-    alias :starts_at :ts
-
-    def base_length
-      to_s(:base).length
-    end
-
-    def full_length
-      to_s.length
-    end
-
-    def offset
-      [starts_at, full_length]
-    end
-
-    def coded_offset
-      '@%d+%d' % offset
-    end
-
     def to_s(format = :full)
       "#{text}#{quantifier_affix(format)}"
     end
 
     def quantifier_affix(expression_format)
       quantifier.to_s if quantified? && expression_format != :base
-    end
-
-    def terminal?
-      !respond_to?(:expressions)
     end
 
     def quantify(*args)
