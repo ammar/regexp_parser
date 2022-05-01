@@ -34,7 +34,7 @@ module Regexp::Expression
         when /zero_or_one/  then @min, @max = 0, 1
         when /zero_or_more/ then @min, @max = 0, -1
         when /one_or_more/  then @min, @max = 1, -1
-        when /interval/
+        when :interval
           int_min = token.text[/\{(\d*)/, 1]
           int_max = token.text[/,?(\d*)\}/, 1]
           @min, @max = int_min.to_i, (int_max.empty? ? -1 : int_max.to_i)

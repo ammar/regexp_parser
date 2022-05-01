@@ -499,13 +499,6 @@ class Regexp::Parser
       target_node = new_group
     end
 
-    # TODO: in v3.0.0, solve in scanner.rl and remove this code block
-    if token.text =~ /\{.*\?/
-      token.token = :interval_reluctant
-    elsif token.text =~ /\{.*\+/
-      token.token = :interval_possessive
-    end
-
     unless token.token =~ /\A(?:zero_or_one|zero_or_more|one_or_more|interval)
                              (?:_greedy|_reluctant|_possessive)?\z/x
       raise UnknownTokenError.new('Quantifier', token)

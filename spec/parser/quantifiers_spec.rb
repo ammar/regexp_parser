@@ -5,6 +5,7 @@ RSpec.describe('Quantifier parsing') do
     it "parses the quantifier in #{pattern} as #{mode} #{token}" do
       root = RP.parse(pattern, '*')
       exp = root[0]
+      exp = exp[0] if exp.is_a?(Group::Passive) && exp.implicit?
 
       expect(exp).to be_quantified
       expect(exp.quantifier.token).to eq token
@@ -25,33 +26,33 @@ RSpec.describe('Quantifier parsing') do
   include_examples 'quantifier', /a+?b/,     '+?',     :reluctant,  :one_or_more,  1, -1
   include_examples 'quantifier', /a++b/,     '++',     :possessive, :one_or_more,  1, -1
   include_examples 'quantifier', /a{2,4}b/,  '{2,4}',  :greedy,     :interval,     2, 4
-  include_examples 'quantifier', /a{2,4}?b/, '{2,4}?', :reluctant,  :interval,     2, 4
-  include_examples 'quantifier', /a{2,4}+b/, '{2,4}+', :possessive, :interval,     2, 4
   include_examples 'quantifier', /a{2,}b/,   '{2,}',   :greedy,     :interval,     2, -1
-  include_examples 'quantifier', /a{2,}?b/,  '{2,}?',  :reluctant,  :interval,     2, -1
-  include_examples 'quantifier', /a{2,}+b/,  '{2,}+',  :possessive, :interval,     2, -1
   include_examples 'quantifier', /a{,3}b/,   '{,3}',   :greedy,     :interval,     0, 3
-  include_examples 'quantifier', /a{,3}?b/,  '{,3}?',  :reluctant,  :interval,     0, 3
-  include_examples 'quantifier', /a{,3}+b/,  '{,3}+',  :possessive, :interval,     0, 3
   include_examples 'quantifier', /a{4}b/,    '{4}',    :greedy,     :interval,     4, 4
-  include_examples 'quantifier', /a{4}?b/,   '{4}?',   :reluctant,  :interval,     4, 4
-  include_examples 'quantifier', /a{4}+b/,   '{4}+',   :possessive, :interval,     4, 4
-  include_examples 'quantifier', /a{004}+b/, '{004}+', :possessive, :interval,     4, 4
+  include_examples 'quantifier', /a{004}b/,  '{004}',  :greedy,     :interval,     4, 4
 
   # special case: exps with chained quantifiers are wrapped in implicit passive groups
-  include_examples 'parse', /a+{2}{3}/,
+  include_examples 'parse', /a+{2}{3}+/,
     0 => [
       :group, :passive, Group::Passive, implicit?: true, level: 0,
-      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :interval, '{3}', 0, 0, 0, 0, 0))
+      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :one_or_more, '+', 0, 0, 0, 0, 0))
     ],
     [0, 0] => [
       :group, :passive, Group::Passive, implicit?: true, level: 1,
-      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :interval, '{2}', 0, 0, 0, 0, 0))
+      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :interval, '{3}', 0, 0, 0, 0, 0))
     ],
     [0, 0, 0] => [
-      :literal, :literal, Literal, text: 'a', level: 2,
+      :group, :passive, Group::Passive, implicit?: true, level: 2,
+      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :interval, '{2}', 0, 0, 0, 0, 0))
+    ],
+    [0, 0, 0, 0] => [
+      :literal, :literal, Literal, text: 'a', level: 3,
       quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :one_or_more, '+', 0, 0, 0, 0, 0))
     ]
+
+  # Ruby does not support modes for intervals, following `?` and `+` are read as chained quantifiers
+  include_examples 'quantifier', /a{2,4}?b/, '{2,4}', :greedy, :interval, 2, 4
+  include_examples 'quantifier', /a{2,4}+b/, '{2,4}', :greedy, :interval, 2, 4
 
   specify('mode-checking methods') do
     exp = RP.parse(/a??/).first

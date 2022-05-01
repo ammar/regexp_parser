@@ -367,12 +367,12 @@ _Note that not all of these are available in all versions of Ruby_
 | **POSIX Classes**                     | `[:alpha:]`, `[:^digit:]`                               | &#x2713; |
 | **Quantifiers**                       |                                                         | &#x22f1; |
 | &emsp;&nbsp;_**Greedy**_              | `?`, `*`, `+`, `{m,M}`                                  | &#x2713; |
-| &emsp;&nbsp;_**Reluctant** (Lazy)_    | `??`, `*?`, `+?`, `{m,M}?`                              | &#x2713; |
-| &emsp;&nbsp;_**Possessive**_          | `?+`, `*+`, `++`, `{m,M}+`                              | &#x2713; |
+| &emsp;&nbsp;_**Reluctant** (Lazy)_    | `??`, `*?`, `+?` \[1\]                                  | &#x2713; |
+| &emsp;&nbsp;_**Possessive**_          | `?+`, `*+`, `++` \[1\]                                  | &#x2713; |
 | **String Escapes**                    |                                                         | &#x22f1; |
-| &emsp;&nbsp;_**Control** \[1\]_       | `\C-C`, `\cD`                                           | &#x2713; |
+| &emsp;&nbsp;_**Control** \[2\]_       | `\C-C`, `\cD`                                           | &#x2713; |
 | &emsp;&nbsp;_**Hex**_                 | `\x20`, `\x{701230}`                                    | &#x2713; |
-| &emsp;&nbsp;_**Meta** \[1\]_          | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
+| &emsp;&nbsp;_**Meta** \[2\]_          | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
 | **Unicode Properties**                | _<sub>([Unicode 13.0.0](https://www.unicode.org/versions/Unicode13.0.0/))</sub>_ | &#x22f1; |
@@ -384,7 +384,11 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`, `\p{^Greek}`              | &#x2713; |
 | &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`, `\p{^Hyphen}`               | &#x2713; |
 
-**\[1\]**: As of Ruby 3.1, meta and control sequences are [pre-processed to hex escapes when used in Regexp literals](
+**\[1\]**: Ruby does not support lazy or possessive interval quantifiers. Any `+` or `?` that follows an interval
+quantifier will be treated as another, chained quantifier. See also [#3](https://github.com/ammar/regexp_parser/issue/3),
+[#69](https://github.com/ammar/regexp_parser/pull/69).
+
+**\[2\]**: As of Ruby 3.1, meta and control sequences are [pre-processed to hex escapes when used in Regexp literals](
  https://github.com/ruby/ruby/commit/11ae581a4a7f5d5f5ec6378872eab8f25381b1b9 ), so they will only reach the
 scanner and will only be emitted if a String or a Regexp that has been built with the `::new` constructor is scanned.
 

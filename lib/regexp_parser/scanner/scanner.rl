@@ -74,8 +74,7 @@
   quantity_maximum      = ',' . (digit+);
   quantity_range        = (digit+) . ',' . (digit+);
   quantifier_interval   = range_open . ( quantity_exact | quantity_minimum |
-                          quantity_maximum | quantity_range ) . range_close .
-                          quantifier_mode?;
+                          quantity_maximum | quantity_range ) . range_close;
 
   quantifiers           = quantifier_greedy | quantifier_reluctant |
                           quantifier_possessive | quantifier_interval;
@@ -605,7 +604,6 @@
       end
     };
 
-    # TODO: in v3.0.0 emit token with mode included (e.g. :interval_greedy)
     quantifier_interval {
       emit(:quantifier, :interval, copy(data, ts, te))
     };
