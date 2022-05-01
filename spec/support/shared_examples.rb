@@ -60,16 +60,21 @@ RSpec.shared_examples 'parse' do |pattern, checks|
     before(:all) { @root = Regexp::Parser.parse(pattern, '*') }
 
     checks.each do |path, (type, token, klass, attributes)|
+      path = Array(path)
+      inspect_quantifier = path.last == :q && path.pop
+
       it "parses expression at #{path} as #{klass}" do
         exp = @root.dig(*path)
+        exp = exp.quantifier if inspect_quantifier
 
         expect(exp).to be_instance_of(klass)
         expect(exp.type).to eq type
         expect(exp.token).to eq token
 
         attributes && attributes.each do |method, value|
-          expect(exp.send(method)).to eq(value),
-            "expected expression at #{path} to have #{method} #{value}"
+          actual = exp.send(method)
+          expect(actual).to eq(value),
+            "expected #{klass} at #{path} to have #{method} #{value}, got #{actual}"
         end
       end
     end

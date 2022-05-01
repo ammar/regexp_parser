@@ -1,58 +1,37 @@
 require 'spec_helper'
 
 RSpec.describe('Quantifier parsing') do
-  RSpec.shared_examples 'quantifier' do |pattern, text, mode, token, min, max|
-    it "parses the quantifier in #{pattern} as #{mode} #{token}" do
-      root = RP.parse(pattern, '*')
-      exp = root[0]
-      exp = exp[0] if exp.is_a?(Group::Passive) && exp.implicit?
-
-      expect(exp).to be_quantified
-      expect(exp.quantifier.token).to eq token
-      expect(exp.quantifier.min).to eq min
-      expect(exp.quantifier.max).to eq max
-      expect(exp.quantifier.mode).to eq mode
-      expect(exp.quantifier.text).to eq text
-    end
-  end
-
-  include_examples 'quantifier', /a?b/,      '?',      :greedy,     :zero_or_one,  0, 1
-  include_examples 'quantifier', /a??b/,     '??',     :reluctant,  :zero_or_one,  0, 1
-  include_examples 'quantifier', /a?+b/,     '?+',     :possessive, :zero_or_one,  0, 1
-  include_examples 'quantifier', /a*b/,      '*',      :greedy,     :zero_or_more, 0, -1
-  include_examples 'quantifier', /a*?b/,     '*?',     :reluctant,  :zero_or_more, 0, -1
-  include_examples 'quantifier', /a*+b/,     '*+',     :possessive, :zero_or_more, 0, -1
-  include_examples 'quantifier', /a+b/,      '+',      :greedy,     :one_or_more,  1, -1
-  include_examples 'quantifier', /a+?b/,     '+?',     :reluctant,  :one_or_more,  1, -1
-  include_examples 'quantifier', /a++b/,     '++',     :possessive, :one_or_more,  1, -1
-  include_examples 'quantifier', /a{2,4}b/,  '{2,4}',  :greedy,     :interval,     2, 4
-  include_examples 'quantifier', /a{2,}b/,   '{2,}',   :greedy,     :interval,     2, -1
-  include_examples 'quantifier', /a{,3}b/,   '{,3}',   :greedy,     :interval,     0, 3
-  include_examples 'quantifier', /a{4}b/,    '{4}',    :greedy,     :interval,     4, 4
-  include_examples 'quantifier', /a{004}b/,  '{004}',  :greedy,     :interval,     4, 4
+  include_examples 'parse', /a?b/,     [0, :q] => [:quantifier, :zero_or_one,  Quantifier, text: '?',     mode: :greedy,     min: 0, max: 1,  ts: 1]
+  include_examples 'parse', /a??b/,    [0, :q] => [:quantifier, :zero_or_one,  Quantifier, text: '??',    mode: :reluctant,  min: 0, max: 1,  ts: 1]
+  include_examples 'parse', /a?+b/,    [0, :q] => [:quantifier, :zero_or_one,  Quantifier, text: '?+',    mode: :possessive, min: 0, max: 1,  ts: 1]
+  include_examples 'parse', /a*b/,     [0, :q] => [:quantifier, :zero_or_more, Quantifier, text: '*',     mode: :greedy,     min: 0, max: -1, ts: 1]
+  include_examples 'parse', /a*?b/,    [0, :q] => [:quantifier, :zero_or_more, Quantifier, text: '*?',    mode: :reluctant,  min: 0, max: -1, ts: 1]
+  include_examples 'parse', /a*+b/,    [0, :q] => [:quantifier, :zero_or_more, Quantifier, text: '*+',    mode: :possessive, min: 0, max: -1, ts: 1]
+  include_examples 'parse', /a+b/,     [0, :q] => [:quantifier, :one_or_more,  Quantifier, text: '+',     mode: :greedy,     min: 1, max: -1, ts: 1]
+  include_examples 'parse', /a+?b/,    [0, :q] => [:quantifier, :one_or_more,  Quantifier, text: '+?',    mode: :reluctant,  min: 1, max: -1, ts: 1]
+  include_examples 'parse', /a++b/,    [0, :q] => [:quantifier, :one_or_more,  Quantifier, text: '++',    mode: :possessive, min: 1, max: -1, ts: 1]
+  include_examples 'parse', /a{2,4}b/, [0, :q] => [:quantifier, :interval,     Quantifier, text: '{2,4}', mode: :greedy,     min: 2, max: 4,  ts: 1]
+  include_examples 'parse', /a{2,}b/,  [0, :q] => [:quantifier, :interval,     Quantifier, text: '{2,}',  mode: :greedy,     min: 2, max: -1, ts: 1]
+  include_examples 'parse', /a{,3}b/,  [0, :q] => [:quantifier, :interval,     Quantifier, text: '{,3}',  mode: :greedy,     min: 0, max: 3,  ts: 1]
+  include_examples 'parse', /a{4}b/,   [0, :q] => [:quantifier, :interval,     Quantifier, text: '{4}',   mode: :greedy,     min: 4, max: 4,  ts: 1]
+  include_examples 'parse', /a{004}b/, [0, :q] => [:quantifier, :interval,     Quantifier, text: '{004}', mode: :greedy,     min: 4, max: 4,  ts: 1]
 
   # special case: exps with chained quantifiers are wrapped in implicit passive groups
-  include_examples 'parse', /a+{2}{3}+/,
-    0 => [
-      :group, :passive, Group::Passive, implicit?: true, level: 0,
-      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :one_or_more, '+', 0, 0, 0, 0, 0))
-    ],
-    [0, 0] => [
-      :group, :passive, Group::Passive, implicit?: true, level: 1,
-      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :interval, '{3}', 0, 0, 0, 0, 0))
-    ],
-    [0, 0, 0] => [
-      :group, :passive, Group::Passive, implicit?: true, level: 2,
-      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :interval, '{2}', 0, 0, 0, 0, 0))
-    ],
-    [0, 0, 0, 0] => [
-      :literal, :literal, Literal, text: 'a', level: 3,
-      quantifier: Quantifier.new(Regexp::Token.new(:quantifier, :one_or_more, '+', 0, 0, 0, 0, 0))
-    ]
+  include_examples 'parse', /a+{2}{3}/,
+    [0]           => [:group,      :passive,     Group::Passive, implicit?: true, level: 0],
+    [0, :q]       => [:quantifier, :interval,    Quantifier,     text: '{3}',     level: 0],
+    [0, 0]        => [:group,      :passive,     Group::Passive, implicit?: true, level: 1],
+    [0, 0, :q]    => [:quantifier, :interval,    Quantifier,     text: '{2}',     level: 1],
+    [0, 0, 0]     => [:literal,    :literal,     Literal,        text: 'a',       level: 2],
+    [0, 0, 0, :q] => [:quantifier, :one_or_more, Quantifier,     text: '+',       level: 2]
 
   # Ruby does not support modes for intervals, following `?` and `+` are read as chained quantifiers
-  include_examples 'quantifier', /a{2,4}?b/, '{2,4}', :greedy, :interval, 2, 4
-  include_examples 'quantifier', /a{2,4}+b/, '{2,4}', :greedy, :interval, 2, 4
+  include_examples 'parse', /a{2,4}?b/,
+    [0, :q]    => [:quantifier, :zero_or_one, Quantifier, text: '?',     mode: :greedy, min: 0, max: 1, ts: 6],
+    [0, 0, :q] => [:quantifier, :interval,    Quantifier, text: '{2,4}', mode: :greedy, min: 2, max: 4, ts: 1]
+  include_examples 'parse', /a{2,4}+b/,
+    [0, :q]    => [:quantifier, :one_or_more, Quantifier, text: '+',     mode: :greedy, min: 1, max: -1, ts: 6],
+    [0, 0, :q] => [:quantifier, :interval,    Quantifier, text: '{2,4}', mode: :greedy, min: 2, max: 4,  ts: 1]
 
   specify('mode-checking methods') do
     exp = RP.parse(/a??/).first
