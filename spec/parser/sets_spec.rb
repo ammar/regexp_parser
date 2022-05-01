@@ -1,178 +1,75 @@
 require 'spec_helper'
 
 RSpec.describe('CharacterSet parsing') do
-  specify('parse set basic') do
-    root = RP.parse('[ab]+')
-    exp = root[0]
+  include_examples 'parse', /[ab]+/,
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 2, quantified?: true],
+    [0, 0] => [:literal, :literal, Literal, text: 'a', set_level: 1],
+    [0, 1] => [:literal, :literal, Literal, text: 'b', set_level: 1]
 
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 2
+  include_examples 'parse', /[a\dc]/,
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
+    [0, 1] => [:type, :digit, CharacterType::Digit]
 
-    expect(exp[0]).to be_instance_of(Literal)
-    expect(exp[0].text).to eq 'a'
-    expect(exp[1]).to be_instance_of(Literal)
-    expect(exp[1].text).to eq 'b'
+  include_examples 'parse', /[a\bc]/,
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
+    [0, 1] => [:escape, :backspace, EscapeSequence::Backspace, text: '\b']
 
-    expect(exp).to be_quantified
-    expect(exp.quantifier.min).to eq 1
-    expect(exp.quantifier.max).to eq(-1)
-  end
+  include_examples 'parse', '[a\x20c]',
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
+    [0, 1] => [:escape, :hex, EscapeSequence::Hex, text: '\x20']
 
-  specify('parse set char type') do
-    root = RP.parse('[a\\dc]')
-    exp = root[0]
+  include_examples 'parse', '[a\u0640c]',
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
+    [0, 1] => [:escape, :codepoint, EscapeSequence::Codepoint, text: '\u0640']
 
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 3
+  include_examples 'parse', '[a\u{41 1F60D}c]',
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
+    [0, 1] => [:escape, :codepoint_list, EscapeSequence::CodepointList, text: '\u{41 1F60D}']
 
-    expect(exp[1]).to be_instance_of(CharacterType::Digit)
-    expect(exp[1].text).to eq '\\d'
-  end
+  include_examples 'parse', '[[:digit:][:^lower:]]+',
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 2],
+    [0, 0] => [:posixclass, :digit, PosixClass, text: '[:digit:]'],
+    [0, 1] => [:nonposixclass, :lower, PosixClass, text: '[:^lower:]']
 
-  specify('parse set escape sequence backspace') do
-    root = RP.parse('[a\\bc]')
-    exp = root[0]
+  include_examples 'parse', '[a[b[c]d]e]',
+    [0]          => [:set,     :character, CharacterSet, text: '[', count: 3, set_level: 0],
+    [0, 0]       => [:literal, :literal,   Literal,      text: 'a',           set_level: 1],
+    [0, 1]       => [:set,     :character, CharacterSet, text: '[', count: 3, set_level: 1],
+    [0, 2]       => [:literal, :literal,   Literal,      text: 'e',           set_level: 1],
+    [0, 1, 1]    => [:set,     :character, CharacterSet, text: '[', count: 1, set_level: 2],
+    [0, 1, 1, 0] => [:literal, :literal,   Literal,      text: 'c',           set_level: 3]
 
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 3
+  include_examples 'parse', '[a[^b[c]]]',
+    [0]          => [:set,     :character, CharacterSet, text: '[', count: 2, set_level: 0, negative?: false],
+    [0, 0]       => [:literal, :literal,   Literal,      text: 'a',           set_level: 1],
+    [0, 1]       => [:set,     :character, CharacterSet, text: '[', count: 2, set_level: 1, negative?: true],
+    [0, 1, 0]    => [:literal, :literal,   Literal,      text: 'b',           set_level: 2],
+    [0, 1, 1]    => [:set,     :character, CharacterSet, text: '[', count: 1, set_level: 2, negative?: false],
+    [0, 1, 1, 0] => [:literal, :literal,   Literal,      text: 'c',           set_level: 3]
 
-    expect(exp[1]).to be_instance_of(EscapeSequence::Backspace)
-    expect(exp[1].text).to eq '\\b'
+  include_examples 'parse', '[aaa]',
+    [0]     => [:set,     :character, CharacterSet, text: '[', count: 3],
+    [0, 0]  => [:literal, :literal,   Literal,      text: 'a'],
+    [0, 1]  => [:literal, :literal,   Literal,      text: 'a'],
+    [0, 2]  => [:literal, :literal,   Literal,      text: 'a']
 
-    expect(exp).to     match 'a'
-    expect(exp).to     match "\b"
-    expect(exp).not_to match 'b'
-    expect(exp).to     match 'c'
-  end
+  include_examples 'parse', '[   ]',
+    [0]     => [:set,     :character, CharacterSet, text: '[', count: 3],
+    [0, 0]  => [:literal, :literal,   Literal,      text: ' '],
+    [0, 1]  => [:literal, :literal,   Literal,      text: ' '],
+    [0, 2]  => [:literal, :literal,   Literal,      text: ' ']
 
-  specify('parse set escape sequence hex') do
-    root = RP.parse('[a\\x20c]', :any)
-    exp = root[0]
+  include_examples 'parse', '(?x)[   ]', # shouldn't merge whitespace even in x-mode
+    [1]     => [:set,     :character, CharacterSet, text: '[', count: 3],
+    [1, 0]  => [:literal, :literal,   Literal,      text: ' '],
+    [1, 1]  => [:literal, :literal,   Literal,      text: ' '],
+    [1, 2]  => [:literal, :literal,   Literal,      text: ' ']
 
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 3
+  include_examples 'parse', '[[.span-ll.]]', # collating sequences are disabled in Onigmo
+    [0, 0]    => [:set,     :character, CharacterSet, text: '[', count: 7],
+    [0, 0, 0] => [:literal, :literal,   Literal,      text: '.']
 
-    expect(exp[1]).to be_instance_of(EscapeSequence::Hex)
-    expect(exp[1].text).to eq '\\x20'
-  end
-
-  specify('parse set escape sequence codepoint') do
-    root = RP.parse('[a\\u0640]')
-    exp = root[0]
-
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 2
-
-    expect(exp[1]).to be_instance_of(EscapeSequence::Codepoint)
-    expect(exp[1].text).to eq '\\u0640'
-  end
-
-  specify('parse set escape sequence codepoint list') do
-    root = RP.parse('[a\\u{41 1F60D}]')
-    exp = root[0]
-
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 2
-
-    expect(exp[1]).to be_instance_of(EscapeSequence::CodepointList)
-    expect(exp[1].text).to eq '\\u{41 1F60D}'
-  end
-
-  specify('parse set posix class') do
-    root = RP.parse('[[:digit:][:^lower:]]+')
-    exp = root[0]
-
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 2
-
-    expect(exp[0]).to be_instance_of(PosixClass)
-    expect(exp[0].text).to eq '[:digit:]'
-    expect(exp[1]).to be_instance_of(PosixClass)
-    expect(exp[1].text).to eq '[:^lower:]'
-  end
-
-  specify('parse set nesting') do
-    root = RP.parse('[a[b[c]d]e]')
-
-    exp = root[0]
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 3
-    expect(exp[0]).to be_instance_of(Literal)
-    expect(exp[2]).to be_instance_of(Literal)
-
-    subset1 = exp[1]
-    expect(subset1).to be_instance_of(CharacterSet)
-    expect(subset1.count).to eq 3
-    expect(subset1[0]).to be_instance_of(Literal)
-    expect(subset1[2]).to be_instance_of(Literal)
-
-    subset2 = subset1[1]
-    expect(subset2).to be_instance_of(CharacterSet)
-    expect(subset2.count).to eq 1
-    expect(subset2[0]).to be_instance_of(Literal)
-  end
-
-  specify('parse set nesting negative') do
-    root = RP.parse('[a[^b[c]]]')
-    exp = root[0]
-
-    expect(exp).to be_instance_of(CharacterSet)
-    expect(exp.count).to eq 2
-    expect(exp[0]).to be_instance_of(Literal)
-    expect(exp).not_to be_negative
-
-    subset1 = exp[1]
-    expect(subset1).to be_instance_of(CharacterSet)
-    expect(subset1.count).to eq 2
-    expect(subset1[0]).to be_instance_of(Literal)
-    expect(subset1).to be_negative
-
-    subset2 = subset1[1]
-    expect(subset2).to be_instance_of(CharacterSet)
-    expect(subset2.count).to eq 1
-    expect(subset2[0]).to be_instance_of(Literal)
-    expect(subset2).not_to be_negative
-  end
-
-  specify('parse set nesting #to_s') do
-    pattern = '[a[b[^c]]]'
-    root = RP.parse(pattern)
-
-    expect(root.to_s).to eq pattern
-  end
-
-  specify('parse set literals are not merged') do
-    root = RP.parse("[#{('a' * 10)}]")
-    exp = root[0]
-
-    expect(exp.count).to eq 10
-  end
-
-  specify('parse set whitespace is not merged') do
-    root = RP.parse("[#{(' ' * 10)}]")
-    exp = root[0]
-
-    expect(exp.count).to eq 10
-  end
-
-  specify('parse set whitespace is not merged in x mode') do
-    root = RP.parse("(?x)[#{(' ' * 10)}]")
-    exp = root[1]
-
-    expect(exp.count).to eq 10
-  end
-
-  specify('parse set collating sequence') do
-    root = RP.parse('[a[.span-ll.]h]', :any)
-    exp = root[0]
-
-    expect(exp[1].to_s).to eq '[.span-ll.]'
-  end
-
-  specify('parse set character equivalents') do
-    root = RP.parse('[a[=e=]h]', :any)
-    exp = root[0]
-
-    expect(exp[1].to_s).to eq '[=e=]'
-  end
+  include_examples 'parse', '[[=e=]]', # character equivalents are disabled in Onigmo
+    [0, 0]    => [:set,     :character, CharacterSet, text: '[', count: 3],
+    [0, 0, 0] => [:literal, :literal,   Literal,      text: '=']
 end
