@@ -56,8 +56,12 @@ module Regexp::Expression
     private
 
     def deprecated_old_init(token, text, min, max, mode = :greedy)
-      warn "#{self.class}.new with 4+ arguments is deprecated and will be " \
-           'removed in v3.0.0. Please pass a Regexp::Token and options Hash.'
+      warn "Calling `Expression::Base#quantify` or `#{self.class}.new` with 4+ arguments "\
+           "is deprecated.\nIt will no longer be supported in regexp_parser v3.0.0.\n"\
+           "Please pass a Regexp::Token instead, e.g. replace `type, text, min, max, mode` "\
+           "with `::Regexp::Token.new(:quantifier, type, text)`. min, max, and mode "\
+           "will be derived automatically. \nThis is consistent with how Expression::Base "\
+           "instances are created."
       @token = token
       @text  = text
       @min   = min
