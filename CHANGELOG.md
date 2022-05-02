@@ -1,22 +1,37 @@
 ## [Unreleased]
 
+### Fixed
+
+- fixed interpretation of `+` and `?` after interval quantifiers (`{n,n}`)
+  - they used to be treated as reluctant or possessive mode indicators
+  - however, Ruby does not support these modes for interval quantifiers
+  - they are now treated as chained quantifiers instead, as Ruby does it
+  - c.f. [#3](https://github.com/ammar/regexp_parser/issues/3)
+- fixed `Expression::Base#nesting_level` for some tree rewrite cases
+  - e.g. the alternatives in `/a|[b]/` had an inconsistent nesting_level
+
 ### Added
 
-- added some `Expression::Base` methods to `Quantifier` instances
-  - `#type`, `#options`, `#terminal?`
-  - `#type?`, `#is?`, `#one_of?`
+- made some `Expression::Base` methods available on `Quantifier` instances, too
+  - `#type`, `#type?`, `#is?`, `#one_of?`, `#options`, `#terminal?`
   - `#base_length`, `#full_length`, `#starts_at`, `#te`, `#ts`, `#offset`
   - `#conditional_level`, `#level`, `#nesting_level` , `#set_level`
   - this allows a more unified handling with `Expression::Base` instances
-- added `Expression::Base#te` (token end index)
-  - `Expression::Subexpression` has `#te`, only terminal nodes lacked it
+- added `Expression::Base#te` (a.k.a. token end index)
+  - `Expression::Subexpression` has `#te`, only terminal nodes lacked it so far
+- added a deprecation warning for initializing quantifiers with 4+ arguments:
 
-### Fixed
+    Calling `Expression::Base#quantify` or `Quantifier.new` with 4+ arguments
+    is deprecated.
 
-- fixed interpretation of `+` and `?` following interval quantifiers (`{n,n}`)
-  - treat as chained quantifiers like Ruby does instead of possessive/lazy mode
-- fixed `Expression::Base#nesting_level` for some tree rewrite cases
-  - e.g. the alternatives in `/a|[b]/` had an inconsistent nesting_level
+    It will no longer be supported in regexp_parser v3.0.0.
+
+    Please pass a Regexp::Token instead, e.g. replace `type, text, min, max, mode`
+    with `::Regexp::Token.new(:quantifier, type, text)`. min, max, and mode
+    will be derived automatically.
+
+    This is consistent with how Expression::Base instances are created.
+
 
 ## [2.3.1] - 2022-04-24 - [Janosch Müller](mailto:janosch84@gmail.com)
 
