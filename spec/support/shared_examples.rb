@@ -68,8 +68,8 @@ RSpec.shared_examples 'parse' do |pattern, checks|
         exp = exp.quantifier if inspect_quantifier
 
         expect(exp).to be_instance_of(klass)
-        expect(exp.type).to eq type
-        expect(exp.token).to eq token
+        type  == :* || expect(exp.type).to(eq(type))
+        token == :* || expect(exp.token).to(eq(token))
 
         attributes && attributes.each do |method, value|
           actual = exp.send(method)

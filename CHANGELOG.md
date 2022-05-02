@@ -15,6 +15,8 @@
 
 - fixed interpretation of `+` and `?` following interval quantifiers (`{n,n}`)
   - treat as chained quantifiers like Ruby does instead of possessive/lazy mode
+- fixed `Expression::Base#nesting_level` for some tree rewrite cases
+  - e.g. the alternatives in `/a|[b]/` had an inconsistent nesting_level
 
 ## [2.3.1] - 2022-04-24 - [Janosch Müller](mailto:janosch84@gmail.com)
 

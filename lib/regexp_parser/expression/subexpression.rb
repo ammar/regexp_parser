@@ -5,9 +5,8 @@ module Regexp::Expression
     attr_accessor :expressions
 
     def initialize(token, options = {})
-      super
-
       self.expressions = []
+      super
     end
 
     # Override base method to clone the expressions as well.

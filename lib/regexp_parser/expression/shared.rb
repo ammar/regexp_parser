@@ -3,8 +3,10 @@ module Regexp::Expression
     def self.included(mod)
       mod.class_eval do
         attr_accessor :type, :token, :text, :ts, :te,
-                      :level, :set_level, :conditional_level, :nesting_level,
+                      :level, :set_level, :conditional_level,
                       :options, :quantifier
+
+        attr_reader   :nesting_level
       end
     end
 
@@ -51,6 +53,12 @@ module Regexp::Expression
 
     def terminal?
       !respond_to?(:expressions)
+    end
+
+    def nesting_level=(lvl = 0)
+      @nesting_level = lvl
+      quantifier && quantifier.nesting_level = lvl
+      terminal? || each { |subexp| subexp.nesting_level = lvl + 1 }
     end
   end
 end

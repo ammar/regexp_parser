@@ -39,6 +39,9 @@ class Regexp::Parser
       parse_token(token)
     end
 
+    # Trigger recursive setting of #nesting_level, which reflects how deep
+    # a node is in the tree. Do this at the end to account for tree rewrites.
+    root.nesting_level = 0
     assign_referenced_expressions
 
     if block_given?
@@ -286,16 +289,7 @@ class Regexp::Parser
   def nest(exp)
     nesting.push(exp)
     node << exp
-    update_transplanted_subtree(exp, node)
     self.node = exp
-  end
-
-  # subtrees are transplanted to build Alternations, Intersections, Ranges
-  def update_transplanted_subtree(exp, new_parent)
-    exp.nesting_level = new_parent.nesting_level + 1
-    exp.quantifier.nesting_level = exp.nesting_level if exp.quantifier
-    exp.respond_to?(:each) &&
-      exp.each { |subexp| update_transplanted_subtree(subexp, exp) }
   end
 
   def escape(token)
@@ -494,7 +488,7 @@ class Regexp::Parser
       new_group = Group::Passive.new(new_token, active_opts)
       new_group.implicit = true
       new_group << target_node
-      increase_level(target_node)
+      increase_group_level(target_node)
       node.expressions[node.expressions.index(target_node)] = new_group
       target_node = new_group
     end
@@ -507,10 +501,10 @@ class Regexp::Parser
     target_node.quantify(token, active_opts)
   end
 
-  def increase_level(exp)
+  def increase_group_level(exp)
     exp.level += 1
     exp.quantifier.level += 1 if exp.quantifier
-    exp.respond_to?(:each) && exp.each { |subexp| increase_level(subexp) }
+    exp.terminal? || exp.each { |subexp| increase_group_level(subexp) }
   end
 
   def set(token)
