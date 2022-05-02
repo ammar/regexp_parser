@@ -5,9 +5,11 @@
 - added some `Expression::Base` methods to `Quantifier` instances
   - `#type`, `#options`, `#terminal?`
   - `#type?`, `#is?`, `#one_of?`
-  - `#base_length`, `#full_length`, `#starts_at`, `#ts`, `#offset`
+  - `#base_length`, `#full_length`, `#starts_at`, `#te`, `#ts`, `#offset`
   - `#conditional_level`, `#level`, `#nesting_level` , `#set_level`
   - this allows a more unified handling with `Expression::Base` instances
+- added `Expression::Base#te` (token end index)
+  - `Expression::Subexpression` has `#te`, only terminal nodes lacked it
 
 ### Fixed
 

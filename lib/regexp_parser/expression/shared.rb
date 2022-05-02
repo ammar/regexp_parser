@@ -2,7 +2,7 @@ module Regexp::Expression
   module Shared
     def self.included(mod)
       mod.class_eval do
-        attr_accessor :type, :token, :text, :ts,
+        attr_accessor :type, :token, :text, :ts, :te,
                       :level, :set_level, :conditional_level, :nesting_level,
                       :options, :quantifier
       end
@@ -13,6 +13,7 @@ module Regexp::Expression
       self.token             = token.token
       self.text              = token.text
       self.ts                = token.ts
+      self.te                = token.te
       self.level             = token.level
       self.set_level         = token.set_level
       self.conditional_level = token.conditional_level
