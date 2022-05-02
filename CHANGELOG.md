@@ -4,6 +4,7 @@
 
 - added some `Expression::Base` methods to `Quantifier` instances
   - `#type`, `#options`, `#terminal?`
+  - `#type?`, `#is?`, `#one_of?`
   - `#base_length`, `#full_length`, `#starts_at`, `#ts`, `#offset`
   - `#conditional_level`, `#level`, `#nesting_level` , `#set_level`
   - this allows a more unified handling with `Expression::Base` instances

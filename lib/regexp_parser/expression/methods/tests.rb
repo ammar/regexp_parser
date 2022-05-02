@@ -1,5 +1,5 @@
 module Regexp::Expression
-  class Base
+  module Shared
 
     # Test if this expression has the given test_type, which can be either
     # a symbol or an array of symbols to check against the expression's type.
