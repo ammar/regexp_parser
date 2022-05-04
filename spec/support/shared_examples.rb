@@ -59,22 +59,30 @@ RSpec.shared_examples 'parse' do |pattern, checks|
   context "given the pattern #{pattern}" do
     before(:all) { @root = Regexp::Parser.parse(pattern, '*') }
 
-    checks.each do |path, (type, token, klass, attributes)|
+    checks.each do |path, expectations|
       path = Array(path)
       inspect_quantifier = path.last == :q && path.pop
 
-      it "parses expression at #{path} as #{klass}" do
+      attributes = expectations.pop if expectations.last.is_a?(Hash)
+      klass      = expectations.pop if expectations.last.is_a?(Class)
+      token      = expectations.pop
+      type       = expectations.pop
+
+      description = klass || token || type || attributes || fail
+
+      it "parses expression at #{path} as #{description}" do
         exp = @root.dig(*path)
         exp = exp.quantifier if inspect_quantifier
 
-        expect(exp).to be_instance_of(klass)
-        type  == :* || expect(exp.type).to(eq(type))
-        token == :* || expect(exp.token).to(eq(token))
+        klass && expect(exp).to(be_instance_of(klass))
+        type  && expect(exp.type).to(eq(type))
+        token && expect(exp.token).to(eq(token))
 
         attributes && attributes.each do |method, value|
           actual = exp.send(method)
           expect(actual).to eq(value),
-            "expected #{klass} at #{path} to have #{method} #{value}, got #{actual}"
+            "expected #{description} at #{path} to "\
+            "have #{method} #{value.inspect}, got #{actual.inspect}"
         end
       end
     end
