@@ -418,12 +418,12 @@
 
     backslash . anchor_char > (backslashed, 3) {
       case text = copy(data, ts, te)
-      when '\\A'; emit(:anchor, :bos,                text)
-      when '\\z'; emit(:anchor, :eos,                text)
-      when '\\Z'; emit(:anchor, :eos_ob_eol,         text)
-      when '\\b'; emit(:anchor, :word_boundary,      text)
-      when '\\B'; emit(:anchor, :nonword_boundary,   text)
-      when '\\G'; emit(:anchor, :match_start,        text)
+      when '\A';  emit(:anchor, :bos,                text)
+      when '\z';  emit(:anchor, :eos,                text)
+      when '\Z';  emit(:anchor, :eos_ob_eol,         text)
+      when '\b';  emit(:anchor, :word_boundary,      text)
+      when '\B';  emit(:anchor, :nonword_boundary,   text)
+      when '\G';  emit(:anchor, :match_start,        text)
       end
     };
 

@@ -72,7 +72,7 @@ RSpec.describe('EscapeSequence parsing') do
     root = parse_meta_control('a\\\\\c2b')
 
     expect(root[2]).to be_instance_of(EscapeSequence::Control)
-    expect(root[2].text).to eq '\\c2'
+    expect(root[2].text).to eq '\c2'
     expect(root[2].char).to eq "\x12"
     expect(root[2].codepoint).to eq 18
   end
@@ -81,7 +81,7 @@ RSpec.describe('EscapeSequence parsing') do
     root = parse_meta_control('\d\C-C\w')
 
     expect(root[1]).to be_instance_of(EscapeSequence::Control)
-    expect(root[1].text).to eq '\\C-C'
+    expect(root[1].text).to eq '\C-C'
     expect(root[1].char).to eq "\x03"
     expect(root[1].codepoint).to eq 3
   end
@@ -90,7 +90,7 @@ RSpec.describe('EscapeSequence parsing') do
     root = parse_meta_control('\Z\M-Z')
 
     expect(root[1]).to be_instance_of(EscapeSequence::Meta)
-    expect(root[1].text).to eq '\\M-Z'
+    expect(root[1].text).to eq '\M-Z'
     expect(root[1].char).to eq "\u00DA"
     expect(root[1].codepoint).to eq 218
   end
@@ -99,7 +99,7 @@ RSpec.describe('EscapeSequence parsing') do
     root = parse_meta_control('\A\M-\C-X')
 
     expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[1].text).to eq '\\M-\\C-X'
+    expect(root[1].text).to eq '\M-\C-X'
     expect(root[1].char).to eq "\u0098"
     expect(root[1].codepoint).to eq 152
   end
@@ -108,7 +108,7 @@ RSpec.describe('EscapeSequence parsing') do
     root = parse_meta_control('\A\M-\cX')
 
     expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[1].text).to eq '\\M-\\cX'
+    expect(root[1].text).to eq '\M-\cX'
     expect(root[1].char).to eq "\u0098"
     expect(root[1].codepoint).to eq 152
   end
@@ -117,7 +117,7 @@ RSpec.describe('EscapeSequence parsing') do
     root = parse_meta_control('\A\C-\M-X')
 
     expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[1].text).to eq '\\C-\\M-X'
+    expect(root[1].text).to eq '\C-\M-X'
     expect(root[1].char).to eq "\u0098"
     expect(root[1].codepoint).to eq 152
   end
@@ -126,7 +126,7 @@ RSpec.describe('EscapeSequence parsing') do
     root = parse_meta_control('\A\c\M-X')
 
     expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[1].text).to eq '\\c\\M-X'
+    expect(root[1].text).to eq '\c\M-X'
     expect(root[1].char).to eq "\u0098"
     expect(root[1].codepoint).to eq 152
   end

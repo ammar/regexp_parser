@@ -13,6 +13,6 @@ RSpec.describe('CharacterType parsing') do
   include_examples 'parse', /a\wc/,   1 =>  [:type,   :word,      CharacterType::Word]
   include_examples 'parse', /a\Wc/,   1 =>  [:type,   :nonword,   CharacterType::NonWord]
 
-  include_examples 'parse', 'a\\Rc',  1 =>  [:type,   :linebreak, CharacterType::Linebreak]
-  include_examples 'parse', 'a\\Xc',  1 =>  [:type,   :xgrapheme, CharacterType::ExtendedGrapheme]
+  include_examples 'parse', 'a\Rc',   1 =>  [:type,   :linebreak, CharacterType::Linebreak]
+  include_examples 'parse', 'a\Xc',   1 =>  [:type,   :xgrapheme, CharacterType::ExtendedGrapheme]
 end

@@ -52,7 +52,7 @@ RSpec.describe(Regexp::Syntax) do
   end
 
   specify('not implemented') do
-    expect { RP.parse('\\p{alpha}', 'ruby/1.8') }.to raise_error(Regexp::Syntax::NotImplementedError)
+    expect { RP.parse('\p{alpha}', 'ruby/1.8') }.to raise_error(Regexp::Syntax::NotImplementedError)
   end
 
   specify('supported?') do

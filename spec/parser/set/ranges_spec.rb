@@ -21,33 +21,33 @@ RSpec.describe('CharacterSet::Range parsing') do
   end
 
   specify('parse set range hex') do
-    root = RP.parse('[\\x00-\\x22]')
+    root = RP.parse('[\x00-\x22]')
     set = root[0]
     range = set[0]
 
     expect(set.count).to eq 1
     expect(range).to be_instance_of(CharacterSet::Range)
     expect(range.count).to eq 2
-    expect(range.first.to_s).to eq '\\x00'
+    expect(range.first.to_s).to eq '\x00'
     expect(range.first).to be_instance_of(EscapeSequence::Hex)
-    expect(range.last.to_s).to eq '\\x22'
+    expect(range.last.to_s).to eq '\x22'
     expect(range.last).to be_instance_of(EscapeSequence::Hex)
     capturing_stderr { expect(set).to match "\x11" }
   end
 
   specify('parse set range unicode') do
-    root = RP.parse('[\\u{40 42}-\\u1234]')
+    root = RP.parse('[\u{40 42}-\u1234]')
     set = root[0]
     range = set[0]
 
     expect(set.count).to eq 1
     expect(range).to be_instance_of(CharacterSet::Range)
     expect(range.count).to eq 2
-    expect(range.first.to_s).to eq '\\u{40 42}'
+    expect(range.first.to_s).to eq '\u{40 42}'
     expect(range.first).to be_instance_of(EscapeSequence::CodepointList)
-    expect(range.last.to_s).to eq '\\u1234'
+    expect(range.last.to_s).to eq '\u1234'
     expect(range.last).to be_instance_of(EscapeSequence::Codepoint)
-    capturing_stderr { expect(set).to match '\\u600' }
+    capturing_stderr { expect(set).to match '\u600' }
   end
 
   specify('parse set range edge case leading dash') do
@@ -92,7 +92,7 @@ RSpec.describe('CharacterSet::Range parsing') do
   end
 
   specify('parse set range edge case leading intersection') do
-    root = RP.parse('[[\\-ab]&&-bc]')
+    root = RP.parse('[[\-ab]&&-bc]')
     set = root[0]
 
     expect(set.count).to eq 1
@@ -106,7 +106,7 @@ RSpec.describe('CharacterSet::Range parsing') do
   end
 
   specify('parse set range edge case trailing intersection') do
-    root = RP.parse('[bc-&&[\\-ab]]')
+    root = RP.parse('[bc-&&[\-ab]]')
     set = root[0]
 
     expect(set.count).to eq 1

@@ -24,15 +24,15 @@ RSpec.describe('Expression::Base#to_s') do
   end
 
   specify('property sets') do
-    expect_round_trip('[\\a\\b\\p{Lu}\\P{Z}\\c\\d]+', 'ruby/1.9')
+    expect_round_trip('[\a\b\p{Lu}\P{Z}\c\d]+')
   end
 
   specify('groups') do
-    expect_round_trip("(a(?>b(?:c(?<n>d(?'N'e)??f)+g)*+h)*i)++", 'ruby/1.9')
+    expect_round_trip("(a(?>b(?:c(?<n>d(?'N'e)??f)+g)*+h)*i)++")
   end
 
   specify('assertions') do
-    expect_round_trip('(a+(?=b+(?!c+(?<=d+(?<!e+)?f+)?g+)?h+)?i+)?', 'ruby/1.9')
+    expect_round_trip('(a+(?=b+(?!c+(?<=d+(?<!e+)?f+)?g+)?h+)?i+)?')
   end
 
   specify('comments') do
@@ -44,7 +44,7 @@ RSpec.describe('Expression::Base#to_s') do
   end
 
   specify('url') do
-    expect_round_trip('(^$)|(^(http|https):\\/\\/[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*' + '\\.[a-z]{2,5}(([0-9]{1,5})?\\/.*)?$)')
+    expect_round_trip('(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*' + '\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)')
   end
 
   specify('multiline source') do

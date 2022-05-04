@@ -153,7 +153,7 @@ RSpec.describe('Conditional parsing') do
 
     expect(conditional).to be_quantified
     expect(conditional.quantifier.to_s).to eq '{42}'
-    expect(conditional.to_s).to eq '(?(1)\\d|(\\w)){42}'
+    expect(conditional.to_s).to eq '(?(1)\d|(\w)){42}'
     expect(conditional.branches.any?(&:quantified?)).to be false
   end
 

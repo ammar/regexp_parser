@@ -76,7 +76,7 @@ RSpec.describe('CharacterSet::Intersection parsing') do
   end
 
   specify('parse set intersection type') do
-    root = RP.parse('[a&&\\w]')
+    root = RP.parse('[a&&\w]')
     set = root[0]
     ints = set[0]
 
@@ -91,7 +91,7 @@ RSpec.describe('CharacterSet::Intersection parsing') do
     expect(seq1.first).to be_instance_of(Literal)
     expect(seq2).to be_instance_of(CharacterSet::IntersectedSequence)
     expect(seq2.count).to eq 1
-    expect(seq2.first.to_s).to eq '\\w'
+    expect(seq2.first.to_s).to eq '\w'
     expect(seq2.first).to be_instance_of(CharacterType::Word)
 
     expect(set).to     match 'a'
@@ -100,7 +100,7 @@ RSpec.describe('CharacterSet::Intersection parsing') do
   end
 
   specify('parse set intersection multipart') do
-    root = RP.parse('[\\h&&\\w&&efg]')
+    root = RP.parse('[\h&&\w&&efg]')
     set = root[0]
     ints = set[0]
 
@@ -111,10 +111,10 @@ RSpec.describe('CharacterSet::Intersection parsing') do
     seq1, seq2, seq3 = ints.expressions
     expect(seq1).to be_instance_of(CharacterSet::IntersectedSequence)
     expect(seq1.count).to eq 1
-    expect(seq1.first.to_s).to eq '\\h'
+    expect(seq1.first.to_s).to eq '\h'
     expect(seq2).to be_instance_of(CharacterSet::IntersectedSequence)
     expect(seq2.count).to eq 1
-    expect(seq2.first.to_s).to eq '\\w'
+    expect(seq2.first.to_s).to eq '\w'
     expect(seq3).to be_instance_of(CharacterSet::IntersectedSequence)
     expect(seq3.count).to eq 3
     expect(seq3.to_s).to eq 'efg'

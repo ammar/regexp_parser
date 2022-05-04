@@ -6,7 +6,7 @@ RSpec.describe(Regexp::Lexer) do
   end
 
   specify('lexer returns tokens') do
-    tokens = RL.lex('^abc+[^one]{2,3}\\b\\d\\\\C-C$')
+    tokens = RL.lex('^abc+[^one]{2,3}\b\d\C-C$')
     expect(tokens).to all(be_a Regexp::Token)
     expect(tokens.map { |token| token.to_a.length }).to all(eq 8)
   end
