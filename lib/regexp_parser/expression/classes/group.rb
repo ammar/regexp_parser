@@ -2,12 +2,14 @@ module Regexp::Expression
   module Group
     class Base < Regexp::Expression::Subexpression
       def to_s(format = :full)
-        "#{text}#{expressions.join})#{quantifier_affix(format)}"
+        [text, *expressions, terminator_text, quantifier_affix(format)].join
       end
 
       def capturing?; false end
 
       def comment?; false end
+
+      def terminator_text; ')' end
     end
 
     class Passive < Group::Base
@@ -70,6 +72,8 @@ module Regexp::Expression
       end
 
       def comment?; true end
+
+      def terminator_text; nil; end # ')' is included in scanned #text
     end
   end
 

@@ -55,6 +55,10 @@ module Regexp::Expression
       !respond_to?(:expressions)
     end
 
+    def terminator_text
+      nil
+    end
+
     def nesting_level=(lvl = 0)
       @nesting_level = lvl
       quantifier && quantifier.nesting_level = lvl

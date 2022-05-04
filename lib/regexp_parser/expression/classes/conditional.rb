@@ -56,7 +56,12 @@ module Regexp::Expression
       end
 
       def to_s(format = :full)
-        "#{text}#{condition}#{branches.join('|')})#{quantifier_affix(format)}"
+        [text, condition, branches.join('|'),
+         terminator_text, quantifier_affix(format)].join
+      end
+
+      def terminator_text
+        ')'
       end
 
       def initialize_copy(orig)

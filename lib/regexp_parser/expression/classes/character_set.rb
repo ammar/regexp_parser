@@ -21,7 +21,12 @@ module Regexp::Expression
     end
 
     def to_s(format = :full)
-      "#{text}#{'^' if negated?}#{expressions.join}]#{quantifier_affix(format)}"
+      [text, (negated? ? '^' : ''), *expressions,
+       terminator_text, quantifier_affix(format)].join
+    end
+
+    def terminator_text
+      ']'
     end
   end
 end # module Regexp::Expression
