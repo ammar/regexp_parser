@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Expression#match') do
+RSpec.describe('Expression::Base#match') do
   it 'returns the #match result of the respective Regexp' do
     expect(RP.parse(/a/).match('a')[0]).to eq 'a'
   end
@@ -14,7 +14,7 @@ RSpec.describe('Expression#match') do
   end
 end
 
-RSpec.describe('Expression#match?') do
+RSpec.describe('Expression::Base#match?') do
   it 'returns true if the Respective Regexp matches' do
     expect(RP.parse(/a/).match?('a')).to be true
   end

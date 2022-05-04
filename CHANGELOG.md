@@ -221,7 +221,7 @@
 
 ### Added
 
-- `Expression#each_expression` and `#traverse` can now be called without a block
+- `Expression::Base#each_expression` and `#traverse` can now be called without a block
   * this returns an `Enumerator` and allows chaining, e.g. `each_expression.select`
   * thanks to [Masataka Kuwabara](https://github.com/pocke)
 
@@ -247,7 +247,7 @@
 - Fixed `Group#option_changes` not accounting for indirectly disabled (overridden) encoding flags
 - Fixed `Scanner` allowing negative encoding options if there were no positive options, e.g. '(?-u)'
 - Fixed `ScannerError` for some valid meta/control sequences such as '\\C-\\\\'
-- Fixed `Expression#match` and `#=~` not working with a single argument
+- Fixed `Expression::Base#match` and `#=~` not working with a single argument
 
 ### [1.5.0] - 2019-05-14 - [Janosch Müller](mailto:janosch84@gmail.com)
 
@@ -255,15 +255,15 @@
 
 - Added `#referenced_expression` for backrefs, subexp calls and conditionals
   * returns the `Group` expression that is being referenced via name or number
-- Added `Expression#repetitions`
+- Added `Expression::Base#repetitions`
   * returns a `Range` of allowed repetitions (`1..1` if there is no quantifier)
   * like `#quantity` but with a more uniform interface
-- Added `Expression#match_length`
+- Added `Expression::Base#match_length`
   * allows to inspect and iterate over String lengths matched by the Expression
 
 ### Fixed
 
-- Fixed `Expression#clone` "direction"
+- Fixed `Expression::Base#clone` "direction"
   * it used to dup ivars onto the callee, leaving only the clone referencing the original objects
   * this will affect you if you call `#eql?`/`#equal?` on expressions or use them as Hash keys
 - Fixed `#clone` results for `Sequences`, e.g. alternations and conditionals
@@ -425,7 +425,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed a thread safety issue (issue #45)
 - Some public class methods that were only reliable for
   internal use are now private instance methods (PR #46)
-- Improved the usefulness of Expression#options (issue #43) -
+- Improved the usefulness of Expression::Base#options (issue #43) -
   #options and derived methods such as #i?, #m? and #x? are now
   defined for all Expressions that are affected by such flags.
 - Fixed scanning of whitespace following (?x) (commit 5c94bd2)

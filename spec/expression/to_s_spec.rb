@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Expression#to_s') do
+RSpec.describe('Expression::Base#to_s') do
   def parse_frozen(pattern, ruby_version = nil)
     IceNine.deep_freeze(RP.parse(pattern, *ruby_version))
   end

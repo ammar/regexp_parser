@@ -42,11 +42,11 @@ RSpec.describe(Regexp::MatchLength) do
     it('works with Expressions') { expect(ML.of(RP.parse(/foo/)).minmax).to eq [3, 3] }
   end
 
-  describe('Expression#match_length') do
+  describe('Expression::Base#match_length') do
     it('returns the MatchLength') { expect(RP.parse(/abc/).match_length.minmax).to eq [3, 3] }
   end
 
-  describe('Expression#inner_match_length') do
+  describe('Expression::Base#inner_match_length') do
     it 'returns the MatchLength of an expression that does not count towards parent match_length' do
       exp = RP.parse(/(?=ab|cdef)/)[0]
       expect(exp).to be_a Regexp::Expression::Assertion::Base

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Expression#to_h') do
+RSpec.describe('Expression::Base#to_h') do
   specify('Root#to_h') do
     root = RP.parse('abc')
     expect(root.to_h).to eq(

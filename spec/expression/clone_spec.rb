@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Expression#clone') do
+RSpec.describe('Expression::Base#clone') do
   specify('Base#clone') do
     root = RP.parse(/^(?i:a)b+$/i)
     copy = root.clone

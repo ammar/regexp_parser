@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Expression#options') do
+RSpec.describe('Expression::Base#options') do
   it 'returns a hash of options/flags that affect the expression' do
     exp = RP.parse(/a/ix)[0]
     expect(exp).to be_a Literal

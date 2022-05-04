@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Expression#strfregexp') do
+RSpec.describe('Expression::Base#strfregexp') do
   specify('#strfre alias') do
     expect(RP.parse(/a/)).to respond_to(:strfre)
   end
