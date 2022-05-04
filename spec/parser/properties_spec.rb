@@ -1,40 +1,50 @@
 require 'spec_helper'
 
 RSpec.describe('Property parsing') do
-  example_props = [
-    'Alnum',
-    'Any',
-    'Age=1.1',
-    'Dash',
-    'di',
-    'Default_Ignorable_Code_Point',
-    'Math',
-    'Noncharacter-Code_Point', # test dash
-    'sd',
-    'Soft Dotted', # test whitespace
-    'sterm',
-    'xidc',
-    'XID_Continue',
-    'Emoji',
-    'InChessSymbols'
-  ]
+  # test various notations supported by Ruby
+  include_examples 'parse', '\p{sd}',           0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\p{SD}',           0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\p{Soft Dotted}',  0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\p{Soft-Dotted}',  0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\p{sOfT_dOtTeD}',  0 => [:property, :soft_dotted, negative?: false]
 
-  example_props.each do |name|
-    it("parses property #{name}") do
-      exp = RP.parse("ab\\p{#{name}}", '*').last
+  # test ^-negation
+  include_examples 'parse', '\p{^sd}',          0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\p{^SD}',          0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\p{^Soft Dotted}', 0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\p{^Soft-Dotted}', 0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\p{^sOfT_dOtTeD}', 0 => [:nonproperty, :soft_dotted, negative?: true]
 
-      expect(exp).to be_a(UnicodeProperty::Base)
-      expect(exp.type).to eq :property
-      expect(exp.name).to eq name
-    end
+  # test P-negation
+  include_examples 'parse', '\P{sd}',           0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\P{SD}',           0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\P{Soft Dotted}',  0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\P{Soft-Dotted}',  0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\P{sOfT_dOtTeD}',  0 => [:nonproperty, :soft_dotted, negative?: true]
 
-    it("parses nonproperty #{name}") do
-      exp = RP.parse("ab\\P{#{name}}", '*').last
+  # double negation is positive again
+  include_examples 'parse', '\P{^sd}',          0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\P{^SD}',          0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\P{^Soft Dotted}', 0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\P{^Soft-Dotted}', 0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\P{^sOfT_dOtTeD}', 0 => [:property, :soft_dotted, negative?: false]
 
-      expect(exp).to be_a(UnicodeProperty::Base)
-      expect(exp.type).to eq :nonproperty
-      expect(exp.name).to eq name
-    end
+  # test #shortcut
+  include_examples 'parse', '\p{soft_dotted}',  0 => [:property, :soft_dotted, shortcut: 'sd']
+  include_examples 'parse', '\p{sd}',           0 => [:property, :soft_dotted, shortcut: 'sd']
+  include_examples 'parse', '\p{in_bengali}',   0 => [:property, :in_bengali, shortcut: nil]
+
+  # test classification
+  include_examples 'parse', '\p{age=5.2}',      0 => [UnicodeProperty::Age]
+  include_examples 'parse', '\p{Math}',         0 => [UnicodeProperty::Derived]
+  include_examples 'parse', '\p{Hiragana}',     0 => [UnicodeProperty::Script]
+  include_examples 'parse', '\p{InArmenian}',   0 => [UnicodeProperty::Block]
+
+  specify('parse abandoned newline property') do
+    root = RP.parse('\p{newline}', 'ruby/1.9')
+    expect(root.expressions.last).to be_a(UnicodeProperty::Base)
+
+    expect { RP.parse('\p{newline}', 'ruby/2.0') }.to raise_error(Regexp::Syntax::NotImplementedError)
   end
 
   # cannot test older Rubies because of https://bugs.ruby-lang.org/issues/18686
@@ -61,74 +71,5 @@ RSpec.describe('Property parsing') do
       end
       expect(excessive).to be_empty
     end
-  end
-
-  specify('parse property negative') do
-    root = RP.parse('ab\p{L}cd')
-    expect(root[1]).not_to be_negative
-  end
-
-  specify('parse nonproperty negative') do
-    root = RP.parse('ab\P{L}cd')
-    expect(root[1]).to be_negative
-  end
-
-  specify('parse caret nonproperty negative') do
-    root = RP.parse('ab\p{^L}cd')
-    expect(root[1]).to be_negative
-  end
-
-  specify('parse double negated property negative') do
-    root = RP.parse('ab\P{^L}cd')
-    expect(root[1]).not_to be_negative
-  end
-
-  specify('parse property shortcut') do
-    expect(RP.parse('\p{lowercase_letter}')[0].shortcut).to eq 'll'
-    expect(RP.parse('\p{sc}')[0].shortcut).to eq 'sc'
-    expect(RP.parse('\p{in_bengali}')[0].shortcut).to be_nil
-  end
-
-  specify('parse property age') do
-    root = RP.parse('ab\p{age=5.2}cd')
-    expect(root[1]).to be_a(UnicodeProperty::Age)
-  end
-
-  specify('parse property derived') do
-    root = RP.parse('ab\p{Math}cd')
-    expect(root[1]).to be_a(UnicodeProperty::Derived)
-  end
-
-  specify('parse property script') do
-    root = RP.parse('ab\p{Hiragana}cd')
-    expect(root[1]).to be_a(UnicodeProperty::Script)
-  end
-
-  specify('parse property script V1 9 3') do
-    root = RP.parse('ab\p{Brahmi}cd')
-    expect(root[1]).to be_a(UnicodeProperty::Script)
-  end
-
-  specify('parse property script V2 2 0') do
-    root = RP.parse('ab\p{Caucasian_Albanian}cd', 'ruby/2.2')
-    expect(root[1]).to be_a(UnicodeProperty::Script)
-  end
-
-  specify('parse property block') do
-    root = RP.parse('ab\p{InArmenian}cd')
-    expect(root[1]).to be_a(UnicodeProperty::Block)
-  end
-
-  specify('parse property following literal') do
-    root = RP.parse('ab\p{Lu}cd')
-    expect(root[2]).to be_a(Literal)
-  end
-
-  specify('parse abandoned newline property') do
-    root = RP.parse('\p{newline}', 'ruby/1.9')
-    expect(root.expressions.last).to be_a(UnicodeProperty::Base)
-
-    expect { RP.parse('\p{newline}', 'ruby/2.0') }
-      .to raise_error(Regexp::Syntax::NotImplementedError)
   end
 end
