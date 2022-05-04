@@ -15,7 +15,7 @@ RSpec.describe(Regexp::Parser) do
   end
 
   specify('parse root options mi') do
-    root = RP.parse(/[abc]/mi, 'ruby/1.8')
+    root = RP.parse(/[abc]/mi)
 
     expect(root.m?).to be true
     expect(root.i?).to be true

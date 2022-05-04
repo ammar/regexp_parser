@@ -64,22 +64,22 @@ RSpec.describe('Property parsing') do
   end
 
   specify('parse property negative') do
-    root = RP.parse('ab\p{L}cd', 'ruby/1.9')
+    root = RP.parse('ab\p{L}cd')
     expect(root[1]).not_to be_negative
   end
 
   specify('parse nonproperty negative') do
-    root = RP.parse('ab\P{L}cd', 'ruby/1.9')
+    root = RP.parse('ab\P{L}cd')
     expect(root[1]).to be_negative
   end
 
   specify('parse caret nonproperty negative') do
-    root = RP.parse('ab\p{^L}cd', 'ruby/1.9')
+    root = RP.parse('ab\p{^L}cd')
     expect(root[1]).to be_negative
   end
 
   specify('parse double negated property negative') do
-    root = RP.parse('ab\P{^L}cd', 'ruby/1.9')
+    root = RP.parse('ab\P{^L}cd')
     expect(root[1]).not_to be_negative
   end
 
@@ -90,22 +90,22 @@ RSpec.describe('Property parsing') do
   end
 
   specify('parse property age') do
-    root = RP.parse('ab\p{age=5.2}cd', 'ruby/1.9')
+    root = RP.parse('ab\p{age=5.2}cd')
     expect(root[1]).to be_a(UnicodeProperty::Age)
   end
 
   specify('parse property derived') do
-    root = RP.parse('ab\p{Math}cd', 'ruby/1.9')
+    root = RP.parse('ab\p{Math}cd')
     expect(root[1]).to be_a(UnicodeProperty::Derived)
   end
 
   specify('parse property script') do
-    root = RP.parse('ab\p{Hiragana}cd', 'ruby/1.9')
+    root = RP.parse('ab\p{Hiragana}cd')
     expect(root[1]).to be_a(UnicodeProperty::Script)
   end
 
   specify('parse property script V1 9 3') do
-    root = RP.parse('ab\p{Brahmi}cd', 'ruby/1.9.3')
+    root = RP.parse('ab\p{Brahmi}cd')
     expect(root[1]).to be_a(UnicodeProperty::Script)
   end
 
@@ -115,12 +115,12 @@ RSpec.describe('Property parsing') do
   end
 
   specify('parse property block') do
-    root = RP.parse('ab\p{InArmenian}cd', 'ruby/1.9')
+    root = RP.parse('ab\p{InArmenian}cd')
     expect(root[1]).to be_a(UnicodeProperty::Block)
   end
 
   specify('parse property following literal') do
-    root = RP.parse('ab\p{Lu}cd', 'ruby/1.9')
+    root = RP.parse('ab\p{Lu}cd')
     expect(root[2]).to be_a(Literal)
   end
 

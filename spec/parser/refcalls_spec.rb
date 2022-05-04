@@ -80,7 +80,7 @@ RSpec.describe('Refcall parsing') do
   end
 
   specify('parse backref referenced_expression') do
-    root = RP.parse('(abc)(def)\\k<-1>(ghi)\\k<-3>\\k<-1>', 'ruby/1.9')
+    root = RP.parse('(abc)(def)\\k<-1>(ghi)\\k<-3>\\k<-1>')
     exp1 = root[2]
     exp2 = root[4]
     exp3 = root[5]
@@ -92,7 +92,7 @@ RSpec.describe('Refcall parsing') do
   end
 
   specify('parse backref call effective_number') do
-    root = RP.parse('\\g<+1>(abc)\\g<+2>(def)(ghi)\\g<-2>', 'ruby/1.9')
+    root = RP.parse('\\g<+1>(abc)\\g<+2>(def)(ghi)\\g<-2>')
     exp1 = root[0]
     exp2 = root[2]
     exp3 = root[5]
@@ -104,7 +104,7 @@ RSpec.describe('Refcall parsing') do
   end
 
   specify('parse backref call referenced_expression') do
-    root = RP.parse('\\g<+1>(abc)\\g<+2>(def)(ghi)\\g<-2>', 'ruby/1.9')
+    root = RP.parse('\\g<+1>(abc)\\g<+2>(def)(ghi)\\g<-2>')
     exp1 = root[0]
     exp2 = root[2]
     exp3 = root[5]
