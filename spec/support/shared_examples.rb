@@ -68,7 +68,7 @@ RSpec.shared_examples 'parse' do |pattern, checks|
       token      = expectations.pop
       type       = expectations.pop
 
-      description = klass || token || type || attributes || fail
+      description = klass || token || type || 'Expression'
 
       it "parses expression at #{path} as #{description}" do
         exp = @root.dig(*path)
