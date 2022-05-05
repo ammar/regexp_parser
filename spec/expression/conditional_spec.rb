@@ -2,9 +2,9 @@ require 'spec_helper'
 
 RSpec.describe(Regexp::Expression::Conditional) do
   let(:root)   { RP.parse('^(a(b))(b(?(1)c|(?(2)d|(?(3)e|f)))g)$') }
-  let(:cond_1) { root[2][1] }
-  let(:cond_2) { root[2][1][2][0] }
-  let(:cond_3) { root[2][1][2][0][2][0] }
+  let(:cond_1) { root.dig(2, 1) }
+  let(:cond_2) { root.dig(2, 1, 2, 0) }
+  let(:cond_3) { root.dig(2, 1, 2, 0, 2, 0) }
 
   specify('root level') do
     [
@@ -13,12 +13,12 @@ RSpec.describe(Regexp::Expression::Conditional) do
       '(b(?(1)c|(?(2)d|(?(3)e|f)))g)',
       '$'
     ].each_with_index do |t, i|
-      expect(root[i].conditional_level).to eq 0
-      expect(root[i].to_s).to eq t
+      expect(root.dig(i).conditional_level).to eq 0
+      expect(root.dig(i).to_s).to eq t
     end
 
-    expect(root[2][0].to_s).to eq 'b'
-    expect(root[2][0].conditional_level).to eq 0
+    expect(root.dig(2, 0).to_s).to eq 'b'
+    expect(root.dig(2, 0).conditional_level).to eq 0
   end
 
   specify('level one') do

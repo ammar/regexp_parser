@@ -15,18 +15,18 @@ RSpec.describe(Regexp::Expression::Base) do
     root = RP.parse(regexp)
 
     ['^', 'a', '(b(c(d)))', 'e', '$'].each_with_index do |t, i|
-      expect(root[i].to_s).to eq t
-      expect(root[i].level).to eq 0
+      expect(root.dig(i).to_s).to eq t
+      expect(root.dig(i).level).to eq 0
     end
 
-    expect(root[2][0].to_s).to eq 'b'
-    expect(root[2][0].level).to eq 1
+    expect(root.dig(2, 0).to_s).to eq 'b'
+    expect(root.dig(2, 0).level).to eq 1
 
-    expect(root[2][1][0].to_s).to eq 'c'
-    expect(root[2][1][0].level).to eq 2
+    expect(root.dig(2, 1, 0).to_s).to eq 'c'
+    expect(root.dig(2, 1, 0).level).to eq 2
 
-    expect(root[2][1][1][0].to_s).to eq 'd'
-    expect(root[2][1][1][0].level).to eq 3
+    expect(root.dig(2, 1, 1, 0).to_s).to eq 'd'
+    expect(root.dig(2, 1, 1, 0).level).to eq 3
   end
 
   specify('#terminal?') do
@@ -34,13 +34,13 @@ RSpec.describe(Regexp::Expression::Base) do
 
     expect(root).not_to be_terminal
 
-    expect(root[0]).to be_terminal
-    expect(root[1]).to be_terminal
-    expect(root[2]).not_to be_terminal
-    expect(root[2][0]).not_to be_terminal
-    expect(root[2][0][0]).to be_terminal
-    expect(root[3]).to be_terminal
-    expect(root[4]).to be_terminal
+    expect(root.dig(0)).to be_terminal
+    expect(root.dig(1)).to be_terminal
+    expect(root.dig(2)).not_to be_terminal
+    expect(root.dig(2, 0)).not_to be_terminal
+    expect(root.dig(2, 0, 0)).to be_terminal
+    expect(root.dig(3)).to be_terminal
+    expect(root.dig(4)).to be_terminal
   end
 
   specify('alt #terminal?') do
@@ -48,13 +48,13 @@ RSpec.describe(Regexp::Expression::Base) do
 
     expect(root).not_to be_terminal
 
-    expect(root[0]).to be_terminal
-    expect(root[1]).not_to be_terminal
-    expect(root[1][0]).not_to be_terminal
-    expect(root[1][0][0]).not_to be_terminal
-    expect(root[1][0][0][0]).to be_terminal
-    expect(root[1][0][1]).not_to be_terminal
-    expect(root[1][0][1][0]).to be_terminal
+    expect(root.dig(0)).to be_terminal
+    expect(root.dig(1)).not_to be_terminal
+    expect(root.dig(1, 0)).not_to be_terminal
+    expect(root.dig(1, 0, 0)).not_to be_terminal
+    expect(root.dig(1, 0, 0, 0)).to be_terminal
+    expect(root.dig(1, 0, 1)).not_to be_terminal
+    expect(root.dig(1, 0, 1, 0)).to be_terminal
   end
 
   specify('#coded_offset') do
@@ -68,14 +68,14 @@ RSpec.describe(Regexp::Expression::Base) do
       ['@3+8', '(b+(c?))'],
       ['@11+1', '$'],
     ].each_with_index do |check, i|
-      against = [root[i].coded_offset, root[i].to_s]
+      against = [root.dig(i).coded_offset, root.dig(i).to_s]
 
       expect(against).to eq check
     end
 
-    expect([root[2][0].coded_offset, root[2][0].to_s]).to eq ['@4+2', 'b+']
-    expect([root[2][1].coded_offset, root[2][1].to_s]).to eq ['@6+4', '(c?)']
-    expect([root[2][1][0].coded_offset, root[2][1][0].to_s]).to eq ['@7+2', 'c?']
+    expect([root.dig(2, 0).coded_offset, root.dig(2, 0).to_s]).to eq ['@4+2', 'b+']
+    expect([root.dig(2, 1).coded_offset, root.dig(2, 1).to_s]).to eq ['@6+4', '(c?)']
+    expect([root.dig(2, 1, 0).coded_offset, root.dig(2, 1, 0).to_s]).to eq ['@7+2', 'c?']
   end
 
   specify('#quantity') do

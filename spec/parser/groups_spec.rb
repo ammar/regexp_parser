@@ -87,22 +87,22 @@ RSpec.describe('Group parsing') do
   specify('parse group number') do
     root = RP.parse(/(a)(?=b)((?:c)(d|(e)))/)
 
-    expect(root[0].number).to eq 1
-    expect(root[1]).not_to respond_to(:number)
-    expect(root[2].number).to eq 2
-    expect(root[2][0]).not_to respond_to(:number)
-    expect(root[2][1].number).to eq 3
-    expect(root[2][1][0][1][0].number).to eq 4
+    expect(root.dig(0).number).to eq 1
+    expect(root.dig(1)).not_to respond_to(:number)
+    expect(root.dig(2).number).to eq 2
+    expect(root.dig(2, 0)).not_to respond_to(:number)
+    expect(root.dig(2, 1).number).to eq 3
+    expect(root.dig(2, 1, 0, 1, 0).number).to eq 4
   end
 
   specify('parse group number at level') do
     root = RP.parse(/(a)(?=b)((?:c)(d|(e)))/)
 
-    expect(root[0].number_at_level).to eq 1
-    expect(root[1]).not_to respond_to(:number_at_level)
-    expect(root[2].number_at_level).to eq 2
-    expect(root[2][0]).not_to respond_to(:number_at_level)
-    expect(root[2][1].number_at_level).to eq 1
-    expect(root[2][1][0][1][0].number_at_level).to eq 1
+    expect(root.dig(0).number_at_level).to eq 1
+    expect(root.dig(1)).not_to respond_to(:number_at_level)
+    expect(root.dig(2).number_at_level).to eq 2
+    expect(root.dig(2, 0)).not_to respond_to(:number_at_level)
+    expect(root.dig(2, 1).number_at_level).to eq 1
+    expect(root.dig(2, 1, 0, 1, 0).number_at_level).to eq 1
   end
 end
