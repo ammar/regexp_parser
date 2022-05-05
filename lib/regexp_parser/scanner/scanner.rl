@@ -28,13 +28,7 @@
 
   comment               = ('#' . [^\n]* . '\n'?);
 
-  class_name_posix      = 'alnum' | 'alpha' | 'blank' |
-                          'cntrl' | 'digit' | 'graph' |
-                          'lower' | 'print' | 'punct' |
-                          'space' | 'upper' | 'xdigit' |
-                          'word'  | 'ascii';
-
-  class_posix           = ('[:' . '^'? . class_name_posix . ':]');
+  class_posix           = ('[:' . '^'? . [^\[\]]* . ':]');
 
 
   # these are not supported in ruby at the moment
@@ -227,9 +221,13 @@
 
       type = :posixclass
       class_name = text[2..-3]
-      if class_name[0].chr == '^'
+      if class_name[0] == '^'
         class_name = class_name[1..-1]
         type = :nonposixclass
+      end
+
+      unless self.class.posix_classes.include?(class_name)
+        validation_error(:posix_class, text)
       end
 
       emit(type, class_name.to_sym, text)
@@ -322,7 +320,7 @@
 
     codepoint_sequence > (escaped_alpha, 6) $eof(premature_end_error) {
       text = copy(data, ts-1, te)
-      if text[2].chr == '{'
+      if text[2] == '{'
         emit(:escape, :codepoint_list, text)
       else
         emit(:escape, :codepoint,      text)
@@ -476,7 +474,7 @@
     group_open . group_options >group_opened {
       text = copy(data, ts, te)
       if text[2..-1] =~ /([^\-mixdau:]|^$)|-.*([dau])/
-        raise InvalidGroupOption.new($1 || "-#{$2}", text)
+        validation_error(:group_option, $1 || "-#{$2}", text)
       end
       emit_options(text)
     };
@@ -685,6 +683,7 @@ class Regexp::Scanner
   end
 
   # Invalid groupOption. Used for inline options.
+  # TODO: should become InvalidGroupOptionError in v3.0.0 for consistency
   class InvalidGroupOption < ValidationError
     def initialize(option, text)
       super "Invalid group option #{option} in #{text}"
@@ -702,6 +701,13 @@ class Regexp::Scanner
   class UnknownUnicodePropertyError < ValidationError
     def initialize(name)
       super "Unknown unicode character property name #{name}"
+    end
+  end
+
+  # The POSIX class name was not recognized by the scanner.
+  class UnknownPosixClassError < ValidationError
+    def initialize(text)
+      super "Unknown POSIX class #{text}"
     end
   end
 
@@ -768,6 +774,11 @@ class Regexp::Scanner
 
   def self.parse_prop_map(name)
     File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
+  end
+
+  def self.posix_classes
+    %w[alnum alpha ascii blank cntrl digit graph
+       lower print punct space upper word xdigit]
   end
 
   # Emits an array with the details of the scanned pattern
@@ -872,15 +883,16 @@ class Regexp::Scanner
 
   # Centralizes and unifies the handling of validation related
   # errors.
-  def validation_error(type, what, reason)
-    case type
-    when :group
-      error = InvalidGroupError.new(what, reason)
-    when :backref
-      error = InvalidBackrefError.new(what, reason)
-    when :sequence
-      error = InvalidSequenceError.new(what, reason)
-    end
+  def validation_error(type, what, reason = nil)
+    error =
+      case type
+      when :backref      then InvalidBackrefError.new(what, reason)
+      when :group        then InvalidGroupError.new(what, reason)
+      when :group_option then InvalidGroupOption.new(what, reason)
+      when :posix_class  then UnknownPosixClassError.new(what)
+      when :property     then UnknownUnicodePropertyError.new(what)
+      when :sequence     then InvalidSequenceError.new(what, reason)
+      end
 
     raise error # unless @@config.validation_ignore
   end

@@ -9,6 +9,9 @@
   - c.f. [#3](https://github.com/ammar/regexp_parser/issues/3)
 - fixed `Expression::Base#nesting_level` for some tree rewrite cases
   - e.g. the alternatives in `/a|[b]/` had an inconsistent nesting_level
+- fixed `Scanner` accepting invalid posix classes, e.g. `[[:foo:]]`
+  - they raise a `SyntaxError` when used in a Regexp, so could only be passed as String
+  - they now raise a `Regexp::Scanner::ValidationError` in the `Scanner`
 
 ### Added
 
