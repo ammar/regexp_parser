@@ -1,59 +1,50 @@
 require 'spec_helper'
 
 RSpec.describe('EscapeSequence parsing') do
-  include_examples 'parse', /a\ac/,          1 => [:escape, :bell,              EscapeSequence::Bell]
-  include_examples 'parse', /a\ec/,          1 => [:escape, :escape,            EscapeSequence::AsciiEscape]
-  include_examples 'parse', /a\fc/,          1 => [:escape, :form_feed,         EscapeSequence::FormFeed]
-  include_examples 'parse', /a\nc/,          1 => [:escape, :newline,           EscapeSequence::Newline]
-  include_examples 'parse', /a\rc/,          1 => [:escape, :carriage,          EscapeSequence::Return]
-  include_examples 'parse', /a\tc/,          1 => [:escape, :tab,               EscapeSequence::Tab]
-  include_examples 'parse', /a\vc/,          1 => [:escape, :vertical_tab,      EscapeSequence::VerticalTab]
+  es = EscapeSequence
+
+  include_examples 'parse', /a\ac/,          1 => [:escape, :bell,           es::Bell]
+  include_examples 'parse', /a\ec/,          1 => [:escape, :escape,         es::AsciiEscape]
+  include_examples 'parse', /a\fc/,          1 => [:escape, :form_feed,      es::FormFeed]
+  include_examples 'parse', /a\nc/,          1 => [:escape, :newline,        es::Newline]
+  include_examples 'parse', /a\rc/,          1 => [:escape, :carriage,       es::Return]
+  include_examples 'parse', /a\tc/,          1 => [:escape, :tab,            es::Tab]
+  include_examples 'parse', /a\vc/,          1 => [:escape, :vertical_tab,   es::VerticalTab]
 
   # meta character escapes
-  include_examples 'parse', /a\.c/,          1 => [:escape, :dot,               EscapeSequence::Literal]
-  include_examples 'parse', /a\?c/,          1 => [:escape, :zero_or_one,       EscapeSequence::Literal]
-  include_examples 'parse', /a\*c/,          1 => [:escape, :zero_or_more,      EscapeSequence::Literal]
-  include_examples 'parse', /a\+c/,          1 => [:escape, :one_or_more,       EscapeSequence::Literal]
-  include_examples 'parse', /a\|c/,          1 => [:escape, :alternation,       EscapeSequence::Literal]
-  include_examples 'parse', /a\(c/,          1 => [:escape, :group_open,        EscapeSequence::Literal]
-  include_examples 'parse', /a\)c/,          1 => [:escape, :group_close,       EscapeSequence::Literal]
-  include_examples 'parse', /a\{c/,          1 => [:escape, :interval_open,     EscapeSequence::Literal]
-  include_examples 'parse', /a\}c/,          1 => [:escape, :interval_close,    EscapeSequence::Literal]
+  include_examples 'parse', /a\.c/,          1 => [:escape, :dot,            es::Literal]
+  include_examples 'parse', /a\?c/,          1 => [:escape, :zero_or_one,    es::Literal]
+  include_examples 'parse', /a\*c/,          1 => [:escape, :zero_or_more,   es::Literal]
+  include_examples 'parse', /a\+c/,          1 => [:escape, :one_or_more,    es::Literal]
+  include_examples 'parse', /a\|c/,          1 => [:escape, :alternation,    es::Literal]
+  include_examples 'parse', /a\(c/,          1 => [:escape, :group_open,     es::Literal]
+  include_examples 'parse', /a\)c/,          1 => [:escape, :group_close,    es::Literal]
+  include_examples 'parse', /a\{c/,          1 => [:escape, :interval_open,  es::Literal]
+  include_examples 'parse', /a\}c/,          1 => [:escape, :interval_close, es::Literal]
 
   # unicode escapes
-  include_examples 'parse', /a\u0640/,       1 => [:escape, :codepoint,         EscapeSequence::Codepoint]
-  include_examples 'parse', /a\u{41 1F60D}/, 1 => [:escape, :codepoint_list,    EscapeSequence::CodepointList]
-  include_examples 'parse', /a\u{10FFFF}/,   1 => [:escape, :codepoint_list,    EscapeSequence::CodepointList]
+  include_examples 'parse', /a\u0640/,       1 => [:escape, :codepoint,      es::Codepoint]
+  include_examples 'parse', /a\u{41 1F60D}/, 1 => [:escape, :codepoint_list, es::CodepointList]
+  include_examples 'parse', /a\u{10FFFF}/,   1 => [:escape, :codepoint_list, es::CodepointList]
 
   # hex escapes
-  include_examples 'parse', /a\xFF/n,        1 => [:escape, :hex,               EscapeSequence::Hex]
+  include_examples 'parse', /a\xFF/n,        1 => [:escape, :hex,            es::Hex]
 
   # octal escapes
-  include_examples 'parse', /a\177/n,        1 => [:escape, :octal,             EscapeSequence::Octal]
+  include_examples 'parse', /a\177/n,        1 => [:escape, :octal,          es::Octal]
 
-  specify('parse chars and codepoints') do
-    root = RP.parse(/\n\?\101\x42\u0043\u{44 45}/)
+  # test #char and #codepoint
+  include_examples 'parse', /\n/,            0 => [char:  "\n",    codepoint:  10      ]
+  include_examples 'parse', /\?/,            0 => [char:  '?',     codepoint:  63      ]
+  include_examples 'parse', /\101/,          0 => [char:  'A',     codepoint:  65      ]
+  include_examples 'parse', /\x42/,          0 => [char:  'B',     codepoint:  66      ]
+  include_examples 'parse', /\u0043/,        0 => [char:  'C',     codepoint:  67      ]
+  include_examples 'parse', /\u{44 45}/,     0 => [chars: %w[D E], codepoints: [68, 69]]
 
-    expect(root[0].char).to eq "\n"
-    expect(root[0].codepoint).to eq 10
-
-    expect(root[1].char).to eq '?'
-    expect(root[1].codepoint).to eq 63
-
-    expect(root[2].char).to eq 'A'
-    expect(root[2].codepoint).to eq 65
-
-    expect(root[3].char).to eq 'B'
-    expect(root[3].codepoint).to eq 66
-
-    expect(root[4].char).to eq 'C'
-    expect(root[4].codepoint).to eq 67
-
-    expect(root[5].chars).to eq %w[D E]
-    expect(root[5].codepoints).to eq [68, 69]
-
-    expect { root[5].char }.to raise_error(/#chars/)
-    expect { root[5].codepoint }.to raise_error(/#codepoints/)
+  specify('codepoint_list #char and #codepoint raise errors') do
+    exp = RP.parse(/\u{44 45}/)[0]
+    expect { exp.char }.to raise_error(/#chars/)
+    expect { exp.codepoint }.to raise_error(/#codepoints/)
   end
 
   # Meta/control espaces
@@ -63,71 +54,13 @@ RSpec.describe('EscapeSequence parsing') do
   # In Regexp literals, these escapes are now pre-processed to hex escapes.
   #
   # https://github.com/ruby/ruby/commit/11ae581a4a7f5d5f5ec6378872eab8f25381b1b9
-  def parse_meta_control(regexp_body)
-    regexp = Regexp.new(regexp_body.force_encoding('ascii-8bit'))
-    RP.parse(regexp)
-  end
+  n = ->(regexp_body){ Regexp.new(regexp_body.force_encoding('ascii-8bit')) }
 
-  specify('parse escape control sequence lower') do
-    root = parse_meta_control('a\\\\\c2b')
-
-    expect(root[2]).to be_instance_of(EscapeSequence::Control)
-    expect(root[2].text).to eq '\c2'
-    expect(root[2].char).to eq "\x12"
-    expect(root[2].codepoint).to eq 18
-  end
-
-  specify('parse escape control sequence upper') do
-    root = parse_meta_control('\d\C-C\w')
-
-    expect(root[1]).to be_instance_of(EscapeSequence::Control)
-    expect(root[1].text).to eq '\C-C'
-    expect(root[1].char).to eq "\x03"
-    expect(root[1].codepoint).to eq 3
-  end
-
-  specify('parse escape meta sequence') do
-    root = parse_meta_control('\Z\M-Z')
-
-    expect(root[1]).to be_instance_of(EscapeSequence::Meta)
-    expect(root[1].text).to eq '\M-Z'
-    expect(root[1].char).to eq "\u00DA"
-    expect(root[1].codepoint).to eq 218
-  end
-
-  specify('parse escape meta control sequence') do
-    root = parse_meta_control('\A\M-\C-X')
-
-    expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[1].text).to eq '\M-\C-X'
-    expect(root[1].char).to eq "\u0098"
-    expect(root[1].codepoint).to eq 152
-  end
-
-  specify('parse lower c meta control sequence') do
-    root = parse_meta_control('\A\M-\cX')
-
-    expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[1].text).to eq '\M-\cX'
-    expect(root[1].char).to eq "\u0098"
-    expect(root[1].codepoint).to eq 152
-  end
-
-  specify('parse escape reverse meta control sequence') do
-    root = parse_meta_control('\A\C-\M-X')
-
-    expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[1].text).to eq '\C-\M-X'
-    expect(root[1].char).to eq "\u0098"
-    expect(root[1].codepoint).to eq 152
-  end
-
-  specify('parse escape reverse lower c meta control sequence') do
-    root = parse_meta_control('\A\c\M-X')
-
-    expect(root[1]).to be_instance_of(EscapeSequence::MetaControl)
-    expect(root[1].text).to eq '\c\M-X'
-    expect(root[1].char).to eq "\u0098"
-    expect(root[1].codepoint).to eq 152
-  end
+  include_examples 'parse', n.('\\\\\c2b'),  1 => [es::Control,     text: '\c2',     char: "\x12",   codepoint: 18 ]
+  include_examples 'parse', n.('\d\C-C\w'),  1 => [es::Control,     text: '\C-C',    char: "\x03",   codepoint: 3  ]
+  include_examples 'parse', n.('\Z\M-Z'),    1 => [es::Meta,        text: '\M-Z',    char: "\u00DA", codepoint: 218]
+  include_examples 'parse', n.('\A\M-\C-X'), 1 => [es::MetaControl, text: '\M-\C-X', char: "\u0098", codepoint: 152]
+  include_examples 'parse', n.('\A\M-\cX'),  1 => [es::MetaControl, text: '\M-\cX',  char: "\u0098", codepoint: 152]
+  include_examples 'parse', n.('\A\C-\M-X'), 1 => [es::MetaControl, text: '\C-\M-X', char: "\u0098", codepoint: 152]
+  include_examples 'parse', n.('\A\c\M-X'),  1 => [es::MetaControl, text: '\c\M-X',  char: "\u0098", codepoint: 152]
 end
