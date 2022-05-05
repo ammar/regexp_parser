@@ -167,7 +167,7 @@ RSpec.describe('Expression::Base#strfregexp') do
   end
 
   specify('#strfregexp conditional') do
-    root = RP.parse('(?<A>a)(?(<A>)b|c)', 'ruby/2.0')
+    root = RP.parse('(?<A>a)(?(<A>)b|c)')
 
     expect { root.strfregexp }.not_to(raise_error)
   end
