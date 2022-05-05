@@ -1,127 +1,71 @@
 require 'spec_helper'
 
-# edge cases with `...-&&...` and `...&&-...` are checked in test_ranges.rb
+# edge cases with `...-&&...` and `...&&-...` are checked in ./ranges_spec.rb
 
 RSpec.describe('CharacterSet::Intersection parsing') do
-  specify('parse set intersection') do
-    root = RP.parse('[a&&z]')
-    set = root[0]
-    ints = set[0]
+  include_examples 'parse', /[a&&z]/,
+    [0]          => [CharacterSet, count: 1],
+    [0, 0]       => [CharacterSet::Intersection, count: 2],
+    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 0, 0] => [:literal, text: 'a'],
+    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1, 0] => [:literal, text: 'z']
 
-    expect(set.count).to eq 1
-    expect(ints).to be_instance_of(CharacterSet::Intersection)
-    expect(ints.count).to eq 2
+  include_examples 'parse', /[a-z&&[^a]]/,
+    [0]          => [CharacterSet, count: 1],
+    [0, 0]       => [CharacterSet::Intersection, count: 2],
+    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 0, 0] => [CharacterSet::Range, count: 2],
+    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1, 0] => [CharacterSet, count: 1, negative?: true]
 
-    seq1, seq2 = ints.expressions
-    expect(seq1).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq1.count).to eq 1
-    expect(seq1.first.to_s).to eq 'a'
-    expect(seq1.first).to be_instance_of(Literal)
-    expect(seq2).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq2.count).to eq 1
-    expect(seq2.first.to_s).to eq 'z'
-    expect(seq2.first).to be_instance_of(Literal)
+  include_examples 'parse', /[a&&a-z]/,
+    [0]          => [CharacterSet, count: 1],
+    [0, 0]       => [CharacterSet::Intersection, count: 2],
+    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 0, 0] => [:literal, text: 'a'],
+    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1, 0] => [CharacterSet::Range, count: 2]
 
-    expect(set).not_to match 'a'
-    expect(set).not_to match '&'
-    expect(set).not_to match 'z'
-  end
+  include_examples 'parse', /[a&&\w]/,
+    [0]          => [CharacterSet, count: 1],
+    [0, 0]       => [CharacterSet::Intersection, count: 2],
+    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1, 0] => [:word, text: '\w']
 
-  specify('parse set intersection range and subset') do
-    root = RP.parse('[a-z&&[^a]]')
-    set = root[0]
-    ints = set[0]
+  include_examples 'parse', /[\h&&\w&&efg]/,
+    [0]          => [CharacterSet, count: 1],
+    [0, 0]       => [CharacterSet::Intersection, count: 3],
+    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 0, 0] => [:hex, text: '\h'],
+    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1, 0] => [:word, text: '\w'],
+    [0, 0, 2]    => [CharacterSet::IntersectedSequence, count: 3],
+    [0, 0, 2, 0] => [:literal, text: 'e'],
+    [0, 0, 2, 1] => [:literal, text: 'f'],
+    [0, 0, 2, 2] => [:literal, text: 'g']
 
-    expect(set.count).to eq 1
-    expect(ints).to be_instance_of(CharacterSet::Intersection)
-    expect(ints.count).to eq 2
-
-    seq1, seq2 = ints.expressions
-    expect(seq1).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq1.count).to eq 1
-    expect(seq1.first.to_s).to eq 'a-z'
-    expect(seq1.first).to be_instance_of(CharacterSet::Range)
-    expect(seq2).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq2.count).to eq 1
-    expect(seq2.first.to_s).to eq '[^a]'
-    expect(seq2.first).to be_instance_of(CharacterSet)
-
-    expect(set).not_to match 'a'
-    expect(set).not_to match '&'
-    expect(set).to     match 'b'
-  end
-
-  specify('parse set intersection trailing range') do
-    root = RP.parse('[a&&a-z]')
-    set = root[0]
-    ints = set[0]
-
-    expect(set.count).to eq 1
-    expect(ints).to be_instance_of(CharacterSet::Intersection)
-    expect(ints.count).to eq 2
-
-    seq1, seq2 = ints.expressions
-    expect(seq1).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq1.count).to eq 1
-    expect(seq1.first.to_s).to eq 'a'
-    expect(seq1.first).to be_instance_of(Literal)
-    expect(seq2).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq2.count).to eq 1
-    expect(seq2.first.to_s).to eq 'a-z'
-    expect(seq2.first).to be_instance_of(CharacterSet::Range)
-
-    expect(set).to     match 'a'
-    expect(set).not_to match '&'
-    expect(set).not_to match 'b'
-  end
-
-  specify('parse set intersection type') do
-    root = RP.parse('[a&&\w]')
-    set = root[0]
-    ints = set[0]
-
-    expect(set.count).to eq 1
-    expect(ints).to be_instance_of(CharacterSet::Intersection)
-    expect(ints.count).to eq 2
-
-    seq1, seq2 = ints.expressions
-    expect(seq1).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq1.count).to eq 1
-    expect(seq1.first.to_s).to eq 'a'
-    expect(seq1.first).to be_instance_of(Literal)
-    expect(seq2).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq2.count).to eq 1
-    expect(seq2.first.to_s).to eq '\w'
-    expect(seq2.first).to be_instance_of(CharacterType::Word)
-
-    expect(set).to     match 'a'
-    expect(set).not_to match '&'
-    expect(set).not_to match 'b'
-  end
-
-  specify('parse set intersection multipart') do
-    root = RP.parse('[\h&&\w&&efg]')
-    set = root[0]
-    ints = set[0]
-
-    expect(set.count).to eq 1
-    expect(ints).to be_instance_of(CharacterSet::Intersection)
-    expect(ints.count).to eq 3
-
-    seq1, seq2, seq3 = ints.expressions
-    expect(seq1).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq1.count).to eq 1
-    expect(seq1.first.to_s).to eq '\h'
-    expect(seq2).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq2.count).to eq 1
-    expect(seq2.first.to_s).to eq '\w'
-    expect(seq3).to be_instance_of(CharacterSet::IntersectedSequence)
-    expect(seq3.count).to eq 3
-    expect(seq3.to_s).to eq 'efg'
-
-    expect(set).to     match 'e'
-    expect(set).to     match 'f'
-    expect(set).not_to match 'a'
-    expect(set).not_to match 'g'
+  # Some edge-case patterns are evaluated with #match to make sure that
+  # their matching behavior still reflects the way they are parsed.
+  # #capturing_stderr is used to skip any warnings generated by this.
+  specify('intersections behavior remains unchanged') do
+    capturing_stderr do
+      expect(/[a&&z]/).not_to match 'a'
+      expect(/[a&&z]/).not_to match '&'
+      expect(/[a&&z]/).not_to match 'z'
+      expect(/[a-z&&[^a]]/).not_to match 'a'
+      expect(/[a-z&&[^a]]/).not_to match '&'
+      expect(/[a-z&&[^a]]/).to     match 'b'
+      expect(/[a&&a-z]/).to     match 'a'
+      expect(/[a&&a-z]/).not_to match '&'
+      expect(/[a&&a-z]/).not_to match 'b'
+      expect(/[a&&\w]/).to     match 'a'
+      expect(/[a&&\w]/).not_to match '&'
+      expect(/[a&&\w]/).not_to match 'b'
+      expect(/[\h&&\w&&efg]/).to     match 'e'
+      expect(/[\h&&\w&&efg]/).to     match 'f'
+      expect(/[\h&&\w&&efg]/).not_to match 'a'
+      expect(/[\h&&\w&&efg]/).not_to match 'g'
+    end
   end
 end
