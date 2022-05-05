@@ -1,88 +1,29 @@
 require 'spec_helper'
 
 RSpec.describe('Alternation parsing') do
-  let(:root) { RP.parse('(ab??|cd*|ef+)*|(gh|ij|kl)?') }
+  include_examples 'parse', /a|b/,
+    [0]       => [Alternation, text: '|', count: 2],
+    [0, 0]    => [Alternative, text: '',  count: 1],
+    [0, 0, 0] => [:literal,    text: 'a'          ],
+    [0, 1]    => [Alternative, text: '',  count: 1],
+    [0, 1, 0] => [:literal,    text: 'b'          ]
 
-  specify('parse alternation root') do
-    e = root[0]
-    expect(e).to be_a(Alternation)
-  end
+  include_examples 'parse', /a|(b)c/,
+    [0]       => [Alternation, text: '|', count: 2],
+    [0, 0]    => [Alternative, text: '',  count: 1],
+    [0, 0, 0] => [:literal,    text: 'a'          ],
+    [0, 1]    => [Alternative, text: '',  count: 2],
+    [0, 1, 0] => [:capture,    to_s: '(b)'        ],
+    [0, 1, 1] => [:literal,    text: 'c'          ]
 
-  specify('parse alternation alts') do
-    alts = root[0].alternatives
-
-    expect(alts[0]).to be_a(Alternative)
-    expect(alts[1]).to be_a(Alternative)
-
-    expect(alts[0][0]).to be_a(Group::Capture)
-    expect(alts[1][0]).to be_a(Group::Capture)
-
-    expect(alts.length).to eq 2
-  end
-
-  specify('parse alternation nested') do
-    e = root[0].alternatives[0][0][0]
-
-    expect(e).to be_a(Alternation)
-  end
-
-  specify('parse alternation nested sequence') do
-    alts = root[0][0]
-    nested = alts[0][0][0]
-
-    expect(nested).to be_a(Alternative)
-
-    expect(nested[0]).to be_a(Literal)
-    expect(nested[1]).to be_a(Literal)
-    expect(nested.expressions.length).to eq 2
-  end
-
-  specify('parse alternation nested groups') do
-    root = RP.parse('(i|ey|([ougfd]+)|(ney))')
-
-    alts = root[0][0].alternatives
-    expect(alts.length).to eq 4
-  end
-
-  specify('parse alternation grouped alts') do
-    root = RP.parse('ca((n)|(t)|(ll)|(b))')
-
-    alts = root[1][0].alternatives
-
-    expect(alts.length).to eq 4
-
-    expect(alts[0]).to be_a(Alternative)
-    expect(alts[1]).to be_a(Alternative)
-    expect(alts[2]).to be_a(Alternative)
-    expect(alts[3]).to be_a(Alternative)
-  end
-
-  specify('parse alternation nested grouped alts') do
-    root = RP.parse('ca((n|t)|(ll|b))')
-
-    alts = root[1][0].alternatives
-
-    expect(alts.length).to eq 2
-
-    expect(alts[0]).to be_a(Alternative)
-    expect(alts[1]).to be_a(Alternative)
-
-    subalts = root[1][0][0][0][0].alternatives
-
-    expect(alts.length).to eq 2
-
-    expect(subalts[0]).to be_a(Alternative)
-    expect(subalts[1]).to be_a(Alternative)
-  end
-
-  specify('parse alternation continues after nesting') do
-    root = RP.parse(/a|(b)c/)
-
-    seq = root[0][1].expressions
-
-    expect(seq.length).to eq 2
-
-    expect(seq[0]).to be_a(Group::Capture)
-    expect(seq[1]).to be_a(Literal)
-  end
+  include_examples 'parse', /(ab??|cd*|ef+)*|(gh|ij|kl)?/,
+    [0]                => [Alternation, text: '|', count: 2, quantified?: false],
+    [0, 0]             => [Alternative, text: '',  count: 1, quantified?: false],
+    [0, 0, 0]          => [:capture,               count: 1, quantified?: true ],
+    [0, 0, 0, 0]       => [Alternation, text: '|', count: 3                    ],
+    [0, 0, 0, 0, 0]    => [Alternative, text: '',  count: 2                    ],
+    [0, 0, 0, 0, 0, 0] => [:literal,    to_s: 'a'                              ],
+    [0, 0, 0, 0, 0, 1] => [:literal,    to_s: 'b??'                            ],
+    [0, 1]             => [Alternative, text: '',  count: 1, quantified?: false],
+    [0, 1, 0]          => [:capture,               count: 1, quantified?: true ]
 end

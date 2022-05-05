@@ -1,20 +1,20 @@
 require 'spec_helper'
 
 RSpec.describe('Quantifier parsing') do
-  include_examples 'parse', /a?b/,     [0, :q] => [:quantifier, :zero_or_one,  Quantifier, text: '?',     mode: :greedy,     min: 0, max: 1,  ts: 1]
-  include_examples 'parse', /a??b/,    [0, :q] => [:quantifier, :zero_or_one,  Quantifier, text: '??',    mode: :reluctant,  min: 0, max: 1,  ts: 1]
-  include_examples 'parse', /a?+b/,    [0, :q] => [:quantifier, :zero_or_one,  Quantifier, text: '?+',    mode: :possessive, min: 0, max: 1,  ts: 1]
-  include_examples 'parse', /a*b/,     [0, :q] => [:quantifier, :zero_or_more, Quantifier, text: '*',     mode: :greedy,     min: 0, max: -1, ts: 1]
-  include_examples 'parse', /a*?b/,    [0, :q] => [:quantifier, :zero_or_more, Quantifier, text: '*?',    mode: :reluctant,  min: 0, max: -1, ts: 1]
-  include_examples 'parse', /a*+b/,    [0, :q] => [:quantifier, :zero_or_more, Quantifier, text: '*+',    mode: :possessive, min: 0, max: -1, ts: 1]
-  include_examples 'parse', /a+b/,     [0, :q] => [:quantifier, :one_or_more,  Quantifier, text: '+',     mode: :greedy,     min: 1, max: -1, ts: 1]
-  include_examples 'parse', /a+?b/,    [0, :q] => [:quantifier, :one_or_more,  Quantifier, text: '+?',    mode: :reluctant,  min: 1, max: -1, ts: 1]
-  include_examples 'parse', /a++b/,    [0, :q] => [:quantifier, :one_or_more,  Quantifier, text: '++',    mode: :possessive, min: 1, max: -1, ts: 1]
-  include_examples 'parse', /a{2,4}b/, [0, :q] => [:quantifier, :interval,     Quantifier, text: '{2,4}', mode: :greedy,     min: 2, max: 4,  ts: 1]
-  include_examples 'parse', /a{2,}b/,  [0, :q] => [:quantifier, :interval,     Quantifier, text: '{2,}',  mode: :greedy,     min: 2, max: -1, ts: 1]
-  include_examples 'parse', /a{,3}b/,  [0, :q] => [:quantifier, :interval,     Quantifier, text: '{,3}',  mode: :greedy,     min: 0, max: 3,  ts: 1]
-  include_examples 'parse', /a{4}b/,   [0, :q] => [:quantifier, :interval,     Quantifier, text: '{4}',   mode: :greedy,     min: 4, max: 4,  ts: 1]
-  include_examples 'parse', /a{004}b/, [0, :q] => [:quantifier, :interval,     Quantifier, text: '{004}', mode: :greedy,     min: 4, max: 4,  ts: 1]
+  include_examples 'parse', /a?b/,     [0, :q] => [:zero_or_one,  text: '?',     mode: :greedy,     min: 0, max: 1,  ts: 1]
+  include_examples 'parse', /a??b/,    [0, :q] => [:zero_or_one,  text: '??',    mode: :reluctant,  min: 0, max: 1,  ts: 1]
+  include_examples 'parse', /a?+b/,    [0, :q] => [:zero_or_one,  text: '?+',    mode: :possessive, min: 0, max: 1,  ts: 1]
+  include_examples 'parse', /a*b/,     [0, :q] => [:zero_or_more, text: '*',     mode: :greedy,     min: 0, max: -1, ts: 1]
+  include_examples 'parse', /a*?b/,    [0, :q] => [:zero_or_more, text: '*?',    mode: :reluctant,  min: 0, max: -1, ts: 1]
+  include_examples 'parse', /a*+b/,    [0, :q] => [:zero_or_more, text: '*+',    mode: :possessive, min: 0, max: -1, ts: 1]
+  include_examples 'parse', /a+b/,     [0, :q] => [:one_or_more,  text: '+',     mode: :greedy,     min: 1, max: -1, ts: 1]
+  include_examples 'parse', /a+?b/,    [0, :q] => [:one_or_more,  text: '+?',    mode: :reluctant,  min: 1, max: -1, ts: 1]
+  include_examples 'parse', /a++b/,    [0, :q] => [:one_or_more,  text: '++',    mode: :possessive, min: 1, max: -1, ts: 1]
+  include_examples 'parse', /a{2,4}b/, [0, :q] => [:interval,     text: '{2,4}', mode: :greedy,     min: 2, max: 4,  ts: 1]
+  include_examples 'parse', /a{2,}b/,  [0, :q] => [:interval,     text: '{2,}',  mode: :greedy,     min: 2, max: -1, ts: 1]
+  include_examples 'parse', /a{,3}b/,  [0, :q] => [:interval,     text: '{,3}',  mode: :greedy,     min: 0, max: 3,  ts: 1]
+  include_examples 'parse', /a{4}b/,   [0, :q] => [:interval,     text: '{4}',   mode: :greedy,     min: 4, max: 4,  ts: 1]
+  include_examples 'parse', /a{004}b/, [0, :q] => [:interval,     text: '{004}', mode: :greedy,     min: 4, max: 4,  ts: 1]
 
   # special case: exps with chained quantifiers are wrapped in implicit passive groups
   include_examples 'parse', /a+{2}{3}/,
