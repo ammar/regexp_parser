@@ -15,6 +15,7 @@
 
 ### Added
 
+- added `Expression::Base#==` for (deep) comparison of expressions
 - made some `Expression::Base` methods available on `Quantifier` instances, too
   - `#type`, `#type?`, `#is?`, `#one_of?`, `#options`, `#terminal?`
   - `#base_length`, `#full_length`, `#starts_at`, `#te`, `#ts`, `#offset`

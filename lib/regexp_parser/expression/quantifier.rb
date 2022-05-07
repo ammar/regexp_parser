@@ -44,15 +44,6 @@ module Regexp::Expression
     end
     alias :lazy? :reluctant?
 
-    def ==(other)
-      other.class == self.class &&
-        other.token == token &&
-        other.mode == mode &&
-        other.min == min &&
-        other.max == max
-    end
-    alias :eq :==
-
     private
 
     def deprecated_old_init(token, text, min, max, mode = :greedy)

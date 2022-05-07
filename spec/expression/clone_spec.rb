@@ -97,6 +97,7 @@ RSpec.describe('Expression::Base#clone') do
     root_1 = root[1]
     copy_1 = copy[1]
 
+    expect(root_1.referenced_expression).to eq copy_1.referenced_expression
     expect(root_1.referenced_expression.to_s).to eq copy_1.referenced_expression.to_s
     expect(root_1.referenced_expression.object_id).not_to eq copy_1.referenced_expression.object_id
 

@@ -85,8 +85,12 @@ RSpec.describe('Refcall parsing') do
     exp3 = root[5]
 
     expect([exp1, exp2, exp3]).to all be_instance_of(Backreference::NumberRelative)
+
+    expect(exp1.referenced_expression).to eq root[1]
     expect(exp1.referenced_expression.to_s).to eq '(def)'
+    expect(exp2.referenced_expression).to eq root[0]
     expect(exp2.referenced_expression.to_s).to eq '(abc)'
+    expect(exp3.referenced_expression).to eq root[3]
     expect(exp3.referenced_expression.to_s).to eq '(ghi)'
   end
 
@@ -97,8 +101,11 @@ RSpec.describe('Refcall parsing') do
     exp3 = root[5]
 
     expect([exp1, exp2, exp3]).to all be_instance_of(Backreference::NumberCallRelative)
+    expect(exp1.referenced_expression).to eq root[1]
     expect(exp1.referenced_expression.to_s).to eq '(abc)'
+    expect(exp2.referenced_expression).to eq root[4]
     expect(exp2.referenced_expression.to_s).to eq '(ghi)'
+    expect(exp3.referenced_expression).to eq root[3]
     expect(exp3.referenced_expression.to_s).to eq '(def)'
   end
 end

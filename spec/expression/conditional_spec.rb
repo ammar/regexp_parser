@@ -8,10 +8,15 @@ RSpec.describe(Regexp::Expression::Conditional) do
   end
 
   specify('Condition#referenced_expression') do
-    exp = RP.parse(/(?<A>a)(?(<A>)T|F)/)[1].condition
-    expect(exp.referenced_expression.to_s).to eq '(?<A>a)'
-    exp = RP.parse(/(a)(?(1)T|F)/)[1].condition
-    expect(exp.referenced_expression.to_s).to eq '(a)'
+    root = RP.parse(/(?<A>a)(?(<A>)T|F)/)
+    condition = root[1].condition
+    expect(condition.referenced_expression).to eq root[0]
+    expect(condition.referenced_expression.to_s).to eq '(?<A>a)'
+
+    root = RP.parse(/(a)(?(1)T|F)/)
+    condition = root[1].condition
+    expect(condition.referenced_expression).to eq root[0]
+    expect(condition.referenced_expression.to_s).to eq '(a)'
   end
 
   specify('parse conditional excessive branches') do

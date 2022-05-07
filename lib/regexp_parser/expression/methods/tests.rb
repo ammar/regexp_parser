@@ -93,5 +93,14 @@ module Regexp::Expression
               "Array, Hash, or Symbol expected, #{scope.class.name} given"
       end
     end
+
+    # Deep-compare two expressions for equality.
+    def ==(other)
+      other.class == self.class &&
+        other.to_s == to_s &&
+        other.options == options
+    end
+    alias :=== :==
+    alias :eql? :==
   end
 end

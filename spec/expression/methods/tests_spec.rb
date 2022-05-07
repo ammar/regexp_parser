@@ -96,4 +96,52 @@ RSpec.describe('ExpressionTests') do
 
     expect { root.one_of?(Object.new) }.to raise_error(ArgumentError)
   end
+
+  specify('#==') do
+    expect(RP.parse(/a/)).to                    eq RP.parse(/a/)
+    expect(RP.parse(/a/)).not_to                eq RP.parse(/B/)
+
+    expect(RP.parse(/a+/)).to                   eq RP.parse(/a+/)
+    expect(RP.parse(/a+/)).not_to               eq RP.parse(/a++/)
+    expect(RP.parse(/a+/)).not_to               eq RP.parse(/a?/)
+
+    expect(RP.parse(/\A/)).to                   eq RP.parse(/\A/)
+    expect(RP.parse(/\A/)).not_to               eq RP.parse(/\b/)
+
+    expect(RP.parse(/[a]/)).to                  eq RP.parse(/[a]/)
+    expect(RP.parse(/[a]/)).not_to              eq RP.parse(/[B]/)
+
+    expect(RP.parse(/(a)/)).to                  eq RP.parse(/(a)/)
+    expect(RP.parse(/(a)/)).not_to              eq RP.parse(/(B)/)
+
+    expect(RP.parse(/(a|A)/)).to                eq RP.parse(/(a|A)/)
+    expect(RP.parse(/(a|A)/)).not_to            eq RP.parse(/(a|B)/)
+
+    expect(RP.parse(/(?:a)/)).to                eq RP.parse(/(?:a)/)
+    expect(RP.parse(/(?:a)/)).not_to            eq RP.parse(/(a)/)
+
+    expect(RP.parse(/(?<a>a)/)).to              eq RP.parse(/(?<a>a)/)
+    expect(RP.parse(/(?<a>a)/)).not_to          eq RP.parse(/(?<a>B)/)
+    expect(RP.parse(/(?<a>a)/)).not_to          eq RP.parse(/(?<B>a)/)
+    expect(RP.parse(/(?<a>a)/)).not_to          eq RP.parse(/(?'a'a)/)
+
+    expect(RP.parse(/(a)(x)(?(1)T|F)/)).to      eq RP.parse(/(a)(x)(?(1)T|F)/)
+    expect(RP.parse(/(a)(x)(?(1)T|F)/)).not_to  eq RP.parse(/(a)(x)(?(2)T|F)/)
+    expect(RP.parse(/(a)(x)(?(1)T|F)/)).not_to  eq RP.parse(/(B)(x)(?(1)T|F)/)
+    expect(RP.parse(/(a)(x)(?(1)T|F)/)).not_to  eq RP.parse(/(a)(x)(?(1)T|T)/)
+
+    expect(RP.parse(/a+/)[0].quantifier).to     eq RP.parse(/a+/)[0].quantifier
+    expect(RP.parse(/a+/)[0].quantifier).not_to eq RP.parse(/a++/)[0].quantifier
+    expect(RP.parse(/a+/)[0].quantifier).not_to eq RP.parse(/a?/)[0].quantifier
+    expect(RP.parse(/a+/)[0].quantifier).not_to eq RP.parse(/a{1,}/)[0].quantifier
+
+    # active options should differentiate expressions
+    expect(RP.parse(/a/)[0]).to                 eq RP.parse(/a/)[0]
+    expect(RP.parse(/a/i)[0]).not_to            eq RP.parse(/a/)[0]
+    expect(RP.parse(/(?i)a/)[1]).not_to         eq RP.parse(/a/)[0]
+    expect(RP.parse(/(?i:a)/)[0][0]).not_to     eq RP.parse(/a/)[0]
+
+    # levels should be ignored
+    expect(RP.parse(/([a])/)[0][0][0]).to       eq RP.parse(/a/)[0]
+  end
 end

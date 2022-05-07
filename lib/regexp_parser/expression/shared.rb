@@ -43,6 +43,14 @@ module Regexp::Expression
       to_s.length
     end
 
+    def quantifier_affix(expression_format)
+      quantifier.to_s if quantified? && expression_format != :base
+    end
+
+    def quantified?
+      !quantifier.nil?
+    end
+
     def offset
       [starts_at, full_length]
     end
