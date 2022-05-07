@@ -1,104 +1,71 @@
 require 'spec_helper'
 
 RSpec.describe(Regexp::Expression::Base) do
-  specify('#to_re') do
-    re_text = '^a*(b([cde]+))+f?$'
+  # test #to_re
+  include_examples 'parse', '^a*(b([cde]+))+f?$',
+    [] => [Root, to_re: /^a*(b([cde]+))+f?$/]
 
-    re = RP.parse(re_text).to_re
+  # test #level
+  include_examples 'parse', /^a(b(c(d)))e$/,
+    [0]          => [to_s: '^',         level: 0],
+    [1]          => [to_s: 'a',         level: 0],
+    [2]          => [to_s: '(b(c(d)))', level: 0],
+    [2, 0]       => [to_s: 'b',         level: 1],
+    [2, 1]       => [to_s: '(c(d))',    level: 1],
+    [2, 1, 0]    => [to_s: 'c',         level: 2],
+    [2, 1, 1]    => [to_s: '(d)',       level: 2],
+    [2, 1, 1, 0] => [to_s: 'd',         level: 3],
+    [3]          => [to_s: 'e',         level: 0],
+    [4]          => [to_s: '$',         level: 0]
 
-    expect(re).to be_a(::Regexp)
-    expect(re_text).to eq re.source
-  end
+  # test #terminal?
+  include_examples 'parse', /^a([b]+)c$/,
+    []        => [Root,           terminal?: false],
+    [0]       => [to_s: '^',      terminal?: true],
+    [1]       => [to_s: 'a',      terminal?: true],
+    [2]       => [to_s: '([b]+)', terminal?: false],
+    [2, 0]    => [to_s: '[b]+',   terminal?: false],
+    [2, 0, 0] => [to_s: 'b',      terminal?: true],
+    [3]       => [to_s: 'c',      terminal?: true],
+    [4]       => [to_s: '$',      terminal?: true]
 
-  specify('#level') do
-    regexp = /^a(b(c(d)))e$/
-    root = RP.parse(regexp)
+  include_examples 'parse', /^(ab|cd)$/,
+    []           => [Root,                          terminal?: false],
+    [0]          => [:bol,         to_s: '^',       terminal?: true],
+    [1]          => [:capture,     to_s: '(ab|cd)', terminal?: false],
+    [1, 0]       => [:alternation, to_s: 'ab|cd',   terminal?: false],
+    [1, 0, 0]    => [:sequence,    to_s: 'ab',      terminal?: false],
+    [1, 0, 0, 0] => [:literal,     to_s: 'ab',      terminal?: true],
+    [1, 0, 1]    => [:sequence,    to_s: 'cd',      terminal?: false],
+    [1, 0, 1, 0] => [:literal,     to_s: 'cd',      terminal?: true],
+    [2]          => [:eol,         to_s: '$',       terminal?: true]
 
-    ['^', 'a', '(b(c(d)))', 'e', '$'].each_with_index do |t, i|
-      expect(root.dig(i).to_s).to eq t
-      expect(root.dig(i).level).to eq 0
-    end
+  # test #coded_offset
+  include_examples 'parse', /^a*(b+(c?))$/,
+    []        => [Root,             coded_offset: '@0+12'],
+    [0]       => [to_s: '^',        coded_offset: '@0+1'],
+    [1]       => [to_s: 'a*',       coded_offset: '@1+2'],
+    [2]       => [to_s: '(b+(c?))', coded_offset: '@3+8'],
+    [2, 0]    => [to_s: 'b+',       coded_offset: '@4+2'],
+    [2, 1]    => [to_s: '(c?)',     coded_offset: '@6+4'],
+    [2, 1, 0] => [to_s: 'c?',       coded_offset: '@7+2'],
+    [3]       => [to_s: '$',        coded_offset: '@11+1']
 
-    expect(root.dig(2, 0).to_s).to eq 'b'
-    expect(root.dig(2, 0).level).to eq 1
+  # test #quantity
+  include_examples 'parse', /aa/, [0] => [quantity: [nil, nil]]
+  include_examples 'parse', /a?/, [0] => [quantity: [0, 1]]
+  include_examples 'parse', /a*/, [0] => [quantity: [0, -1]]
+  include_examples 'parse', /a+/, [0] => [quantity: [1, -1]]
 
-    expect(root.dig(2, 1, 0).to_s).to eq 'c'
-    expect(root.dig(2, 1, 0).level).to eq 2
+  # test #repetitions
+  include_examples 'parse', /aa/, [0] => [repetitions: 1..1]
+  include_examples 'parse', /a?/, [0] => [repetitions: 0..1]
+  include_examples 'parse', /a*/, [0] => [repetitions: 0..(Float::INFINITY)]
+  include_examples 'parse', /a+/, [0] => [repetitions: 1..(Float::INFINITY)]
 
-    expect(root.dig(2, 1, 1, 0).to_s).to eq 'd'
-    expect(root.dig(2, 1, 1, 0).level).to eq 3
-  end
-
-  specify('#terminal?') do
-    root = RP.parse('^a([b]+)c$')
-
-    expect(root).not_to be_terminal
-
-    expect(root.dig(0)).to be_terminal
-    expect(root.dig(1)).to be_terminal
-    expect(root.dig(2)).not_to be_terminal
-    expect(root.dig(2, 0)).not_to be_terminal
-    expect(root.dig(2, 0, 0)).to be_terminal
-    expect(root.dig(3)).to be_terminal
-    expect(root.dig(4)).to be_terminal
-  end
-
-  specify('alt #terminal?') do
-    root = RP.parse('^(ab|cd)$')
-
-    expect(root).not_to be_terminal
-
-    expect(root.dig(0)).to be_terminal
-    expect(root.dig(1)).not_to be_terminal
-    expect(root.dig(1, 0)).not_to be_terminal
-    expect(root.dig(1, 0, 0)).not_to be_terminal
-    expect(root.dig(1, 0, 0, 0)).to be_terminal
-    expect(root.dig(1, 0, 1)).not_to be_terminal
-    expect(root.dig(1, 0, 1, 0)).to be_terminal
-  end
-
-  specify('#coded_offset') do
-    root = RP.parse('^a*(b+(c?))$')
-
-    expect(root.coded_offset).to eq '@0+12'
-
-    [
-      ['@0+1', '^'],
-      ['@1+2', 'a*'],
-      ['@3+8', '(b+(c?))'],
-      ['@11+1', '$'],
-    ].each_with_index do |check, i|
-      against = [root.dig(i).coded_offset, root.dig(i).to_s]
-
-      expect(against).to eq check
-    end
-
-    expect([root.dig(2, 0).coded_offset, root.dig(2, 0).to_s]).to eq ['@4+2', 'b+']
-    expect([root.dig(2, 1).coded_offset, root.dig(2, 1).to_s]).to eq ['@6+4', '(c?)']
-    expect([root.dig(2, 1, 0).coded_offset, root.dig(2, 1, 0).to_s]).to eq ['@7+2', 'c?']
-  end
-
-  specify('#quantity') do
-    expect(RP.parse(/aa/)[0].quantity).to eq [nil, nil]
-    expect(RP.parse(/a?/)[0].quantity).to eq [0, 1]
-    expect(RP.parse(/a*/)[0].quantity).to eq [0, -1]
-    expect(RP.parse(/a+/)[0].quantity).to eq [1, -1]
-  end
-
-  specify('#repetitions') do
-    expect(RP.parse(/aa/)[0].repetitions).to eq 1..1
-    expect(RP.parse(/a?/)[0].repetitions).to eq 0..1
-    expect(RP.parse(/a*/)[0].repetitions).to eq 0..(Float::INFINITY)
-    expect(RP.parse(/a+/)[0].repetitions).to eq 1..(Float::INFINITY)
-  end
-
-  specify('#base_length') do
-    expect(RP.parse(/(aa)/)[0].base_length).to eq 4
-    expect(RP.parse(/(aa){42}/)[0].base_length).to eq 4
-  end
-
-  specify('#full_length') do
-    expect(RP.parse(/(aa)/)[0].full_length).to eq 4
-    expect(RP.parse(/(aa){42}/)[0].full_length).to eq 8
-  end
+  # test #base_length, #full_length
+  include_examples 'parse', /(aa)/,     [0] => [base_length: 4]
+  include_examples 'parse', /(aa)/,     [0] => [full_length: 4]
+  include_examples 'parse', /(aa){42}/, [0] => [base_length: 4]
+  include_examples 'parse', /(aa){42}/, [0] => [full_length: 8]
 end
