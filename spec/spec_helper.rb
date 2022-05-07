@@ -26,3 +26,10 @@ RSpec.configure do |config|
     expect { example.run }.not_to output.to_stderr
   end
 end
+
+def s(klass, text = nil, *children)
+  tok = Regexp::Token.new(nil, nil, text)
+  exp = klass.new(tok)
+  children.each { |child| exp.expressions << child }
+  exp
+end

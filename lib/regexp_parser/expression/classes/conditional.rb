@@ -55,13 +55,8 @@ module Regexp::Expression
         condition.reference
       end
 
-      def to_s(format = :full)
-        [text, condition, branches.join('|'),
-         terminator_text, quantifier_affix(format)].join
-      end
-
-      def terminator_text
-        ')'
+      def parts
+        [text.dup, condition, *intersperse(branches, '|'), ')']
       end
 
       def initialize_copy(orig)

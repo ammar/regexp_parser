@@ -17,24 +17,12 @@ module Regexp::Expression
       ::Regexp.new(to_s(format))
     end
 
-    def to_s(format = :full)
-      "#{text}#{quantifier_affix(format)}"
-    end
-
-    def quantifier_affix(expression_format)
-      quantifier.to_s if quantified? && expression_format != :base
-    end
-
     def quantify(*args)
       self.quantifier = Quantifier.new(*args)
     end
 
     def unquantified_clone
       clone.tap { |exp| exp.quantifier = nil }
-    end
-
-    def quantified?
-      !quantifier.nil?
     end
 
     # Deprecated. Prefer `#repetitions` which has a more uniform interface.
@@ -68,7 +56,7 @@ module Regexp::Expression
       quantified? and quantifier.possessive?
     end
 
-    def attributes
+    def to_h
       {
         type:              type,
         token:             token,
@@ -82,6 +70,6 @@ module Regexp::Expression
         quantifier:        quantified? ? quantifier.to_h : nil,
       }
     end
-    alias :to_h :attributes
+    alias :attributes :to_h
   end
 end

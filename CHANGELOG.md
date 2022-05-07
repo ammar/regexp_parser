@@ -16,6 +16,9 @@
 ### Added
 
 - added `Expression::Base#==` for (deep) comparison of expressions
+- added `Expression::Base#parts`
+  - returns the text elements and subexpressions of an expression
+  - e.g. `parse(/(a)/)[0].parts # => ["(", #<Literal @text="a"...>, ")"]`
 - made some `Expression::Base` methods available on `Quantifier` instances, too
   - `#type`, `#type?`, `#is?`, `#one_of?`, `#options`, `#terminal?`
   - `#base_length`, `#full_length`, `#starts_at`, `#te`, `#ts`, `#offset`

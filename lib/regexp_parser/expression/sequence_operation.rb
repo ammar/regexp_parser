@@ -18,8 +18,8 @@ module Regexp::Expression
       self.class::OPERAND.add_to(self, {}, active_opts)
     end
 
-    def to_s(format = :full)
-      sequences.map { |e| e.to_s(format) }.join(text)
+    def parts
+      intersperse(expressions, text.dup)
     end
   end
 end

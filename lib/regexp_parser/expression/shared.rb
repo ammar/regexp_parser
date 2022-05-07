@@ -43,6 +43,15 @@ module Regexp::Expression
       to_s.length
     end
 
+    def to_s(format = :full)
+      "#{parts.join}#{quantifier_affix(format)}"
+    end
+    alias :to_str :to_s
+
+    def parts
+      [text.dup]
+    end
+
     def quantifier_affix(expression_format)
       quantifier.to_s if quantified? && expression_format != :base
     end
@@ -63,11 +72,7 @@ module Regexp::Expression
       !respond_to?(:expressions)
     end
 
-    def terminator_text
-      nil
-    end
-
-    def nesting_level=(lvl = 0)
+    def nesting_level=(lvl)
       @nesting_level = lvl
       quantifier && quantifier.nesting_level = lvl
       terminal? || each { |subexp| subexp.nesting_level = lvl + 1 }

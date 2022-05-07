@@ -20,11 +20,6 @@ module Regexp::Expression
       self.token = token.to_s.sub(/_(greedy|possessive|reluctant)/, '').to_sym
     end
 
-    def to_s(_format = nil)
-      text.dup
-    end
-    alias :to_str :to_s
-
     def to_h
       {
         token: token,

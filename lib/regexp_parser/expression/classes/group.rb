@@ -1,15 +1,13 @@
 module Regexp::Expression
   module Group
     class Base < Regexp::Expression::Subexpression
-      def to_s(format = :full)
-        [text, *expressions, terminator_text, quantifier_affix(format)].join
+      def parts
+        [text.dup, *expressions, ')']
       end
 
       def capturing?; false end
 
       def comment?; false end
-
-      def terminator_text; ')' end
     end
 
     class Passive < Group::Base
@@ -20,9 +18,9 @@ module Regexp::Expression
         super
       end
 
-      def to_s(format = :full)
+      def parts
         if implicit?
-          "#{expressions.join}#{quantifier_affix(format)}"
+          expressions
         else
           super
         end
@@ -67,13 +65,11 @@ module Regexp::Expression
     end
 
     class Comment < Group::Base
-      def to_s(_format = :full)
-        text.dup
+      def parts
+        [text.dup]
       end
 
       def comment?; true end
-
-      def terminator_text; nil; end # ')' is included in scanned #text
     end
   end
 

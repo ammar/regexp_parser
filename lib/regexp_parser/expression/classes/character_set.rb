@@ -20,13 +20,8 @@ module Regexp::Expression
       self.closed = true
     end
 
-    def to_s(format = :full)
-      [text, (negated? ? '^' : ''), *expressions,
-       terminator_text, quantifier_affix(format)].join
-    end
-
-    def terminator_text
-      ']'
+    def parts
+      ["#{text}#{'^' if negated?}", *expressions, ']']
     end
   end
 end # module Regexp::Expression

@@ -42,16 +42,21 @@ module Regexp::Expression
       ts + to_s.length
     end
 
-    def to_s(format = :full)
-      # Note: the format does not get passed down to subexpressions.
-      "#{expressions.join}#{quantifier_affix(format)}"
+    def parts
+      expressions
     end
 
     def to_h
-      attributes.merge({
+      attributes.merge(
         text:        to_s(:base),
         expressions: expressions.map(&:to_h)
-      })
+      )
+    end
+
+    private
+
+    def intersperse(expressions, separator)
+      expressions.flat_map { |exp| [exp, separator] }.slice(0...-1)
     end
   end
 end

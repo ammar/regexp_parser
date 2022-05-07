@@ -16,8 +16,8 @@ module Regexp::Expression
         count == 2
       end
 
-      def to_s(_format = :full)
-        expressions.join(text)
+      def parts
+        intersperse(expressions, text.dup)
       end
     end
   end
