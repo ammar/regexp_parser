@@ -6,7 +6,7 @@ AllCops:
   RubyInterpreters:
     - ruby
     - rake
-  TargetRubyVersion: 2.5 # really 2.0, but 2.5 is lowest supported by rubocop
+  TargetRubyVersion: 2.6 # really 2.0, but 2.6 is lowest supported by rubocop
 
 # ignore weird looking regexps in specs, we have these on purpose
 Lint/DuplicateRegexpCharacterClassElement:
