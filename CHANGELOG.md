@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [2.4.0] - 2022-05-09 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Fixed
 
 - fixed interpretation of `+` and `?` after interval quantifiers (`{n,n}`)
@@ -19,14 +21,15 @@
 - added `Expression::Base#parts`
   - returns the text elements and subexpressions of an expression
   - e.g. `parse(/(a)/)[0].parts # => ["(", #<Literal @text="a"...>, ")"]`
+- added `Expression::Base#te` (a.k.a. token end index)
+  - `Expression::Subexpression` always had `#te`, only terminal nodes lacked it so far
 - made some `Expression::Base` methods available on `Quantifier` instances, too
   - `#type`, `#type?`, `#is?`, `#one_of?`, `#options`, `#terminal?`
   - `#base_length`, `#full_length`, `#starts_at`, `#te`, `#ts`, `#offset`
   - `#conditional_level`, `#level`, `#nesting_level` , `#set_level`
   - this allows a more unified handling with `Expression::Base` instances
-- added `Expression::Base#te` (a.k.a. token end index)
-  - `Expression::Subexpression` has `#te`, only terminal nodes lacked it so far
-- added a deprecation warning for initializing quantifiers with 4+ arguments:
+- allowed `Quantifier#initialize` to take a token and options Hash like other nodes
+- added a deprecation warning for initializing Quantifiers with 4+ arguments:
 
     Calling `Expression::Base#quantify` or `Quantifier.new` with 4+ arguments
     is deprecated.
