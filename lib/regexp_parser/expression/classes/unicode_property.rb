@@ -1,4 +1,5 @@
 module Regexp::Expression
+  # TODO: unify name with token :property, on way or the other, in v3.0.0
   module UnicodeProperty
     class Base < Regexp::Expression::Base
       def negative?
