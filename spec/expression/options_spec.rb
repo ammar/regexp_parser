@@ -56,7 +56,7 @@ RSpec.describe('Expression::Base#options') do
   end
 
   it 'is accessible via shortcuts' do
-    exp = Root.build
+    exp = Root.construct
 
     expect { exp.options[:i] = true }
       .to  change { exp.i? }.from(false).to(true)

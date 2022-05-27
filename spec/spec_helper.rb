@@ -28,8 +28,7 @@ RSpec.configure do |config|
 end
 
 def s(klass, text = nil, *children)
-  tok = Regexp::Token.new(nil, nil, text)
-  exp = klass.new(tok)
+  exp = klass.construct(text: text)
   children.each { |child| exp.expressions << child }
   exp
 end

@@ -7,30 +7,16 @@ module Regexp::Expression
   # branches, and CharacterSet::Intersection intersected sequences.
   class Sequence < Regexp::Expression::Subexpression
     class << self
-      def add_to(subexpression, params = {}, active_opts = {})
-        sequence = at_levels(
-          subexpression.level,
-          subexpression.set_level,
-          params[:conditional_level] || subexpression.conditional_level
+      def add_to(exp, params = {}, active_opts = {})
+        sequence = construct(
+          level:             exp.level,
+          set_level:         exp.set_level,
+          conditional_level: params[:conditional_level] || exp.conditional_level,
         )
-        sequence.nesting_level = subexpression.nesting_level + 1
+        sequence.nesting_level = exp.nesting_level + 1
         sequence.options = active_opts
-        subexpression.expressions << sequence
+        exp.expressions << sequence
         sequence
-      end
-
-      def at_levels(level, set_level, conditional_level)
-        token = Regexp::Token.new(
-          :expression,
-          :sequence,
-          '',
-          nil, # ts
-          nil, # te
-          level,
-          set_level,
-          conditional_level
-        )
-        new(token)
       end
     end
 

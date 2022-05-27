@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Added
+
+- `Regexp::Expression::Base.construct` and `.token_class` methods
+
 ## [2.4.0] - 2022-05-09 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed
@@ -36,9 +40,11 @@
 
     It will no longer be supported in regexp_parser v3.0.0.
 
-    Please pass a Regexp::Token instead, e.g. replace `type, text, min, max, mode`
-    with `::Regexp::Token.new(:quantifier, type, text)`. min, max, and mode
+    Please pass a Regexp::Token instead, e.g. replace `token, text, min, max, mode`
+    with `::Regexp::Token.new(:quantifier, token, text)`. min, max, and mode
     will be derived automatically.
+
+    Or do `exp.quantifier = Quantifier.construct(token: token, text: str)`.
 
     This is consistent with how Expression::Base instances are created.
 

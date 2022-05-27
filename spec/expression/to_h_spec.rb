@@ -9,9 +9,9 @@ RSpec.describe('Expression::Base#to_h') do
     length: 3,
     quantifier: nil,
     options: {},
-    level: nil,
-    set_level: nil,
-    conditional_level: nil,
+    level: 0,
+    set_level: 0,
+    conditional_level: 0,
     expressions: [
       {
         token: :literal,

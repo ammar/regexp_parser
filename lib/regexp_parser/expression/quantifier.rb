@@ -14,7 +14,7 @@ module Regexp::Expression
       deprecated_old_init(*args) and return if args.count == 4 || args.count == 5
 
       init_from_token_and_options(*args)
-      @mode = (token[/greedy|reluctant|possessive/] || :greedy).to_sym
+      @mode = (token.to_s[/greedy|reluctant|possessive/] || :greedy).to_sym
       @min, @max = minmax
       # TODO: remove in v3.0.0, stop removing parts of #token (?)
       self.token = token.to_s.sub(/_(greedy|possessive|reluctant)/, '').to_sym
@@ -44,10 +44,11 @@ module Regexp::Expression
     def deprecated_old_init(token, text, min, max, mode = :greedy)
       warn "Calling `Expression::Base#quantify` or `#{self.class}.new` with 4+ arguments "\
            "is deprecated.\nIt will no longer be supported in regexp_parser v3.0.0.\n"\
-           "Please pass a Regexp::Token instead, e.g. replace `type, text, min, max, mode` "\
-           "with `::Regexp::Token.new(:quantifier, type, text)`. min, max, and mode "\
-           "will be derived automatically. \nThis is consistent with how Expression::Base "\
-           "instances are created."
+           "Please pass a Regexp::Token instead, e.g. replace `token, text, min, max, mode` "\
+           "with `::Regexp::Token.new(:quantifier, token, text)`. min, max, and mode "\
+           "will be derived automatically.\n"\
+           "Or do `exp.quantifier = #{self.class}.construct(token: token, text: str)`.\n"\
+           "This is consistent with how Expression::Base instances are created. "
       @token = token
       @text  = text
       @min   = min

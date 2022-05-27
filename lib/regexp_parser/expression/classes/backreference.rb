@@ -1,4 +1,5 @@
 module Regexp::Expression
+  # TODO: unify name with token :backref, one way or the other, in v3.0.0
   module Backreference
     class Base < Regexp::Expression::Base
       attr_accessor :referenced_expression

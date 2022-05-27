@@ -447,11 +447,13 @@ Projects using regexp_parser.
 
 - [capybara](https://github.com/teamcapybara/capybara) is an integration testing tool that uses regexp_parser to convert Regexps to css/xpath selectors.
 
-- [js_regex](https://github.com/janosch-x/js_regex) converts Ruby regular expressions to JavaScript-compatible regular expressions.
+- [js_regex](https://github.com/jaynetics/js_regex) converts Ruby regular expressions to JavaScript-compatible regular expressions.
 
 - [meta_re](https://github.com/ammar/meta_re) is a regular expression preprocessor with alias support.
 
 - [mutant](https://github.com/mbj/mutant) manipulates your regular expressions (amongst others) to see if your tests cover their behavior.
+
+- [repper](https://github.com/jaynetics/repper) is a regular expression pretty-printer for Ruby.
 
 - [rubocop](https://github.com/rubocop-hq/rubocop) is a linter for Ruby that uses regexp_parser to lint Regexps.
 

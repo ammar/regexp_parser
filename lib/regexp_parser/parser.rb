@@ -23,7 +23,7 @@ class Regexp::Parser
   end
 
   def parse(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
-    root = Root.build(extract_options(input, options))
+    root = Root.construct(options: extract_options(input, options))
 
     self.root = root
     self.node = root
@@ -200,11 +200,11 @@ class Regexp::Parser
   end
 
   def captured_group_count_at_level
-    captured_group_counts[node.level]
+    captured_group_counts[node]
   end
 
   def count_captured_group
-    captured_group_counts[node.level] += 1
+    captured_group_counts[node] += 1
   end
 
   def close_group
@@ -475,17 +475,14 @@ class Regexp::Parser
     # description of the problem: https://github.com/ammar/regexp_parser/issues/3
     # rationale for this solution: https://github.com/ammar/regexp_parser/pull/69
     if target_node.quantified?
-      new_token = Regexp::Token.new(
-        :group,
-        :passive,
-        '', # text (none because this group is implicit)
-        target_node.ts,
-        nil, # te (unused)
-        target_node.level,
-        target_node.set_level,
-        target_node.conditional_level
+      new_group = Group::Passive.construct(
+        token:             :passive,
+        ts:                target_node.ts,
+        level:             target_node.level,
+        set_level:         target_node.set_level,
+        conditional_level: target_node.conditional_level,
+        options:           active_opts,
       )
-      new_group = Group::Passive.new(new_token, active_opts)
       new_group.implicit = true
       new_group << target_node
       increase_group_level(target_node)

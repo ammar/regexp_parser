@@ -156,6 +156,6 @@ RSpec.describe('Subexpression#traverse') do
 
     levels = root.flat_map(true) { |exp, _index| [exp.level, exp.to_s] }.compact
 
-    expect(levels).to eq [[nil, 'a(b(c(d)))'], [0, 'a'], [0, '(b(c(d)))'], [1, 'b'], [1, '(c(d))'], [2, 'c'], [2, '(d)'], [3, 'd']]
+    expect(levels).to eq [[0, 'a(b(c(d)))'], [0, 'a'], [0, '(b(c(d)))'], [1, 'b'], [1, '(c(d))'], [2, 'c'], [2, '(d)'], [3, 'd']]
   end
 end

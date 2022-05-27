@@ -24,6 +24,7 @@ require 'regexp_parser/expression/classes/posix_class'
 require 'regexp_parser/expression/classes/root'
 require 'regexp_parser/expression/classes/unicode_property'
 
+require 'regexp_parser/expression/methods/construct'
 require 'regexp_parser/expression/methods/match'
 require 'regexp_parser/expression/methods/match_length'
 require 'regexp_parser/expression/methods/options'

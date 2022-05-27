@@ -1,7 +1,11 @@
 module Regexp::Expression
   module Shared
+    module ClassMethods; end # filled in ./methods/*.rb
+
     def self.included(mod)
       mod.class_eval do
+        extend Shared::ClassMethods
+
         attr_accessor :type, :token, :text, :ts, :te,
                       :level, :set_level, :conditional_level,
                       :options, :quantifier

@@ -112,7 +112,7 @@ module Regexp::Expression
     end
 
     def inner_match_length
-      dummy = Regexp::Expression::Root.build
+      dummy = Regexp::Expression::Root.construct
       dummy.expressions = expressions.map(&:clone)
       dummy.quantifier = quantifier && quantifier.clone
       dummy.match_length
