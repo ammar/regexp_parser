@@ -39,7 +39,7 @@ module Regexp::Expression
     class NameCall           < Backreference::Name; end
     class NumberCallRelative < Backreference::NumberRelative; end
 
-    class NumberRecursionLevel < Backreference::Number
+    class NumberRecursionLevel < Backreference::NumberRelative
       attr_reader :recursion_level
 
       def initialize(token, options = {})

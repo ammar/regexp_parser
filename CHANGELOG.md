@@ -2,8 +2,14 @@
 
 ### Fixed
 
-- no longer allow quantification of option switches (e.g. `(?i)+`)
-  - it is a `SyntaxError` in Ruby, so could only be passed as a String
+- fixed `#referenced_expression` for `\g<0>` (was `nil`, is now the `Root` exp)
+- fixed `#reference`, `#referenced_expression` for recursion level backrefs
+  - e.g. `(a)(b)\k<-1+1>`
+  - `#referenced_expression` was `nil`, now it is the correct `Group` exp
+- detect and raise for two more syntax errors when parsing String input
+  - quantification of option switches (e.g. `(?i)+`)
+  - invalid references (e.g. `/\k<1>/`)
+  - these are a `SyntaxError` in Ruby, so could only be passed as a String
 
 ## [2.5.0] - 2022-05-27 - [Janosch Müller](mailto:janosch84@gmail.com)
 

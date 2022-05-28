@@ -1,82 +1,43 @@
 require 'spec_helper'
 
 RSpec.describe('Refcall parsing') do
-  include_examples 'parse', /(abc)\1/,
-    1 => [:backref, :number, Backreference::Number, number: 1]
+  include_examples 'parse', /(abc)\1/,        1 => [Backreference::Number, reference: 1]
 
-  include_examples 'parse', /(?<X>abc)\k<X>/,
-    1 => [:backref, :name_ref, Backreference::Name, name: 'X']
-  include_examples 'parse', /(?<X>abc)\k'X'/,
-    1 => [:backref, :name_ref, Backreference::Name, name: 'X']
-
-  include_examples 'parse', /(abc)\k<1>/,
-    1 => [:backref, :number_ref, Backreference::Number, number: 1]
-  include_examples 'parse', /(abc)\k'1'/,
-    1 => [:backref, :number_ref, Backreference::Number, number: 1]
-
-  include_examples 'parse', /(abc)\k<-1>/,
-    1 => [:backref, :number_rel_ref, Backreference::NumberRelative, number: -1]
-  include_examples 'parse', /(abc)\k'-1'/,
-    1 => [:backref, :number_rel_ref, Backreference::NumberRelative, number: -1]
-
-  include_examples 'parse', /(?<X>abc)\g<X>/,
-    1 => [:backref, :name_call, Backreference::NameCall, name: 'X']
-  include_examples 'parse', /(?<X>abc)\g'X'/,
-    1 => [:backref, :name_call, Backreference::NameCall, name: 'X']
-
-  include_examples 'parse', /(abc)\g<1>/,
-    1 => [:backref, :number_call, Backreference::NumberCall, number: 1]
-  include_examples 'parse', /(abc)\g'1'/,
-    1 => [:backref, :number_call, Backreference::NumberCall, number: 1]
-
-  include_examples 'parse', '\g<0>',
-    0 => [:backref, :number_call, Backreference::NumberCall, number: 0]
-  include_examples 'parse', "\\g'0'",
-    0 => [:backref, :number_call, Backreference::NumberCall, number: 0]
-
-  include_examples 'parse', /(abc)\g<-1>/,
-    1 => [:backref, :number_rel_call, Backreference::NumberCallRelative, number: -1]
-  include_examples 'parse', /(abc)\g'-1'/,
-    1 => [:backref, :number_rel_call, Backreference::NumberCallRelative, number: -1]
-
-  include_examples 'parse', /\g<+1>(abc)/,
-    0 => [:backref, :number_rel_call, Backreference::NumberCallRelative, number: 1]
-  include_examples 'parse', /\g'+1'(abc)/,
-    0 => [:backref, :number_rel_call, Backreference::NumberCallRelative, number: 1]
+  include_examples 'parse', /(?<X>abc)\k<X>/, 1 => [Backreference::Name, name: 'X', reference: 'X']
+  include_examples 'parse', /(?<X>abc)\k'X'/, 1 => [Backreference::Name, name: 'X', reference: 'X']
+  include_examples 'parse', /(abc)\k<1>/,     1 => [Backreference::Number, number: 1, reference: 1]
+  include_examples 'parse', /(abc)\k<-1>/,    1 => [Backreference::NumberRelative, number: -1, reference: 1]
+  include_examples 'parse', /(abc)\k'-1'/,    1 => [Backreference::NumberRelative, number: -1, reference: 1]
+  include_examples 'parse', /(?<X>abc)\g<X>/, 1 => [Backreference::NameCall, reference: 'X']
+  include_examples 'parse', /(abc)\g<1>/,     1 => [Backreference::NumberCall, reference: 1]
+  include_examples 'parse', '\g<0>',          0 => [Backreference::NumberCall, reference: 0]
+  include_examples 'parse', /(abc)\g<-1>/,    1 => [Backreference::NumberCallRelative, reference: 1]
+  include_examples 'parse', /\g<+1>(abc)/,    0 => [Backreference::NumberCallRelative, reference: 1]
 
   include_examples 'parse', /(?<X>abc)\k<X-0>/,
-    1 => [:backref, :name_recursion_ref,   Backreference::NameRecursionLevel,
-          name: 'X', recursion_level: 0]
-  include_examples 'parse', /(?<X>abc)\k'X-0'/,
-    1 => [:backref, :name_recursion_ref,   Backreference::NameRecursionLevel,
-          name: 'X', recursion_level: 0]
+    1 => [Backreference::NameRecursionLevel, name: 'X', recursion_level: 0]
 
   include_examples 'parse', /(abc)\k<1-0>/,
-    1 => [:backref, :number_recursion_ref, Backreference::NumberRecursionLevel,
-          number: 1, recursion_level: 0]
-  include_examples 'parse', /(abc)\k'1-0'/,
-    1 => [:backref, :number_recursion_ref, Backreference::NumberRecursionLevel,
-          number: 1, recursion_level: 0]
-  include_examples 'parse', /(abc)\k'-1+0'/,
-    1 => [:backref, :number_recursion_ref, Backreference::NumberRecursionLevel,
-          number: -1, recursion_level: 0]
-  include_examples 'parse', /(abc)\k'1+1'/,
-    1 => [:backref, :number_recursion_ref, Backreference::NumberRecursionLevel,
-          number: 1, recursion_level: 1]
-  include_examples 'parse', /(abc)\k'1-1'/,
-    1 => [:backref, :number_recursion_ref, Backreference::NumberRecursionLevel,
-          number: 1, recursion_level: -1]
+    1 => [Backreference::NumberRecursionLevel, number: 1, recursion_level: 0]
+  include_examples 'parse', /(abc)\k<1-0>/,
+    1 => [Backreference::NumberRecursionLevel, number: 1, recursion_level: 0]
+  include_examples 'parse', /(abc)\k<-1+0>/,
+    1 => [Backreference::NumberRecursionLevel, number: -1, recursion_level: 0]
+  include_examples 'parse', /(abc)\k<1+1>/,
+    1 => [Backreference::NumberRecursionLevel, number: 1, recursion_level: 1]
+  include_examples 'parse', /(abc)\k<1-1>/,
+    1 => [Backreference::NumberRecursionLevel, number: 1, recursion_level: -1]
 
-  # test #effective_number
+  # test #effective_number/#reference for complex cases
   include_examples 'parse', '(abc)(def)\k<-1>(ghi)\k<-3>\k<-1>',
-    2 => [:number_rel_ref, effective_number: 2],
-    4 => [:number_rel_ref, effective_number: 1],
-    5 => [:number_rel_ref, effective_number: 3]
+    2 => [:number_rel_ref, reference: 2],
+    4 => [:number_rel_ref, reference: 1],
+    5 => [:number_rel_ref, reference: 3]
 
   include_examples 'parse', '\g<+1>(abc)\g<+2>(def)(ghi)\g<-2>',
-    0 => [:number_rel_call, effective_number: 1],
-    2 => [:number_rel_call, effective_number: 3],
-    5 => [:number_rel_call, effective_number: 2]
+    0 => [:number_rel_call, reference: 1],
+    2 => [:number_rel_call, reference: 3],
+    5 => [:number_rel_call, reference: 2]
 
   specify('parse backref referenced_expression') do
     root = RP.parse('(abc)(def)\\k<-1>(ghi)\\k<-3>\\k<-1>')
@@ -107,5 +68,24 @@ RSpec.describe('Refcall parsing') do
     expect(exp2.referenced_expression.to_s).to eq '(ghi)'
     expect(exp3.referenced_expression).to eq root[3]
     expect(exp3.referenced_expression.to_s).to eq '(def)'
+  end
+
+  specify('parse backref call referenced_expression root') do
+    root = RP.parse('\g<0>')
+    expect(root[0].referenced_expression).to eq root
+  end
+
+  specify('parse invalid reference') do
+    expect { RP.parse('\1') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('(a)\2') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('\k<1>') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('\k<+1>') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('\k<+2>(a)') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('\k<-1>') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('(a)\k<-2>') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('\k<1+1>') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('\k<1-1>') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('\k<name>') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('(?<other>)\k<name>') }.to raise_error(/Invalid reference/)
   end
 end

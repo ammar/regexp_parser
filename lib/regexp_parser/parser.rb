@@ -235,7 +235,15 @@ class Regexp::Parser
     when :number, :number_ref
       node << Backreference::Number.new(token, active_opts)
     when :number_recursion_ref
-      node << Backreference::NumberRecursionLevel.new(token, active_opts)
+      node << Backreference::NumberRecursionLevel.new(token, active_opts).tap do |exp|
+        # TODO: should split off new token number_recursion_rel_ref and new
+        # class NumberRelativeRecursionLevel in v3.0.0 to get rid of this
+        if exp.text =~ /[<'][+-]/
+          assign_effective_number(exp)
+        else
+          exp.effective_number = exp.number
+        end
+      end
     when :number_call
       node << Backreference::NumberCall.new(token, active_opts)
     when :number_rel_ref
@@ -254,6 +262,8 @@ class Regexp::Parser
   def assign_effective_number(exp)
     exp.effective_number =
       exp.number + total_captured_group_count + (exp.number < 0 ? 1 : 0)
+    exp.effective_number > 0 ||
+      raise(ParserError, "Invalid reference: #{exp.reference}")
   end
 
   def conditional(token)
@@ -569,15 +579,17 @@ class Regexp::Parser
   # an instance of Backreference::Number, its #referenced_expression is set to
   # the instance of Group::Capture that it refers to via its number.
   def assign_referenced_expressions
-    targets = {}
     # find all referencable expressions
+    targets = { 0 => root }
     root.each_expression do |exp|
       exp.is_a?(Group::Capture) && targets[exp.identifier] = exp
     end
     # assign them to any refering expressions
     root.each_expression do |exp|
-      exp.respond_to?(:reference) &&
-        exp.referenced_expression = targets[exp.reference]
+      next unless exp.respond_to?(:reference)
+
+      exp.referenced_expression = targets[exp.reference] ||
+        raise(ParserError, "Invalid reference: #{exp.reference}")
     end
   end
 end # module Regexp::Parser
