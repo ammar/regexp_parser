@@ -1,8 +1,11 @@
 ## [Unreleased]
 
+## [2.5.0] - 2022-05-27 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Added
 
 - `Regexp::Expression::Base.construct` and `.token_class` methods
+  - see the [wiki](https://github.com/ammar/regexp_parser/wiki) for details
 
 ## [2.4.0] - 2022-05-09 - [Janosch Müller](mailto:janosch84@gmail.com)
 
