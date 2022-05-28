@@ -105,4 +105,11 @@ RSpec.describe('Group parsing') do
     expect(root.dig(2, 1).number_at_level).to eq 1
     expect(root.dig(2, 1, 0, 1, 0).number_at_level).to eq 1
   end
+
+  specify('parse invalid option switch quantification') do
+    expect { RP.parse('a(?i)+') }.to raise_error(/Can not quantify/)
+    expect { RP.parse('a(?i)*') }.to raise_error(/Can not quantify/)
+    expect { RP.parse('a(?i)?') }.to raise_error(/Can not quantify/)
+    expect { RP.parse('a(?i){5}') }.to raise_error(/Can not quantify/)
+  end
 end

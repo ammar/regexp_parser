@@ -33,12 +33,22 @@ module Regexp::Expression
 
     class Absence < Group::Base; end
     class Atomic  < Group::Base; end
+    # TODO: should split off OptionsSwitch in v3.0.0. Maybe even make it no
+    # longer inherit from Group because it is effectively a terminal expression.
     class Options < Group::Base
       attr_accessor :option_changes
 
       def initialize_copy(orig)
         self.option_changes = orig.option_changes.dup
         super
+      end
+
+      def quantify(*args)
+        if token == :options_switch
+          raise Regexp::Parser::Error, 'Can not quantify an option switch'
+        else
+          super
+        end
       end
     end
 

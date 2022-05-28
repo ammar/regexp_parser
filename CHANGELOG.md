@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Fixed
+
+- no longer allow quantification of option switches (e.g. `(?i)+`)
+  - it is a `SyntaxError` in Ruby, so could only be passed as a String
+
 ## [2.5.0] - 2022-05-27 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
