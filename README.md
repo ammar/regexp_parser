@@ -9,8 +9,8 @@ A Ruby gem for tokenizing, parsing, and transforming regular expressions.
 
 * Multilayered
   * A scanner/tokenizer based on [Ragel](http://www.colm.net/open-source/ragel/)
-  * A lexer that produces a "stream" of token objects.
-  * A parser that produces a "tree" of Expression objects (OO API)
+  * A lexer that produces a "stream" of [Token objects](https://github.com/ammar/regexp_parser/wiki/Token-Objects)
+  * A parser that produces a "tree" of [Expression objects (OO API)](https://github.com/ammar/regexp_parser/wiki/Expression-Objects)
 * Runs on Ruby 2.x, 3.x and JRuby runtimes
 * Recognizes Ruby 1.8, 1.9, 2.x and 3.x regular expressions [See Supported Syntax](#supported-syntax)
 
@@ -36,14 +36,15 @@ Or, add it to your project's `Gemfile`:
 
 ```gem 'regexp_parser', '~> X.Y.Z'```
 
-See rubygems for the the [latest version number](https://rubygems.org/gems/regexp_parser)
+See the badge at the top of this README or [rubygems](https://rubygems.org/gems/regexp_parser)
+for the the latest version number.
 
 
 ---
 ## Usage
 
 The three main modules are **Scanner**, **Lexer**, and **Parser**. Each of them
-provides a single method that takes a regular expression (as a RegExp object or
+provides a single method that takes a regular expression (as a Regexp object or
 a string) and returns its results. The **Lexer** and the **Parser** accept an
 optional second argument that specifies the syntax version, like 'ruby/2.0',
 which defaults to the host Ruby version (using RUBY_VERSION).
@@ -101,7 +102,7 @@ start/end offsets for each token found.
 ```ruby
 require 'regexp_parser'
 
-Regexp::Scanner.scan /(ab?(cd)*[e-h]+)/  do |type, token, text, ts, te|
+Regexp::Scanner.scan(/(ab?(cd)*[e-h]+)/) do |type, token, text, ts, te|
   puts "type: #{type}, token: #{token}, text: '#{text}' [#{ts}..#{te}]"
 end
 
@@ -124,7 +125,7 @@ A one-liner that uses map on the result of the scan to return the textual
 parts of the pattern:
 
 ```ruby
-Regexp::Scanner.scan( /(cat?([bhm]at)){3,5}/ ).map {|token| token[2]}
+Regexp::Scanner.scan(/(cat?([bhm]at)){3,5}/).map { |token| token[2] }
 #=> ["(", "cat", "?", "(", "[", "b", "h", "m", "]", "at", ")", ")", "{3,5}"]
 ```
 
@@ -220,7 +221,7 @@ syntax, and prints the token objects' text indented to their level.
 ```ruby
 require 'regexp_parser'
 
-Regexp::Lexer.lex /a?(b(c))*[d]+/, 'ruby/1.9' do |token|
+Regexp::Lexer.lex(/a?(b(c))*[d]+/, 'ruby/1.9') do |token|
   puts "#{'  ' * token.level}#{token.text}"
 end
 
@@ -246,7 +247,7 @@ how the sequence 'cat' is treated. The 't' is separated because it's followed
 by a quantifier that only applies to it.
 
 ```ruby
-Regexp::Lexer.scan( /(cat?([b]at)){3,5}/ ).map {|token| token.text}
+Regexp::Lexer.scan(/(cat?([b]at)){3,5}/).map { |token| token.text }
 #=> ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", ")", "{3,5}"]
 ```
 
@@ -274,7 +275,7 @@ require 'regexp_parser'
 
 regex = /a?(b+(c)d)*(?<name>[0-9]+)/
 
-tree = Regexp::Parser.parse( regex, 'ruby/2.1' )
+tree = Regexp::Parser.parse(regex, 'ruby/2.1')
 
 tree.traverse do |event, exp|
   puts "#{event}: #{exp.type} `#{exp.to_s}`"
@@ -355,7 +356,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&emsp;_Nest Level_              | `\k<n-1>`                                               | &#x2713; |
 | &emsp;&emsp;_Numbered_                | `\k<1>`                                                 | &#x2713; |
 | &emsp;&emsp;_Relative_                | `\k<-2>`                                                | &#x2713; |
-| &emsp;&emsp;_Traditional_             | `\1` thru `\9`                                          | &#x2713; |
+| &emsp;&emsp;_Traditional_             | `\1` through `\9`                                       | &#x2713; |
 | &emsp;&nbsp;_**Capturing**_           | `(abc)`                                                 | &#x2713; |
 | &emsp;&nbsp;_**Comments**_            | `(?# comment text)`                                     | &#x2713; |
 | &emsp;&nbsp;_**Named**_               | `(?<name>abc)`, `(?'name'abc)`                          | &#x2713; |
@@ -375,7 +376,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Meta** \[2\]_          | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
-| **Unicode Properties**                | _<sub>([Unicode 13.0.0](https://www.unicode.org/versions/Unicode13.0.0/))</sub>_ | &#x22f1; |
+| **Unicode Properties**                | _<sub>([Unicode 13.0.0])</sub>_                         | &#x22f1; |
 | &emsp;&nbsp;_**Age**_                 | `\p{Age=5.2}`, `\P{age=7.0}`, `\p{^age=8.0}`            | &#x2713; |
 | &emsp;&nbsp;_**Blocks**_              | `\p{InArmenian}`, `\P{InKhmer}`, `\p{^InThai}`          | &#x2713; |
 | &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`, `\p{^Alnum}`                  | &#x2713; |
@@ -384,13 +385,17 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`, `\p{^Greek}`              | &#x2713; |
 | &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`, `\p{^Hyphen}`               | &#x2713; |
 
-**\[1\]**: Ruby does not support lazy or possessive interval quantifiers. Any `+` or `?` that follows an interval
-quantifier will be treated as another, chained quantifier. See also [#3](https://github.com/ammar/regexp_parser/issue/3),
+[Unicode 13.0.0]: https://www.unicode.org/versions/Unicode13.0.0/
+
+**\[1\]**: Ruby does not support lazy or possessive interval quantifiers.
+Any `+` or `?` that follows an interval quantifier will be treated as another,
+chained quantifier. See also [#3](https://github.com/ammar/regexp_parser/issue/3),
 [#69](https://github.com/ammar/regexp_parser/pull/69).
 
-**\[2\]**: As of Ruby 3.1, meta and control sequences are [pre-processed to hex escapes when used in Regexp literals](
- https://github.com/ruby/ruby/commit/11ae581a4a7f5d5f5ec6378872eab8f25381b1b9 ), so they will only reach the
-scanner and will only be emitted if a String or a Regexp that has been built with the `::new` constructor is scanned.
+**\[2\]**: As of Ruby 3.1, meta and control sequences are [pre-processed to hex
+escapes when used in Regexp literals](https://github.com/ruby/ruby/commit/11ae581),
+so they will only reach the scanner and will only be emitted if a String or a Regexp
+that has been built with the `::new` constructor is scanned.
 
 ##### Inapplicable Features
 
@@ -407,25 +412,27 @@ expressions library (Onigmo). They are not supported by the scanner.
 
 See something missing? Please submit an [issue](https://github.com/ammar/regexp_parser/issues)
 
-_**Note**: Attempting to process expressions with unsupported syntax features can raise an error,
-or incorrectly return tokens/objects as literals._
+_**Note**: Attempting to process expressions with unsupported syntax features can raise
+an error, or incorrectly return tokens/objects as literals._
 
 
 ## Testing
 To run the tests simply run rake from the root directory.
 
-The default task generates the scanner's code from the Ragel source files and runs all the specs, thus it requires Ragel to be installed.
+The default task generates the scanner's code from the Ragel source files and runs
+all the specs, thus it requires Ragel to be installed.
 
-Note that changes to Ragel files will not be reflected when running `rspec` on its own, so to run individual tests you might want to run:
+Note that changes to Ragel files will not be reflected when running `rspec` on its own,
+so to run individual tests you might want to run:
 
 ```
 rake ragel:rb && rspec spec/scanner/properties_spec.rb
 ```
 
 ## Building
-Building the scanner and the gem requires [Ragel](http://www.colm.net/open-source/ragel/) to be
-installed. The build tasks will automatically invoke the 'ragel:rb' task to generate the
-Ruby scanner code.
+Building the scanner and the gem requires [Ragel](http://www.colm.net/open-source/ragel/)
+to be installed. The build tasks will automatically invoke the 'ragel:rb' task to generate
+the Ruby scanner code.
 
 
 The project uses the standard rubygems package tasks, so:
@@ -445,19 +452,26 @@ rake install
 ## Example Projects
 Projects using regexp_parser.
 
-- [capybara](https://github.com/teamcapybara/capybara) is an integration testing tool that uses regexp_parser to convert Regexps to css/xpath selectors.
+- [capybara](https://github.com/teamcapybara/capybara) is an integration testing tool
+that uses regexp_parser to convert Regexps to css/xpath selectors.
 
-- [js_regex](https://github.com/jaynetics/js_regex) converts Ruby regular expressions to JavaScript-compatible regular expressions.
+- [js_regex](https://github.com/jaynetics/js_regex) converts Ruby regular expressions
+to JavaScript-compatible regular expressions.
 
-- [meta_re](https://github.com/ammar/meta_re) is a regular expression preprocessor with alias support.
+- [meta_re](https://github.com/ammar/meta_re) is a regular expression preprocessor
+with alias support.
 
-- [mutant](https://github.com/mbj/mutant) manipulates your regular expressions (amongst others) to see if your tests cover their behavior.
+- [mutant](https://github.com/mbj/mutant) manipulates your regular expressions
+(amongst others) to see if your tests cover their behavior.
 
-- [repper](https://github.com/jaynetics/repper) is a regular expression pretty-printer for Ruby.
+- [repper](https://github.com/jaynetics/repper) is a regular expression
+pretty-printer and formatter for Ruby.
 
-- [rubocop](https://github.com/rubocop-hq/rubocop) is a linter for Ruby that uses regexp_parser to lint Regexps.
+- [rubocop](https://github.com/rubocop-hq/rubocop) is a linter for Ruby that
+uses regexp_parser to lint Regexps.
 
-- [twitter-cldr-rb](https://github.com/twitter/twitter-cldr-rb) is a localization helper that uses regexp_parser to generate examples of postal codes.
+- [twitter-cldr-rb](https://github.com/twitter/twitter-cldr-rb) is a localization helper
+that uses regexp_parser to generate examples of postal codes.
 
 
 ## References
