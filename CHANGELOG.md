@@ -1,51 +1,58 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [Unreleased]
 
 ### Fixed
 
 - fixed `#referenced_expression` for `\g<0>` (was `nil`, is now the `Root` exp)
 - fixed `#reference`, `#referenced_expression` for recursion level backrefs
-  - e.g. `(a)(b)\k<-1+1>`
-  - `#referenced_expression` was `nil`, now it is the correct `Group` exp
+  * e.g. `(a)(b)\k<-1+1>`
+  * `#referenced_expression` was `nil`, now it is the correct `Group` exp
 - detect and raise for two more syntax errors when parsing String input
-  - quantification of option switches (e.g. `(?i)+`)
-  - invalid references (e.g. `/\k<1>/`)
-  - these are a `SyntaxError` in Ruby, so could only be passed as a String
+  * quantification of option switches (e.g. `(?i)+`)
+  * invalid references (e.g. `/\k<1>/`)
+  * these are a `SyntaxError` in Ruby, so could only be passed as a String
 
 ## [2.5.0] - 2022-05-27 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
 
 - `Regexp::Expression::Base.construct` and `.token_class` methods
-  - see the [wiki](https://github.com/ammar/regexp_parser/wiki) for details
+  * see the [wiki](https://github.com/ammar/regexp_parser/wiki) for details
 
 ## [2.4.0] - 2022-05-09 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed
 
 - fixed interpretation of `+` and `?` after interval quantifiers (`{n,n}`)
-  - they used to be treated as reluctant or possessive mode indicators
-  - however, Ruby does not support these modes for interval quantifiers
-  - they are now treated as chained quantifiers instead, as Ruby does it
-  - c.f. [#3](https://github.com/ammar/regexp_parser/issues/3)
+  * they used to be treated as reluctant or possessive mode indicators
+  * however, Ruby does not support these modes for interval quantifiers
+  * they are now treated as chained quantifiers instead, as Ruby does it
+  * c.f. [#3](https://github.com/ammar/regexp_parser/issues/3)
 - fixed `Expression::Base#nesting_level` for some tree rewrite cases
-  - e.g. the alternatives in `/a|[b]/` had an inconsistent nesting_level
+  * e.g. the alternatives in `/a|[b]/` had an inconsistent nesting_level
 - fixed `Scanner` accepting invalid posix classes, e.g. `[[:foo:]]`
-  - they raise a `SyntaxError` when used in a Regexp, so could only be passed as String
-  - they now raise a `Regexp::Scanner::ValidationError` in the `Scanner`
+  * they raise a `SyntaxError` when used in a Regexp, so could only be passed as String
+  * they now raise a `Regexp::Scanner::ValidationError` in the `Scanner`
 
 ### Added
 
 - added `Expression::Base#==` for (deep) comparison of expressions
 - added `Expression::Base#parts`
-  - returns the text elements and subexpressions of an expression
-  - e.g. `parse(/(a)/)[0].parts # => ["(", #<Literal @text="a"...>, ")"]`
+  * returns the text elements and subexpressions of an expression
+  * e.g. `parse(/(a)/)[0].parts # => ["(", #<Literal @text="a"...>, ")"]`
 - added `Expression::Base#te` (a.k.a. token end index)
-  - `Expression::Subexpression` always had `#te`, only terminal nodes lacked it so far
+  * `Expression::Subexpression` always had `#te`, only terminal nodes lacked it so far
 - made some `Expression::Base` methods available on `Quantifier` instances, too
-  - `#type`, `#type?`, `#is?`, `#one_of?`, `#options`, `#terminal?`
-  - `#base_length`, `#full_length`, `#starts_at`, `#te`, `#ts`, `#offset`
-  - `#conditional_level`, `#level`, `#nesting_level` , `#set_level`
-  - this allows a more unified handling with `Expression::Base` instances
+  * `#type`, `#type?`, `#is?`, `#one_of?`, `#options`, `#terminal?`
+  * `#base_length`, `#full_length`, `#starts_at`, `#te`, `#ts`, `#offset`
+  * `#conditional_level`, `#level`, `#nesting_level` , `#set_level`
+  * this allows a more unified handling with `Expression::Base` instances
 - allowed `Quantifier#initialize` to take a token and options Hash like other nodes
 - added a deprecation warning for initializing Quantifiers with 4+ arguments:
 
@@ -68,18 +75,18 @@
 ### Fixed
 
 - removed five inexistent unicode properties from `Syntax#features`
-  - these were never supported by Ruby or the `Regexp::Scanner`
-  - thanks to [Markus Schirp](https://github.com/mbj) for the report
+  * these were never supported by Ruby or the `Regexp::Scanner`
+  * thanks to [Markus Schirp](https://github.com/mbj) for the report
 
 ## [2.3.0] - 2022-04-08 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
 
 - improved parsing performance through `Syntax` refactoring
-  - instead of fresh `Syntax` instances, pre-loaded constants are now re-used
-  - this approximately doubles the parsing speed for simple regexps
+  * instead of fresh `Syntax` instances, pre-loaded constants are now re-used
+  * this approximately doubles the parsing speed for simple regexps
 - added methods to `Syntax` classes to show relative feature sets
-  - e.g. `Regexp::Syntax::V3_2_0.added_features`
+  * e.g. `Regexp::Syntax::V3_2_0.added_features`
 - support for new unicode properties of Ruby 3.2 / Unicode 14.0
 
 ## [2.2.1] - 2022-02-11 - [Janosch Müller](mailto:janosch84@gmail.com)
@@ -87,14 +94,14 @@
 ### Fixed
 
 - fixed Syntax version of absence groups (`(?~...)`)
-  - the lexer accepted them for any Ruby version
-  - now they are only recognized for Ruby >= 2.4.1 in which they were introduced
+  * the lexer accepted them for any Ruby version
+  * now they are only recognized for Ruby >= 2.4.1 in which they were introduced
 - reduced gem size by excluding specs from package
 - removed deprecated `test_files` gemspec setting
 - no longer depend on `yaml`/`psych` (except for Ruby <= 2.4)
 - no longer depend on `set`
-  - `set` was removed from the stdlib and made a standalone gem as of Ruby 3
-  - this made it a hidden/undeclared dependency of `regexp_parser`
+  * `set` was removed from the stdlib and made a standalone gem as of Ruby 3
+  * this made it a hidden/undeclared dependency of `regexp_parser`
 
 ## [2.2.0] - 2021-12-04 - [Janosch Müller](mailto:janosch84@gmail.com)
 
@@ -332,8 +339,8 @@
 
 - Fixed missing quantifier in `Conditional::Expression` methods `#to_s`, `#to_re`
 - `Conditional::Condition` no longer lives outside the recursive `#expressions` tree
-  - it used to be the only expression stored in a custom ivar, complicating traversal
-  - its setter and getter (`#condition=`, `#condition`) still work as before
+  * it used to be the only expression stored in a custom ivar, complicating traversal
+  * its setter and getter (`#condition=`, `#condition`) still work as before
 
 ## [1.1.0] - 2018-09-17 - [Janosch Müller](mailto:janosch84@gmail.com)
 
@@ -341,8 +348,8 @@
 
 - Added `Quantifier` methods `#greedy?`, `#possessive?`, `#reluctant?`/`#lazy?`
 - Added `Group::Options#option_changes`
-  - shows the options enabled or disabled by the given options group
-  - as with all other expressions, `#options` shows the overall active options
+  * shows the options enabled or disabled by the given options group
+  * as with all other expressions, `#options` shows the overall active options
 - Added `Conditional#reference` and `Condition#reference`, indicating the determinative group
 - Added `Subexpression#dig`, acts like [`Array#dig`](http://ruby-doc.org/core-2.5.0/Array.html#method-i-dig)
 
@@ -526,7 +533,6 @@ This release includes several breaking changes, mostly to character sets, #map a
   * Fixed scanning of zero length comments (PR #12)
   * Fixed missing escape:codepoint_list syntax token (PR #14)
   * Fixed to_s for modified interval quantifiers (PR #17)
-- Added a note about MRI implementation quirks to Scanner section
 
 ## [0.3.2] - 2016-01-01 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
@@ -552,7 +558,6 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Renamed Lexer's method to lex, added an alias to the old name (scan)
 - Use #map instead of #each to run the block in Lexer.lex.
 - Replaced VERSION.yml file with a constant.
-- Updated README
 - Update tokens and scanner with new additions in Unicode 7.0.
 
 ## [0.1.6] - 2014-10-06 - [Ammar Ali](mailto:ammarabuali@gmail.com)
@@ -562,20 +567,11 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Added syntax files for missing ruby 2.x versions. These do not add
   extra syntax support, they just make the gem work with the newer
   ruby versions.
-- Added .travis.yml to project root.
-- README:
-  - Removed note purporting runtime support for ruby 1.8.6.
-  - Added a section identifying the main unsupported syntax features.
-  - Added sections for Testing and Building
-  - Added badges for gem version, Travis CI, and code climate.
-- Updated README, fixing broken examples, and converting it from a rdoc file to Github's flavor of Markdown.
 - Fixed a parser bug where an alternation sequence that contained nested expressions was incorrectly being appended to the parent expression when the nesting was exited. e.g. in /a|(b)c/, c was appended to the root.
-
 - Fixed a bug where character types were not being correctly scanned within character sets. e.g. in [\d], two tokens were scanned; one for the backslash '\' and one for the 'd'
 
 ## [0.1.5] - 2014-01-14 - [Ammar Ali](mailto:ammarabuali@gmail.com)
 
-- Correct ChangeLog.
 - Added syntax stubs for ruby versions 2.0 and 2.1
 - Added clone methods for deep copying expressions.
 - Added optional format argument for to_s on expressions to return the text of the expression with (:full, the default) or without (:base) its quantifier.
@@ -584,7 +580,6 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Improved EOF handling in general and especially from sequences like hex and control escapes.
 - Fixed a bug where named groups with an empty name would return a blank token [].
 - Fixed a bug where member of a parent set where being added to its last subset.
-- Various code cleanups in scanner.rl
 - Fixed a few mutable string bugs by calling dup on the originals.
 - Made ruby 1.8.6 the base for all 1.8 syntax, and the 1.8 name a pointer to the latest (1.8.7 at this time)
 - Removed look-behind assertions (positive and negative) from 1.8 syntax
