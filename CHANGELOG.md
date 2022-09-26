@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Regexp::Expression::Base#human_name`
+  * returns a nice, human-readable description of the expression
 - `Regexp::Expression::Base#optional?`
   * returns `true` if the expression is quantified accordingly (e.g. with `*`, `{,n}`)
 - added a deprecation warning when calling `#to_re` on set members
