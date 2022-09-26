@@ -64,6 +64,10 @@ module Regexp::Expression
       !quantifier.nil?
     end
 
+    def optional?
+      quantified? && quantifier.min == 0
+    end
+
     def offset
       [starts_at, full_length]
     end

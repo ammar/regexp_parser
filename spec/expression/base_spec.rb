@@ -63,6 +63,16 @@ RSpec.describe(Regexp::Expression::Base) do
   include_examples 'parse', /a*/, [0] => [repetitions: 0..(Float::INFINITY)]
   include_examples 'parse', /a+/, [0] => [repetitions: 1..(Float::INFINITY)]
 
+  # test #optional?
+  include_examples 'parse', /a?/,     [0] => [optional?: true]
+  include_examples 'parse', /a*/,     [0] => [optional?: true]
+  include_examples 'parse', /a{,5}/,  [0] => [optional?: true]
+  include_examples 'parse', /a{0,5}/, [0] => [optional?: true]
+  include_examples 'parse', /a/,      [0] => [optional?: false]
+  include_examples 'parse', /a+/,     [0] => [optional?: false]
+  include_examples 'parse', /a{1}/,   [0] => [optional?: false]
+  include_examples 'parse', /a{1,5}/, [0] => [optional?: false]
+
   # test #base_length, #full_length
   include_examples 'parse', /(aa)/,     [0] => [base_length: 4]
   include_examples 'parse', /(aa)/,     [0] => [full_length: 4]
