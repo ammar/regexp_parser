@@ -14,6 +14,10 @@ module Regexp::Expression
     end
 
     def to_re(format = :full)
+      if set_level > 0
+        warn "Calling #to_re on character set members is deprecated - "\
+             "their behavior might not be equivalent outside of the set."
+      end
       ::Regexp.new(to_s(format))
     end
 

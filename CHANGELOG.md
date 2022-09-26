@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Regexp::Expression::Base#optional?`
   * returns `true` if the expression is quantified accordingly (e.g. with `*`, `{,n}`)
+- added a deprecation warning when calling `#to_re` on set members
 
 ## [2.5.0] - 2022-05-27 - [Janosch Müller](mailto:janosch84@gmail.com)
 

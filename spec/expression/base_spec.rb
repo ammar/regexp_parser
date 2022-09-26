@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe(Regexp::Expression::Base) do
-  # test #to_re
-  include_examples 'parse', '^a*(b([cde]+))+f?$',
-    [] => [Root, to_re: /^a*(b([cde]+))+f?$/]
-
   # test #level
   include_examples 'parse', /^a(b(c(d)))e$/,
     [0]          => [to_s: '^',         level: 0],
@@ -78,4 +74,15 @@ RSpec.describe(Regexp::Expression::Base) do
   include_examples 'parse', /(aa)/,     [0] => [full_length: 4]
   include_examples 'parse', /(aa){42}/, [0] => [base_length: 4]
   include_examples 'parse', /(aa){42}/, [0] => [full_length: 8]
+
+  # test #to_re
+  include_examples 'parse', '^a*(b([cde]+))+f?$',
+    [] => [Root, to_re: /^a*(b([cde]+))+f?$/]
+
+  specify '#to_re warns when used on set members' do
+    expect do
+      result = Regexp::Parser.parse(/[\b]/)[0][0].to_re
+      expect(result).to eq /\b/
+    end.to output(/set member/).to_stderr
+  end
 end
