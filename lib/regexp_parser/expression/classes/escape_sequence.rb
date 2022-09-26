@@ -1,5 +1,5 @@
 module Regexp::Expression
-  # TODO: unify naming with Token::Escape, on way or the other, in v3.0.0
+  # TODO: unify naming with Token::Escape, one way or the other, in v3.0.0
   module EscapeSequence
     class Base < Regexp::Expression::Base
       def codepoint
