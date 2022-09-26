@@ -82,7 +82,7 @@ RSpec.describe(Regexp::Expression::Base) do
   specify '#to_re warns when used on set members' do
     expect do
       result = Regexp::Parser.parse(/[\b]/)[0][0].to_re
-      expect(result).to eq /\b/
+      expect(result).to eq(/\b/)
     end.to output(/set member/).to_stderr
   end
 
