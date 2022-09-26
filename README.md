@@ -80,7 +80,7 @@ All three methods accept either a `Regexp` or `String` (containing the pattern)
 require 'regexp_parser'
 
 Regexp::Parser.parse(
-  "a+ # Recognises a and A...",
+  "a+ # Recognizes a and A...",
   options: ::Regexp::EXTENDED | ::Regexp::IGNORECASE
 )
 ```
