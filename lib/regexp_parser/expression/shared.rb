@@ -8,9 +8,9 @@ module Regexp::Expression
 
         attr_accessor :type, :token, :text, :ts, :te,
                       :level, :set_level, :conditional_level,
-                      :options, :quantifier
+                      :options
 
-        attr_reader   :nesting_level
+        attr_reader   :nesting_level, :quantifier
       end
     end
 
@@ -84,6 +84,11 @@ module Regexp::Expression
       @nesting_level = lvl
       quantifier && quantifier.nesting_level = lvl
       terminal? || each { |subexp| subexp.nesting_level = lvl + 1 }
+    end
+
+    def quantifier=(qtf)
+      @quantifier = qtf
+      @repetitions = nil # clear memoized value
     end
   end
 end

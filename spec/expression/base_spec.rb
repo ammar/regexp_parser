@@ -85,4 +85,11 @@ RSpec.describe(Regexp::Expression::Base) do
       expect(result).to eq /\b/
     end.to output(/set member/).to_stderr
   end
+
+  specify 'updating #quantifier updates #repetitions' do
+    exp = Regexp::Parser.parse(/a{3}/)[0]
+    expect(exp.repetitions).to eq 3..3
+    exp.quantifier = Regexp::Parser.parse(/b{5}/)[0].quantifier
+    expect(exp.repetitions).to eq 5..5
+  end
 end

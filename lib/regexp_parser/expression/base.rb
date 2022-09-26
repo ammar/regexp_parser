@@ -36,15 +36,19 @@ module Regexp::Expression
     end
 
     def repetitions
-      return 1..1 unless quantified?
-      min = quantifier.min
-      max = quantifier.max < 0 ? Float::INFINITY : quantifier.max
-      range = min..max
-      # fix Range#minmax on old Rubies - https://bugs.ruby-lang.org/issues/15807
-      if RUBY_VERSION.to_f < 2.7
-        range.define_singleton_method(:minmax) { [min, max] }
-      end
-      range
+      @repetitions ||=
+        if quantified?
+          min = quantifier.min
+          max = quantifier.max < 0 ? Float::INFINITY : quantifier.max
+          range = min..max
+          # fix Range#minmax on old Rubies - https://bugs.ruby-lang.org/issues/15807
+          if RUBY_VERSION.to_f < 2.7
+            range.define_singleton_method(:minmax) { [min, max] }
+          end
+          range
+        else
+          1..1
+        end
     end
 
     def greedy?
