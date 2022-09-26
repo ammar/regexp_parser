@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2022-09-26 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Fixed
 
 - fixed `#referenced_expression` for `\g<0>` (was `nil`, is now the `Root` exp)
