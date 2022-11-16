@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2022-11-16 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Fixed
 
 - fixed scanning of two negative lookbehind edge cases
