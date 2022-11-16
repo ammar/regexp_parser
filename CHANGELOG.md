@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- fixed scanning of two negative lookbehind edge cases
+  * `(?<!x)y>` used to raise a ScannerError
+  * `(?<!x>)y` used to be misinterpreted as a named group
+  * thanks to [Sergio Medina](https://github.com/serch) for the report
+
 ## [2.6.0] - 2022-09-26 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed

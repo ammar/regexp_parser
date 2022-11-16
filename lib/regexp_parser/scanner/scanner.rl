@@ -90,8 +90,8 @@
   group_options         = '?' . ( [^!#'():<=>~]+ . ':'? ) ?;
 
   group_ref             = [gk];
-  group_name_id_ab      = ([^0-9\->] | utf8_multibyte) . ([^>] | utf8_multibyte)*;
-  group_name_id_sq      = ([^0-9\-'] | utf8_multibyte) . ([^'] | utf8_multibyte)*;
+  group_name_id_ab      = ([^!0-9\->] | utf8_multibyte) . ([^>] | utf8_multibyte)*;
+  group_name_id_sq      = ([^0-9\-']  | utf8_multibyte) . ([^'] | utf8_multibyte)*;
   group_number          = '-'? . [1-9] . [0-9]*;
   group_level           = [+\-] . [0-9]+;
 
