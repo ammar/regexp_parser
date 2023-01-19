@@ -63,7 +63,7 @@ class Regexp::MatchLength
   end
 
   def to_re
-    "(?:#{reify.call}){#{min_rep},#{max_rep unless max_rep == Float::INFINITY}}"
+    /(?:#{reify.call}){#{min_rep},#{max_rep unless max_rep == Float::INFINITY}}/
   end
 
   private
