@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- fixed `SystemStackError` when cloning recursive subexpression calls
+  * e.g. `Regexp::Parser.parse(/a|b\g<0>/).dup`
+
 ## [2.6.1] - 2022-11-16 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed

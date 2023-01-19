@@ -105,6 +105,31 @@ RSpec.describe('Expression::Base#clone') do
     expect { root_1.clone }.not_to(change { root_1.referenced_expression.object_id })
   end
 
+  specify('Backreference::Base#clone works for recursive subexp calls') do
+    root = RP.parse('a|b\g<0>')
+    copy = root.clone
+
+    expect(copy.to_s).to eq root.to_s
+
+    root_call = root.dig(0, 1, 1)
+    copy_call = copy.dig(0, 1, 1)
+
+    expect(root).to eq copy
+    expect(root.object_id).not_to eq copy.object_id
+
+    expect(root_call).to eq copy_call
+    expect(root_call.object_id).not_to eq copy_call.object_id
+
+    expect(root_call.referenced_expression).not_to be_nil
+    expect(root_call.referenced_expression.object_id).to eq root.object_id
+
+    expect(copy_call.referenced_expression).not_to be_nil
+
+    # Mapping the reference to the cloned referenced_expression would
+    # probably require a context or 2-way bindings in the tree. Maybe later ...
+    # expect(copy_call.referenced_expression.object_id).to eq copy.object_id
+  end
+
   specify('Sequence#clone') do
     root = RP.parse(/(a|b)/)
     copy = root.clone

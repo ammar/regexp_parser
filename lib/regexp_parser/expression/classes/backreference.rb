@@ -5,7 +5,19 @@ module Regexp::Expression
       attr_accessor :referenced_expression
 
       def initialize_copy(orig)
-        self.referenced_expression = orig.referenced_expression.dup
+        exp_id = [self.class, self.starts_at]
+
+        # prevent infinite recursion for recursive subexp calls
+        copied = @@copied ||= {}
+        self.referenced_expression =
+          if copied[exp_id]
+            orig.referenced_expression
+          else
+            copied[exp_id] = true
+            orig.referenced_expression.dup
+          end
+        copied.clear
+
         super
       end
     end
