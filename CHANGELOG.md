@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.2] - 2023-01-19 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Fixed
 
 - fixed `SystemStackError` when cloning recursive subexpression calls
