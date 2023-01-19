@@ -76,7 +76,7 @@ class Regexp::MatchLength
     end
   else
     def test_regexp
-      @test_regexp ||= /^#{to_re}$/.tap { |r| def r.match?(s); !!r.match(s) end }
+      @test_regexp ||= /^#{to_re}$/.tap { |r| def r.match?(s); !!match(s) end }
     end
   end
 end
