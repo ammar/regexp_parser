@@ -70,9 +70,13 @@ class Regexp::MatchLength
 
   attr_accessor :base_min, :base_max, :min_rep, :max_rep, :exp_class, :reify
 
-  def test_regexp
-    @test_regexp ||= Regexp.new("^#{to_re}$").tap do |regexp|
-      regexp.respond_to?(:match?) || def regexp.match?(str); !!match(str) end
+  if Regexp.method_defined?(:match?) # ruby >= 2.4
+    def test_regexp
+      @test_regexp ||= /^#{to_re}$/
+    end
+  else
+    def test_regexp
+      @test_regexp ||= /^#{to_re}$/.tap { |r| def r.match?(s); !!r.match(s) end }
     end
   end
 end
