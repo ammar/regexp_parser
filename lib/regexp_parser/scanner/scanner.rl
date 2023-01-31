@@ -184,7 +184,7 @@
 
     '^' {
       text = copy(data, ts, te)
-      if tokens.last[1] == :open
+      if prev_token[1] == :open
         emit(:set, :negate, text)
       else
         emit(:literal, :literal, text)
@@ -194,7 +194,7 @@
     '-' {
       text = copy(data, ts, te)
       # ranges cant start with a subset or intersection/negation/range operator
-      if tokens.last[0] == :set
+      if prev_token[0] == :set
         emit(:literal, :literal, text)
       else
         emit(:set, :range, text)
@@ -717,11 +717,12 @@ class Regexp::Scanner
   #
   # This method may raise errors if a syntax error is encountered.
   # --------------------------------------------------------------------------
-  def self.scan(input_object, options: nil, &block)
-    new.scan(input_object, options: options, &block)
+  def self.scan(input_object, options: nil, collect_tokens: true, &block)
+    new.scan(input_object, options: options, collect_tokens: collect_tokens, &block)
   end
 
-  def scan(input_object, options: nil, &block)
+  def scan(input_object, options: nil, collect_tokens: true, &block)
+    self.collect_tokens = collect_tokens
     self.literal = nil
     stack = []
 
@@ -792,19 +793,28 @@ class Regexp::Scanner
     ts_char_pos = char_pos
     te_char_pos = char_pos + text.length
 
-    if block
-      block.call type, token, text, ts_char_pos, te_char_pos
-    end
+    tok = [type, token, text, ts_char_pos, te_char_pos]
 
-    tokens << [type, token, text, ts_char_pos, te_char_pos]
+    self.prev_token = tok
 
     self.char_pos = te_char_pos
+
+    if block
+      block.call type, token, text, ts_char_pos, te_char_pos
+      # TODO: in v3.0.0, remove `collect_tokens:` kwarg and only collect if no block given
+      tokens << tok if collect_tokens
+    elsif collect_tokens
+      tokens << tok
+    end
   end
 
   private
 
-  attr_accessor :tokens, :literal, :block, :free_spacing, :spacing_stack,
-                :group_depth, :set_depth, :conditional_stack, :char_pos
+  attr_accessor :block,
+                :collect_tokens, :tokens, :prev_token, :literal,
+                :free_spacing, :spacing_stack,
+                :group_depth, :set_depth, :conditional_stack,
+                :char_pos
 
   def free_spacing?(input_object, options)
     if options && !input_object.is_a?(String)

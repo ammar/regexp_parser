@@ -27,7 +27,7 @@ class Regexp::Lexer
     self.shift = 0
 
     last = nil
-    Regexp::Scanner.scan(input, options: options) do |type, token, text, ts, te|
+    Regexp::Scanner.scan(input, options: options, collect_tokens: false) do |type, token, text, ts, te|
       type, token = *syntax.normalize(type, token)
       syntax.check! type, token
 
