@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- improved performance of `Subexpression#each_expression`
+- improved `Regexp::Parser.parse` performance by about 20%
+
 ## [2.6.2] - 2023-01-19 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed

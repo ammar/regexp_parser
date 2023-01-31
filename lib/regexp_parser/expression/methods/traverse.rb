@@ -36,11 +36,14 @@ module Regexp::Expression
 
     # Iterates over the expressions of this expression as an array, passing
     # the expression and its index within its parent to the given block.
-    def each_expression(include_self = false)
+    def each_expression(include_self = false, &block)
       return enum_for(__method__, include_self) unless block_given?
 
-      traverse(include_self) do |event, exp, index|
-        yield(exp, index) unless event == :exit
+      block.call(self, 0) if include_self
+
+      each_with_index do |exp, index|
+        block.call(exp, index)
+        exp.each_expression(&block) unless exp.terminal?
       end
     end
 
