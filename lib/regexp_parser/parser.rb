@@ -35,7 +35,7 @@ class Regexp::Parser
 
     self.captured_group_counts = Hash.new(0)
 
-    Regexp::Lexer.scan(input, syntax, options: options) do |token|
+    Regexp::Lexer.scan(input, syntax, options: options, map: false) do |token|
       parse_token(token)
     end
 

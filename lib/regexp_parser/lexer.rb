@@ -13,11 +13,11 @@ class Regexp::Lexer
 
   CONDITION_TOKENS = %i[condition condition_close].freeze
 
-  def self.lex(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
+  def self.lex(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, map: true, &block)
     new.lex(input, syntax, options: options, &block)
   end
 
-  def lex(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
+  def lex(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, map: true, &block)
     syntax = Regexp::Syntax.for(syntax)
 
     self.tokens = []
@@ -54,7 +54,8 @@ class Regexp::Lexer
     end
 
     if block_given?
-      tokens.map { |t| block.call(t) }
+      # TODO: in v3.0.0, remove `map:` kwarg and use #each by default
+      map ? tokens.map(&block) : tokens.each(&block)
     else
       tokens
     end
