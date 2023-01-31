@@ -20,6 +20,10 @@ module Regexp::Expression
         self.referenced_expression = orig.referenced_expression.dup
         super
       end
+
+      def referential?
+        true
+      end
     end
 
     class Branch < Regexp::Expression::Sequence; end
@@ -53,6 +57,10 @@ module Regexp::Expression
 
       def reference
         condition.reference
+      end
+
+      def referential?
+        true
       end
 
       def parts

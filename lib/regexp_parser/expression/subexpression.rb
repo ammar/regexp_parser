@@ -53,6 +53,10 @@ module Regexp::Expression
       )
     end
 
+    def terminal?
+      false
+    end
+
     private
 
     def intersperse(expressions, separator)

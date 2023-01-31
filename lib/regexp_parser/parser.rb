@@ -579,15 +579,16 @@ class Regexp::Parser
   # an instance of Backreference::Number, its #referenced_expression is set to
   # the instance of Group::Capture that it refers to via its number.
   def assign_referenced_expressions
-    # find all referencable expressions
+    # find all referencable and refering expressions
     targets = { 0 => root }
+    referrers = []
     root.each_expression do |exp|
       exp.is_a?(Group::Capture) && targets[exp.identifier] = exp
+      referrers << exp if exp.referential?
     end
-    # assign them to any refering expressions
-    root.each_expression do |exp|
-      next unless exp.respond_to?(:reference)
-
+    # assign reference expression to refering expressions
+    # (in a second iteration because there might be forward references)
+    referrers.each do |exp|
       exp.referenced_expression = targets[exp.reference] ||
         raise(ParserError, "Invalid reference: #{exp.reference}")
     end

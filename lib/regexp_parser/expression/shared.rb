@@ -77,7 +77,11 @@ module Regexp::Expression
     end
 
     def terminal?
-      !respond_to?(:expressions)
+      true # overridden to be false in Expression::Subexpression
+    end
+
+    def referential?
+      false # overridden to be true e.g. in Expression::Backreference::Base
     end
 
     def nesting_level=(lvl)
