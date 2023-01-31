@@ -13,7 +13,6 @@ module Regexp::Expression
           set_level:         exp.set_level,
           conditional_level: params[:conditional_level] || exp.conditional_level,
         )
-        sequence.nesting_level = exp.nesting_level + 1
         sequence.options = active_opts
         exp.expressions << sequence
         sequence

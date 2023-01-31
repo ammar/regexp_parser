@@ -19,7 +19,6 @@ module Regexp::Expression
       if exp.is_a?(WhiteSpace) && last && last.is_a?(WhiteSpace)
         last.merge(exp)
       else
-        exp.nesting_level = nesting_level + 1
         expressions << exp
       end
     end
