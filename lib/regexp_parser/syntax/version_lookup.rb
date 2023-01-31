@@ -37,7 +37,6 @@ module Regexp::Syntax
     return Regexp::Syntax::Any if ['*', 'any'].include?(version.to_s)
 
     version =~ VERSION_REGEXP || raise(InvalidVersionNameError, version)
-    warn_if_future_version(version)
     version_const_name = "V#{version.to_s.scan(/\d+/).join('_')}"
     const_get(version_const_name) || raise(UnknownSyntaxNameError, version)
   end
@@ -62,12 +61,5 @@ module Regexp::Syntax
   def comparable(name)
     # add .99 to treat versions without a patch value as latest patch version
     Gem::Version.new((name.to_s.scan(/\d+/) << 99).join('.'))
-  end
-
-  def warn_if_future_version(const_name)
-    return if comparable(const_name) < comparable('4.0.0')
-
-    warn('This library has only been tested up to Ruby 3.x, '\
-         "but you are running with #{const_name}")
   end
 end

@@ -32,10 +32,6 @@ RSpec.describe(Regexp::Syntax) do
     it { expect(Regexp::Syntax.for('any')).to eq         Regexp::Syntax::Any }
     it { expect(Regexp::Syntax.for('*')).to eq           Regexp::Syntax::Any }
 
-    it 'warns for future versions' do
-      expect { Regexp::Syntax.for('ruby/5.0') }.to output(/This library .* but you are running .*/).to_stderr
-    end
-
     it 'raises for unknown names' do
       expect { Regexp::Syntax.for('ruby/1.0') }.to raise_error(Regexp::Syntax::UnknownSyntaxNameError)
     end
