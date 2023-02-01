@@ -18,11 +18,11 @@ class Regexp::Parser
     end
   end
 
-  def self.parse(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
+  def self.parse(input, syntax = nil, options: nil, &block)
     new.parse(input, syntax, options: options, &block)
   end
 
-  def parse(input, syntax = "ruby/#{RUBY_VERSION}", options: nil, &block)
+  def parse(input, syntax = nil, options: nil, &block)
     root = Root.construct(options: extract_options(input, options))
 
     self.root = root
@@ -35,7 +35,7 @@ class Regexp::Parser
 
     self.captured_group_counts = Hash.new(0)
 
-    Regexp::Lexer.scan(input, syntax, options: options, map: false) do |token|
+    Regexp::Lexer.scan(input, syntax, options: options, collect_tokens: false) do |token|
       parse_token(token)
     end
 
