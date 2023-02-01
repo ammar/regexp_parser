@@ -379,7 +379,7 @@ class Regexp::Parser
   end
 
   def sequence_operation(klass, token)
-    unless node.is_a?(klass)
+    unless node.instance_of?(klass)
       operator = klass.new(token, active_opts)
       sequence = operator.add_sequence(active_opts)
       sequence.expressions = node.expressions
@@ -541,7 +541,7 @@ class Regexp::Parser
 
   def range(token)
     exp = CharacterSet::Range.new(token, active_opts)
-    scope = node.last.is_a?(CharacterSet::IntersectedSequence) ? node.last : node
+    scope = node.last.instance_of?(CharacterSet::IntersectedSequence) ? node.last : node
     exp << scope.expressions.pop
     nest(exp)
   end
@@ -568,7 +568,7 @@ class Regexp::Parser
   end
 
   def close_completed_character_set_range
-    decrease_nesting if node.is_a?(CharacterSet::Range) && node.complete?
+    decrease_nesting if node.instance_of?(CharacterSet::Range) && node.complete?
   end
 
   def active_opts

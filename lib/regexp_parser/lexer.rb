@@ -20,7 +20,7 @@ class Regexp::Lexer
   def lex(input, syntax = nil, options: nil, collect_tokens: true, &block)
     syntax = syntax ? Regexp::Syntax.for(syntax) : Regexp::Syntax::CURRENT
 
-    self.block = block if block_given?
+    self.block = block
     self.collect_tokens = collect_tokens
     self.tokens = []
     self.prev_token = nil

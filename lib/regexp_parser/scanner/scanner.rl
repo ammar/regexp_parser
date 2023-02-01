@@ -730,11 +730,11 @@ class Regexp::Scanner
     self.free_spacing = free_spacing?(input_object, options)
     self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
 
-    data  = input.unpack("c*") if input.is_a?(String)
+    data  = input.unpack("c*")
     eof   = data.length
 
     self.tokens = []
-    self.block  = block_given? ? block : nil
+    self.block  = block
 
     self.set_depth = 0
     self.group_depth = 0
