@@ -39,8 +39,8 @@ class Regexp::Lexer
       if (last = prev_token) &&
          type == :quantifier &&
          (
-           last.type == :literal         && (parts = break_literal(last)) ||
-           last.token == :codepoint_list && (parts = break_codepoint_list(last))
+           (last.type == :literal         && (parts = break_literal(last))) ||
+           (last.token == :codepoint_list && (parts = break_codepoint_list(last)))
          )
         emit(parts[0])
         last = parts[1]
