@@ -723,7 +723,7 @@ class Regexp::Scanner
 
   def scan(input_object, options: nil, collect_tokens: true, &block)
     self.collect_tokens = collect_tokens
-    self.literal = nil
+    self.literal_run = nil
     stack = []
 
     input = input_object.is_a?(Regexp) ? input_object.source : input_object
@@ -759,7 +759,7 @@ class Regexp::Scanner
           "[#{set_depth}]") if in_set?
 
     # when the entire expression is a literal run
-    emit_literal if literal
+    emit_literal if literal_run
 
     tokens
   end
@@ -786,7 +786,7 @@ class Regexp::Scanner
   def emit(type, token, text)
     #puts "EMIT: type: #{type}, token: #{token}, text: #{text}, ts: #{ts}, te: #{te}"
 
-    emit_literal if literal
+    emit_literal if literal_run
 
     # Ragel runs with byte-based indices (ts, te). These are of little value to
     # end-users, so we keep track of char-based indices and emit those instead.
@@ -811,7 +811,7 @@ class Regexp::Scanner
   private
 
   attr_accessor :block,
-                :collect_tokens, :tokens, :prev_token, :literal,
+                :collect_tokens, :tokens, :prev_token, :literal_run,
                 :free_spacing, :spacing_stack,
                 :group_depth, :set_depth, :conditional_stack,
                 :char_pos
@@ -844,14 +844,13 @@ class Regexp::Scanner
   # Appends one or more characters to the literal buffer, to be emitted later
   # by a call to emit_literal.
   def append_literal(data, ts, te)
-    self.literal = literal || []
-    literal << copy(data, ts, te)
+    (self.literal_run ||= []) << copy(data, ts, te)
   end
 
   # Emits the literal run collected by calls to the append_literal method.
   def emit_literal
-    text = literal.join
-    self.literal = nil
+    text = literal_run.join
+    self.literal_run = nil
     emit(:literal, :literal, text)
   end
 
