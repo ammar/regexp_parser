@@ -59,9 +59,6 @@
   one_or_more           = '+' | '+?' | '++';
 
   quantifier_greedy     = '?'  | '*'  | '+';
-  quantifier_reluctant  = '??' | '*?' | '+?';
-  quantifier_possessive = '?+' | '*+' | '++';
-  quantifier_mode       = '?'  | '+';
 
   quantity_exact        = (digit+);
   quantity_minimum      = (digit+) . ',';
@@ -69,9 +66,6 @@
   quantity_range        = (digit+) . ',' . (digit+);
   quantifier_interval   = range_open . ( quantity_exact | quantity_minimum |
                           quantity_maximum | quantity_range ) . range_close;
-
-  quantifiers           = quantifier_greedy | quantifier_reluctant |
-                          quantifier_possessive | quantifier_interval;
 
   conditional           = '(?(';
 
