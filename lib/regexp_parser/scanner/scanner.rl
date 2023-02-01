@@ -168,8 +168,8 @@
     };
 
     '-]' @set_closed { # special case, emits two tokens
-      emit(:literal, :literal, copy(data, ts, te-1))
-      emit(:set, :close, copy(data, ts+1, te))
+      emit(:literal, :literal, '-')
+      emit(:set, :close, ']')
       if in_set?
         fret;
       else
@@ -183,28 +183,27 @@
     };
 
     '^' {
-      text = copy(data, ts, te)
       if prev_token[1] == :open
-        emit(:set, :negate, text)
+        emit(:set, :negate, '^')
       else
-        emit(:literal, :literal, text)
+        emit(:literal, :literal, '^')
       end
     };
 
     '-' {
-      text = copy(data, ts, te)
-      # ranges cant start with a subset or intersection/negation/range operator
+      # ranges cant start with the opening bracket, a subset, or
+      # intersection/negation/range operators
       if prev_token[0] == :set
-        emit(:literal, :literal, text)
+        emit(:literal, :literal, '-')
       else
-        emit(:set, :range, text)
+        emit(:set, :range, '-')
       end
     };
 
     # Unlike ranges, intersections can start or end at set boundaries, whereupon
     # they match nothing: r = /[a&&]/; [r =~ ?a, r =~ ?&] # => [nil, nil]
     '&&' {
-      emit(:set, :intersection, copy(data, ts, te))
+      emit(:set, :intersection, '&&')
     };
 
     backslash {
@@ -212,7 +211,7 @@
     };
 
     set_open >(open_bracket, 1) >set_opened {
-      emit(:set, :open, copy(data, ts, te))
+      emit(:set, :open, '[')
       fcall character_set;
     };
 
@@ -528,7 +527,7 @@
     group_close @group_closed {
       if conditional_stack.last == group_depth + 1
         conditional_stack.pop
-        emit(:conditional, :close, copy(data, ts, te))
+        emit(:conditional, :close, ')')
       else
         if spacing_stack.length > 1 &&
            spacing_stack.last[:depth] == group_depth + 1
@@ -536,7 +535,7 @@
           self.free_spacing = spacing_stack.last[:free_spacing]
         end
 
-        emit(:group, :close, copy(data, ts, te))
+        emit(:group, :close, ')')
       end
     };
 
