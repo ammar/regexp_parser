@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+### Added
 
+- `Regexp::Lexer.lex` now streams tokens when called with a block
+  - it can now take arbitrarily large input, just like `Regexp::Scanner`
+  - this also slightly improves `Regexp::Parser.parse` performance
+  - note: `Regexp::Parser.parse` still does not and will not support streaming
 - improved performance of `Subexpression#each_expression`
-- improved `Regexp::Parser.parse` performance by about 20%
+- minor improvements to `Regexp::Scanner` performance
+- overall improvement of parse performance: about 10% for large Regexps
 
 ## [2.6.2] - 2023-01-19 - [Janosch Müller](mailto:janosch84@gmail.com)
 
