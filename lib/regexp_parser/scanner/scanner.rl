@@ -801,10 +801,12 @@ class Regexp::Scanner
     end
   end
 
+  attr_accessor :literal_run # only public for #||= to work on ruby <= 2.5
+
   private
 
   attr_accessor :block,
-                :collect_tokens, :tokens, :prev_token, :literal_run,
+                :collect_tokens, :tokens, :prev_token,
                 :free_spacing, :spacing_stack,
                 :group_depth, :set_depth, :conditional_stack,
                 :char_pos
