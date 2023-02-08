@@ -5,13 +5,4 @@ set -euo pipefail
 bundle
 
 # install ragel
-if [[ $(command -v ragel) == "" ]]; then
-  if [[ $(command -v brew) != "" ]]; then
-    brew install ragel
-  elif [[ $(command -v apt-get) != "" ]]; then
-    sudo apt-get install -y ragel
-  else
-    echo "could not install ragel, please do so manually"
-    exit 1
-  fi
-fi
+rake ragel:install
