@@ -29,6 +29,8 @@ namespace :ragel do
 
   desc 'Make sure that ragel is installed'
   task :install do
+    next if ENV['CI']
+
     if system('command -v ragel')
       # already installed
     elsif system('command -v brew')
