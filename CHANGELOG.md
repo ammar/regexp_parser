@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - minor improvements to `Regexp::Scanner` performance
 - overall improvement of parse performance: about 10% for large Regexps
 
+### Fixed
+
+- parsing of octal escape sequences in sets, e.g. `[\141]`
+  * thanks to [Randy Stauner](https://github.com/rwstauner) for the report
+
 ## [2.6.2] - 2023-01-19 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Fixed

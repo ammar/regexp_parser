@@ -126,7 +126,8 @@
                           keep_mark | sequence_char;
 
   # escapes that also work within a character set
-  set_escape            = backslash | brackets | escaped_ascii | property_char |
+  set_escape            = backslash | brackets | escaped_ascii |
+                          octal_sequence | property_char |
                           sequence_char | single_codepoint_char_type;
 
 
@@ -247,12 +248,22 @@
   # set escapes scanner
   # --------------------------------------------------------------------------
   set_escape_sequence := |*
+    # Special case: in sets, octal sequences have higher priority than backrefs
+    octal_sequence {
+      emit(:escape, :octal, copy(data, ts-1, te))
+      fret;
+    };
+
+    # Scan all other escapes that work in sets with the generic escape scanner
     set_escape > (escaped_set_alpha, 2) {
       fhold;
       fnext character_set;
       fcall escape_sequence;
     };
 
+    # Treat all remaining escapes - those not supported in sets - as literal.
+    # (This currently includes \^, \-, \&, \:, although these could potentially
+    # be meta chars when not escaped, depending on their position in the set.)
     any > (escaped_set_alpha, 1) {
       emit(:escape, :literal, copy(data, ts-1, te))
       fret;
