@@ -5,7 +5,11 @@ module Regexp::Expression
     end
   end
 
-  class Comment < Regexp::Expression::FreeSpace; end
+  class Comment < Regexp::Expression::FreeSpace
+    def comment?
+      true
+    end
+  end
 
   class WhiteSpace < Regexp::Expression::FreeSpace
     def merge(exp)

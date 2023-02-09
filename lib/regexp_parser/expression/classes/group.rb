@@ -4,10 +4,6 @@ module Regexp::Expression
       def parts
         [text.dup, *expressions, ')']
       end
-
-      def capturing?; false end
-
-      def comment?; false end
     end
 
     class Passive < Group::Base

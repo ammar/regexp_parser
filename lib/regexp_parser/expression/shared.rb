@@ -84,6 +84,14 @@ module Regexp::Expression
       false # overridden to be true e.g. in Expression::Backreference::Base
     end
 
+    def capturing?
+      false # overridden to be true in Expression::Group::Capture
+    end
+
+    def comment?
+      false # overridden to be true e.g. in Expression::Group::Comment
+    end
+
     def nesting_level=(lvl)
       @nesting_level = lvl
       quantifier && quantifier.nesting_level = lvl

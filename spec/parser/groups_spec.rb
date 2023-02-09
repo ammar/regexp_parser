@@ -10,9 +10,9 @@ RSpec.describe('Group parsing') do
     1 => [:assertion, :nlookbehind, Assertion::NegativeLookbehind]
 
   include_examples 'parse', /a(?# is for apple)b(?# for boy)c(?# cat)/,
-    1 => [:group, :comment, Group::Comment],
-    3 => [:group, :comment, Group::Comment],
-    5 => [:group, :comment, Group::Comment]
+    1 => [:group, :comment, Group::Comment, capturing?: false, comment?: true],
+    3 => [:group, :comment, Group::Comment, capturing?: false, comment?: true],
+    5 => [:group, :comment, Group::Comment, capturing?: false, comment?: true]
 
   if ruby_version_at_least('2.4.1')
     include_examples 'parse', 'a(?~b)c(?~d)e',
@@ -21,7 +21,7 @@ RSpec.describe('Group parsing') do
   end
 
   include_examples 'parse', /(?m:a)/,
-    0 => [:group, :options, Group::Options, options: { m: true }, option_changes: { m: true }]
+    0 => [:group, :options, Group::Options, capturing?: false, options: { m: true }, option_changes: { m: true }]
 
   # self-defeating group option
   include_examples 'parse', /(?m-m:a)/,
@@ -55,8 +55,8 @@ RSpec.describe('Group parsing') do
 
   # option switch in group
   include_examples 'parse', /(a(?i-m)b)c/m,
-    0      => [:group,   :capture,        Group::Capture, options: { m: true }],
-    [0, 0] => [:literal, :literal,        Literal,        text: 'a', options: { m: true }],
+    0      => [:group,   :capture,        Group::Capture, capturing?: true, options: { m: true }],
+    [0, 0] => [:literal, :literal,        Literal,        capturing?: false, text: 'a', options: { m: true }],
     [0, 1] => [:group,   :options_switch, Group::Options, options: { i: true }, option_changes: { i: true, m: false }],
     [0, 2] => [:literal, :literal,        Literal,        text: 'b', options: { i: true }],
     1      => [:literal, :literal,        Literal,        text: 'c', options: { m: true }]

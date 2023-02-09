@@ -24,12 +24,12 @@ RSpec.describe('FreeSpace parsing') do
       [c-g]  +  # A set
       (h|i|j)   # A group
     /x,
-    [1]  => [Literal, to_s: 'a?', quantified?: true],
-    [2]  => [WhiteSpace],
-    [3]  => [Comment, to_s: "# One letter\n"],
-    [7]  => [Comment, to_s: "# Another one\n"],
-    [11] => [Comment, to_s: "# A set\n"],
-    [15] => [Comment, to_s: "# A group\n"]
+    [1]  => [Literal, to_s: 'a?', quantified?: true, comment?: false],
+    [2]  => [WhiteSpace, comment?: false],
+    [3]  => [Comment, to_s: "# One letter\n", comment?: true],
+    [7]  => [Comment, to_s: "# Another one\n", comment?: true],
+    [11] => [Comment, to_s: "# A set\n", comment?: true],
+    [15] => [Comment, to_s: "# A group\n", comment?: true]
 
   include_examples 'parse', /
       a

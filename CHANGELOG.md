@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `Regexp::Expression::Shared#{capturing?,comment?}`
+  - previously only available on capturing and comment groups
+
 ## [2.7.0] - 2023-02-08 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
