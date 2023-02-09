@@ -10,16 +10,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `Regexp::Expression::Shared#{capturing?,comment?}`
-  - previously only available on capturing and comment groups
+  * previously only available on capturing and comment groups
+
+### Fixed
+
+- fixed nested comment groups breaking local x-options
+  * e.g. in `/(?x:(?#hello)) /`, the x-option wrongly applied to the whitespace
+- fixed nested comment groups breaking conditionals
+  * e.g. in `/(a)(?(1)b|c(?#hello)d)e/`, the 2nd conditional branch included "e"
+- fixed scanner accepting unmatched closing parentheses ')'
+  * these are a `SyntaxError` in Ruby, so could only be passed as a String
+  * they now raise a `Regexp::Scanner::ScannerError`
 
 ## [2.7.0] - 2023-02-08 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added
 
 - `Regexp::Lexer.lex` now streams tokens when called with a block
-  - it can now take arbitrarily large input, just like `Regexp::Scanner`
-  - this also slightly improves `Regexp::Parser.parse` performance
-  - note: `Regexp::Parser.parse` still does not and will not support streaming
+  * it can now take arbitrarily large input, just like `Regexp::Scanner`
+  * this also slightly improves `Regexp::Parser.parse` performance
+  * note: `Regexp::Parser.parse` still does not and will not support streaming
 - improved performance of `Subexpression#each_expression`
 - minor improvements to `Regexp::Scanner` performance
 - overall improvement of parse performance: about 10% for large Regexps

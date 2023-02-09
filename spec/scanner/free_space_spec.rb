@@ -108,6 +108,10 @@ RSpec.describe('FreeSpace scanning') do
       21 => [:group,       :close,       ')',      32, 33],
       22 => [:literal,     :literal,     'i j',    33, 36],
       23 => [:group,       :close,       ')',      36, 37]
+
+    include_examples 'scan', /(?x:(?#hello) ) /,
+      2  => [:free_space,  :whitespace,  ' ',      13, 14],
+      4  => [:literal,     :literal,     ' ',      15, 16]
   end
 
   describe('scan free space switch groups') do

@@ -23,6 +23,7 @@ RSpec.shared_examples 'scan' do |pattern, checks|
     checks.each do |index, (type, token, text, ts, te)|
       it "scans token #{index} as #{token} #{type} at #{ts}..#{te}" do
         result = @tokens.at(index)
+        result || fail("no token at index #{index}, max is #{@tokens.size - 1}")
 
         expect(result[0]).to eq type
         expect(result[1]).to eq token

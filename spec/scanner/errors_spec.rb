@@ -8,6 +8,7 @@ RSpec.describe(Regexp::Scanner) do
   end
 
   include_examples 'scan error', RS::PrematureEndError, 'unbalanced set', '[a'
+  include_examples 'scan error', RS::PrematureEndError, 'unbalanced set', '[a[b]'
   include_examples 'scan error', RS::PrematureEndError, 'unbalanced set', '[[:alpha:]'
   include_examples 'scan error', RS::PrematureEndError, 'unbalanced group', '(abc'
   include_examples 'scan error', RS::PrematureEndError, 'eof in property', '\p{asci'
@@ -48,6 +49,8 @@ RSpec.describe(Regexp::Scanner) do
   include_examples 'scan error', RS::InvalidSequenceError, 'invalid m-seq', '\M-\C-ü'
   include_examples 'scan error', RS::ScannerError, 'invalid c-seq', '\Ca'
   include_examples 'scan error', RS::ScannerError, 'invalid m-seq', '\Ma'
+  include_examples 'scan error', RS::InvalidGroupError, 'invalid group', ")"
+  include_examples 'scan error', RS::InvalidGroupError, 'invalid group', "())"
   include_examples 'scan error', RS::InvalidGroupError, 'invalid group', "(?'')"
   include_examples 'scan error', RS::InvalidGroupError, 'invalid group', "(?''empty-name)"
   include_examples 'scan error', RS::InvalidGroupError, 'invalid group', '(?<>)'

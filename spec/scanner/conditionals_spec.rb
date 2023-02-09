@@ -125,4 +125,10 @@ RSpec.describe('Conditional scanning') do
     42 => [:meta,        :alternation, '|', 44, 45],
     46 => [:meta,        :alternation, '|', 48, 49],
     48 => [:meta,        :alternation, '|', 50, 51]
+
+  include_examples 'scan', /(a)(?(1)b|c(?#hello)d)/,
+    9  => [:literal,     :literal, 'c',         10, 11],
+    10 => [:group,       :comment, '(?#hello)', 11, 20],
+    11 => [:literal,     :literal, 'd',         20, 21],
+    12 => [:conditional, :close,   ')',         21, 22]
 end

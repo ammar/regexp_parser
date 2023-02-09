@@ -457,10 +457,9 @@
 
     # (?#...) comments: parsed as a single expression, without introducing a
     # new nesting level. Comments may not include parentheses, escaped or not.
-    # special case for close, action performed on all transitions to get the
-    # correct closing count.
+    # special case for close to get the correct closing count.
     # ------------------------------------------------------------------------
-    group_open . group_comment $group_closed {
+    (group_open . group_comment) @group_closed {
       emit(:group, :comment, copy(data, ts, te))
     };
 
@@ -475,7 +474,7 @@
     #
     #   (?imxdau-imx:subexp)  option on/off for subexp
     # ------------------------------------------------------------------------
-    group_open . group_options >group_opened {
+    (group_open . group_options) >group_opened {
       text = copy(data, ts, te)
       if text[2..-1] =~ /([^\-mixdau:]|^$)|-.*([dau])/
         validation_error(:group_option, $1 || "-#{$2}", text)
@@ -489,7 +488,7 @@
     #   (?<=subexp)         look-behind
     #   (?<!subexp)         negative look-behind
     # ------------------------------------------------------------------------
-    group_open . assertion_type >group_opened {
+    (group_open . assertion_type) >group_opened {
       case text = copy(data, ts, te)
       when '(?=';  emit(:assertion, :lookahead,    text)
       when '(?!';  emit(:assertion, :nlookahead,   text)
@@ -506,7 +505,7 @@
     #   (?'name'subexp)     named group (single quoted version)
     #   (subexp)            captured group
     # ------------------------------------------------------------------------
-    group_open . group_type >group_opened {
+    (group_open . group_type) >group_opened {
       case text = copy(data, ts, te)
       when '(?:';  emit(:group, :passive,      text)
       when '(?>';  emit(:group, :atomic,       text)
@@ -533,7 +532,7 @@
       if conditional_stack.last == group_depth + 1
         conditional_stack.pop
         emit(:conditional, :close, ')')
-      else
+      elsif group_depth >= 0
         if spacing_stack.length > 1 &&
            spacing_stack.last[:depth] == group_depth + 1
           spacing_stack.pop
@@ -541,6 +540,8 @@
         end
 
         emit(:group, :close, ')')
+      else
+        validation_error(:group, 'group', 'unmatched close parenthesis')
       end
     };
 
