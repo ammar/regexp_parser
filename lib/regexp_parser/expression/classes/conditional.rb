@@ -35,9 +35,9 @@ module Regexp::Expression
         expressions.last << exp
       end
 
-      def add_sequence(active_opts = {})
+      def add_sequence(active_opts = {}, params = { ts: 0 })
         raise TooManyBranches.new if branches.length == 2
-        params = { conditional_level: conditional_level + 1 }
+        params = params.merge({ conditional_level: conditional_level + 1 })
         Branch.add_to(self, params, active_opts)
       end
       alias :branch :add_sequence

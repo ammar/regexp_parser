@@ -1,10 +1,9 @@
 module Regexp::Expression
   class CharacterSet < Regexp::Expression::Subexpression
     class Range < Regexp::Expression::Subexpression
-      def starts_at
-        expressions.first.starts_at
+      def ts
+        (head = expressions.first) ? head.ts : @ts
       end
-      alias :ts :starts_at
 
       def <<(exp)
         complete? and raise Regexp::Parser::Error,

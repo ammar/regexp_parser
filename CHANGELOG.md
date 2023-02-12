@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- fixed `NoMethodError` when calling `#starts_at` or `#ts` on empty sequences
+  * e.g. `Regexp::Parser.parse(/|/)[0].starts_at`
+  * e.g. `Regexp::Parser.parse(/[&&]/)[0][0].starts_at`
 - fixed nested comment groups breaking local x-options
   * e.g. in `/(?x:(?#hello)) /`, the x-option wrongly applied to the whitespace
 - fixed nested comment groups breaking conditionals

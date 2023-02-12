@@ -272,9 +272,9 @@ class Regexp::Parser
       nest_conditional(Conditional::Expression.new(token, active_opts))
     when :condition
       conditional_nesting.last.condition = Conditional::Condition.new(token, active_opts)
-      conditional_nesting.last.add_sequence(active_opts)
+      conditional_nesting.last.add_sequence(active_opts, { ts: token.te })
     when :separator
-      conditional_nesting.last.add_sequence(active_opts)
+      conditional_nesting.last.add_sequence(active_opts, { ts: token.te })
       self.node = conditional_nesting.last.branches.last
     when :close
       conditional_nesting.pop
@@ -381,12 +381,12 @@ class Regexp::Parser
   def sequence_operation(klass, token)
     unless node.instance_of?(klass)
       operator = klass.new(token, active_opts)
-      sequence = operator.add_sequence(active_opts)
+      sequence = operator.add_sequence(active_opts, { ts: token.ts })
       sequence.expressions = node.expressions
       node.expressions = []
       nest(operator)
     end
-    node.add_sequence(active_opts)
+    node.add_sequence(active_opts, { ts: token.te })
   end
 
   def posixclass(token)

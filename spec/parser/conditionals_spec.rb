@@ -2,20 +2,20 @@ require 'spec_helper'
 
 RSpec.describe('Conditional parsing') do
   include_examples 'parse', /(?<A>a)(?(<A>)T|F)/,
-    [1]       => [:conditional, :open, Conditional::Expression, to_s: '(?(<A>)T|F)', reference: 'A'],
-    [1, 0]    => [:conditional, :condition, Conditional::Condition, to_s: '(<A>)', reference: 'A'],
-    [1, 1]    => [:expression,  :sequence,  Conditional::Branch, to_s: 'T'],
-    [1, 1, 0] => [:literal, text: 'T'],
-    [1, 2]    => [:expression,  :sequence,  Conditional::Branch, to_s: 'F'],
-    [1, 2, 0] => [:literal, text: 'F']
+    [1]       => [:conditional, :open, Conditional::Expression, to_s: '(?(<A>)T|F)', reference: 'A', ts: 7],
+    [1, 0]    => [:conditional, :condition, Conditional::Condition, to_s: '(<A>)', reference: 'A', ts: 9],
+    [1, 1]    => [:expression,  :sequence,  Conditional::Branch, to_s: 'T', ts: 14],
+    [1, 1, 0] => [:literal, text: 'T', ts: 14],
+    [1, 2]    => [:expression,  :sequence,  Conditional::Branch, to_s: 'F', ts: 16],
+    [1, 2, 0] => [:literal, text: 'F', ts: 16]
 
   include_examples 'parse', /(a)(?(1)T|F)/,
-    [1]       => [:conditional, :open, Conditional::Expression, to_s: '(?(1)T|F)', reference: 1],
-    [1, 0]    => [:conditional, :condition, Conditional::Condition, to_s: '(1)', reference: 1],
-    [1, 1]    => [:expression,  :sequence,  Conditional::Branch, to_s: 'T'],
-    [1, 1, 0] => [:literal, text: 'T'],
-    [1, 2]    => [:expression,  :sequence,  Conditional::Branch, to_s: 'F'],
-    [1, 2, 0] => [:literal, text: 'F']
+    [1]       => [:conditional, :open, Conditional::Expression, to_s: '(?(1)T|F)', reference: 1, ts: 3],
+    [1, 0]    => [:conditional, :condition, Conditional::Condition, to_s: '(1)', reference: 1, ts: 5],
+    [1, 1]    => [:expression,  :sequence,  Conditional::Branch, to_s: 'T', ts: 8],
+    [1, 1, 0] => [:literal, text: 'T', ts: 8],
+    [1, 2]    => [:expression,  :sequence,  Conditional::Branch, to_s: 'F', ts: 10],
+    [1, 2, 0] => [:literal, text: 'F', ts: 10]
 
   include_examples 'parse', /(foo)(?(1)\d+|(\w)){42}/,
     [1]       => [Conditional::Expression, quantified?: true, to_s: '(?(1)\d+|(\w)){42}'],
@@ -65,5 +65,5 @@ RSpec.describe('Conditional parsing') do
   # test empty branch
   include_examples 'parse', /(?<A>a)(?(<A>)T|)/,
     [1]    => [Conditional::Expression, count: 3, to_s: '(?(<A>)T|)'],
-    [1, 2] => [Conditional::Branch, to_s: '']
+    [1, 2] => [Conditional::Branch, to_s: '', ts: 16]
 end

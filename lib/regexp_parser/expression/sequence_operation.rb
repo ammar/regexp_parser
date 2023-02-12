@@ -5,17 +5,16 @@ module Regexp::Expression
     alias :operands :expressions
     alias :operator :text
 
-    def starts_at
-      expressions.first.starts_at
+    def ts
+      (head = expressions.first) ? head.ts : @ts
     end
-    alias :ts :starts_at
 
     def <<(exp)
       expressions.last << exp
     end
 
-    def add_sequence(active_opts = {})
-      self.class::OPERAND.add_to(self, {}, active_opts)
+    def add_sequence(active_opts = {}, params = { ts: 0 })
+      self.class::OPERAND.add_to(self, params, active_opts)
     end
 
     def parts

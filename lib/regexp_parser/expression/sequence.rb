@@ -12,6 +12,7 @@ module Regexp::Expression
           level:             exp.level,
           set_level:         exp.set_level,
           conditional_level: params[:conditional_level] || exp.conditional_level,
+          ts:                params[:ts],
         )
         sequence.options = active_opts
         exp.expressions << sequence
@@ -19,10 +20,9 @@ module Regexp::Expression
       end
     end
 
-    def starts_at
-      expressions.first.starts_at
+    def ts
+      (head = expressions.first) ? head.ts : @ts
     end
-    alias :ts :starts_at
 
     def quantify(*args)
       target = expressions.reverse.find { |exp| !exp.is_a?(FreeSpace) }
