@@ -6,7 +6,7 @@ class Regexp::Lexer
 
   OPENING_TOKENS = %i[
     capture passive lookahead nlookahead lookbehind nlookbehind
-    atomic options options_switch named absence
+    atomic options options_switch named absence open
   ].freeze
 
   CLOSING_TOKENS = %i[close].freeze
@@ -89,24 +89,32 @@ class Regexp::Lexer
                 :nesting, :set_nesting, :conditional_nesting, :shift
 
   def ascend(type, token)
+    return unless CLOSING_TOKENS.include?(token)
+
     case type
     when :group, :assertion
-      self.nesting = nesting - 1 if CLOSING_TOKENS.include?(token)
+      self.nesting = nesting - 1
     when :set
-      self.set_nesting = set_nesting - 1 if token == :close
+      self.set_nesting = set_nesting - 1
     when :conditional
-      self.conditional_nesting = conditional_nesting - 1 if token == :close
+      self.conditional_nesting = conditional_nesting - 1
+    else
+      raise "unhandled nesting type #{type}"
     end
   end
 
   def descend(type, token)
+    return unless OPENING_TOKENS.include?(token)
+
     case type
     when :group, :assertion
-      self.nesting = nesting + 1 if OPENING_TOKENS.include?(token)
+      self.nesting = nesting + 1
     when :set
-      self.set_nesting = set_nesting + 1 if token == :open
+      self.set_nesting = set_nesting + 1
     when :conditional
-      self.conditional_nesting = conditional_nesting + 1 if token == :open
+      self.conditional_nesting = conditional_nesting + 1
+    else
+      raise "unhandled nesting type #{type}"
     end
   end
 
