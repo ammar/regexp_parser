@@ -262,13 +262,41 @@ Regexp::Lexer.scan(/(cat?([b]at)){3,5}/).map { |token| token.text }
 ### Parser
 Sits on top of the lexer and transforms the "stream" of Token objects emitted
 by it into a tree of Expression objects represented by an instance of the
-Expression::Root class.
+`Expression::Root` class.
 
 See the [Expression Objects](https://github.com/ammar/regexp_parser/wiki/Expression-Objects)
 wiki page for attributes and methods.
 
 
 #### Example
+
+This example uses the tree traversal method `#each_expression`
+and the method `#strfregexp` to print each object in the tree.
+
+```ruby
+include_root  = true
+indent_offset = include_root ? 1 : 0
+
+tree.each_expression(include_root) do |exp, level_index|
+  puts exp.strfregexp("%>> %c", indent_offset)
+end
+
+# Output
+# > Regexp::Expression::Root
+#   > Regexp::Expression::Literal
+#   > Regexp::Expression::Group::Capture
+#     > Regexp::Expression::Literal
+#     > Regexp::Expression::Group::Capture
+#       > Regexp::Expression::Literal
+#     > Regexp::Expression::Literal
+#   > Regexp::Expression::Group::Named
+#     > Regexp::Expression::CharacterSet
+```
+
+_Note: quantifiers do not appear in the output because they are members of the
+Expression class. See the next section for details._
+
+Another example, using `#traverse` for a more fine-grained tree traversal:
 
 ```ruby
 require 'regexp_parser'
@@ -295,33 +323,8 @@ end
 # exit: group `(?<name>[0-9]+)`
 ```
 
-Another example, using each_expression and strfregexp to print the object tree.
 _See the traverse.rb and strfregexp.rb files under `lib/regexp_parser/expression/methods`
 for more information on these methods._
-
-```ruby
-include_root  = true
-indent_offset = include_root ? 1 : 0
-
-tree.each_expression(include_root) do |exp, level_index|
-  puts exp.strfregexp("%>> %c", indent_offset)
-end
-
-# Output
-# > Regexp::Expression::Root
-#   > Regexp::Expression::Literal
-#   > Regexp::Expression::Group::Capture
-#     > Regexp::Expression::Literal
-#     > Regexp::Expression::Group::Capture
-#       > Regexp::Expression::Literal
-#     > Regexp::Expression::Literal
-#   > Regexp::Expression::Group::Named
-#     > Regexp::Expression::CharacterSet
-```
-
-_Note: quantifiers do not appear in the output because they are members of the
-Expression class. See the next section for details._
-
 
 ---
 
