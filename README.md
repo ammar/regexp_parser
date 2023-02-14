@@ -67,7 +67,7 @@ called with the results as follows:
 * **Scanner**: the block gets passed the results as they are scanned. See the
   example in the next section for details.
 
-* **Lexer**: after completion, the block gets passed the tokens one by one.
+* **Lexer**: the block gets passed the tokens one by one as they are scanned.
   _The result of the block is returned._
 
 * **Parser**: after completion, the block gets passed the root expression.
@@ -126,7 +126,7 @@ parts of the pattern:
 
 ```ruby
 Regexp::Scanner.scan(/(cat?([bhm]at)){3,5}/).map { |token| token[2] }
-#=> ["(", "cat", "?", "(", "[", "b", "h", "m", "]", "at", ")", ")", "{3,5}"]
+# => ["(", "cat", "?", "(", "[", "b", "h", "m", "]", "at", ")", ")", "{3,5}"]
 ```
 
 
@@ -248,7 +248,7 @@ by a quantifier that only applies to it.
 
 ```ruby
 Regexp::Lexer.scan(/(cat?([b]at)){3,5}/).map { |token| token.text }
-#=> ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", ")", "{3,5}"]
+# => ["(", "ca", "t", "?", "(", "[", "b", "]", "at", ")", ")", "{3,5}"]
 ```
 
 #### Notes
