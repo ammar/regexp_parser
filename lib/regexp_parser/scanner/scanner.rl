@@ -134,13 +134,13 @@
   # EOF error, used where it can be detected
   action premature_end_error {
     text = copy(data, ts ? ts-1 : 0, -1)
-    raise PrematureEndError.new( text )
+    raise PrematureEndError.new(text)
   }
 
   # Invalid sequence error, used from sequences, like escapes and sets
   action invalid_sequence_error {
     text = copy(data, ts ? ts-1 : 0, -1)
-    validation_error(:sequence, 'sequence', text)
+    raise ValidationError.for(:sequence, 'sequence', text)
   }
 
   # group (nesting) and set open/close actions
@@ -221,7 +221,7 @@
       end
 
       unless self.class.posix_classes.include?(class_name)
-        validation_error(:posix_class, text)
+        raise ValidationError.for(:posix_class, text)
       end
 
       emit(type, class_name.to_sym, text)
@@ -477,7 +477,7 @@
     (group_open . group_options) >group_opened {
       text = copy(data, ts, te)
       if text[2..-1] =~ /([^\-mixdau:]|^$)|-.*([dau])/
-        validation_error(:group_option, $1 || "-#{$2}", text)
+        raise ValidationError.for(:group_option, $1 || "-#{$2}", text)
       end
       emit_options(text)
     };
@@ -512,7 +512,7 @@
       when '(?~';  emit(:group, :absence,      text)
 
       when /^\(\?(?:<>|'')/
-        validation_error(:group, 'named group', 'name is empty')
+        raise ValidationError.for(:group, 'named group', 'name is empty')
 
       when /^\(\?<[^>]+>/
         emit(:group, :named_ab,  text)
@@ -541,7 +541,7 @@
 
         emit(:group, :close, ')')
       else
-        validation_error(:group, 'group', 'unmatched close parenthesis')
+        raise ValidationError.for(:group, 'group', 'unmatched close parenthesis')
       end
     };
 
@@ -551,7 +551,7 @@
     backslash . (group_name_backref | group_number_backref) > (backslashed, 4) {
       case text = copy(data, ts, te)
       when /^\\k(<>|'')/
-        validation_error(:backref, 'backreference', 'ref ID is empty')
+        raise ValidationError.for(:backref, 'backreference', 'ref ID is empty')
       when /^\\k(.)[^\p{digit}\-][^+\-]*\D$/
         emit(:backref, $1 == '<' ? :name_ref_ab : :name_ref_sq, text)
       when /^\\k(.)\d+\D$/
@@ -570,7 +570,7 @@
     backslash . (group_name_call | group_number_call) > (backslashed, 4) {
       case text = copy(data, ts, te)
       when /^\\g(<>|'')/
-        validation_error(:backref, 'subexpression call', 'ref ID is empty')
+        raise ValidationError.for(:backref, 'subexpression call', 'ref ID is empty')
       when /^\\g(.)[^\p{digit}+\->][^+\-]*/
         emit(:backref, $1 == '<' ? :name_call_ab : :name_call_sq, text)
       when /^\\g(.)\d+\D$/
@@ -650,69 +650,11 @@
   *|;
 }%%
 
-require 'regexp_parser/error'
+require 'regexp_parser/scanner/errors/scanner_error'
+require 'regexp_parser/scanner/errors/premature_end_error'
+require 'regexp_parser/scanner/errors/validation_error'
 
 class Regexp::Scanner
-  # General scanner error (catch all)
-  class ScannerError < Regexp::Parser::Error; end
-
-  # Base for all scanner validation errors
-  class ValidationError < Regexp::Parser::Error
-    def initialize(reason)
-      super reason
-    end
-  end
-
-  # Unexpected end of pattern
-  class PrematureEndError < ScannerError
-    def initialize(where = '')
-      super "Premature end of pattern at #{where}"
-    end
-  end
-
-  # Invalid sequence format. Used for escape sequences, mainly.
-  class InvalidSequenceError < ValidationError
-    def initialize(what = 'sequence', where = '')
-      super "Invalid #{what} at #{where}"
-    end
-  end
-
-  # Invalid group. Used for named groups.
-  class InvalidGroupError < ValidationError
-    def initialize(what, reason)
-      super "Invalid #{what}, #{reason}."
-    end
-  end
-
-  # Invalid groupOption. Used for inline options.
-  # TODO: should become InvalidGroupOptionError in v3.0.0 for consistency
-  class InvalidGroupOption < ValidationError
-    def initialize(option, text)
-      super "Invalid group option #{option} in #{text}"
-    end
-  end
-
-  # Invalid back reference. Used for name a number refs/calls.
-  class InvalidBackrefError < ValidationError
-    def initialize(what, reason)
-      super "Invalid back reference #{what}, #{reason}"
-    end
-  end
-
-  # The property name was not recognized by the scanner.
-  class UnknownUnicodePropertyError < ValidationError
-    def initialize(name)
-      super "Unknown unicode character property name #{name}"
-    end
-  end
-
-  # The POSIX class name was not recognized by the scanner.
-  class UnknownPosixClassError < ValidationError
-    def initialize(text)
-      super "Unknown POSIX class #{text}"
-    end
-  end
-
   # Scans the given regular expression text, or Regexp object and collects the
   # emitted token into an array that gets returned at the end. If a block is
   # given, it gets called for each emitted token.
@@ -889,24 +831,8 @@ class Regexp::Scanner
 
   def emit_meta_control_sequence(data, ts, te, token)
     if data.last < 0x00 || data.last > 0x7F
-      validation_error(:sequence, 'escape', token.to_s)
+      raise ValidationError.for(:sequence, 'escape', token.to_s)
     end
     emit(:escape, token, copy(data, ts-1, te))
-  end
-
-  # Centralizes and unifies the handling of validation related
-  # errors.
-  def validation_error(type, what, reason = nil)
-    error =
-      case type
-      when :backref      then InvalidBackrefError.new(what, reason)
-      when :group        then InvalidGroupError.new(what, reason)
-      when :group_option then InvalidGroupOption.new(what, reason)
-      when :posix_class  then UnknownPosixClassError.new(what)
-      when :property     then UnknownUnicodePropertyError.new(what)
-      when :sequence     then InvalidSequenceError.new(what, reason)
-      end
-
-    raise error # unless @@config.validation_ignore
   end
 end # module Regexp::Scanner
