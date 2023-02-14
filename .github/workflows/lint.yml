@@ -29,4 +29,4 @@ jobs:
     - name: Stub scanner.rb
       run: 'echo "class Regexp::Scanner; end" > lib/regexp_parser/scanner.rb'
     - name: Run rubocop
-      run: bundle exec rubocop --lint
+      run: bundle exec rubocop

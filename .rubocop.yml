@@ -1,4 +1,5 @@
 AllCops:
+  DisabledByDefault: true
   Exclude:
     - '{bin,pkg,tmp,vendor}/**/*' # vendored dependencies etc.
     - 'lib/regexp_parser/scanner.rb' # Ragel-generated code
@@ -6,7 +7,11 @@ AllCops:
   RubyInterpreters:
     - ruby
     - rake
+  SuggestExtensions: false
   TargetRubyVersion: 2.6 # really 2.0, but 2.6 is lowest supported by rubocop
+
+Lint:
+  Enabled: true
 
 # ignore weird looking regexps in specs, we have these on purpose
 Lint/DuplicateRegexpCharacterClassElement:
