@@ -4,16 +4,31 @@ RAGEL_SOURCE_FILES = %w[scanner] # scanner.rl imports the other files
 
 namespace :ragel do
   desc 'Process the ragel source files and output ruby code'
-  task rb: :install do
+  task rb: :install do |task|
     RAGEL_SOURCE_FILES.each do |source_file|
-      output_file = "#{RAGEL_OUTPUT_DIR}/#{source_file}.rb"
+      source_path = "#{RAGEL_SOURCE_DIR}/#{source_file}.rl"
+      output_path = "#{RAGEL_OUTPUT_DIR}/#{source_file}.rb"
+      # -L = omit line hint comments
+      flags = ENV['DEBUG_RAGEL'].to_i == 1 ? ['-p'] : ['-L']
       # using faster flat table driven FSM, about 25% larger code, but about 30% faster
-      sh "ragel -F1 -R #{RAGEL_SOURCE_DIR}/#{source_file}.rl -o #{output_file}"
+      flags << '-F1'
+      sh "ragel -R #{source_path} -o #{output_path} #{flags.join(' ')}"
 
-      contents = File.read(output_file)
+      contents = File
+        .read(output_path)
+        .gsub(/[ \t]+$/, '') # remove trailing whitespace emitted by ragel
+        .gsub(/(?<=\d,)[ \t]+|^[ \t]+(?=-?\d)/, '') # compact FSM tables (saves ~6KB)
+        .gsub(/\n(?:[ \t]*\n){2,}/, "\n\n") # compact blank lines
 
-      File.open(output_file, 'r+') do |file|
-        contents = "# -*- warn-indent:false;  -*-\n" + contents
+      File.open(output_path, 'w') do |file|
+        file.puts <<~RUBY
+          # -*- warn-indent:false;  -*-
+          #
+          # THIS IS A GENERATED FILE, DO NOT EDIT DIRECTLY
+          #
+          # This file was generated from #{source_path.split('/').last}
+          # by running `bundle exec rake #{task.name}`
+        RUBY
 
         file.write(contents)
       end
