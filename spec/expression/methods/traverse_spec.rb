@@ -74,6 +74,15 @@ RSpec.describe('Subexpression#traverse') do
     expect(count).to eq 14
   end
 
+  specify('Subexpression#each_expression with block arity 1') do
+    root = RP.parse(/a(b)c/)
+
+    texts = []
+    root.each_expression { |exp| texts << exp.text }
+
+    expect(texts).to eq ['a', '(', 'b', 'c']
+  end
+
   specify('Subexpression#each_expression indices') do
     root = RP.parse(/a(b)c/)
 
@@ -127,6 +136,14 @@ RSpec.describe('Subexpression#traverse') do
     expect(array.length).to eq 9
   end
 
+  specify('Subexpression#flat_map expressions for block with arity 1') do
+    root = RP.parse(/a(b(c(d)))/)
+
+    result = root.flat_map { |exp| exp.text if exp.terminal? }.compact
+
+    expect(result).to eq ['a', 'b', 'c', 'd']
+  end
+
   specify('Subexpression#flat_map indices') do
     root = RP.parse(/a(b([c-e]+))?f*g/)
 
@@ -146,7 +163,7 @@ RSpec.describe('Subexpression#traverse') do
   specify('Subexpression#flat_map expressions') do
     root = RP.parse(/a(b(c(d)))/)
 
-    levels = root.flat_map { |exp, _index| [exp.level, exp.text] if exp.terminal? }.compact
+    levels = root.flat_map { |exp| [exp.level, exp.text] if exp.terminal? }.compact
 
     expect(levels).to eq [[0, 'a'], [1, 'b'], [2, 'c'], [3, 'd']]
   end
@@ -154,7 +171,7 @@ RSpec.describe('Subexpression#traverse') do
   specify('Subexpression#flat_map expressions including self') do
     root = RP.parse(/a(b(c(d)))/)
 
-    levels = root.flat_map(true) { |exp, _index| [exp.level, exp.to_s] }.compact
+    levels = root.flat_map(true) { |exp| [exp.level, exp.to_s] }.compact
 
     expect(levels).to eq [[0, 'a(b(c(d)))'], [0, 'a'], [0, '(b(c(d)))'], [1, 'b'], [1, '(c(d))'], [2, 'c'], [2, '(d)'], [3, 'd']]
   end

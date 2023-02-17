@@ -277,7 +277,7 @@ and the method `#strfregexp` to print each object in the tree.
 include_root  = true
 indent_offset = include_root ? 1 : 0
 
-tree.each_expression(include_root) do |exp, level_index|
+tree.each_expression(include_root) do |exp|
   puts exp.strfregexp("%>> %c", indent_offset)
 end
 
