@@ -3,7 +3,18 @@ class Regexp::Scanner
   class ValidationError < ScannerError
     # Centralizes and unifies the handling of validation related errors.
     def self.for(type, problem, reason = nil)
-      TYPES.fetch(type).new(problem, reason)
+      types.fetch(type).new(problem, reason)
+    end
+
+    def self.types
+      @types ||= {
+        backref:      InvalidBackrefError,
+        group:        InvalidGroupError,
+        group_option: InvalidGroupOption,
+        posix_class:  UnknownPosixClassError,
+        property:     UnknownUnicodePropertyError,
+        sequence:     InvalidSequenceError,
+      }
     end
   end
 
@@ -49,13 +60,4 @@ class Regexp::Scanner
       super "Unknown POSIX class #{text}"
     end
   end
-
-  ValidationError::TYPES = {
-    backref:      InvalidBackrefError,
-    group:        InvalidGroupError,
-    group_option: InvalidGroupOption,
-    posix_class:  UnknownPosixClassError,
-    property:     UnknownUnicodePropertyError,
-    sequence:     InvalidSequenceError,
-  }.freeze
 end
