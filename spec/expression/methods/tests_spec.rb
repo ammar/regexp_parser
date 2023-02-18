@@ -144,4 +144,62 @@ RSpec.describe('ExpressionTests') do
     # levels should be ignored
     expect(RP.parse(/([a])/)[0][0][0]).to       eq RP.parse(/a/)[0]
   end
+
+  # test #capturing?
+  include_examples 'parse', /(a)\1/,
+    []  => [capturing?: false],
+    [0] => [capturing?: true],
+    [1] => [capturing?: false]
+
+  # test #comment?
+  include_examples 'parse', /(a)(?#b)c#d/x,
+    []  => [comment?: false],
+    [0] => [comment?: false],
+    [1] => [comment?: true],
+    [2] => [comment?: false],
+    [3] => [comment?: true]
+
+  # test #optional?
+  include_examples 'parse', /a?/,     [0] => [optional?: true]
+  include_examples 'parse', /a*/,     [0] => [optional?: true]
+  include_examples 'parse', /a{,5}/,  [0] => [optional?: true]
+  include_examples 'parse', /a{0,5}/, [0] => [optional?: true]
+  include_examples 'parse', /a/,      [0] => [optional?: false]
+  include_examples 'parse', /a+/,     [0] => [optional?: false]
+  include_examples 'parse', /a{1}/,   [0] => [optional?: false]
+  include_examples 'parse', /a{1,5}/, [0] => [optional?: false]
+
+  # test #quantified?
+  include_examples 'parse', /a?b/,
+    []  => [quantified?: false],
+    [0] => [quantified?: true],
+    [1] => [quantified?: false]
+
+  # test #referential?
+  include_examples 'parse', /(a)\1/,
+    []  => [referential?: false],
+    [0] => [referential?: false],
+    [1] => [referential?: true]
+
+  # test #terminal?
+  include_examples 'parse', /^a([b]+)c$/,
+    []        => [Root,           terminal?: false],
+    [0]       => [to_s: '^',      terminal?: true],
+    [1]       => [to_s: 'a',      terminal?: true],
+    [2]       => [to_s: '([b]+)', terminal?: false],
+    [2, 0]    => [to_s: '[b]+',   terminal?: false],
+    [2, 0, 0] => [to_s: 'b',      terminal?: true],
+    [3]       => [to_s: 'c',      terminal?: true],
+    [4]       => [to_s: '$',      terminal?: true]
+
+  include_examples 'parse', /^(ab|cd)$/,
+    []           => [Root,                          terminal?: false],
+    [0]          => [:bol,         to_s: '^',       terminal?: true],
+    [1]          => [:capture,     to_s: '(ab|cd)', terminal?: false],
+    [1, 0]       => [:alternation, to_s: 'ab|cd',   terminal?: false],
+    [1, 0, 0]    => [:sequence,    to_s: 'ab',      terminal?: false],
+    [1, 0, 0, 0] => [:literal,     to_s: 'ab',      terminal?: true],
+    [1, 0, 1]    => [:sequence,    to_s: 'cd',      terminal?: false],
+    [1, 0, 1, 0] => [:literal,     to_s: 'cd',      terminal?: true],
+    [2]          => [:eol,         to_s: '$',       terminal?: true]
 end

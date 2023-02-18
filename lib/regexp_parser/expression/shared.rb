@@ -60,36 +60,12 @@ module Regexp::Expression
       quantifier.to_s if quantified? && expression_format != :base
     end
 
-    def quantified?
-      !quantifier.nil?
-    end
-
-    def optional?
-      quantified? && quantifier.min == 0
-    end
-
     def offset
       [starts_at, full_length]
     end
 
     def coded_offset
       '@%d+%d' % offset
-    end
-
-    def terminal?
-      true # overridden to be false in Expression::Subexpression
-    end
-
-    def referential?
-      false # overridden to be true e.g. in Expression::Backreference::Base
-    end
-
-    def capturing?
-      false # overridden to be true in Expression::Group::Capture
-    end
-
-    def comment?
-      false # overridden to be true e.g. in Expression::Group::Comment
     end
 
     def nesting_level=(lvl)

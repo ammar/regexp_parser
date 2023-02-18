@@ -14,28 +14,6 @@ RSpec.describe(Regexp::Expression::Base) do
     [3]          => [to_s: 'e',         level: 0],
     [4]          => [to_s: '$',         level: 0]
 
-  # test #terminal?
-  include_examples 'parse', /^a([b]+)c$/,
-    []        => [Root,           terminal?: false],
-    [0]       => [to_s: '^',      terminal?: true],
-    [1]       => [to_s: 'a',      terminal?: true],
-    [2]       => [to_s: '([b]+)', terminal?: false],
-    [2, 0]    => [to_s: '[b]+',   terminal?: false],
-    [2, 0, 0] => [to_s: 'b',      terminal?: true],
-    [3]       => [to_s: 'c',      terminal?: true],
-    [4]       => [to_s: '$',      terminal?: true]
-
-  include_examples 'parse', /^(ab|cd)$/,
-    []           => [Root,                          terminal?: false],
-    [0]          => [:bol,         to_s: '^',       terminal?: true],
-    [1]          => [:capture,     to_s: '(ab|cd)', terminal?: false],
-    [1, 0]       => [:alternation, to_s: 'ab|cd',   terminal?: false],
-    [1, 0, 0]    => [:sequence,    to_s: 'ab',      terminal?: false],
-    [1, 0, 0, 0] => [:literal,     to_s: 'ab',      terminal?: true],
-    [1, 0, 1]    => [:sequence,    to_s: 'cd',      terminal?: false],
-    [1, 0, 1, 0] => [:literal,     to_s: 'cd',      terminal?: true],
-    [2]          => [:eol,         to_s: '$',       terminal?: true]
-
   # test #coded_offset
   include_examples 'parse', /^a*(b+(c?))$/,
     []        => [Root,             coded_offset: '@0+12'],
@@ -58,16 +36,6 @@ RSpec.describe(Regexp::Expression::Base) do
   include_examples 'parse', /a?/, [0] => [repetitions: 0..1]
   include_examples 'parse', /a*/, [0] => [repetitions: 0..(Float::INFINITY)]
   include_examples 'parse', /a+/, [0] => [repetitions: 1..(Float::INFINITY)]
-
-  # test #optional?
-  include_examples 'parse', /a?/,     [0] => [optional?: true]
-  include_examples 'parse', /a*/,     [0] => [optional?: true]
-  include_examples 'parse', /a{,5}/,  [0] => [optional?: true]
-  include_examples 'parse', /a{0,5}/, [0] => [optional?: true]
-  include_examples 'parse', /a/,      [0] => [optional?: false]
-  include_examples 'parse', /a+/,     [0] => [optional?: false]
-  include_examples 'parse', /a{1}/,   [0] => [optional?: false]
-  include_examples 'parse', /a{1,5}/, [0] => [optional?: false]
 
   # test #base_length, #full_length
   include_examples 'parse', /(aa)/,

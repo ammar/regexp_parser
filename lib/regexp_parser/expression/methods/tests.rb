@@ -102,5 +102,29 @@ module Regexp::Expression
     end
     alias :=== :==
     alias :eql? :==
+
+    def capturing?
+      false # overridden to be true in Expression::Group::Capture
+    end
+
+    def comment?
+      false # overridden to be true e.g. in Expression::Group::Comment
+    end
+
+    def optional?
+      quantified? && quantifier.min == 0
+    end
+
+    def quantified?
+      !quantifier.nil?
+    end
+
+    def referential?
+      false # overridden to be true e.g. in Expression::Backreference::Base
+    end
+
+    def terminal?
+      true # overridden to be false in Expression::Subexpression
+    end
   end
 end
