@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Regexp::Expression::Shared#{capturing?,comment?}`
   * previously only available on capturing and comment groups
+- `Regexp::Expression::Shared#parent`
 - support calling `Subexpression#{each_expression,flat_map}` with a one-argument block
   * in this case, only the expressions are passed to the block, no indices
 

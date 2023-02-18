@@ -16,6 +16,7 @@ module Regexp::Expression
     end
 
     def <<(exp)
+      exp.parent = self
       if exp.is_a?(WhiteSpace) && last && last.is_a?(WhiteSpace)
         last.merge(exp)
       else

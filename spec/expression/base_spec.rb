@@ -70,14 +70,29 @@ RSpec.describe(Regexp::Expression::Base) do
   include_examples 'parse', /a{1,5}/, [0] => [optional?: false]
 
   # test #base_length, #full_length
-  include_examples 'parse', /(aa)/,     [0] => [base_length: 4]
-  include_examples 'parse', /(aa)/,     [0] => [full_length: 4]
-  include_examples 'parse', /(aa){42}/, [0] => [base_length: 4]
-  include_examples 'parse', /(aa){42}/, [0] => [full_length: 8]
+  include_examples 'parse', /(aa)/,
+    []     => [Root,           base_length: 4, full_length: 4],
+    [0]    => [Group::Capture, base_length: 4, full_length: 4],
+    [0, 0] => [Literal,        base_length: 2, full_length: 2]
+  include_examples 'parse', /(aa){42}/,
+    []     => [Root,           base_length: 8, full_length: 8],
+    [0]    => [Group::Capture, base_length: 4, full_length: 8],
+    [0, 0] => [Literal,        base_length: 2, full_length: 2]
 
   # test #to_re
   include_examples 'parse', '^a*(b([cde]+))+f?$',
     [] => [Root, to_re: /^a*(b([cde]+))+f?$/]
+
+  specify '#parent' do
+    root = Regexp::Parser.parse(/(a(b)){42}/)
+
+    expect(root.parent).to be_nil
+    expect(root[0].parent).to eq root
+    expect(root[0].quantifier.parent).to be_nil
+    expect(root[0][0].parent).to eq root[0]
+    expect(root[0][1].parent).to eq root[0]
+    expect(root[0][1][0].parent).to eq root[0][1]
+  end
 
   specify '#to_re warns when used on set members' do
     expect do

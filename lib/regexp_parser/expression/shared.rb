@@ -8,7 +8,7 @@ module Regexp::Expression
 
         attr_accessor :type, :token, :text, :ts, :te,
                       :level, :set_level, :conditional_level,
-                      :options
+                      :options, :parent
 
         attr_reader   :nesting_level, :quantifier
       end
