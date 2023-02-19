@@ -8,7 +8,8 @@ module Regexp::Expression
 
         attr_accessor :type, :token, :text, :ts, :te,
                       :level, :set_level, :conditional_level,
-                      :options, :parent
+                      :options, :parent,
+                      :custom_to_s_handling, :pre_quantifier_decorations
 
         attr_reader   :nesting_level, :quantifier
       end
@@ -47,12 +48,36 @@ module Regexp::Expression
       to_s.length
     end
 
+    # #to_s reproduces the original source, as an unparser would.
+    #
+    # It takes an optional format argument.
+    #
+    # Example:
+    #
+    # lit = Regexp::Parser.parse(/a +/x)[0]
+    #
+    # lit.to_s            # => 'a+'  # default; with quantifier
+    # lit.to_s(:full)     # => 'a+'  # default; with quantifier
+    # lit.to_s(:base)     # => 'a'   # without quantifier
+    # lit.to_s(:original) # => 'a +' # with quantifier AND intermittent decorations
+    #
     def to_s(format = :full)
-      "#{parts.join}#{quantifier_affix(format)}"
+      base = parts.each_with_object(''.dup) do |part, buff|
+        if part.instance_of?(String)
+          buff << part
+        elsif !part.custom_to_s_handling
+          buff << part.to_s(:original)
+        end
+      end
+      "#{base}#{pre_quantifier_decoration(format)}#{quantifier_affix(format)}"
     end
     alias :to_str :to_s
 
-    def quantifier_affix(expression_format)
+    def pre_quantifier_decoration(expression_format = :original)
+      pre_quantifier_decorations.to_a.join if expression_format == :original
+    end
+
+    def quantifier_affix(expression_format = :full)
       quantifier.to_s if quantified? && expression_format != :base
     end
 

@@ -71,23 +71,18 @@ RSpec.describe('Expression::Base#to_s') do
     expect_round_trip(multiline.to_s)
   end
 
-  # Free spacing expressions that use spaces between quantifiers and their
-  # targets do not produce identical results due to the way quantifiers are
-  # applied to expressions (members, not nodes) and the merging of consecutive
-  # space nodes. This tests that they produce equivalent results.
-  specify('multiline equivalence') do
+  specify('multiline with free space before quantifiers') do
     multiline = /
           \A
           a   ?             # One letter
           b {2,5}           # Another one
           [c-g]  +          # A set
+          |                 #
+          [h-j]  +          (?# Extra test for Sequence#quantify )
           \z
         /x
 
-    str = 'bbbcged'
-    root = parse_frozen(multiline)
-
-    expect(Regexp.new(root.to_s, Regexp::EXTENDED).match(str)[0]).to eql(multiline.match(str)[0])
+    expect_round_trip(multiline.to_s)
   end
 
   # special case: implicit groups used for chained quantifiers produce no parens

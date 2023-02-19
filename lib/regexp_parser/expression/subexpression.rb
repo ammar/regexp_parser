@@ -17,11 +17,7 @@ module Regexp::Expression
 
     def <<(exp)
       exp.parent = self
-      if exp.is_a?(WhiteSpace) && last && last.is_a?(WhiteSpace)
-        last.merge(exp)
-      else
-        expressions << exp
-      end
+      expressions << exp
     end
 
     %w[[] at each empty? fetch index join last length values_at].each do |method|
@@ -47,6 +43,23 @@ module Regexp::Expression
         text:        to_s(:base),
         expressions: expressions.map(&:to_h)
       )
+    end
+
+    def extract_quantifier_target(quantifier_description)
+      pre_quantifier_decorations = []
+      target = expressions.reverse.find do |exp|
+        if exp.decorative?
+          exp.custom_to_s_handling = true
+          pre_quantifier_decorations << exp.text
+          next
+        end
+        exp
+      end
+      target or raise Regexp::Parser::ParserError,
+        "No valid target found for '#{quantifier_description}' quantifier"
+
+      target.pre_quantifier_decorations = pre_quantifier_decorations
+      target
     end
   end
 end

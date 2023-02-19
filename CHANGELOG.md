@@ -16,9 +16,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Regexp::Expression::Shared#parent`
 - support calling `Subexpression#{each_expression,flat_map}` with a one-argument block
   * in this case, only the expressions are passed to the block, no indices
+- new format argument `:original` for `Regexp::Expression::Base#to_s`
+  * includes decorative elements between node and its quantifier
+  * e.g. `parse(/a +/x)[0].to_s(:original) # => "a +"`
+  * using it is not needed when calling `Root#to_s` as Root can't be quantified
 
 ### Fixed
 
+- `Subexpression#to_s` output with children with whitespace before their quantifier
+  * e.g. `parse(/a + /x).to_s` used to yield `"a+  "`, now it yields `"a + "`
+  * calling `#to_s` on sub-nodes still omits such decorative interludes by default
+    - use new `#to_s` format `:original` to include it
 - fixed `NoMethodError` when calling `#starts_at` or `#ts` on empty sequences
   * e.g. `Regexp::Parser.parse(/|/)[0].starts_at`
   * e.g. `Regexp::Parser.parse(/[&&]/)[0][0].starts_at`

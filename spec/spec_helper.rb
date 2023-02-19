@@ -27,8 +27,8 @@ RSpec.configure do |config|
   end
 end
 
-def s(klass, text = nil, *children)
-  exp = klass.construct(text: text)
+def s(klass, text = '', *children)
+  exp = klass.construct(text: text.to_s)
   children.each { |child| exp.expressions << child }
   exp
 end

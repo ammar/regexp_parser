@@ -96,9 +96,11 @@ module Regexp::Expression
 
     # Deep-compare two expressions for equality.
     def ==(other)
-      other.class == self.class &&
-        other.to_s == to_s &&
-        other.options == options
+      self.class   == other.class &&
+        text       == other.text &&
+        quantifier == other.quantifier &&
+        options    == other.options &&
+        (terminal? || expressions == other.expressions)
     end
     alias :=== :==
     alias :eql? :==

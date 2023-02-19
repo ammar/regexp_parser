@@ -10,6 +10,7 @@ module Regexp::Expression
 
   class WhiteSpace < Regexp::Expression::FreeSpace
     def merge(exp)
+      warn("#{self.class}##{__method__} is deprecated and will be removed in v3.0.0.")
       text << exp.text
     end
   end

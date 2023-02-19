@@ -349,11 +349,7 @@ class Regexp::Parser
     when :comment
       node << Comment.new(token, active_opts)
     when :whitespace
-      if node.last.is_a?(WhiteSpace)
-        node.last.merge(WhiteSpace.new(token, active_opts))
-      else
-        node << WhiteSpace.new(token, active_opts)
-      end
+      node << WhiteSpace.new(token, active_opts)
     else
       raise UnknownTokenError.new('FreeSpace', token)
     end
@@ -478,8 +474,7 @@ class Regexp::Parser
   end
 
   def quantifier(token)
-    target_node = node.expressions.reverse.find { |exp| !exp.decorative? }
-    target_node or raise ParserError, "No valid target found for '#{token.text}'"
+    target_node = node.extract_quantifier_target(token.text)
 
     # in case of chained quantifiers, wrap target in an implicit passive group
     # description of the problem: https://github.com/ammar/regexp_parser/issues/3

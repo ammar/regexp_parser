@@ -24,12 +24,8 @@ module Regexp::Expression
       (head = expressions.first) ? head.ts : @ts
     end
 
-    def quantify(*args)
-      target = expressions.reverse.find { |exp| !exp.is_a?(FreeSpace) }
-      target or raise Regexp::Parser::Error,
-        "No valid target found for '#{text}' quantifier"
-
-      target.quantify(*args)
+    def quantify(token, *args)
+      extract_quantifier_target(token.text).quantify(token, *args)
     end
   end
 end
