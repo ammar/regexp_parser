@@ -90,9 +90,9 @@ module Regexp::Expression
     CharacterSet::IntersectedSequence,
     CharacterSet::Range,
     CharacterType::Base,
-    EscapeSequence::Base,
+    Escape::Base,
     PosixClass,
-    UnicodeProperty::Base,
+    Property::Base,
   ].each do |klass|
     klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
       def match_length
@@ -151,7 +151,7 @@ module Regexp::Expression
     RUBY
   end
 
-  class Backreference::Base
+  class Backref::Base
     def match_length
       if referenced_expression.nil?
         raise ArgumentError, 'Missing referenced_expression - not parsed?'
@@ -160,7 +160,7 @@ module Regexp::Expression
     end
   end
 
-  class EscapeSequence::CodepointList
+  class Escape::CodepointList
     def match_length
       MatchLength.new(self, base: codepoints.count)
     end

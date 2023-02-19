@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe('EscapeSequence parsing') do
-  es = EscapeSequence
+RSpec.describe('Escape parsing') do
+  es = Escape
 
   include_examples 'parse', /a\ac/,          1 => [:escape, :bell,           es::Bell]
   include_examples 'parse', /a\ec/,          1 => [:escape, :escape,         es::AsciiEscape]

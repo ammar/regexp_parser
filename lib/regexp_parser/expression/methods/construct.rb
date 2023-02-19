@@ -28,8 +28,6 @@ module Regexp::Expression
         # TODO: synch exp & token class names for alt., dot, escapes in v3.0.0
         elsif self == Alternation || self == CharacterType::Any
           Regexp::Syntax::Token::Meta
-        elsif self <= EscapeSequence::Base
-          Regexp::Syntax::Token::Escape
         else
           Regexp::Syntax::Token.const_get(name.split('::')[2])
         end

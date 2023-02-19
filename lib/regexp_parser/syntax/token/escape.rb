@@ -1,6 +1,5 @@
 module Regexp::Syntax
   module Token
-    # TODO: unify naming with RE::EscapeSequence, one way or the other, in v3.0.0
     module Escape
       Basic = %i[backslash literal]
 

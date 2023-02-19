@@ -12,27 +12,27 @@ RSpec.describe('CharacterSet parsing') do
 
   include_examples 'parse', /[a\bc]/,
     [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
-    [0, 1] => [:escape, :backspace, EscapeSequence::Backspace, text: '\b']
+    [0, 1] => [:escape, :backspace, Escape::Backspace, text: '\b']
 
   include_examples 'parse', '[a\xFz]',
     [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
-    [0, 1] => [:escape, :hex, EscapeSequence::Hex, text: '\xF']
+    [0, 1] => [:escape, :hex, Escape::Hex, text: '\xF']
 
   include_examples 'parse', '[a\x20c]',
     [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
-    [0, 1] => [:escape, :hex, EscapeSequence::Hex, text: '\x20']
+    [0, 1] => [:escape, :hex, Escape::Hex, text: '\x20']
 
   include_examples 'parse', '[a\77c]',
     [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
-    [0, 1] => [:escape, :octal, EscapeSequence::Octal, text: '\77']
+    [0, 1] => [:escape, :octal, Escape::Octal, text: '\77']
 
   include_examples 'parse', '[a\u0640c]',
     [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
-    [0, 1] => [:escape, :codepoint, EscapeSequence::Codepoint, text: '\u0640']
+    [0, 1] => [:escape, :codepoint, Escape::Codepoint, text: '\u0640']
 
   include_examples 'parse', '[a\u{41 1F60D}c]',
     [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
-    [0, 1] => [:escape, :codepoint_list, EscapeSequence::CodepointList, text: '\u{41 1F60D}']
+    [0, 1] => [:escape, :codepoint_list, Escape::CodepointList, text: '\u{41 1F60D}']
 
   include_examples 'parse', '[[:digit:][:^lower:]]+',
     [0]    => [:set, :character, CharacterSet, text: '[', count: 2],

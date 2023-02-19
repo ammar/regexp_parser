@@ -12,7 +12,7 @@ class Regexp::Scanner
         group:        InvalidGroupError,
         group_option: InvalidGroupOption,
         posix_class:  UnknownPosixClassError,
-        property:     UnknownUnicodePropertyError,
+        property:     UnknownPropertyError,
         sequence:     InvalidSequenceError,
       }
     end
@@ -48,7 +48,7 @@ class Regexp::Scanner
   end
 
   # The property name was not recognized by the scanner.
-  class UnknownUnicodePropertyError < ValidationError
+  class UnknownPropertyError < ValidationError
     def initialize(name, _)
       super "Unknown unicode character property name #{name}"
     end
