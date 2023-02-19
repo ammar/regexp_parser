@@ -10,7 +10,7 @@ class Regexp::Scanner
       @types ||= {
         backref:      InvalidBackrefError,
         group:        InvalidGroupError,
-        group_option: InvalidGroupOption,
+        group_option: InvalidGroupOptionError,
         posix_class:  UnknownPosixClassError,
         property:     UnknownPropertyError,
         sequence:     InvalidSequenceError,
@@ -33,8 +33,7 @@ class Regexp::Scanner
   end
 
   # Invalid groupOption. Used for inline options.
-  # TODO: should become InvalidGroupOptionError in v3.0.0 for consistency
-  class InvalidGroupOption < ValidationError
+  class InvalidGroupOptionError < ValidationError
     def initialize(option, text)
       super "Invalid group option #{option} in #{text}"
     end
