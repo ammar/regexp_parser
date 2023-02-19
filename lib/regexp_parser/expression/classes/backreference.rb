@@ -20,10 +20,6 @@ module Regexp::Expression
 
         super
       end
-
-      def referential?
-        true
-      end
     end
 
     class Number < Backreference::Base

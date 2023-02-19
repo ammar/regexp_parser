@@ -48,9 +48,5 @@ module Regexp::Expression
         expressions: expressions.map(&:to_h)
       )
     end
-
-    def terminal?
-      false
-    end
   end
 end

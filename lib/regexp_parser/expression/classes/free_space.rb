@@ -6,9 +6,6 @@ module Regexp::Expression
   end
 
   class Comment < Regexp::Expression::FreeSpace
-    def comment?
-      true
-    end
   end
 
   class WhiteSpace < Regexp::Expression::FreeSpace

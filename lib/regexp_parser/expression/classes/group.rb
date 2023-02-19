@@ -40,8 +40,6 @@ module Regexp::Expression
     class Capture < Group::Base
       attr_accessor :number, :number_at_level
       alias identifier number
-
-      def capturing?; true end
     end
 
     class Named < Group::Capture
@@ -60,7 +58,6 @@ module Regexp::Expression
     end
 
     class Comment < Group::Base
-      def comment?; true end
     end
   end
 

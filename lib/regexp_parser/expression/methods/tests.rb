@@ -103,18 +103,6 @@ module Regexp::Expression
     alias :=== :==
     alias :eql? :==
 
-    def capturing?
-      false # overridden to be true in Expression::Group::Capture
-    end
-
-    def comment?
-      false # overridden to be true in Expression::{Comment,Group::Comment}
-    end
-
-    def decorative?
-      false # overridden to be true in Expression::{FreeSpace,Group::Comment}
-    end
-
     def optional?
       quantified? && quantifier.min == 0
     end
@@ -122,13 +110,24 @@ module Regexp::Expression
     def quantified?
       !quantifier.nil?
     end
-
-    def referential?
-      false # overridden to be true e.g. in Expression::Backreference::Base
-    end
-
-    def terminal?
-      true # overridden to be false in Expression::Subexpression
-    end
   end
+
+  Shared.class_eval                  { def terminal?; true  end }
+  Subexpression.class_eval           { def terminal?; false end }
+
+  Shared.class_eval                  { def capturing?; false end }
+  Group::Capture.class_eval          { def capturing?; true  end }
+
+  Shared.class_eval                  { def comment?; false end }
+  Comment.class_eval                 { def comment?; true  end }
+  Group::Comment.class_eval          { def comment?; true  end }
+
+  Shared.class_eval                  { def decorative?; false end }
+  FreeSpace.class_eval               { def decorative?; true  end }
+  Group::Comment.class_eval          { def decorative?; true  end }
+
+  Shared.class_eval                  { def referential?; false end }
+  Backreference::Base.class_eval     { def referential?; true  end }
+  Conditional::Condition.class_eval  { def referential?; true  end }
+  Conditional::Expression.class_eval { def referential?; true  end }
 end
