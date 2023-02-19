@@ -91,7 +91,7 @@ module Regexp::Expression
 
     def nesting_level=(lvl)
       @nesting_level = lvl
-      quantifier && quantifier.nesting_level = lvl
+      quantifier&.nesting_level = lvl
       terminal? || each { |subexp| subexp.nesting_level = lvl + 1 }
     end
 

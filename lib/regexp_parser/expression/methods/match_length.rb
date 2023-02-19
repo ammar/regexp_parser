@@ -110,15 +110,15 @@ module Regexp::Expression
   class Subexpression
     def match_length
       MatchLength.new(self,
-                       base_min: map { |exp| exp.match_length.min }.inject(0, :+),
-                       base_max: map { |exp| exp.match_length.max }.inject(0, :+),
+                       base_min: sum { |exp| exp.match_length.min },
+                       base_max: sum { |exp| exp.match_length.max },
                        reify: ->{ map { |exp| exp.match_length.to_re }.join })
     end
 
     def inner_match_length
       dummy = Regexp::Expression::Root.construct
       dummy.expressions = expressions.map(&:clone)
-      dummy.quantifier = quantifier && quantifier.clone
+      dummy.quantifier = quantifier&.clone
       dummy.match_length
     end
   end

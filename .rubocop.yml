@@ -8,7 +8,7 @@ AllCops:
     - ruby
     - rake
   SuggestExtensions: false
-  TargetRubyVersion: 2.6 # really 2.0, but 2.6 is lowest supported by rubocop
+  TargetRubyVersion: 2.6 # really 2.4, but 2.6 is lowest supported by rubocop
 
 Lint:
   Enabled: true

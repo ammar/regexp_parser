@@ -13,7 +13,7 @@ module Regexp::Expression
       # Returns a String if reference is by name, Integer if by number.
       def reference
         ref = text.tr("'<>()", "")
-        ref =~ /\D/ ? ref : Integer(ref)
+        ref.match?(/\D/) ? ref : Integer(ref)
       end
 
       def initialize_copy(orig)
