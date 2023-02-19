@@ -66,7 +66,7 @@ RSpec.describe(Regexp::Scanner) do
   include_examples 'scan error', RS::InvalidBackrefError, 'empty backref', '\k\'\''
   include_examples 'scan error', RS::InvalidBackrefError, 'empty refcall', '\g<>'
   include_examples 'scan error', RS::InvalidBackrefError, 'empty refcall', '\g\'\''
-  include_examples 'scan error', RS::UnknownUnicodePropertyError, 'unknown property', '\p{foobar}'
+  include_examples 'scan error', RS::UnknownPropertyError, 'unknown property', '\p{foobar}'
   include_examples 'scan error', RS::UnknownPosixClassError, 'unknown POSIX class [::]', '[[::]]'
   include_examples 'scan error', RS::UnknownPosixClassError, 'unknown POSIX class [:^:]', '[[:^:]]'
   include_examples 'scan error', RS::UnknownPosixClassError, 'unknown POSIX class [:x:]', '[[:x:]]'

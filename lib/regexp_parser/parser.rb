@@ -227,15 +227,15 @@ class Regexp::Parser
   def backref(token)
     case token.token
     when :name_ref
-      node << Backreference::Name.new(token, active_opts)
+      node << Backref::Name.new(token, active_opts)
     when :name_recursion_ref
-      node << Backreference::NameRecursionLevel.new(token, active_opts)
+      node << Backref::NameRecursionLevel.new(token, active_opts)
     when :name_call
-      node << Backreference::NameCall.new(token, active_opts)
+      node << Backref::NameCall.new(token, active_opts)
     when :number, :number_ref
-      node << Backreference::Number.new(token, active_opts)
+      node << Backref::Number.new(token, active_opts)
     when :number_recursion_ref
-      node << Backreference::NumberRecursionLevel.new(token, active_opts).tap do |exp|
+      node << Backref::NumberRecursionLevel.new(token, active_opts).tap do |exp|
         # TODO: should split off new token number_recursion_rel_ref and new
         # class NumberRelativeRecursionLevel in v3.0.0 to get rid of this
         if exp.text.match?(/[<'][+-]/)
@@ -245,17 +245,17 @@ class Regexp::Parser
         end
       end
     when :number_call
-      node << Backreference::NumberCall.new(token, active_opts)
+      node << Backref::NumberCall.new(token, active_opts)
     when :number_rel_ref
-      node << Backreference::NumberRelative.new(token, active_opts).tap do |exp|
+      node << Backref::NumberRelative.new(token, active_opts).tap do |exp|
         assign_effective_number(exp)
       end
     when :number_rel_call
-      node << Backreference::NumberCallRelative.new(token, active_opts).tap do |exp|
+      node << Backref::NumberCallRelative.new(token, active_opts).tap do |exp|
         assign_effective_number(exp)
       end
     else
-      raise UnknownTokenError.new('Backreference', token)
+      raise UnknownTokenError.new('Backref', token)
     end
   end
 
@@ -305,33 +305,33 @@ class Regexp::Parser
   def escape(token)
     case token.token
 
-    when :backspace;      node << EscapeSequence::Backspace.new(token, active_opts)
+    when :backspace;      node << Escape::Backspace.new(token, active_opts)
 
-    when :escape;         node << EscapeSequence::AsciiEscape.new(token, active_opts)
-    when :bell;           node << EscapeSequence::Bell.new(token, active_opts)
-    when :form_feed;      node << EscapeSequence::FormFeed.new(token, active_opts)
-    when :newline;        node << EscapeSequence::Newline.new(token, active_opts)
-    when :carriage;       node << EscapeSequence::Return.new(token, active_opts)
-    when :tab;            node << EscapeSequence::Tab.new(token, active_opts)
-    when :vertical_tab;   node << EscapeSequence::VerticalTab.new(token, active_opts)
+    when :escape;         node << Escape::AsciiEscape.new(token, active_opts)
+    when :bell;           node << Escape::Bell.new(token, active_opts)
+    when :form_feed;      node << Escape::FormFeed.new(token, active_opts)
+    when :newline;        node << Escape::Newline.new(token, active_opts)
+    when :carriage;       node << Escape::Return.new(token, active_opts)
+    when :tab;            node << Escape::Tab.new(token, active_opts)
+    when :vertical_tab;   node << Escape::VerticalTab.new(token, active_opts)
 
-    when :codepoint;      node << EscapeSequence::Codepoint.new(token, active_opts)
-    when :codepoint_list; node << EscapeSequence::CodepointList.new(token, active_opts)
-    when :hex;            node << EscapeSequence::Hex.new(token, active_opts)
-    when :octal;          node << EscapeSequence::Octal.new(token, active_opts)
+    when :codepoint;      node << Escape::Codepoint.new(token, active_opts)
+    when :codepoint_list; node << Escape::CodepointList.new(token, active_opts)
+    when :hex;            node << Escape::Hex.new(token, active_opts)
+    when :octal;          node << Escape::Octal.new(token, active_opts)
 
     when :control
       if token.text.match?(META_CONTROL_PATTERN)
-        node << EscapeSequence::MetaControl.new(token, active_opts)
+        node << Escape::MetaControl.new(token, active_opts)
       else
-        node << EscapeSequence::Control.new(token, active_opts)
+        node << Escape::Control.new(token, active_opts)
       end
 
     when :meta_sequence
       if token.text.match?(META_CONTROL_PATTERN)
-        node << EscapeSequence::MetaControl.new(token, active_opts)
+        node << Escape::MetaControl.new(token, active_opts)
       else
-        node << EscapeSequence::Meta.new(token, active_opts)
+        node << Escape::Meta.new(token, active_opts)
       end
 
     else
@@ -340,7 +340,7 @@ class Regexp::Parser
       # E.g. escaped quantifiers or set meta chars are not the same
       # as stuff that would be a literal even without the backslash.
       # Right now, they all end up here.
-      node << EscapeSequence::Literal.new(token, active_opts)
+      node << Escape::Literal.new(token, active_opts)
     end
   end
 
@@ -391,8 +391,8 @@ class Regexp::Parser
     node << PosixClass.new(token, active_opts)
   end
 
-  include Regexp::Expression::UnicodeProperty
-  UPTokens = Regexp::Syntax::Token::UnicodeProperty
+  include Regexp::Expression::Property
+  UPTokens = Regexp::Syntax::Token::Property
 
   def property(token)
     case token.token
@@ -471,7 +471,7 @@ class Regexp::Parser
     when *UPTokens::UnicodeBlock; node << Block.new(token, active_opts)
 
     else
-      raise UnknownTokenError.new('UnicodeProperty', token)
+      raise UnknownTokenError.new('Property', token)
     end
   end
 
@@ -577,7 +577,7 @@ class Regexp::Parser
   end
 
   # Assigns referenced expressions to refering expressions, e.g. if there is
-  # an instance of Backreference::Number, its #referenced_expression is set to
+  # an instance of Backref::Number, its #referenced_expression is set to
   # the instance of Group::Capture that it refers to via its number.
   def assign_referenced_expressions
     # find all referencable and refering expressions

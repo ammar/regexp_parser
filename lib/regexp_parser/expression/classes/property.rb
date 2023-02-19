@@ -1,6 +1,5 @@
 module Regexp::Expression
-  # TODO: unify name with token :property, one way or the other, in v3.0.0
-  module UnicodeProperty
+  module Property
     class Base < Regexp::Expression::Base
       def negative?
         type == :nonproperty
@@ -37,7 +36,7 @@ module Regexp::Expression
     class Assigned      < Base; end
 
     module Letter
-      class Base < UnicodeProperty::Base; end
+      class Base < Property::Base; end
 
       class Any         < Letter::Base; end
       class Cased       < Letter::Base; end
@@ -49,7 +48,7 @@ module Regexp::Expression
     end
 
     module Mark
-      class Base < UnicodeProperty::Base; end
+      class Base < Property::Base; end
 
       class Any         < Mark::Base; end
       class Combining   < Mark::Base; end
@@ -59,7 +58,7 @@ module Regexp::Expression
     end
 
     module Number
-      class Base < UnicodeProperty::Base; end
+      class Base < Property::Base; end
 
       class Any         < Number::Base; end
       class Decimal     < Number::Base; end
@@ -68,7 +67,7 @@ module Regexp::Expression
     end
 
     module Punctuation
-      class Base < UnicodeProperty::Base; end
+      class Base < Property::Base; end
 
       class Any         < Punctuation::Base; end
       class Connector   < Punctuation::Base; end
@@ -81,7 +80,7 @@ module Regexp::Expression
     end
 
     module Separator
-      class Base < UnicodeProperty::Base; end
+      class Base < Property::Base; end
 
       class Any         < Separator::Base; end
       class Space       < Separator::Base; end
@@ -90,7 +89,7 @@ module Regexp::Expression
     end
 
     module Symbol
-      class Base < UnicodeProperty::Base; end
+      class Base < Property::Base; end
 
       class Any         < Symbol::Base; end
       class Math        < Symbol::Base; end
@@ -100,7 +99,7 @@ module Regexp::Expression
     end
 
     module Codepoint
-      class Base < UnicodeProperty::Base; end
+      class Base < Property::Base; end
 
       class Any         < Codepoint::Base; end
       class Control     < Codepoint::Base; end
@@ -110,10 +109,10 @@ module Regexp::Expression
       class Unassigned  < Codepoint::Base; end
     end
 
-    class Age     < UnicodeProperty::Base; end
-    class Derived < UnicodeProperty::Base; end
-    class Emoji   < UnicodeProperty::Base; end
-    class Script  < UnicodeProperty::Base; end
-    class Block   < UnicodeProperty::Base; end
+    class Age     < Property::Base; end
+    class Derived < Property::Base; end
+    class Emoji   < Property::Base; end
+    class Script  < Property::Base; end
+    class Block   < Property::Base; end
   end
 end # module Regexp::Expression

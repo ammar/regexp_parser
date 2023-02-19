@@ -132,7 +132,7 @@ module Regexp::Expression
   Group::Comment.class_eval          { def decorative?; true  end }
 
   Shared.class_eval                  { def referential?; false end }
-  Backreference::Base.class_eval     { def referential?; true  end }
+  Backref::Base.class_eval           { def referential?; true  end }
   Conditional::Condition.class_eval  { def referential?; true  end }
   Conditional::Expression.class_eval { def referential?; true  end }
 end
