@@ -1,6 +1,6 @@
 module Regexp::Syntax
   module Token
-    module Property
+    module UnicodeProperty
       all = proc { |name| constants.grep(/#{name}/).flat_map { |c| const_get(c) } }
 
       CharType_V1_9_0 = %i[alnum alpha ascii blank cntrl digit graph
@@ -711,7 +711,7 @@ module Regexp::Syntax
       NonType = :nonproperty
     end
 
-    Map[Property::Type] = Property::All
-    Map[Property::NonType] = Property::All
+    Map[UnicodeProperty::Type] = UnicodeProperty::All
+    Map[UnicodeProperty::NonType] = UnicodeProperty::All
   end
 end

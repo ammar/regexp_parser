@@ -88,7 +88,7 @@ RSpec.describe('Expression::Base#clone') do
     expect { root_1.clone }.not_to(change { root_1.option_changes.object_id })
   end
 
-  specify('Backref::Base#clone') do
+  specify('Backreference::Base#clone') do
     root = RP.parse('(foo)\1')
     copy = root.clone
 
@@ -105,7 +105,7 @@ RSpec.describe('Expression::Base#clone') do
     expect { root_1.clone }.not_to(change { root_1.referenced_expression.object_id })
   end
 
-  specify('Backref::Base#clone works for recursive subexp calls') do
+  specify('Backreference::Base#clone works for recursive subexp calls') do
     root = RP.parse('a|b\g<0>')
     copy = root.clone
 

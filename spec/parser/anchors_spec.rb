@@ -13,5 +13,5 @@ RSpec.describe('Anchor parsing') do
 
   include_examples 'parse', /a\G/, 1 => [:anchor, :match_start,      Anchor::MatchStart]
 
-  include_examples 'parse', /\\A/, 0 => [:escape, :backslash,        Escape::Literal]
+  include_examples 'parse', /\\A/, 0 => [:escape, :backslash,        EscapeSequence::Literal]
 end

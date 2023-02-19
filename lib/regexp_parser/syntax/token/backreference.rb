@@ -1,6 +1,6 @@
 module Regexp::Syntax
   module Token
-    module Backref
+    module Backreference
       Plain     = %i[number]
       NumberRef = %i[number_ref number_rel_ref]
       Number    = Plain + NumberRef
@@ -16,7 +16,7 @@ module Regexp::Syntax
       Type = :backref
     end
 
-    # Type is the same as Backref so keeping it here, for now.
+    # Type is the same as Backreference so keeping it here, for now.
     module SubexpressionCall
       Name      = %i[name_call]
       Number    = %i[number_call number_rel_call]
@@ -24,6 +24,7 @@ module Regexp::Syntax
       All = Name + Number
     end
 
-    Map[Backref::Type] = Backref::All + SubexpressionCall::All
+    Map[Backreference::Type] = Backreference::All +
+                               SubexpressionCall::All
   end
 end

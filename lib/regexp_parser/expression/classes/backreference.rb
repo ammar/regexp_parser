@@ -1,5 +1,6 @@
 module Regexp::Expression
-  module Backref
+  # TODO: unify name with token :backref, one way or the other, in v3.0.0
+  module Backreference
     class Base < Regexp::Expression::Base
       attr_accessor :referenced_expression
 
@@ -21,7 +22,7 @@ module Regexp::Expression
       end
     end
 
-    class Number < Backref::Base
+    class Number < Backreference::Base
       attr_reader :number
       alias reference number
 
@@ -31,7 +32,7 @@ module Regexp::Expression
       end
     end
 
-    class Name < Backref::Base
+    class Name < Backreference::Base
       attr_reader :name
       alias reference name
 
@@ -41,16 +42,16 @@ module Regexp::Expression
       end
     end
 
-    class NumberRelative     < Backref::Number
+    class NumberRelative     < Backreference::Number
       attr_accessor :effective_number
       alias reference effective_number
     end
 
-    class NumberCall         < Backref::Number; end
-    class NameCall           < Backref::Name; end
-    class NumberCallRelative < Backref::NumberRelative; end
+    class NumberCall         < Backreference::Number; end
+    class NameCall           < Backreference::Name; end
+    class NumberCallRelative < Backreference::NumberRelative; end
 
-    class NumberRecursionLevel < Backref::NumberRelative
+    class NumberRecursionLevel < Backreference::NumberRelative
       attr_reader :recursion_level
 
       def initialize(token, options = {})
@@ -59,7 +60,7 @@ module Regexp::Expression
       end
     end
 
-    class NameRecursionLevel < Backref::Name
+    class NameRecursionLevel < Backreference::Name
       attr_reader :recursion_level
 
       def initialize(token, options = {})

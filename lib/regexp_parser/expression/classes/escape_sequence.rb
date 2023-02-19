@@ -1,5 +1,6 @@
 module Regexp::Expression
-  module Escape
+  # TODO: unify naming with Token::Escape, one way or the other, in v3.0.0
+  module EscapeSequence
     class Base < Regexp::Expression::Base
       def codepoint
         char.ord
@@ -18,25 +19,25 @@ module Regexp::Expression
       end
     end
 
-    class Literal < Escape::Base
+    class Literal < EscapeSequence::Base
       def char
         text[1..-1]
       end
     end
 
-    class AsciiEscape   < Escape::Base; end
-    class Backspace     < Escape::Base; end
-    class Bell          < Escape::Base; end
-    class FormFeed      < Escape::Base; end
-    class Newline       < Escape::Base; end
-    class Return        < Escape::Base; end
-    class Tab           < Escape::Base; end
-    class VerticalTab   < Escape::Base; end
+    class AsciiEscape   < EscapeSequence::Base; end
+    class Backspace     < EscapeSequence::Base; end
+    class Bell          < EscapeSequence::Base; end
+    class FormFeed      < EscapeSequence::Base; end
+    class Newline       < EscapeSequence::Base; end
+    class Return        < EscapeSequence::Base; end
+    class Tab           < EscapeSequence::Base; end
+    class VerticalTab   < EscapeSequence::Base; end
 
-    class Hex           < Escape::Base; end
-    class Codepoint     < Escape::Base; end
+    class Hex           < EscapeSequence::Base; end
+    class Codepoint     < EscapeSequence::Base; end
 
-    class CodepointList < Escape::Base
+    class CodepointList < EscapeSequence::Base
       def char
         raise NoMethodError, 'CodepointList responds only to #chars'
       end
@@ -54,13 +55,13 @@ module Regexp::Expression
       end
     end
 
-    class Octal < Escape::Base
+    class Octal < EscapeSequence::Base
       def char
         text[1..-1].to_i(8).chr('utf-8')
       end
     end
 
-    class AbstractMetaControlSequence < Escape::Base
+    class AbstractMetaControlSequence < EscapeSequence::Base
       def char
         codepoint.chr('utf-8')
       end

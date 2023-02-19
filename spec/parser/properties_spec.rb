@@ -35,14 +35,14 @@ RSpec.describe('Property parsing') do
   include_examples 'parse', '\p{in_bengali}',   0 => [:property, :in_bengali, shortcut: nil]
 
   # test classification
-  include_examples 'parse', '\p{age=5.2}',      0 => [Property::Age]
-  include_examples 'parse', '\p{Math}',         0 => [Property::Derived]
-  include_examples 'parse', '\p{Hiragana}',     0 => [Property::Script]
-  include_examples 'parse', '\p{InArmenian}',   0 => [Property::Block]
+  include_examples 'parse', '\p{age=5.2}',      0 => [UnicodeProperty::Age]
+  include_examples 'parse', '\p{Math}',         0 => [UnicodeProperty::Derived]
+  include_examples 'parse', '\p{Hiragana}',     0 => [UnicodeProperty::Script]
+  include_examples 'parse', '\p{InArmenian}',   0 => [UnicodeProperty::Block]
 
   specify('parse abandoned newline property') do
     root = RP.parse('\p{newline}', 'ruby/1.9')
-    expect(root.expressions.last).to be_a(Property::Base)
+    expect(root.expressions.last).to be_a(UnicodeProperty::Base)
 
     expect { RP.parse('\p{newline}', 'ruby/2.0') }.to raise_error(Regexp::Syntax::NotImplementedError)
   end

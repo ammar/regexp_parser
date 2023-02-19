@@ -20,12 +20,12 @@ module Regexp::Expression
   Assertion::Lookbehind.class_eval             { def human_name; 'lookbehind'                  end }
   Assertion::NegativeLookahead.class_eval      { def human_name; 'negative lookahead'          end }
   Assertion::NegativeLookbehind.class_eval     { def human_name; 'negative lookbehind'         end }
-  Backref::Name.class_eval                     { def human_name; 'backreference by name'       end }
-  Backref::NameCall.class_eval                 { def human_name; 'subexpression call by name'  end }
-  Backref::Number.class_eval                   { def human_name; 'backreference'               end }
-  Backref::NumberRelative.class_eval           { def human_name; 'relative backreference'      end }
-  Backref::NumberCall.class_eval               { def human_name; 'subexpression call'          end }
-  Backref::NumberCallRelative.class_eval       { def human_name; 'relative subexpression call' end }
+  Backreference::Name.class_eval               { def human_name; 'backreference by name'       end }
+  Backreference::NameCall.class_eval           { def human_name; 'subexpression call by name'  end }
+  Backreference::Number.class_eval             { def human_name; 'backreference'               end }
+  Backreference::NumberRelative.class_eval     { def human_name; 'relative backreference'      end }
+  Backreference::NumberCall.class_eval         { def human_name; 'subexpression call'          end }
+  Backreference::NumberCallRelative.class_eval { def human_name; 'relative subexpression call' end }
   CharacterSet::IntersectedSequence.class_eval { def human_name; 'intersected sequence'        end }
   CharacterSet::Intersection.class_eval        { def human_name; 'intersection'                end }
   CharacterSet::Range.class_eval               { def human_name; 'character range'             end }

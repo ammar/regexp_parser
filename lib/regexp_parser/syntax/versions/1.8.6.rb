@@ -1,7 +1,7 @@
 class Regexp::Syntax::V1_8_6 < Regexp::Syntax::Base
   implements :anchor,     Anchor::All
   implements :assertion,  Assertion::Lookahead
-  implements :backref,    Backref::V1_8_6
+  implements :backref,    Backreference::V1_8_6
   implements :escape,     Escape::Basic + Escape::ASCII + Escape::Meta + Escape::Control
   implements :free_space, FreeSpace::All
   implements :group,      Group::V1_8_6

@@ -1,32 +1,32 @@
 require 'spec_helper'
 
 RSpec.describe('Refcall parsing') do
-  include_examples 'parse', /(abc)\1/,        1 => [Backref::Number, reference: 1]
+  include_examples 'parse', /(abc)\1/,        1 => [Backreference::Number, reference: 1]
 
-  include_examples 'parse', /(?<X>abc)\k<X>/, 1 => [Backref::Name, name: 'X', reference: 'X']
-  include_examples 'parse', /(?<X>abc)\k'X'/, 1 => [Backref::Name, name: 'X', reference: 'X']
-  include_examples 'parse', /(abc)\k<1>/,     1 => [Backref::Number, number: 1, reference: 1]
-  include_examples 'parse', /(abc)\k<-1>/,    1 => [Backref::NumberRelative, number: -1, reference: 1]
-  include_examples 'parse', /(abc)\k'-1'/,    1 => [Backref::NumberRelative, number: -1, reference: 1]
-  include_examples 'parse', /(?<X>abc)\g<X>/, 1 => [Backref::NameCall, reference: 'X']
-  include_examples 'parse', /(abc)\g<1>/,     1 => [Backref::NumberCall, reference: 1]
-  include_examples 'parse', '\g<0>',          0 => [Backref::NumberCall, reference: 0]
-  include_examples 'parse', /(abc)\g<-1>/,    1 => [Backref::NumberCallRelative, reference: 1]
-  include_examples 'parse', /\g<+1>(abc)/,    0 => [Backref::NumberCallRelative, reference: 1]
+  include_examples 'parse', /(?<X>abc)\k<X>/, 1 => [Backreference::Name, name: 'X', reference: 'X']
+  include_examples 'parse', /(?<X>abc)\k'X'/, 1 => [Backreference::Name, name: 'X', reference: 'X']
+  include_examples 'parse', /(abc)\k<1>/,     1 => [Backreference::Number, number: 1, reference: 1]
+  include_examples 'parse', /(abc)\k<-1>/,    1 => [Backreference::NumberRelative, number: -1, reference: 1]
+  include_examples 'parse', /(abc)\k'-1'/,    1 => [Backreference::NumberRelative, number: -1, reference: 1]
+  include_examples 'parse', /(?<X>abc)\g<X>/, 1 => [Backreference::NameCall, reference: 'X']
+  include_examples 'parse', /(abc)\g<1>/,     1 => [Backreference::NumberCall, reference: 1]
+  include_examples 'parse', '\g<0>',          0 => [Backreference::NumberCall, reference: 0]
+  include_examples 'parse', /(abc)\g<-1>/,    1 => [Backreference::NumberCallRelative, reference: 1]
+  include_examples 'parse', /\g<+1>(abc)/,    0 => [Backreference::NumberCallRelative, reference: 1]
 
   include_examples 'parse', /(?<X>abc)\k<X-0>/,
-    1 => [Backref::NameRecursionLevel, name: 'X', recursion_level: 0]
+    1 => [Backreference::NameRecursionLevel, name: 'X', recursion_level: 0]
 
   include_examples 'parse', /(abc)\k<1-0>/,
-    1 => [Backref::NumberRecursionLevel, number: 1, recursion_level: 0]
+    1 => [Backreference::NumberRecursionLevel, number: 1, recursion_level: 0]
   include_examples 'parse', /(abc)\k<1-0>/,
-    1 => [Backref::NumberRecursionLevel, number: 1, recursion_level: 0]
+    1 => [Backreference::NumberRecursionLevel, number: 1, recursion_level: 0]
   include_examples 'parse', /(abc)\k<-1+0>/,
-    1 => [Backref::NumberRecursionLevel, number: -1, recursion_level: 0]
+    1 => [Backreference::NumberRecursionLevel, number: -1, recursion_level: 0]
   include_examples 'parse', /(abc)\k<1+1>/,
-    1 => [Backref::NumberRecursionLevel, number: 1, recursion_level: 1]
+    1 => [Backreference::NumberRecursionLevel, number: 1, recursion_level: 1]
   include_examples 'parse', /(abc)\k<1-1>/,
-    1 => [Backref::NumberRecursionLevel, number: 1, recursion_level: -1]
+    1 => [Backreference::NumberRecursionLevel, number: 1, recursion_level: -1]
 
   # test #effective_number/#reference for complex cases
   include_examples 'parse', '(abc)(def)\k<-1>(ghi)\k<-3>\k<-1>',
@@ -45,7 +45,7 @@ RSpec.describe('Refcall parsing') do
     exp2 = root[4]
     exp3 = root[5]
 
-    expect([exp1, exp2, exp3]).to all be_instance_of(Backref::NumberRelative)
+    expect([exp1, exp2, exp3]).to all be_instance_of(Backreference::NumberRelative)
 
     expect(exp1.referenced_expression).to eq root[1]
     expect(exp1.referenced_expression.to_s).to eq '(def)'
@@ -61,7 +61,7 @@ RSpec.describe('Refcall parsing') do
     exp2 = root[2]
     exp3 = root[5]
 
-    expect([exp1, exp2, exp3]).to all be_instance_of(Backref::NumberCallRelative)
+    expect([exp1, exp2, exp3]).to all be_instance_of(Backreference::NumberCallRelative)
     expect(exp1.referenced_expression).to eq root[1]
     expect(exp1.referenced_expression.to_s).to eq '(abc)'
     expect(exp2.referenced_expression).to eq root[4]
