@@ -13,15 +13,14 @@ class Regexp::Lexer
 
   CONDITION_TOKENS = %i[condition condition_close].freeze
 
-  def self.lex(input, syntax = nil, options: nil, collect_tokens: true, &block)
-    new.lex(input, syntax, options: options, collect_tokens: collect_tokens, &block)
+  def self.lex(input, syntax = nil, options: nil, &block)
+    new.lex(input, syntax, options: options, &block)
   end
 
-  def lex(input, syntax = nil, options: nil, collect_tokens: true, &block)
+  def lex(input, syntax = nil, options: nil, &block)
     syntax = syntax ? Regexp::Syntax.for(syntax) : Regexp::Syntax::CURRENT
 
     self.block = block
-    self.collect_tokens = collect_tokens
     self.tokens = []
     self.prev_token = nil
     self.preprev_token = nil
@@ -30,7 +29,7 @@ class Regexp::Lexer
     self.conditional_nesting = 0
     self.shift = 0
 
-    Regexp::Scanner.scan(input, options: options, collect_tokens: false) do |type, token, text, ts, te|
+    Regexp::Scanner.scan(input, options: options) do |type, token, text, ts, te|
       type, token = *syntax.normalize(type, token)
       syntax.check! type, token
 
@@ -65,14 +64,12 @@ class Regexp::Lexer
 
     emit(prev_token) if prev_token
 
-    collect_tokens ? tokens : nil
+    tokens unless block
   end
 
   def emit(token)
     if block
-      # TODO: in v3.0.0, remove `collect_tokens:` kwarg and only collect w/o block
-      res = block.call(token)
-      tokens << res if collect_tokens
+      block.call(token)
     else
       tokens << token
     end
@@ -85,7 +82,7 @@ class Regexp::Lexer
   private
 
   attr_accessor :block,
-                :collect_tokens, :tokens, :prev_token, :preprev_token,
+                :tokens, :prev_token, :preprev_token,
                 :nesting, :set_nesting, :conditional_nesting, :shift
 
   def ascend(type, token)

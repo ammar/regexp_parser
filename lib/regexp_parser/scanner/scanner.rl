@@ -661,12 +661,11 @@ class Regexp::Scanner
   #
   # This method may raise errors if a syntax error is encountered.
   # --------------------------------------------------------------------------
-  def self.scan(input_object, options: nil, collect_tokens: true, &block)
-    new.scan(input_object, options: options, collect_tokens: collect_tokens, &block)
+  def self.scan(input_object, options: nil, &block)
+    new.scan(input_object, options: options, &block)
   end
 
-  def scan(input_object, options: nil, collect_tokens: true, &block)
-    self.collect_tokens = collect_tokens
+  def scan(input_object, options: nil, &block)
     self.literal_run = nil
     stack = []
 
@@ -705,7 +704,7 @@ class Regexp::Scanner
     # when the entire expression is a literal run
     emit_literal if literal_run
 
-    tokens
+    tokens unless block
   end
 
   # lazy-load property maps when first needed
@@ -745,9 +744,7 @@ class Regexp::Scanner
 
     if block
       block.call type, token, text, ts_char_pos, te_char_pos
-      # TODO: in v3.0.0, remove `collect_tokens:` kwarg and only collect if no block given
-      tokens << tok if collect_tokens
-    elsif collect_tokens
+    else
       tokens << tok
     end
   end
@@ -757,7 +754,7 @@ class Regexp::Scanner
   private
 
   attr_accessor :block,
-                :collect_tokens, :tokens, :prev_token,
+                :tokens, :prev_token,
                 :free_spacing, :spacing_stack,
                 :group_depth, :set_depth, :conditional_stack,
                 :char_pos
