@@ -22,7 +22,7 @@ module Regexp::Expression
       clone.tap { |exp| exp.quantifier = nil }
     end
 
-    # Deprecated. Prefer `#repetitions` which has a more uniform interface.
+    # Note: `#repetitions` which has a more uniform interface.
     def quantity
       return [nil,nil] unless quantified?
       [quantifier.min, quantifier.max]

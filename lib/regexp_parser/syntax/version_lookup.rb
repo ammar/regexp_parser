@@ -23,12 +23,6 @@ module Regexp::Syntax
     (@alias_map ||= {})[name] ||= version_class(name)
   end
 
-  def new(name)
-    warn 'Regexp::Syntax.new is deprecated in favor of Regexp::Syntax.for. '\
-         'It does not return distinct instances and will be removed in v3.0.0.'
-    self.for(name)
-  end
-
   def supported?(name)
     name.match?(VERSION_REGEXP) && comparable(name) >= comparable('1.8.6')
   end

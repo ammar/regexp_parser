@@ -42,11 +42,6 @@ RSpec.describe(Regexp::Syntax) do
     end
   end
 
-  specify('::new is a deprecated alias of ::for') do
-    expect { expect(Regexp::Syntax.new('ruby/2.0.0')).to eq Regexp::Syntax::V2_0_0 }
-      .to output(/deprecated/).to_stderr
-  end
-
   specify('not implemented') do
     expect { RP.parse('\p{alpha}', 'ruby/1.8') }.to raise_error(Regexp::Syntax::NotImplementedError)
   end
@@ -59,12 +54,5 @@ RSpec.describe(Regexp::Syntax) do
 
   specify('raises for unknown constant lookups') do
     expect { Regexp::Syntax::V1 }.to raise_error(/V1/)
-  end
-
-  specify('instantiation is deprecated but still works') do
-    expect { @instance = Regexp::Syntax::V3_1_0.new }
-      .to output(/deprecated/).to_stderr
-    expect { expect(@instance.implements?(:literal, :literal)).to be true }
-      .to output(/deprecated/).to_stderr
   end
 end

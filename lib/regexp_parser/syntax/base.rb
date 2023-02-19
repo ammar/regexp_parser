@@ -12,6 +12,8 @@ module Regexp::Syntax
     class << self
       attr_accessor :features
 
+      private :new
+
       # automatically inherit features through the syntax class hierarchy
       def inherited(subclass)
         super
@@ -94,27 +96,5 @@ module Regexp::Syntax
         end
       end
     end
-
-    # TODO: drop this backwards compatibility code in v3.0.0, do `private :new`
-    def initialize
-      warn 'Using instances of Regexp::Parser::Syntax is deprecated ' \
-           "and will no longer be supported in v3.0.0."
-    end
-
-    def method_missing(name, *args)
-      if self.class.respond_to?(name)
-        warn 'Using instances of Regexp::Parser::Syntax is deprecated ' \
-             "and will no longer be supported in v3.0.0. Please call "\
-             "methods on the class directly, e.g.: #{self.class}.#{name}"
-        self.class.send(name, *args)
-      else
-        super
-      end
-    end
-
-    def respond_to_missing?(name, include_private = false)
-      self.class.respond_to?(name) || super
-    end
-    # end of backwards compatibility code
   end
 end
