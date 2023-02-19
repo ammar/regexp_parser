@@ -34,6 +34,9 @@ module Regexp::Expression
       exp
     end
 
+    # TODO: this is inconsistent with Expression::Shared#te, which
+    # does NOT cover the quantifier. Unify in v3.0.0.
+    # Maybe add #ends_at(including_quantifier = false) ?
     def te
       ts + to_s.length
     end
