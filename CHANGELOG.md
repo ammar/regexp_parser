@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * these are a `SyntaxError` in Ruby, so could only be passed as a String
   * they now raise a `Regexp::Scanner::ScannerError`
 - fixed some scanner errors not inheriting from `Regexp::Scanner::ScannerError`
+- reduced verbosity of inspect / pretty print output
 
 ## [2.7.0] - 2023-02-08 - [Janosch Müller](mailto:janosch84@gmail.com)
 

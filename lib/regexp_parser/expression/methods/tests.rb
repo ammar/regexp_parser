@@ -95,6 +95,9 @@ module Regexp::Expression
     end
 
     # Deep-compare two expressions for equality.
+    #
+    # When changing the conditions, please make sure to update
+    # #pretty_print_instance_variables so that it includes all relevant values.
     def ==(other)
       self.class   == other.class &&
         text       == other.text &&
