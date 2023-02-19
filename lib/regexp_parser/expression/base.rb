@@ -6,13 +6,6 @@ module Regexp::Expression
       init_from_token_and_options(token, options)
     end
 
-    def initialize_copy(orig)
-      self.text       = orig.text.dup         if orig.text
-      self.options    = orig.options.dup      if orig.options
-      self.quantifier = orig.quantifier.clone if orig.quantifier
-      super
-    end
-
     def to_re(format = :full)
       if set_level > 0
         warn "Calling #to_re on character set members is deprecated - "\
