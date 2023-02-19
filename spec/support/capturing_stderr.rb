@@ -1,8 +1,8 @@
 require 'stringio'
 
-def capturing_stderr(&block)
+def capturing_stderr
   old_stderr, $stderr = $stderr, StringIO.new
-  block.call
+  yield
   $stderr.string
 ensure
   $stderr = old_stderr

@@ -70,7 +70,7 @@ module Regexp::Expression
     # lit.to_s(:original) # => 'a +' # with quantifier AND intermittent decorations
     #
     def to_s(format = :full)
-      base = parts.each_with_object(''.dup) do |part, buff|
+      base = parts.each_with_object(+'') do |part, buff|
         if part.instance_of?(String)
           buff << part
         elsif !part.custom_to_s_handling
@@ -99,7 +99,7 @@ module Regexp::Expression
 
     def nesting_level=(lvl)
       @nesting_level = lvl
-      quantifier && quantifier.nesting_level = lvl
+      quantifier&.nesting_level = lvl
       terminal? || each { |subexp| subexp.nesting_level = lvl + 1 }
     end
 

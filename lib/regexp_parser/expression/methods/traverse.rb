@@ -9,10 +9,10 @@ module Regexp::Expression
       return enum_for(__method__, include_self) unless block
 
       if block.arity == 1
-        block.call(self) if include_self
+        yield(self) if include_self
         each_expression_without_index(&block)
       else
-        block.call(self, 0) if include_self
+        yield(self, 0) if include_self
         each_expression_with_index(&block)
       end
     end
@@ -30,21 +30,21 @@ module Regexp::Expression
     #
     # Returns self.
     def traverse(include_self = false, &block)
-      return enum_for(__method__, include_self) unless block_given?
+      return enum_for(__method__, include_self) unless block
 
-      block.call(:enter, self, 0) if include_self
+      yield(:enter, self, 0) if include_self
 
       each_with_index do |exp, index|
         if exp.terminal?
-          block.call(:visit, exp, index)
+          yield(:visit, exp, index)
         else
-          block.call(:enter, exp, index)
+          yield(:enter, exp, index)
           exp.traverse(&block)
-          block.call(:exit, exp, index)
+          yield(:exit, exp, index)
         end
       end
 
-      block.call(:exit, self, 0) if include_self
+      yield(:exit, self, 0) if include_self
 
       self
     end
@@ -54,10 +54,10 @@ module Regexp::Expression
     # for every expression. If a block is not given, returns an array with
     # each expression and its level index as an array.
     def flat_map(include_self = false, &block)
-      case block && block.arity
+      case block&.arity
       when nil then each_expression(include_self).to_a
       when 2   then each_expression(include_self).map(&block)
-      else          each_expression(include_self).map { |exp| block.call(exp) }
+      else          each_expression(include_self).map { |exp| yield(exp) }
       end
     end
 
@@ -65,14 +65,14 @@ module Regexp::Expression
 
     def each_expression_with_index(&block)
       each_with_index do |exp, index|
-        block.call(exp, index)
+        yield(exp, index)
         exp.each_expression_with_index(&block) unless exp.terminal?
       end
     end
 
     def each_expression_without_index(&block)
       each do |exp|
-        block.call(exp)
+        yield(exp)
         exp.each_expression_without_index(&block) unless exp.terminal?
       end
     end

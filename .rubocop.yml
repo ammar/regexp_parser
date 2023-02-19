@@ -1,3 +1,6 @@
+require:
+  - rubocop-performance
+
 AllCops:
   DisabledByDefault: true
   Exclude:
@@ -8,9 +11,12 @@ AllCops:
     - ruby
     - rake
   SuggestExtensions: false
-  TargetRubyVersion: 2.6 # really 2.0, but 2.6 is lowest supported by rubocop
+  TargetRubyVersion: 2.6 # really 2.4, but 2.6 is lowest supported by rubocop
 
 Lint:
+  Enabled: true
+
+Performance:
   Enabled: true
 
 # ignore weird looking regexps in specs, we have these on purpose

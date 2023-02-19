@@ -44,8 +44,8 @@ class Regexp::Parser
     root.nesting_level = 0
     assign_referenced_expressions
 
-    if block_given?
-      block.call(root)
+    if block
+      yield(root)
     else
       root
     end
@@ -196,7 +196,7 @@ class Regexp::Parser
   end
 
   def total_captured_group_count
-    captured_group_counts.values.reduce(0, :+)
+    captured_group_counts.values.sum
   end
 
   def captured_group_count_at_level
@@ -238,7 +238,7 @@ class Regexp::Parser
       node << Backreference::NumberRecursionLevel.new(token, active_opts).tap do |exp|
         # TODO: should split off new token number_recursion_rel_ref and new
         # class NumberRelativeRecursionLevel in v3.0.0 to get rid of this
-        if exp.text =~ /[<'][+-]/
+        if exp.text.match?(/[<'][+-]/)
           assign_effective_number(exp)
         else
           exp.effective_number = exp.number
@@ -321,7 +321,7 @@ class Regexp::Parser
     when :octal;          node << EscapeSequence::Octal.new(token, active_opts)
 
     when :control
-      if token.text =~ /\A(?:\\C-\\M|\\c\\M)/
+      if token.text.match?(META_CONTROL_PATTERN)
         # TODO: emit :meta_control_sequence token in v3.0.0
         node << EscapeSequence::MetaControl.new(token, active_opts)
       else
@@ -329,7 +329,7 @@ class Regexp::Parser
       end
 
     when :meta_sequence
-      if token.text =~ /\A\\M-\\[Cc]/
+      if token.text.match?(META_CONTROL_PATTERN)
         # TODO: emit :meta_control_sequence token in v3.0.0:
         node << EscapeSequence::MetaControl.new(token, active_opts)
       else
@@ -345,6 +345,8 @@ class Regexp::Parser
       node << EscapeSequence::Literal.new(token, active_opts)
     end
   end
+
+  META_CONTROL_PATTERN = /\A(?:\\C-\\M|\\c\\M|\\M-\\[Cc])/
 
   def free_space(token)
     case token.token
@@ -497,13 +499,17 @@ class Regexp::Parser
       target_node = new_group
     end
 
-    unless token.token =~ /\A(?:zero_or_one|zero_or_more|one_or_more|interval)
-                             (?:_greedy|_reluctant|_possessive)?\z/x
+    unless token.token.match?(KNOWN_QUANTIFIER_TOKEN_PATTERN)
       raise UnknownTokenError.new('Quantifier', token)
     end
 
     target_node.quantify(token, active_opts)
   end
+
+   KNOWN_QUANTIFIER_TOKEN_PATTERN = /
+    \A(?:zero_or_one|zero_or_more|one_or_more|interval)
+    (?:_greedy|_reluctant|_possessive)?\z
+  /x
 
   def increase_group_level(exp)
     exp.level += 1

@@ -1,7 +1,7 @@
 module Regexp::Syntax
   module Token
     module UnicodeProperty
-      all = proc { |name| constants.grep(/#{name}/).flat_map(&method(:const_get)) }
+      all = proc { |name| constants.grep(/#{name}/).flat_map { |c| const_get(c) } }
 
       CharType_V1_9_0 = %i[alnum alpha ascii blank cntrl digit graph
                            lower print punct space upper word xdigit]

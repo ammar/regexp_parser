@@ -11,5 +11,6 @@ group :development, :test do
     gem 'benchmark-ips', '~> 2.1'
     gem 'gouteur', '~> 1.1'
     gem 'rubocop', '~> 1.7'
+    gem 'rubocop-performance'
   end
 end
