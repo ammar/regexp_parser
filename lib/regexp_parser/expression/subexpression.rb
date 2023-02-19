@@ -34,7 +34,7 @@ module Regexp::Expression
       exp
     end
 
-    # TODO: this is inconsistent with Expression::Shared#te, which
+    # TODO: this is inconsistent with Expression::Base#te, which
     # does NOT cover the quantifier. Unify in v3.0.0.
     # Maybe add #ends_at(including_quantifier = false) ?
     def te

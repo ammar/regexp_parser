@@ -1,5 +1,5 @@
 module Regexp::Expression
-  module Shared
+  class Base
     # default implementation
     def parts
       [text.dup]

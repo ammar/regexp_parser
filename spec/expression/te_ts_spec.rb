@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Expression::Shared#te,ts') do
+RSpec.describe('Expression::Base#te,ts') do
   # Many tokens/expressions have their own tests for #te and #ts.
   # This is an integration-like test to ensure they are correct in conjunction.
   it 'is correct irrespective of nesting or preceding tokens' do

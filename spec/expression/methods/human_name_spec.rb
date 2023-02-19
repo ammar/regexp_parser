@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Regexp::Expression::Shared#human_name') do
+RSpec.describe('Regexp::Expression::Base#human_name') do
   include_examples 'parse', //,              []      => [human_name: 'root']
   include_examples 'parse', /a/,             [0]     => [human_name: 'literal']
   include_examples 'parse', /./,             [0]     => [human_name: 'match-all']

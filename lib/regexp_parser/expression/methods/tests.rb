@@ -1,5 +1,5 @@
 module Regexp::Expression
-  module Shared
+  class Base
 
     # Test if this expression has the given test_type, which can be either
     # a symbol or an array of symbols to check against the expression's type.
@@ -117,21 +117,21 @@ module Regexp::Expression
     end
   end
 
-  Shared.class_eval                  { def terminal?; true  end }
+  Base.class_eval                    { def terminal?; true  end }
   Subexpression.class_eval           { def terminal?; false end }
 
-  Shared.class_eval                  { def capturing?; false end }
+  Base.class_eval                    { def capturing?; false end }
   Group::Capture.class_eval          { def capturing?; true  end }
 
-  Shared.class_eval                  { def comment?; false end }
+  Base.class_eval                    { def comment?; false end }
   Comment.class_eval                 { def comment?; true  end }
   Group::Comment.class_eval          { def comment?; true  end }
 
-  Shared.class_eval                  { def decorative?; false end }
+  Base.class_eval                    { def decorative?; false end }
   FreeSpace.class_eval               { def decorative?; true  end }
   Group::Comment.class_eval          { def decorative?; true  end }
 
-  Shared.class_eval                  { def referential?; false end }
+  Base.class_eval                    { def referential?; false end }
   Backref::Base.class_eval           { def referential?; true  end }
   Conditional::Condition.class_eval  { def referential?; true  end }
   Conditional::Expression.class_eval { def referential?; true  end }

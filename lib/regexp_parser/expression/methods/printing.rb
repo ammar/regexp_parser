@@ -1,5 +1,5 @@
 module Regexp::Expression
-  module Shared
+  class Base
     def inspect
       [
         "#<#{self.class}",

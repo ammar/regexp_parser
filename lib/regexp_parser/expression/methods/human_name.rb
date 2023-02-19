@@ -1,5 +1,5 @@
 module Regexp::Expression
-  module Shared
+  class Base
     # default implementation, e.g. "atomic group", "hex escape", "word type", ..
     def human_name
       [token, type].compact.join(' ').tr('_', ' ')

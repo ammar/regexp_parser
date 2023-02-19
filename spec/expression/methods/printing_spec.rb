@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('Expression::Shared#inspect') do
+RSpec.describe('Expression::Base#inspect') do
   it 'includes only essential information' do
     root = Regexp::Parser.parse(//)
     expect(root.inspect).to eq '#<Regexp::Expression::Root @expressions=[]>'
@@ -17,7 +17,7 @@ RSpec.describe('Expression::Shared#inspect') do
   end
 end
 
-RSpec.describe('Expression::Shared#pretty_print') do
+RSpec.describe('Expression::Base#pretty_print') do
   it 'works' do
     require 'pp' # rubocop:disable Lint/RedundantRequireStatement
     pp_to_s = ->(arg) { ''.dup.tap { |buffer| PP.new(buffer).pp(arg) } }

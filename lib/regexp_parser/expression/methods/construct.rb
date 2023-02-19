@@ -1,5 +1,5 @@
 module Regexp::Expression
-  module Shared
+  class Base
     module ClassMethods
       # Convenience method to init a valid Expression without a Regexp::Token
       def construct(params = {})

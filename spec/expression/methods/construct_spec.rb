@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe(Regexp::Expression::Shared) do
+RSpec.describe(Regexp::Expression::Base) do
   describe '::construct' do
     {
       Alternation                       => :meta,
