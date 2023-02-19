@@ -151,13 +151,14 @@ RSpec.describe('ExpressionTests') do
     [0] => [capturing?: true],
     [1] => [capturing?: false]
 
-  # test #comment?
-  include_examples 'parse', /(a)(?#b)c#d/x,
+  # test #comment?, #decorative?
+  include_examples 'parse', /(a)(?#b)c # d/x,
     []  => [comment?: false],
     [0] => [comment?: false],
-    [1] => [comment?: true],
+    [1] => [comment?: true, decorative?: true],
     [2] => [comment?: false],
-    [3] => [comment?: true]
+    [3] => [comment?: false, decorative?: true],
+    [4] => [comment?: true, decorative?: true]
 
   # test #optional?
   include_examples 'parse', /a?/,     [0] => [optional?: true]

@@ -108,7 +108,11 @@ module Regexp::Expression
     end
 
     def comment?
-      false # overridden to be true e.g. in Expression::Group::Comment
+      false # overridden to be true in Expression::{Comment,Group::Comment}
+    end
+
+    def decorative?
+      false # overridden to be true in Expression::{FreeSpace,Group::Comment}
     end
 
     def optional?

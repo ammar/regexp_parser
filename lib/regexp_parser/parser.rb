@@ -478,7 +478,7 @@ class Regexp::Parser
   end
 
   def quantifier(token)
-    target_node = node.expressions.reverse.find { |exp| !exp.is_a?(FreeSpace) }
+    target_node = node.expressions.reverse.find { |exp| !exp.decorative? }
     target_node or raise ParserError, "No valid target found for '#{token.text}'"
 
     # in case of chained quantifiers, wrap target in an implicit passive group

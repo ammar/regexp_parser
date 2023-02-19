@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Regexp::Expression::Shared#{capturing?,comment?}`
   * previously only available on capturing and comment groups
+- `Regexp::Expression::Shared#{decorative?}`
+  * true for non-functionals: comment groups and comments and whitespace in x-mode
 - `Regexp::Expression::Shared#parent`
 - support calling `Subexpression#{each_expression,flat_map}` with a one-argument block
   * in this case, only the expressions are passed to the block, no indices
@@ -24,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * e.g. in `/(?x:(?#hello)) /`, the x-option wrongly applied to the whitespace
 - fixed nested comment groups breaking conditionals
   * e.g. in `/(a)(?(1)b|c(?#hello)d)e/`, the 2nd conditional branch included "e"
+- fixed quantifiers after comment groups being mis-assigned to that group
+  * e.g. in `/a(?#foo){3}/` (matches 'aaa')
 - fixed scanner accepting unmatched closing parentheses ')'
   * these are a `SyntaxError` in Ruby, so could only be passed as a String
   * they now raise a `Regexp::Scanner::ScannerError`

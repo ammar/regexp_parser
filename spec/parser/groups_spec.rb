@@ -14,6 +14,11 @@ RSpec.describe('Group parsing') do
     3 => [:group, :comment, Group::Comment, capturing?: false, comment?: true],
     5 => [:group, :comment, Group::Comment, capturing?: false, comment?: true]
 
+  include_examples 'parse', /a(?# is for apple){3}/,
+    [0]     => [Literal, text: 'a', quantified?: true],
+    [0, :q] => [Quantifier, text: '{3}'],
+    [1]     => [Group::Comment, text: '(?# is for apple)', quantified?: false]
+
   if ruby_version_at_least('2.4.1')
     include_examples 'parse', 'a(?~b)c(?~d)e',
       1 => [:group, :absence, Group::Absence],
