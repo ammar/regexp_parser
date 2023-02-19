@@ -16,9 +16,5 @@ module Regexp::Expression
     def add_sequence(active_opts = {}, params = { ts: 0 })
       self.class::OPERAND.add_to(self, params, active_opts)
     end
-
-    def parts
-      intersperse(expressions, text.dup)
-    end
   end
 end

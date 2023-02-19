@@ -63,10 +63,6 @@ module Regexp::Expression
         true
       end
 
-      def parts
-        [text.dup, condition, *intersperse(branches, '|'), ')']
-      end
-
       def initialize_copy(orig)
         self.referenced_expression = orig.referenced_expression.dup
         super

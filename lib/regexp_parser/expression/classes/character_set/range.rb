@@ -14,10 +14,6 @@ module Regexp::Expression
       def complete?
         count == 2
       end
-
-      def parts
-        intersperse(expressions, text.dup)
-      end
     end
   end
 end

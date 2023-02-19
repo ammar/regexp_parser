@@ -52,10 +52,6 @@ module Regexp::Expression
     end
     alias :to_str :to_s
 
-    def parts
-      [text.dup]
-    end
-
     def quantifier_affix(expression_format)
       quantifier.to_s if quantified? && expression_format != :base
     end

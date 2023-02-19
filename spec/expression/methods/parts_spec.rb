@@ -61,7 +61,11 @@ RSpec.describe('Expression::Base#parts') do
   include_examples 'parse', /[a&&b&&c]/,
     [] => [:root, parts: [
       s(CharacterSet, '[',
-        s(CharacterSet::Intersection, '&&', s(Literal, 'a'), s(Literal, 'b'), s(Literal, 'c')),
+        s(CharacterSet::Intersection, '&&',
+          s(CharacterSet::IntersectedSequence, nil, s(Literal, 'a')),
+          s(CharacterSet::IntersectedSequence, nil, s(Literal, 'b')),
+          s(CharacterSet::IntersectedSequence, nil, s(Literal, 'c'))
+        )
       )
     ]],
     [0, 0] => [:intersection, parts: [

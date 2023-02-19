@@ -42,10 +42,6 @@ module Regexp::Expression
       ts + to_s.length
     end
 
-    def parts
-      expressions
-    end
-
     def to_h
       attributes.merge(
         text:        to_s(:base),
@@ -55,12 +51,6 @@ module Regexp::Expression
 
     def terminal?
       false
-    end
-
-    private
-
-    def intersperse(expressions, separator)
-      expressions.flat_map { |exp| [exp, separator] }.slice(0...-1)
     end
   end
 end

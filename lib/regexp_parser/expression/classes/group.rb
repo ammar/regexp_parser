@@ -1,9 +1,6 @@
 module Regexp::Expression
   module Group
     class Base < Regexp::Expression::Subexpression
-      def parts
-        [text.dup, *expressions, ')']
-      end
     end
 
     class Passive < Group::Base
@@ -12,14 +9,6 @@ module Regexp::Expression
       def initialize(*)
         @implicit = false
         super
-      end
-
-      def parts
-        if implicit?
-          expressions
-        else
-          super
-        end
       end
 
       def implicit?
@@ -71,10 +60,6 @@ module Regexp::Expression
     end
 
     class Comment < Group::Base
-      def parts
-        [text.dup]
-      end
-
       def comment?; true end
     end
   end

@@ -19,9 +19,5 @@ module Regexp::Expression
     def close
       self.closed = true
     end
-
-    def parts
-      ["#{text}#{'^' if negated?}", *expressions, ']']
-    end
   end
 end # module Regexp::Expression
