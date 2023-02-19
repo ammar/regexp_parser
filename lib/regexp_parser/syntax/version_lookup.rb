@@ -30,19 +30,19 @@ module Regexp::Syntax
   end
 
   def supported?(name)
-    name =~ VERSION_REGEXP && comparable(name) >= comparable('1.8.6')
+    name.match?(VERSION_REGEXP) && comparable(name) >= comparable('1.8.6')
   end
 
   def version_class(version)
     return Regexp::Syntax::Any if ['*', 'any'].include?(version.to_s)
 
-    version =~ VERSION_REGEXP || raise(InvalidVersionNameError, version)
+    version.match?(VERSION_REGEXP) || raise(InvalidVersionNameError, version)
     version_const_name = "V#{version.to_s.scan(/\d+/).join('_')}"
     const_get(version_const_name) || raise(UnknownSyntaxNameError, version)
   end
 
   def const_missing(const_name)
-    if const_name =~ VERSION_CONST_REGEXP
+    if const_name.match?(VERSION_CONST_REGEXP)
       return fallback_version_class(const_name)
     end
     super

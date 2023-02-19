@@ -813,7 +813,7 @@ class Regexp::Scanner
 
     # If the x appears in both, treat it like ruby does, the second cancels
     # the first.
-    if negative && negative.include?('x')
+    if negative&.include?('x')
       self.free_spacing = false
     end
 

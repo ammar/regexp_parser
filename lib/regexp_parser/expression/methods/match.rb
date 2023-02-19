@@ -1,7 +1,7 @@
 module Regexp::Expression
   class Base
     def match?(string)
-      !!match(string)
+      Regexp.new(to_s).match?(string)
     end
     alias :matches? :match?
 

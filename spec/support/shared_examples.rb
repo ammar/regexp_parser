@@ -79,7 +79,7 @@ RSpec.shared_examples 'parse' do |pattern, checks|
         type  && expect(exp.type).to(eq(type))
         token && expect(exp.token).to(eq(token))
 
-        attributes && attributes.each do |method, value|
+        attributes&.each do |method, value|
           actual = exp.send(method)
           expect(actual).to eq(value),
             "expected #{description} at #{path} to "\
