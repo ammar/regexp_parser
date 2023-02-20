@@ -12,15 +12,15 @@ RSpec.describe('EscapeSequence parsing') do
   include_examples 'parse', /a\vc/,          1 => [:escape, :vertical_tab,   es::VerticalTab]
 
   # meta character escapes
-  include_examples 'parse', /a\.c/,          1 => [:escape, :dot,            es::Literal]
-  include_examples 'parse', /a\?c/,          1 => [:escape, :zero_or_one,    es::Literal]
-  include_examples 'parse', /a\*c/,          1 => [:escape, :zero_or_more,   es::Literal]
-  include_examples 'parse', /a\+c/,          1 => [:escape, :one_or_more,    es::Literal]
-  include_examples 'parse', /a\|c/,          1 => [:escape, :alternation,    es::Literal]
-  include_examples 'parse', /a\(c/,          1 => [:escape, :group_open,     es::Literal]
-  include_examples 'parse', /a\)c/,          1 => [:escape, :group_close,    es::Literal]
-  include_examples 'parse', /a\{c/,          1 => [:escape, :interval_open,  es::Literal]
-  include_examples 'parse', /a\}c/,          1 => [:escape, :interval_close, es::Literal]
+  include_examples 'parse', /a\.c/,          1 => [:escape, :dot,            es::RegexpMeta]
+  include_examples 'parse', /a\?c/,          1 => [:escape, :zero_or_one,    es::RegexpMeta]
+  include_examples 'parse', /a\*c/,          1 => [:escape, :zero_or_more,   es::RegexpMeta]
+  include_examples 'parse', /a\+c/,          1 => [:escape, :one_or_more,    es::RegexpMeta]
+  include_examples 'parse', /a\|c/,          1 => [:escape, :alternation,    es::RegexpMeta]
+  include_examples 'parse', /a\(c/,          1 => [:escape, :group_open,     es::RegexpMeta]
+  include_examples 'parse', /a\)c/,          1 => [:escape, :group_close,    es::RegexpMeta]
+  include_examples 'parse', /a\{c/,          1 => [:escape, :interval_open,  es::RegexpMeta]
+  include_examples 'parse', /a\}c/,          1 => [:escape, :interval_close, es::RegexpMeta]
 
   # unicode escapes
   include_examples 'parse', /a\u0640/,       1 => [:escape, :codepoint,      es::Codepoint]

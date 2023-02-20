@@ -334,13 +334,12 @@ class Regexp::Parser
         node << EscapeSequence::Meta.new(token, active_opts)
       end
 
-    else
-      # treating everything else as a literal
-      # TODO: maybe split this up a bit more in v3.0.0?
-      # E.g. escaped quantifiers or set meta chars are not the same
-      # as stuff that would be a literal even without the backslash.
-      # Right now, they all end up here.
+    when :literal
       node << EscapeSequence::Literal.new(token, active_opts)
+
+    else
+      node << EscapeSequence::RegexpMeta.new(token, active_opts)
+
     end
   end
 

@@ -24,6 +24,12 @@ module Regexp::Expression
       end
     end
 
+    class RegexpMeta < EscapeSequence::Base
+      def char
+        text[1..-1]
+      end
+    end
+
     class AsciiEscape   < EscapeSequence::Base; end
     class Backspace     < EscapeSequence::Base; end
     class Bell          < EscapeSequence::Base; end
