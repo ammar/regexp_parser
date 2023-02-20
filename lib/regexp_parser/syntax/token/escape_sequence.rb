@@ -1,7 +1,6 @@
 module Regexp::Syntax
   module Token
-    # TODO: unify naming with RE::EscapeSequence, one way or the other, in v3.0.0
-    module Escape
+    module EscapeSequence
       Basic = %i[backslash literal]
 
       Control = %i[control meta_sequence]
@@ -26,6 +25,8 @@ module Regexp::Syntax
       Type  = :escape
     end
 
-    Map[Escape::Type] = Escape::All
+    Map[EscapeSequence::Type] = EscapeSequence::All
+
+    Escape = EscapeSequence
   end
 end
