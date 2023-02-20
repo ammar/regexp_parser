@@ -26,6 +26,14 @@ RSpec.describe('CharacterSet parsing') do
     [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
     [0, 1] => [:escape, :octal, EscapeSequence::Octal, text: '\77']
 
+  include_examples 'parse', '[a\-c]',
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
+    [0, 1] => [:escape, :set_range, EscapeSequence::RegexpMeta, text: '\-']
+
+  include_examples 'parse', '[\^ac]',
+    [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
+    [0, 0] => [:escape, :set_negate, EscapeSequence::RegexpMeta, text: '\^']
+
   include_examples 'parse', '[a\u0640c]',
     [0]    => [:set, :character, CharacterSet, text: '[', count: 3],
     [0, 1] => [:escape, :codepoint, EscapeSequence::Codepoint, text: '\u0640']

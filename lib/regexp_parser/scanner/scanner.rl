@@ -162,19 +162,21 @@
       end
     };
 
-    '-]' @set_closed { # special case, emits two tokens
+    '-]' { # special case: a dash at the end of a set is treated as a literal
       emit(:literal, :literal, '-')
-      emit(:set, :close, ']')
-      if in_set?
-        fret;
-      else
-        fgoto main;
-      end
+      # consume only the '-' and backtrack to close the set
+      fexec ts + 1;
     };
 
-    '-&&' { # special case, emits two tokens
+    '-&&' { # special case: a dash before an intersection is treated as literal
       emit(:literal, :literal, '-')
       emit(:set, :intersection, '&&')
+    };
+
+    '\\-]' | '\\-&&' { # special case: redundant escapes, dash is literal anyway
+      emit(:escape, :literal, '\-')
+      # consume only the '\-' and backtrack to close the set
+      fexec ts + 2;
     };
 
     '^' {
@@ -255,15 +257,25 @@
     };
 
     # Scan all other escapes that work in sets with the generic escape scanner
-    set_escape > (escaped_set_alpha, 2) {
+    set_escape > (escaped_set_alpha, 4) {
       fhold;
       fnext character_set;
       fcall escape_sequence;
     };
 
+    '-' > (escaped_set_alpha, 3) {
+      # dash escape is redundant after any set token (open, subset close, etc.)
+      emit(:escape, prev_token[0] == :set  ? :literal : :set_range, '\-')
+      fret;
+    };
+
+    '^' > (escaped_set_alpha, 2) {
+      # chevron escape is redundant if not at start of set
+      emit(:escape, prev_token[1] == :open ? :set_negate : :literal, '\^')
+      fret;
+    };
+
     # Treat all remaining escapes - those not supported in sets - as literal.
-    # (This currently includes \^, \-, \&, \:, although these could potentially
-    # be meta chars when not escaped, depending on their position in the set.)
     any > (escaped_set_alpha, 1) {
       emit(:escape, :literal, copy(data, ts-1, te))
       fret;

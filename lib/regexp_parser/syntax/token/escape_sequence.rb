@@ -15,7 +15,7 @@ module Regexp::Syntax
                  bol eol
                  group_open group_close
                  interval_open interval_close
-                 set_open set_close]
+                 set_open set_close set_range set_negate]
 
       Hex   = %i[hex]
 

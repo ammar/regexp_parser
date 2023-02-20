@@ -81,7 +81,11 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', /[a-d]/,                 3 => [:literal, :literal,        'd',          3, 4]
   include_examples 'scan', /[a-b-]/,                4 => [:literal, :literal,        '-',          4, 5]
   include_examples 'scan', /[-a]/,                  1 => [:literal, :literal,        '-',          1, 2]
+  include_examples 'scan', /[a\-d]/,                2 => [:escape,  :set_range,      '\-',         2, 4]
+  include_examples 'scan', /[a-b\-]/,               4 => [:escape,  :literal,        '\-',         4, 6]
+  include_examples 'scan', /[\-a]/,                 1 => [:escape,  :literal,        '\-',         1, 3]
   include_examples 'scan', /[a-c^]/,                4 => [:literal, :literal,        '^',          4, 5]
+  include_examples 'scan', /[a-c\^]/,               4 => [:escape,  :literal,        '\^',         4, 6]
   include_examples 'scan', /[a-bd-f]/,              2 => [:set,     :range,          '-',          2, 3]
   include_examples 'scan', /[a-cd-f]/,              5 => [:set,     :range,          '-',          5, 6]
   # this is a buggy range, it matches only `c`, but not `a`, `b` or `-`
