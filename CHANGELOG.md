@@ -9,20 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Regexp::Expression::Shared#ends_at`
+  * e.g. `parse(/a +/x)[0].ends_at # => 3`
+  * e.g. `parse(/a +/x)[0].ends_at(include_quantifier = false) # => 1`
 - `Regexp::Expression::Shared#{capturing?,comment?}`
   * previously only available on capturing and comment groups
 - `Regexp::Expression::Shared#{decorative?}`
-  * true for non-functionals: comment groups and comments and whitespace in x-mode
+  * true for decorations: comment groups as well as comments and whitespace in x-mode
 - `Regexp::Expression::Shared#parent`
-- support calling `Subexpression#{each_expression,flat_map}` with a one-argument block
-  * in this case, only the expressions are passed to the block, no indices
 - new format argument `:original` for `Regexp::Expression::Base#to_s`
   * includes decorative elements between node and its quantifier
-  * e.g. `parse(/a +/x)[0].to_s(:original) # => "a +"`
+  * e.g. `parse(/a (?#comment) +/x)[0].to_s(:original) # => "a (?#comment) +"`
   * using it is not needed when calling `Root#to_s` as Root can't be quantified
+- support calling `Subexpression#{each_expression,flat_map}` with a one-argument block
+  * in this case, only the expressions are passed to the block, no indices
 
 ### Fixed
 
+- `Regexp::Expression::Shared#full_length` with whitespace before quantifier
+  * e.g. `parse(/a +/x)[0].full_length` used to yield `2`, now it yields `3`
 - `Subexpression#to_s` output with children with whitespace before their quantifier
   * e.g. `parse(/a + /x).to_s` used to yield `"a+  "`, now it yields `"a + "`
   * calling `#to_s` on sub-nodes still omits such decorative interludes by default

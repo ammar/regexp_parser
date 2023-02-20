@@ -40,12 +40,16 @@ module Regexp::Expression
       ts
     end
 
+    def ends_at(include_quantifier = true)
+      ts + (include_quantifier ? full_length : base_length)
+    end
+
     def base_length
       to_s(:base).length
     end
 
     def full_length
-      to_s.length
+      to_s(:original).length
     end
 
     # #to_s reproduces the original source, as an unparser would.
