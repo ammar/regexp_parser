@@ -54,24 +54,24 @@ RSpec.describe('Group parsing') do
 
   # option switching group
   include_examples 'parse', /a(?i-m)b/m,
-    0 => [:literal, :literal,         Literal,        text: 'a', options: { m: true }],
-    1 => [:group,   :options_switch,  Group::Options, options: { i: true }, option_changes: { i: true, m: false }],
-    2 => [:literal, :literal,         Literal,        text: 'b', options: { i: true }]
+    0 => [:literal, :literal,         Literal,              text: 'a', options: { m: true }],
+    1 => [:group,   :options_switch,  Group::OptionsSwitch, options: { i: true }, option_changes: { i: true, m: false }],
+    2 => [:literal, :literal,         Literal,              text: 'b', options: { i: true }]
 
   # option switch in group
   include_examples 'parse', /(a(?i-m)b)c/m,
-    0      => [:group,   :capture,        Group::Capture, capturing?: true, options: { m: true }],
-    [0, 0] => [:literal, :literal,        Literal,        capturing?: false, text: 'a', options: { m: true }],
-    [0, 1] => [:group,   :options_switch, Group::Options, options: { i: true }, option_changes: { i: true, m: false }],
-    [0, 2] => [:literal, :literal,        Literal,        text: 'b', options: { i: true }],
-    1      => [:literal, :literal,        Literal,        text: 'c', options: { m: true }]
+    0      => [:group,   :capture,        Group::Capture,       capturing?: true, options: { m: true }],
+    [0, 0] => [:literal, :literal,        Literal,              capturing?: false, text: 'a', options: { m: true }],
+    [0, 1] => [:group,   :options_switch, Group::OptionsSwitch, options: { i: true }, option_changes: { i: true, m: false }],
+    [0, 2] => [:literal, :literal,        Literal,              text: 'b', options: { i: true }],
+    1      => [:literal, :literal,        Literal,              text: 'c', options: { m: true }]
 
   # nested option switch in group
   include_examples 'parse', /((?i-m)(a(?-i)b))/m,
-    [0, 1]    => [:group,   :capture,        Group::Capture, options: { i: true }],
-    [0, 1, 0] => [:literal, :literal,        Literal,        text: 'a', options: { i: true }],
-    [0, 1, 1] => [:group,   :options_switch, Group::Options, options: {}, option_changes: { i: false }],
-    [0, 1, 2] => [:literal, :literal,        Literal,        text: 'b', options: {}]
+    [0, 1]    => [:group,   :capture,        Group::Capture,       options: { i: true }],
+    [0, 1, 0] => [:literal, :literal,        Literal,              text: 'a', options: { i: true }],
+    [0, 1, 1] => [:group,   :options_switch, Group::OptionsSwitch, options: {}, option_changes: { i: false }],
+    [0, 1, 2] => [:literal, :literal,        Literal,              text: 'b', options: {}]
 
   # options dau
   include_examples 'parse', /(?dua:abc)/,

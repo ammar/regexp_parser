@@ -113,12 +113,14 @@ class Regexp::Parser
 
   def group(token)
     case token.token
-    when :options, :options_switch
-      options_group(token)
     when :close
       close_group
     when :comment
       node << Group::Comment.new(token, active_opts)
+    when :options
+      options_group(token, Group::Options)
+    when :options_switch
+      options_group(token, Group::OptionsSwitch)
     else
       open_group(token)
     end
@@ -127,7 +129,7 @@ class Regexp::Parser
   MOD_FLAGS = %w[i m x].map(&:to_sym)
   ENC_FLAGS = %w[a d u].map(&:to_sym)
 
-  def options_group(token)
+  def options_group(token, klass)
     positive, negative = token.text.split('-', 2)
     negative ||= ''
     self.switching_options = token.token.equal?(:options_switch)
@@ -156,7 +158,7 @@ class Regexp::Parser
 
     options_stack << new_active_opts
 
-    options_group = Group::Options.new(token, active_opts)
+    options_group = klass.new(token, active_opts)
     options_group.option_changes = opt_changes
 
     nest(options_group)
