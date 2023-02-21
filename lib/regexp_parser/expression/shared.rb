@@ -33,6 +33,7 @@ module Regexp::Expression
       self.text       = orig.text.dup         if orig.text
       self.options    = orig.options.dup      if orig.options
       self.quantifier = orig.quantifier.clone if orig.quantifier
+      self.parent     = nil # updated by Subexpression#initialize_copy
       super
     end
 

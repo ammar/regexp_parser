@@ -11,7 +11,9 @@ module Regexp::Expression
 
     # Override base method to clone the expressions as well.
     def initialize_copy(orig)
-      self.expressions = orig.expressions.map(&:clone)
+      self.expressions = orig.expressions.map do |exp|
+        exp.clone.tap { |copy| copy.parent = self }
+      end
       super
     end
 

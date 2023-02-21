@@ -7,15 +7,20 @@ RSpec.describe('Expression::Base#clone') do
 
     expect(copy.to_s).to eq root.to_s
 
-    expect(root.object_id).not_to eq copy.object_id
+    expect(root).not_to equal copy
     expect(root.text).to eq copy.text
-    expect(root.text.object_id).not_to eq copy.text.object_id
+    expect(root.text).not_to equal copy.text
 
     root_1 = root[1]
     copy_1 = copy[1]
 
     expect(root_1.options).to eq copy_1.options
-    expect(root_1.options.object_id).not_to eq copy_1.options.object_id
+    expect(root_1.options).not_to equal copy_1.options
+
+    expect(root_1.parent).to eq root
+    expect(root_1.parent).not_to equal copy
+    expect(copy_1.parent).to eq copy
+    expect(copy_1.parent).not_to equal root
 
     root_2 = root[2]
     copy_2 = copy[2]
@@ -23,8 +28,8 @@ RSpec.describe('Expression::Base#clone') do
     expect(root_2).to be_quantified
     expect(copy_2).to be_quantified
     expect(root_2.quantifier.text).to eq copy_2.quantifier.text
-    expect(root_2.quantifier.text.object_id).not_to eq copy_2.quantifier.text.object_id
-    expect(root_2.quantifier.object_id).not_to eq copy_2.quantifier.object_id
+    expect(root_2.quantifier.text).not_to equal copy_2.quantifier.text
+    expect(root_2.quantifier).not_to equal copy_2.quantifier
 
     # regression test
     expect { root_2.clone }.not_to(change { root_2.quantifier.object_id })
@@ -39,12 +44,12 @@ RSpec.describe('Expression::Base#clone') do
 
     expect(root).to respond_to(:expressions)
     expect(copy).to respond_to(:expressions)
-    expect(root.expressions.object_id).not_to eq copy.expressions.object_id
+    expect(root.expressions).not_to equal copy.expressions
     copy.expressions.each_with_index do |exp, index|
-      expect(root[index].object_id).not_to eq exp.object_id
+      expect(root[index]).not_to equal exp
     end
     copy[2].each_with_index do |exp, index|
-      expect(root[2][index].object_id).not_to eq exp.object_id
+      expect(root[2][index]).not_to equal exp
     end
 
     # regression test
@@ -61,11 +66,11 @@ RSpec.describe('Expression::Base#clone') do
     copy_1 = copy[1]
 
     expect(root_1.name).to eq copy_1.name
-    expect(root_1.name.object_id).not_to eq copy_1.name.object_id
+    expect(root_1.name).not_to equal copy_1.name
     expect(root_1.text).to eq copy_1.text
-    expect(root_1.expressions.object_id).not_to eq copy_1.expressions.object_id
+    expect(root_1.expressions).not_to equal copy_1.expressions
     copy_1.expressions.each_with_index do |exp, index|
-      expect(root_1[index].object_id).not_to eq exp.object_id
+      expect(root_1[index]).not_to equal exp
     end
 
     # regression test
@@ -82,7 +87,7 @@ RSpec.describe('Expression::Base#clone') do
     copy_1 = copy[1]
 
     expect(root_1.option_changes).to eq copy_1.option_changes
-    expect(root_1.option_changes.object_id).not_to eq copy_1.option_changes.object_id
+    expect(root_1.option_changes).not_to equal copy_1.option_changes
 
     # regression test
     expect { root_1.clone }.not_to(change { root_1.option_changes.object_id })
@@ -99,7 +104,7 @@ RSpec.describe('Expression::Base#clone') do
 
     expect(root_1.referenced_expression).to eq copy_1.referenced_expression
     expect(root_1.referenced_expression.to_s).to eq copy_1.referenced_expression.to_s
-    expect(root_1.referenced_expression.object_id).not_to eq copy_1.referenced_expression.object_id
+    expect(root_1.referenced_expression).not_to equal copy_1.referenced_expression
 
     # regression test
     expect { root_1.clone }.not_to(change { root_1.referenced_expression.object_id })
@@ -115,10 +120,10 @@ RSpec.describe('Expression::Base#clone') do
     copy_call = copy.dig(0, 1, 1)
 
     expect(root).to eq copy
-    expect(root.object_id).not_to eq copy.object_id
+    expect(root).not_to equal copy
 
     expect(root_call).to eq copy_call
-    expect(root_call.object_id).not_to eq copy_call.object_id
+    expect(root_call).not_to equal copy_call
 
     expect(root_call.referenced_expression).not_to be_nil
     expect(root_call.referenced_expression.object_id).to eq root.object_id
@@ -142,10 +147,10 @@ RSpec.describe('Expression::Base#clone') do
     root_seq_1 = root[0][0][0]
     copy_seq_1 = copy[0][0][0]
 
-    expect(root_seq_op.object_id).not_to eq copy_seq_op.object_id
-    expect(root_seq_1.object_id).not_to eq copy_seq_1.object_id
+    expect(root_seq_op).not_to equal copy_seq_op
+    expect(root_seq_1).not_to equal copy_seq_1
     copy_seq_1.expressions.each_with_index do |exp, index|
-      expect(root_seq_1[index].object_id).not_to eq exp.object_id
+      expect(root_seq_1[index]).not_to equal exp
     end
   end
 
@@ -156,7 +161,7 @@ RSpec.describe('Expression::Base#clone') do
 
       expect(copy.to_s).to eq root.to_s
 
-      expect(copy.object_id).not_to eq root.object_id
+      expect(copy).not_to equal root
     end
 
     it 'does not carry over the callee quantifier' do
