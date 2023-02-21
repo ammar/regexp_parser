@@ -37,19 +37,19 @@ RSpec.describe(Regexp::Expression::Base) do
   include_examples 'parse', /a*/, [0] => [repetitions: 0..(Float::INFINITY)]
   include_examples 'parse', /a+/, [0] => [repetitions: 1..(Float::INFINITY)]
 
-  # test #base_length, #full_length, :ends_at
+  # test #base_length, #full_length, #starts_at, #ends_at
   include_examples 'parse', /(aa)/,
-    []     => [Root,           base_length: 4, full_length: 4, ends_at: 4],
-    [0]    => [Group::Capture, base_length: 4, full_length: 4, ends_at: 4],
-    [0, 0] => [Literal,        base_length: 2, full_length: 2, ends_at: 3]
+    []     => [Root,           base_length: 4, full_length: 4, starts_at: 0, ends_at: 4],
+    [0]    => [Group::Capture, base_length: 4, full_length: 4, starts_at: 0, ends_at: 4],
+    [0, 0] => [Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
   include_examples 'parse', /(aa){42}/,
-    []     => [Root,           base_length: 8, full_length: 8, ends_at: 8],
-    [0]    => [Group::Capture, base_length: 4, full_length: 8, ends_at: 4],
-    [0, 0] => [Literal,        base_length: 2, full_length: 2, ends_at: 3]
+    []     => [Root,           base_length: 8, full_length: 8, starts_at: 0, ends_at: 8],
+    [0]    => [Group::Capture, base_length: 4, full_length: 8, starts_at: 0, ends_at: 8],
+    [0, 0] => [Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
   include_examples 'parse', /(aa) {42}/x,
-    []     => [Root,           base_length: 9, full_length: 9, ends_at: 9],
-    [0]    => [Group::Capture, base_length: 4, full_length: 9, ends_at: 4],
-    [0, 0] => [Literal,        base_length: 2, full_length: 2, ends_at: 3]
+    []     => [Root,           base_length: 9, full_length: 9, starts_at: 0, ends_at: 9],
+    [0]    => [Group::Capture, base_length: 4, full_length: 9, starts_at: 0, ends_at: 9],
+    [0, 0] => [Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
 
   # test #to_re
   include_examples 'parse', '^a*(b([cde]+))+f?$',

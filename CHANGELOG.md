@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * e.g. `parse(/a + /x).to_s` used to yield `"a+  "`, now it yields `"a + "`
   * calling `#to_s` on sub-nodes still omits such decorative interludes by default
     - use new `#to_s` format `:original` to include it
+    - e.g. `parse(/a + /x)[0].to_s(:original) # => "a +"`
+- fixed `Subexpression#te` behaving differently from other expressions
+  * only `Subexpression#te` used to include the quantifier
+  * now `#te` is the end index without quantifier, as for other expressions
 - fixed `NoMethodError` when calling `#starts_at` or `#ts` on empty sequences
   * e.g. `Regexp::Parser.parse(/|/)[0].starts_at`
   * e.g. `Regexp::Parser.parse(/[&&]/)[0][0].starts_at`

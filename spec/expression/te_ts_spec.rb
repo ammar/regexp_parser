@@ -51,9 +51,7 @@ RSpec.describe('Expression::Shared#te,ts') do
       expect(exp.ts).to eq(start),
         "expected #{exp.class} #{exp} to start at #{start}, got #{exp.ts}"
 
-      # TODO: in v3.0.0, fix this known inconsistency. See Subexpression#te.
-      end_idx = start + exp.to_s(exp.terminal? ? :base : :full).size
-
+      end_idx = start + exp.base_length
       expect(exp.te).to eq(end_idx),
         "expected #{exp.class} #{exp} to end at #{end_idx}, got #{exp.te}"
     end
