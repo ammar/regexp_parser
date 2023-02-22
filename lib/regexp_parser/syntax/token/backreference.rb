@@ -26,5 +26,8 @@ module Regexp::Syntax
 
     Map[Backreference::Type] = Backreference::All +
                                SubexpressionCall::All
+
+    # alias for symmetry between token symbol and Expression class name
+    Backref = Backreference
   end
 end

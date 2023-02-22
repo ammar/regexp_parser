@@ -1,5 +1,4 @@
 module Regexp::Expression
-  # TODO: unify name with token :backref, one way or the other, in v3.0.0
   module Backreference
     class Base < Regexp::Expression::Base
       attr_accessor :referenced_expression
@@ -70,4 +69,7 @@ module Regexp::Expression
       end
     end
   end
+
+  # alias for symmetry between token symbol and Expression class name
+  Backref = Backreference
 end

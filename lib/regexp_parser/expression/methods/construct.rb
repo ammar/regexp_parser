@@ -25,11 +25,9 @@ module Regexp::Expression
       def token_class
         if self == Root || self < Sequence
           nil # no token class because these objects are Parser-generated
-        # TODO: synch exp & token class names for alt., dot, escapes in v3.0.0
-        elsif self == Alternation || self == CharacterType::Any
+        # TODO: synch exp class, token class & type names for this in v3.0.0
+        elsif self == CharacterType::Any
           Regexp::Syntax::Token::Meta
-        elsif self <= EscapeSequence::Base
-          Regexp::Syntax::Token::Escape
         else
           Regexp::Syntax::Token.const_get(name.split('::')[2])
         end

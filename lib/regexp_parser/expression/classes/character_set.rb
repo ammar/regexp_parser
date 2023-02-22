@@ -20,4 +20,7 @@ module Regexp::Expression
       self.closed = true
     end
   end
+
+  # alias for symmetry between token symbol and Expression class name
+  Set = CharacterSet
 end # module Regexp::Expression

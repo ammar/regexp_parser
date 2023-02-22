@@ -8,4 +8,8 @@ module Regexp::Expression
       text[/\w+/]
     end
   end
+
+  # alias for symmetry between token symbol and Expression class name
+  Posixclass    = PosixClass
+  Nonposixclass = PosixClass
 end

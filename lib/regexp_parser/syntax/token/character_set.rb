@@ -9,5 +9,8 @@ module Regexp::Syntax
     end
 
     Map[CharacterSet::Type] = CharacterSet::All
+
+    # alias for symmetry between token symbol and Token module name
+    Set = CharacterSet
   end
 end

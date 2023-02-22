@@ -713,5 +713,8 @@ module Regexp::Syntax
 
     Map[UnicodeProperty::Type] = UnicodeProperty::All
     Map[UnicodeProperty::NonType] = UnicodeProperty::All
+
+    # alias for symmetry between token symbol and Token module name
+    Property = UnicodeProperty
   end
 end
