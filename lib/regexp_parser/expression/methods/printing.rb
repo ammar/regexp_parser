@@ -23,10 +23,4 @@ module Regexp::Expression
       ].compact
     end
   end
-
-  class Quantifier
-    def pretty_print_instance_variables
-      %i[@text @min @max @mode]
-    end
-  end
 end

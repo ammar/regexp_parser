@@ -11,7 +11,7 @@ RSpec.describe('Expression::Shared#inspect') do
     expect(root[0].inspect)
       .to match(/#<Regexp::Expression::Group::Capture @text=.+ @quantifier=.+ @expressions=\[.+\]/)
     expect(root[0].quantifier.inspect)
-      .to eq    '#<Regexp::Expression::Quantifier @text="+" @min=1 @max=-1 @mode=:greedy>'
+      .to eq    '#<Regexp::Expression::Quantifier @text="+">'
     expect(root[0][0].inspect)
       .to eq    '#<Regexp::Expression::Literal @text="a">'
   end

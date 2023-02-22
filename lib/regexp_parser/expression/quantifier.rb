@@ -8,14 +8,10 @@ module Regexp::Expression
 
     MODES = %i[greedy possessive reluctant]
 
-    attr_reader :min, :max, :mode
-
     def initialize(*args)
       deprecated_old_init(*args) and return if args.count == 4 || args.count == 5
 
       init_from_token_and_options(*args)
-      @mode = (token.to_s[/greedy|reluctant|possessive/] || :greedy).to_sym
-      @min, @max = minmax
       # TODO: remove in v3.0.0, stop removing parts of #token (?)
       self.token = token.to_s.sub(/_(greedy|possessive|reluctant)/, '').to_sym
     end
@@ -39,9 +35,21 @@ module Regexp::Expression
     end
     alias :lazy? :reluctant?
 
+    def min
+      derived_data[:min]
+    end
+
+    def max
+      derived_data[:max]
+    end
+
+    def mode
+      derived_data[:mode]
+    end
+
     private
 
-    def deprecated_old_init(token, text, min, max, mode = :greedy)
+    def deprecated_old_init(token, text, _min, _max, _mode = :greedy)
       warn "Calling `Expression::Base#quantify` or `#{self.class}.new` with 4+ arguments "\
            "is deprecated.\nIt will no longer be supported in regexp_parser v3.0.0.\n"\
            "Please pass a Regexp::Token instead, e.g. replace `token, text, min, max, mode` "\
@@ -51,21 +59,26 @@ module Regexp::Expression
            "This is consistent with how Expression::Base instances are created. "
       @token = token
       @text  = text
-      @min   = min
-      @max   = max
-      @mode  = mode
     end
 
-    def minmax
-      case token
-      when /zero_or_one/  then [0, 1]
-      when /zero_or_more/ then [0, -1]
-      when /one_or_more/  then [1, -1]
-      when :interval
-        int_min = text[/\{(\d*)/, 1]
-        int_max = text[/,?(\d*)\}/, 1]
-        [int_min.to_i, (int_max.empty? ? -1 : int_max.to_i)]
-      end
+    def derived_data
+      return @derived_data if @derived_data
+
+      min, max =
+        case text[0]
+        when '?'; [0, 1]
+        when '*'; [0, -1]
+        when '+'; [1, -1]
+        else
+          int_min = text[/\{(\d*)/, 1]
+          int_max = text[/,?(\d*)\}/, 1]
+          [int_min.to_i, (int_max.empty? ? -1 : int_max.to_i)]
+        end
+
+      mod = text[/.([?+])/, 1]
+      mode = (mod == '?' && :reluctant) || (mod == '+' && :possessive) || :greedy
+
+      @derived_data = { min: min, max: max, mode: mode }
     end
   end
 end

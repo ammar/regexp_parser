@@ -232,7 +232,7 @@ class Regexp::Parser
       node << Backreference::NameRecursionLevel.new(token, active_opts)
     when :name_call
       node << Backreference::NameCall.new(token, active_opts)
-    when :number, :number_ref
+    when :number, :number_ref # TODO: split in v3.0.0
       node << Backreference::Number.new(token, active_opts)
     when :number_recursion_ref
       node << Backreference::NumberRecursionLevel.new(token, active_opts).tap do |exp|
@@ -322,6 +322,7 @@ class Regexp::Parser
 
     when :control
       if token.text =~ /\A(?:\\C-\\M|\\c\\M)/
+        # TODO: emit :meta_control_sequence token in v3.0.0
         node << EscapeSequence::MetaControl.new(token, active_opts)
       else
         node << EscapeSequence::Control.new(token, active_opts)
@@ -329,6 +330,7 @@ class Regexp::Parser
 
     when :meta_sequence
       if token.text =~ /\A\\M-\\[Cc]/
+        # TODO: emit :meta_control_sequence token in v3.0.0:
         node << EscapeSequence::MetaControl.new(token, active_opts)
       else
         node << EscapeSequence::Meta.new(token, active_opts)
@@ -522,6 +524,8 @@ class Regexp::Parser
   end
 
   def open_set(token)
+    # TODO: this and Quantifier are the only cases where Expression#token
+    # does not match the scanner/lexer output. Fix in v3.0.0.
     token.token = :character
     nest(CharacterSet.new(token, active_opts))
   end

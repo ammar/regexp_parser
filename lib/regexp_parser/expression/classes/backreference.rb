@@ -27,7 +27,7 @@ module Regexp::Expression
       alias reference number
 
       def initialize(token, options = {})
-        @number = token.text[token.token.equal?(:number) ? 1..-1 : 3..-2].to_i
+        @number = token.text[/-?\d+/].to_i
         super
       end
     end

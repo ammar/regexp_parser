@@ -5,7 +5,7 @@ module Regexp::Expression
     end
 
     def name
-      token.to_s
+      text[/\w+/]
     end
   end
 end
