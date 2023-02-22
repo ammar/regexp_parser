@@ -1,5 +1,5 @@
 module Regexp::Expression
-  # A sequence of expressions, used by Alternation as one of its alternative.
+  # A sequence of expressions, used by Alternation as one of its alternatives.
   class Alternative < Regexp::Expression::Sequence; end
 
   class Alternation < Regexp::Expression::SequenceOperation
