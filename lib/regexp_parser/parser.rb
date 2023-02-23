@@ -589,7 +589,7 @@ class Regexp::Parser
     # (in a second iteration because there might be forward references)
     referrers.each do |exp|
       exp.referenced_expression = targets[exp.reference] ||
-        raise(ParserError, "Invalid reference: #{exp.reference}")
+        raise(ParserError, "Invalid reference #{exp.reference} at pos #{exp.ts}")
     end
   end
 end # module Regexp::Parser
