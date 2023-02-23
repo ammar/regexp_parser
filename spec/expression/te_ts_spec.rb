@@ -4,45 +4,13 @@ RSpec.describe('Expression::Shared#te,ts') do
   # Many tokens/expressions have their own tests for #te and #ts.
   # This is an integration-like test to ensure they are correct in conjunction.
   it 'is correct irrespective of nesting or preceding tokens' do
-    source = <<-'EOS'
-      a++
-      (?:
-        \b {2}
-        (?>
-          c ??
-          # 😄😄😄
-          (?# 😃😃😃 )
-          (
-            \d *+
-            (
-              |
-            )
-          ) {004}
-          |
-          [
-            e-f
-            &&
-            h
-            [:ascii:]
-            \p{word}
-          ] {6}
-          |
-          \z
-        )
-        (?=lm{8}) ?+
-        \012
-        \1
-        \g<-1> {10}
-        \uFFFF
-        no
-      )
-    EOS
-
-    root = RP.parse(source, options: Regexp::EXTENDED)
+    regexp = regexp_with_all_features
+    source = regexp.source
+    root = RP.parse(regexp)
 
     checked_exps = root.each_expression.with_object([]) do |(exp), acc|
-      fail "dupe: #{exp}" if acc.any? { |e| e.to_s == exp.to_s }
-      acc << exp if exp.to_s =~ /\S/
+      acc.each { |e| fail "dupe: #{[e, exp]}" if e.to_s == exp.to_s }
+      acc << exp unless exp.is_a?(Sequence) || exp.is_a?(WhiteSpace)
     end
     expect(checked_exps).not_to be_empty
 

@@ -1,6 +1,6 @@
 $VERBOSE = true
 
-require 'ice_nine'
+require 'leto'
 require 'regexp_property_values'
 require_relative 'support/capturing_stderr'
 require_relative 'support/shared_examples'
@@ -32,4 +32,47 @@ def s(klass, text = '', *children)
   exp = klass.construct(text: text.to_s)
   children.each { |child| exp.expressions << child }
   exp
+end
+
+def regexp_with_all_features
+  return /dummy/ unless ruby_version_at_least('2.4.1')
+
+  Regexp.new(<<-'REGEXP', Regexp::EXTENDED)
+    \A
+    a++
+    (?:
+      \b {2}
+      (?>
+        c ??
+        😀😀😀
+        # 😄😄😄
+        (?# 😃😃😃 )
+        (
+          \d *+
+          (
+            ALT1
+            |
+            ALT2
+          )
+        ) {004}
+        |
+        [ä-ü&&ö[:ascii:]\p{thai}] {6}
+        |
+        \z
+      )
+      (?=lm{8}) ?+
+      \K
+      (?~
+        \1
+        \g<-1> {10}
+        \uFFFF
+        \012
+      )
+      (?(1)
+        BRANCH1
+        |
+        BRANCH2
+      )
+    )
+  REGEXP
 end

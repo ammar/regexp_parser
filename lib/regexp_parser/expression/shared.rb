@@ -34,6 +34,9 @@ module Regexp::Expression
       self.options    = orig.options.dup      if orig.options
       self.quantifier = orig.quantifier.clone if orig.quantifier
       self.parent     = nil # updated by Subexpression#initialize_copy
+      if orig.pre_quantifier_decorations
+        self.pre_quantifier_decorations = orig.pre_quantifier_decorations.map(&:dup)
+      end
       super
     end
 

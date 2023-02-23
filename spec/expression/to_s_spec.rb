@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 RSpec.describe('Expression::Base#to_s') do
-  def parse_frozen(pattern, ruby_version = nil)
-    IceNine.deep_freeze(RP.parse(pattern, *ruby_version))
+  def parse_frozen(pattern)
+    Leto.deep_freeze(RP.parse(pattern))
   end
 
-  def expect_round_trip(pattern, ruby_version = nil)
-    parsed = parse_frozen(pattern, ruby_version)
+  def expect_round_trip(pattern)
+    parsed = parse_frozen(pattern)
 
     expect(parsed.to_s).to eql(pattern)
   end
@@ -83,6 +83,10 @@ RSpec.describe('Expression::Base#to_s') do
         /x
 
     expect_round_trip(multiline.to_s)
+  end
+
+  specify('regexp with all features') do
+    expect_round_trip(regexp_with_all_features.source)
   end
 
   # special case: implicit groups used for chained quantifiers produce no parens

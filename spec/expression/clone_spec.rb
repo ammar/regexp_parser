@@ -36,6 +36,13 @@ RSpec.describe('Expression::Base#clone') do
     expect { root_2.clone }.not_to(change { root_2.quantifier.text.object_id })
   end
 
+  specify('Base#clone causes no shared state') do
+    root = RP.parse(regexp_with_all_features)
+    copy = root.clone
+    shared = Leto.shared_mutables(root, copy)
+    expect(shared).to be_empty, "found shared mutables:\n#{shared.join("\n")}"
+  end
+
   specify('Subexpression#clone') do
     root = RP.parse(/^a(b([cde])f)g$/)
     copy = root.clone
