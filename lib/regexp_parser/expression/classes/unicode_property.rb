@@ -10,7 +10,7 @@ module Regexp::Expression
       end
 
       def shortcut
-        (Regexp::Scanner.short_prop_map.rassoc(token.to_s) || []).first
+        Regexp::Scanner.short_prop_map.key(token.to_s)
       end
     end
 
