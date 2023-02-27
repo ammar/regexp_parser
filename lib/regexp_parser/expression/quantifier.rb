@@ -62,23 +62,23 @@ module Regexp::Expression
     end
 
     def derived_data
-      return @derived_data if @derived_data
+      @derived_data ||= begin
+        min, max =
+          case text[0]
+          when '?'; [0, 1]
+          when '*'; [0, -1]
+          when '+'; [1, -1]
+          else
+            int_min = text[/\{(\d*)/, 1]
+            int_max = text[/,?(\d*)\}/, 1]
+            [int_min.to_i, (int_max.empty? ? -1 : int_max.to_i)]
+          end
 
-      min, max =
-        case text[0]
-        when '?'; [0, 1]
-        when '*'; [0, -1]
-        when '+'; [1, -1]
-        else
-          int_min = text[/\{(\d*)/, 1]
-          int_max = text[/,?(\d*)\}/, 1]
-          [int_min.to_i, (int_max.empty? ? -1 : int_max.to_i)]
-        end
+        mod = text[/.([?+])/, 1]
+        mode = (mod == '?' && :reluctant) || (mod == '+' && :possessive) || :greedy
 
-      mod = text[/.([?+])/, 1]
-      mode = (mod == '?' && :reluctant) || (mod == '+' && :possessive) || :greedy
-
-      @derived_data = { min: min, max: max, mode: mode }
+        { min: min, max: max, mode: mode }
+      end
     end
   end
 end
