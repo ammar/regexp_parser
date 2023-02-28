@@ -121,7 +121,7 @@ RSpec.describe('Set scanning') do
     10=> [:set,    :close,           ']',          11, 12]
 
   # Collations/collating sequences and character equivalents are not enabled
-  # in Ruby at the moment. If they ever are, enable them in the scanner,
+  # in Ruby at the moment. If they ever are, revert and uncomment b82976b,
   # add them to a new syntax version, and handle them in the parser. Until then,
   # expect them to be scanned as regular subsets containing literals.
   # include_examples 'scan', /[a[.a-b.]c]/,           2 => [:set,    :collation,       '[.a-b.]',    2,  9]
