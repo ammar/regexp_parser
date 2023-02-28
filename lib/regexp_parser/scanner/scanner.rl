@@ -83,10 +83,9 @@
   # try to treat every other group head as options group, like Ruby
   group_options         = '?' . ( [^!#'():<=>~]+ . ':'? ) ?;
 
-  group_ref             = [gk];
   group_name_id_ab      = ([^!0-9\->] | utf8_multibyte) . ([^>] | utf8_multibyte)*;
   group_name_id_sq      = ([^0-9\-']  | utf8_multibyte) . ([^'] | utf8_multibyte)*;
-  group_number          = '-'? . [1-9] . [0-9]*;
+  group_number          = '-'? . [0-9]+;
   group_level           = [+\-] . [0-9]+;
 
   group_name            = ('<' . group_name_id_ab? . '>') |
@@ -95,15 +94,11 @@
 
   group_named           = ('?' . group_name );
 
-  group_name_backref    = 'k' . (('<' . group_name_id_ab? . group_level? '>') |
-                                 ("'" . group_name_id_sq? . group_level? "'"));
-  group_name_call       = 'g' . (('<' . group_name_id_ab? . group_level? '>') |
-                                 ("'" . group_name_id_sq? . group_level? "'"));
+  group_ref_body        = (('<' . (group_name_id_ab? | group_number) . group_level? '>') |
+                           ("'" . (group_name_id_sq? | group_number) . group_level? "'"));
 
-  group_number_backref  = 'k' . (('<' . group_number . group_level? '>') |
-                                 ("'" . group_number . group_level? "'"));
-  group_number_call     = 'g' . (('<' . ((group_number . group_level?) | '0') '>') |
-                                 ("'" . ((group_number . group_level?) | '0') "'"));
+  group_ref             = 'k' . group_ref_body;
+  group_call            = 'g' . group_ref_body;
 
   group_type            = group_atomic | group_passive | group_absence | group_named;
 
@@ -548,35 +543,35 @@
 
     # Group backreference, named and numbered
     # ------------------------------------------------------------------------
-    backslash . (group_name_backref | group_number_backref) > (backslashed, 4) {
+    backslash . (group_ref) > (backslashed, 4) {
       case text = copy(data, ts, te)
-      when /^\\k(<>|'')/
-        raise ValidationError.for(:backref, 'backreference', 'ref ID is empty')
-      when /^\\k(.)[^\p{digit}\-][^+\-]*\D$/
+      when /^\\k(.)[^0-9\-][^+\-]*['>]$/
         emit(:backref, $1 == '<' ? :name_ref_ab : :name_ref_sq, text)
-      when /^\\k(.)\d+\D$/
+      when /^\\k(.)[1-9]\d*['>]$/
         emit(:backref, $1 == '<' ? :number_ref_ab : :number_ref_sq, text)
-      when /^\\k(.)-\d+\D$/
+      when /^\\k(.)-[1-9]\d*['>]$/
         emit(:backref, $1 == '<' ? :number_rel_ref_ab : :number_rel_ref_sq, text)
-      when /^\\k(.)[^\p{digit}\-].*[+\-]\d+\D$/
+      when /^\\k(.)[^0-9\-].*[+\-]\d+['>]$/
         emit(:backref, $1 == '<' ? :name_recursion_ref_ab : :name_recursion_ref_sq, text)
-      when /^\\k(.)-?\d+[+\-]\d+\D$/
+      when /^\\k(.)-?[1-9]\d*[+\-]\d+['>]$/
         emit(:backref, $1 == '<' ? :number_recursion_ref_ab : :number_recursion_ref_sq, text)
+      else
+        raise ValidationError.for(:backref, 'backreference', 'invalid ref ID')
       end
     };
 
     # Group call, named and numbered
     # ------------------------------------------------------------------------
-    backslash . (group_name_call | group_number_call) > (backslashed, 4) {
+    backslash . (group_call) > (backslashed, 4) {
       case text = copy(data, ts, te)
-      when /^\\g(<>|'')/
-        raise ValidationError.for(:backref, 'subexpression call', 'ref ID is empty')
-      when /^\\g(.)[^\p{digit}+\->][^+\-]*/
+      when /^\\g(.)[^0-9+\-].*['>]$/
         emit(:backref, $1 == '<' ? :name_call_ab : :name_call_sq, text)
-      when /^\\g(.)\d+\D$/
+      when /^\\g(.)\d+['>]$/
         emit(:backref, $1 == '<' ? :number_call_ab : :number_call_sq, text)
       when /^\\g(.)[+-]\d+/
         emit(:backref, $1 == '<' ? :number_rel_call_ab : :number_rel_call_sq, text)
+      else
+        raise ValidationError.for(:backref, 'subexpression call', 'invalid ref ID')
       end
     };
 

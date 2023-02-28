@@ -48,7 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * e.g. in `/(a)(?(1)b|c(?#hello)d)e/`, the 2nd conditional branch included "e"
 - fixed quantifiers after comment groups being mis-assigned to that group
   * e.g. in `/a(?#foo){3}/` (matches 'aaa')
-- fixed scanner accepting unmatched closing parentheses ')'
+- fixed Scanner accepting two cases of invalid Regexp syntax
+  * unmatched closing parentheses (`)`) and k-backrefs with number 0 (`\k<0>`)
   * these are a `SyntaxError` in Ruby, so could only be passed as a String
   * they now raise a `Regexp::Scanner::ScannerError`
 - fixed some scanner errors not inheriting from `Regexp::Scanner::ScannerError`
