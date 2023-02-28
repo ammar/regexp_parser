@@ -117,22 +117,27 @@ module Regexp::Expression
     end
   end
 
-  Shared.class_eval                  { def terminal?; true  end }
-  Subexpression.class_eval           { def terminal?; false end }
+  Shared.class_eval                     { def terminal?; self.class.terminal? end }
+  Shared::ClassMethods.class_eval       { def terminal?; true  end }
+  Subexpression.instance_eval           { def terminal?; false end }
 
-  Shared.class_eval                  { def capturing?; false end }
-  Group::Capture.class_eval          { def capturing?; true  end }
+  Shared.class_eval                     { def capturing?; self.class.capturing? end }
+  Shared::ClassMethods.class_eval       { def capturing?; false end }
+  Group::Capture.instance_eval          { def capturing?; true  end }
 
-  Shared.class_eval                  { def comment?; false end }
-  Comment.class_eval                 { def comment?; true  end }
-  Group::Comment.class_eval          { def comment?; true  end }
+  Shared.class_eval                     { def comment?; self.class.comment? end }
+  Shared::ClassMethods.class_eval       { def comment?; false end }
+  Comment.instance_eval                 { def comment?; true  end }
+  Group::Comment.instance_eval          { def comment?; true  end }
 
-  Shared.class_eval                  { def decorative?; false end }
-  FreeSpace.class_eval               { def decorative?; true  end }
-  Group::Comment.class_eval          { def decorative?; true  end }
+  Shared.class_eval                     { def decorative?; self.class.decorative? end }
+  Shared::ClassMethods.class_eval       { def decorative?; false end }
+  FreeSpace.instance_eval               { def decorative?; true  end }
+  Group::Comment.instance_eval          { def decorative?; true  end }
 
-  Shared.class_eval                  { def referential?; false end }
-  Backreference::Base.class_eval     { def referential?; true  end }
-  Conditional::Condition.class_eval  { def referential?; true  end }
-  Conditional::Expression.class_eval { def referential?; true  end }
+  Shared.class_eval                     { def referential?; self.class.referential? end }
+  Shared::ClassMethods.class_eval       { def referential?; false end }
+  Backreference::Base.instance_eval     { def referential?; true  end }
+  Conditional::Condition.instance_eval  { def referential?; true  end }
+  Conditional::Expression.instance_eval { def referential?; true  end }
 end

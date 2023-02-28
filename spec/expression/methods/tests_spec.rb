@@ -203,4 +203,18 @@ RSpec.describe('ExpressionTests') do
     [1, 0, 1]    => [:sequence,    to_s: 'cd',      terminal?: false],
     [1, 0, 1, 0] => [:literal,     to_s: 'cd',      terminal?: true],
     [2]          => [:eol,         to_s: '$',       terminal?: true]
+
+  specify('tests at expression class level') do
+    expect(Regexp::Expression::Literal).to be_terminal
+    expect(Regexp::Expression::CharacterSet).not_to be_terminal
+
+    expect(Regexp::Expression::Comment).to be_comment
+    expect(Regexp::Expression::Literal).not_to be_comment
+
+    expect(Regexp::Expression::Comment).to be_decorative
+    expect(Regexp::Expression::Literal).not_to be_decorative
+
+    expect(Regexp::Expression::Backreference::Base).to be_referential
+    expect(Regexp::Expression::Literal).not_to be_referential
+  end
 end

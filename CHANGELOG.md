@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * using it is not needed when calling `Root#to_s` as Root can't be quantified
 - support calling `Subexpression#{each_expression,flat_map}` with a one-argument block
   * in this case, only the expressions are passed to the block, no indices
+- support calling test methods at Expression class level
+  - `capturing?`, `comment?`, `decorative?`, `referential?`, `terminal?`
+  - e.g. `Regexp::Expression::CharacterSet.terminal? # => false`
 
 ### Fixed
 
