@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] - 2023-04-17 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Added
 
 - `Regexp::Expression::Shared#ends_at`
