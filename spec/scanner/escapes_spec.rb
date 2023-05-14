@@ -43,6 +43,14 @@ RSpec.describe('Escape scanning') do
   include_examples 'scan', 'ab\$cd',          1 => [:escape,  :eol,              '\$',             2,  4]
   include_examples 'scan', 'ab\[cd',          1 => [:escape,  :set_open,         '\[',             2,  4]
 
+  # escaped whitespace in x-mode
+  include_examples 'scan', /a\ b/x,           0 => [:literal,  :literal,         'a',              0,  1],
+                                              1 => [:escape,   :literal,         '\ ',             1,  3],
+                                              2 => [:literal,  :literal,         'b',              3,  4]
+  # newline literals can't be escaped in x-mode, c.f. https://bugs.ruby-lang.org/issues/19639
+  include_examples 'scan', /a\
+b/x,                                          0 => [:literal,  :literal,         'ab',             0,  2]
+
   # Meta/control espaces
   #
   # After the following fix in Ruby 3.1, a Regexp#source containing meta/control
