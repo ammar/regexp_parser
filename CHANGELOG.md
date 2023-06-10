@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.1] - 2023-06-10 - [Janosch Müller](mailto:janosch84@gmail.com)
+
 ### Fixed
 
 - support for extpict unicode property, added in Ruby 2.6
