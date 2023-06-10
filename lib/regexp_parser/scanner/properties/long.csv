@@ -7,6 +7,7 @@ age=12.0,age=12.0
 age=12.1,age=12.1
 age=13.0,age=13.0
 age=14.0,age=14.0
+age=15.0,age=15.0
 age=2.0,age=2.0
 age=2.1,age=2.1
 age=3.0,age=3.0
@@ -97,6 +98,7 @@ emojimodifierbase,emoji_modifier_base
 emojipresentation,emoji_presentation
 enclosingmark,enclosing_mark
 ethiopic,ethiopic
+extendedpictographic,extended_pictographic
 extender,extender
 finalpunctuation,final_punctuation
 format,format
@@ -139,6 +141,7 @@ inancientsymbols,in_ancient_symbols
 inarabic,in_arabic
 inarabicextendeda,in_arabic_extended_a
 inarabicextendedb,in_arabic_extended_b
+inarabicextendedc,in_arabic_extended_c
 inarabicmathematicalalphabeticsymbols,in_arabic_mathematical_alphabetic_symbols
 inarabicpresentationformsa,in_arabic_presentation_forms_a
 inarabicpresentationformsb,in_arabic_presentation_forms_b
@@ -186,6 +189,7 @@ incjkunifiedideographsextensiond,in_cjk_unified_ideographs_extension_d
 incjkunifiedideographsextensione,in_cjk_unified_ideographs_extension_e
 incjkunifiedideographsextensionf,in_cjk_unified_ideographs_extension_f
 incjkunifiedideographsextensiong,in_cjk_unified_ideographs_extension_g
+incjkunifiedideographsextensionh,in_cjk_unified_ideographs_extension_h
 incombiningdiacriticalmarks,in_combining_diacritical_marks
 incombiningdiacriticalmarksextended,in_combining_diacritical_marks_extended
 incombiningdiacriticalmarksforsymbols,in_combining_diacritical_marks_for_symbols
@@ -205,10 +209,12 @@ incyrillic,in_cyrillic
 incyrillicextendeda,in_cyrillic_extended_a
 incyrillicextendedb,in_cyrillic_extended_b
 incyrillicextendedc,in_cyrillic_extended_c
+incyrillicextendedd,in_cyrillic_extended_d
 incyrillicsupplement,in_cyrillic_supplement
 indeseret,in_deseret
 indevanagari,in_devanagari
 indevanagariextended,in_devanagari_extended
+indevanagariextendeda,in_devanagari_extended_a
 indingbats,in_dingbats
 indivesakuru,in_dives_akuru
 indogra,in_dogra
@@ -268,6 +274,7 @@ inipaextensions,in_ipa_extensions
 initialpunctuation,initial_punctuation
 injavanese,in_javanese
 inkaithi,in_kaithi
+inkaktoviknumerals,in_kaktovik_numerals
 inkanaextendeda,in_kana_extended_a
 inkanaextendedb,in_kana_extended_b
 inkanasupplement,in_kana_supplement
@@ -276,6 +283,7 @@ inkangxiradicals,in_kangxi_radicals
 inkannada,in_kannada
 inkatakana,in_katakana
 inkatakanaphoneticextensions,in_katakana_phonetic_extensions
+inkawi,in_kawi
 inkayahli,in_kayah_li
 inkharoshthi,in_kharoshthi
 inkhitansmallscript,in_khitan_small_script
@@ -339,6 +347,7 @@ inmyanmar,in_myanmar
 inmyanmarextendeda,in_myanmar_extended_a
 inmyanmarextendedb,in_myanmar_extended_b
 innabataean,in_nabataean
+innagmundari,in_nag_mundari
 innandinagari,in_nandinagari
 innewa,in_newa
 innewtailue,in_new_tai_lue
@@ -457,6 +466,7 @@ joincontrol,join_control
 kaithi,kaithi
 kannada,kannada
 katakana,katakana
+kawi,kawi
 kayahli,kayah_li
 kharoshthi,kharoshthi
 khitansmallscript,khitan_small_script
@@ -503,6 +513,7 @@ mro,mro
 multani,multani
 myanmar,myanmar
 nabataean,nabataean
+nagmundari,nag_mundari
 nandinagari,nandinagari
 newa,newa
 newline,newline

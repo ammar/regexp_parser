@@ -59,7 +59,7 @@ module Regexp::Syntax
 
       Age_V3_1_0 = %i[age=13.0]
 
-      Age_V3_2_0 = %i[age=14.0]
+      Age_V3_2_0 = %i[age=14.0 age=15.0]
 
       Age = all[:Age_V]
 
@@ -321,6 +321,8 @@ module Regexp::Syntax
 
       Script_V3_2_0 = %i[
         cypro_minoan
+        kawi
+        nag_mundari
         old_uyghur
         tangsa
         toto
@@ -667,11 +669,18 @@ module Regexp::Syntax
 
       UnicodeBlock_V3_2_0 = %i[
         in_arabic_extended_b
+        in_arabic_extended_c
+        in_cjk_unified_ideographs_extension_h
         in_cypro_minoan
+        in_cyrillic_extended_d
+        in_devanagari_extended_a
         in_ethiopic_extended_b
+        in_kaktovik_numerals
         in_kana_extended_b
+        in_kawi
         in_latin_extended_f
         in_latin_extended_g
+        in_nag_mundari
         in_old_uyghur
         in_tangsa
         in_toto
@@ -688,6 +697,10 @@ module Regexp::Syntax
         emoji_modifier
         emoji_modifier_base
         emoji_presentation
+      ]
+
+      Emoji_V2_6_0 = %i[
+        extended_pictographic
       ]
 
       Emoji = all[:Emoji_V]

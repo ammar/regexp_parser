@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- support for extpict unicode property, added in Ruby 2.6
+- support for 10 unicode script/block properties added in Ruby 3.2
+
 ## [2.8.0] - 2023-04-17 - [Janosch Müller](mailto:janosch84@gmail.com)
 
 ### Added

@@ -57,6 +57,7 @@ emod,emoji_modifier
 epres,emoji_presentation
 ethi,ethiopic
 ext,extender
+extpict,extended_pictographic
 geor,georgian
 glag,glagolitic
 gong,gunjala_gondi
@@ -133,6 +134,7 @@ mtei,meetei_mayek
 mult,multani
 mymr,myanmar
 n,number
+nagm,nag_mundari
 nand,nandinagari
 narb,old_north_arabian
 nbat,nabataean
