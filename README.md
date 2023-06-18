@@ -14,18 +14,13 @@ A Ruby gem for tokenizing, parsing, and transforming regular expressions.
 * Runs on Ruby 2.x, 3.x and JRuby runtimes
 * Recognizes Ruby 1.8, 1.9, 2.x and 3.x regular expressions [See Supported Syntax](#supported-syntax)
 
-
 _For examples of regexp_parser in use, see [Example Projects](#example-projects)._
 
-
----
 ## Requirements
 
 * Ruby >= 2.0
 * Ragel >= 6.0, but only if you want to build the gem or work on the scanner.
 
-
----
 ## Install
 
 Install the gem with:
@@ -39,8 +34,6 @@ Or, add it to your project's `Gemfile`:
 See the badge at the top of this README or [rubygems](https://rubygems.org/gems/regexp_parser)
 for the the latest version number.
 
-
----
 ## Usage
 
 The three main modules are **Scanner**, **Lexer**, and **Parser**. Each of them
@@ -85,17 +78,17 @@ Regexp::Parser.parse(
 )
 ```
 
----
 ## Components
 
 ### Scanner
+
 A Ragel-generated scanner that recognizes the cumulative syntax of all
 supported syntax versions. It breaks a given expression's text into the
 smallest parts, and identifies their type, token, text, and start/end
 offsets within the pattern.
 
-
 #### Example
+
 The following scans the given pattern and prints out the type, token, text and
 start/end offsets for each token found.
 
@@ -129,8 +122,8 @@ Regexp::Scanner.scan(/(cat?([bhm]at)){3,5}/).map { |token| token[2] }
 # => ["(", "cat", "?", "(", "[", "b", "h", "m", "]", "at", ")", ")", "{3,5}"]
 ```
 
-
 #### Notes
+
   * The scanner performs basic syntax error checking, like detecting missing
     balancing punctuation and premature end of pattern. Flavor validity checks
     are performed in the lexer, which uses a syntax object.
@@ -151,13 +144,14 @@ Regexp::Scanner.scan(/(cat?([bhm]at)){3,5}/).map { |token| token[2] }
     the documentation or are undocumented, like `{}` and `]` _(unescaped)_.
     The scanner will try to support as many of these cases as possible.
 
----
 ### Syntax
+
 Defines the supported tokens for a specific engine implementation (aka a
 flavor). Syntax classes act as lookup tables, and are layered to create
 flavor variations. Syntax only comes into play in the lexer.
 
 #### Example
+
 The following fetches syntax objects for Ruby 2.0, 1.9, 1.8, and
 checks a few of their implementation features.
 
@@ -195,15 +189,15 @@ ruby_20.features                        # => { anchor: [...], ... }
 ```
 
 #### Notes
+
   * Variations on a token, for example a named group with angle brackets (< and >)
     vs one with a pair of single quotes, are specified with an underscore followed
     by two characters appended to the base token. In the previous named group example,
     the tokens would be :named_ab (angle brackets) and :named_sq (single quotes).
     These variations are normalized by the syntax to :named.
 
-
----
 ### Lexer
+
 Sits on top of the scanner and performs lexical analysis on the tokens that
 it emits. Among its tasks are; breaking quantified literal runs, collecting the
 emitted token attributes into Token objects, calculating their nesting depth,
@@ -213,8 +207,8 @@ the given syntax version.
 See the [Token Objects](https://github.com/ammar/regexp_parser/wiki/Token-Objects)
 wiki page for more information on Token objects.
 
-
 #### Example
+
 The following example lexes the given pattern, checks it against the Ruby 1.9
 syntax, and prints the token objects' text indented to their level.
 
@@ -252,21 +246,20 @@ Regexp::Lexer.scan(/(cat?([b]at)){3,5}/).map { |token| token.text }
 ```
 
 #### Notes
+
   * The syntax argument is optional. It defaults to the version of the Ruby
     interpreter in use, as returned by RUBY_VERSION.
 
   * The lexer normalizes some tokens, as noted in the Syntax section above.
 
-
----
 ### Parser
+
 Sits on top of the lexer and transforms the "stream" of Token objects emitted
 by it into a tree of Expression objects represented by an instance of the
 `Expression::Root` class.
 
 See the [Expression Objects](https://github.com/ammar/regexp_parser/wiki/Expression-Objects)
 wiki page for attributes and methods.
-
 
 #### Example
 
@@ -326,15 +319,12 @@ end
 _See the traverse.rb and strfregexp.rb files under `lib/regexp_parser/expression/methods`
 for more information on these methods._
 
----
-
-
 ## Supported Syntax
+
 The three modules support all the regular expression syntax features of Ruby 1.8,
 1.9, 2.x and 3.x:
 
 _Note that not all of these are available in all versions of Ruby_
-
 
 | Syntax Feature                        | Examples                                                | &#x22ef; |
 | ------------------------------------- | ------------------------------------------------------- |:--------:|
@@ -379,7 +369,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Meta** \[2\]_          | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
-| **Unicode Properties**                | _<sub>([Unicode 13.0.0])</sub>_                         | &#x22f1; |
+| **Unicode Properties**                | _<sub>([Unicode 15.0.0])</sub>_                         | &#x22f1; |
 | &emsp;&nbsp;_**Age**_                 | `\p{Age=5.2}`, `\P{age=7.0}`, `\p{^age=8.0}`            | &#x2713; |
 | &emsp;&nbsp;_**Blocks**_              | `\p{InArmenian}`, `\P{InKhmer}`, `\p{^InThai}`          | &#x2713; |
 | &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`, `\p{^Alnum}`                  | &#x2713; |
@@ -388,7 +378,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`, `\p{^Greek}`              | &#x2713; |
 | &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`, `\p{^Hyphen}`               | &#x2713; |
 
-[Unicode 13.0.0]: https://www.unicode.org/versions/Unicode13.0.0/
+[Unicode 15.0.0]: https://www.unicode.org/versions/Unicode15.0.0/
 
 **\[1\]**: Ruby does not support lazy or possessive interval quantifiers.
 Any `+` or `?` that follows an interval quantifier will be treated as another,
@@ -400,11 +390,12 @@ escapes when used in Regexp literals](https://github.com/ruby/ruby/commit/11ae58
 so they will only reach the scanner and will only be emitted if a String or a Regexp
 that has been built with the `::new` constructor is scanned.
 
-##### Inapplicable Features
+### Inapplicable Features
 
-Some modifiers, like `o` and `s`, apply to the **Regexp** object itself and do not
-appear in its source. Other such modifiers include the encoding modifiers `e` and `n`
-[See](http://www.ruby-doc.org/core-2.5.0/Regexp.html#class-Regexp-label-Encoding).
+Some Regexp options are not relevant to parsing. The option `o` modifies how Ruby
+deduplicates the **Regexp** object and does not appear in its source or options.
+Other such modifiers include the encoding modifiers `e`, `n`, `s` and `u`
+[See](https://ruby-doc.org/3.2.2/Regexp.html#class-Regexp-label-Encoding).
 These are not seen by the scanner.
 
 The following features are not currently enabled for Ruby by its regular
@@ -418,8 +409,8 @@ See something missing? Please submit an [issue](https://github.com/ammar/regexp_
 _**Note**: Attempting to process expressions with unsupported syntax features can raise
 an error, or incorrectly return tokens/objects as literals._
 
-
 ## Testing
+
 To run the tests simply run rake from the root directory.
 
 The default task generates the scanner's code from the Ragel source files and runs
@@ -433,13 +424,12 @@ rake ragel:rb && rspec spec/scanner/properties_spec.rb
 ```
 
 ## Building
+
 Building the scanner and the gem requires [Ragel](http://www.colm.net/open-source/ragel/)
 to be installed. The build tasks will automatically invoke the 'ragel:rb' task to generate
 the Ruby scanner code.
 
-
 The project uses the standard rubygems package tasks, so:
-
 
 To build the gem, run:
 ```
@@ -451,8 +441,10 @@ To install the gem from the cloned project, run:
 rake install
 ```
 
+## References
 
-## Example Projects
+### Example Projects
+
 Projects using regexp_parser.
 
 - [capybara](https://github.com/teamcapybara/capybara) is an integration testing tool
@@ -476,31 +468,28 @@ uses regexp_parser to lint Regexps.
 - [twitter-cldr-rb](https://github.com/twitter/twitter-cldr-rb) is a localization helper
 that uses regexp_parser to generate examples of postal codes.
 
-
-## References
 Documentation and books used while working on this project.
 
+### Ruby Flavors
 
-#### Ruby Flavors
 * Oniguruma Regular Expressions (Ruby 1.9.x) [link](https://github.com/kkos/oniguruma/blob/master/doc/RE)
 * Onigmo Regular Expressions (Ruby >= 2.0) [link](https://github.com/k-takata/Onigmo/blob/master/doc/RE)
 
+### Regular Expressions
 
-#### Regular Expressions
 * Mastering Regular Expressions, By Jeffrey E.F. Friedl (2nd Edition) [book](http://oreilly.com/catalog/9781565922570/)
 * Regular Expression Flavor Comparison [link](http://www.regular-expressions.info/refflavors.html)
 * Enumerating the strings of regular languages [link](http://www.cs.dartmouth.edu/~doug/nfa.ps.gz)
 * Stack Overflow Regular Expressions FAQ [link](http://stackoverflow.com/questions/22937618/reference-what-does-this-regex-mean/22944075#22944075)
 
+### Unicode
 
-#### Unicode
 * Unicode Explained, By Jukka K. Korpela. [book](http://oreilly.com/catalog/9780596101213)
 * Unicode Derived Properties [link](http://www.unicode.org/Public/UNIDATA/DerivedCoreProperties.txt)
 * Unicode Property Aliases [link](http://www.unicode.org/Public/UNIDATA/PropertyAliases.txt)
 * Unicode Regular Expressions [link](http://www.unicode.org/reports/tr18/)
 * Unicode Standard Annex #44 [link](http://www.unicode.org/reports/tr44/)
 
+## Copyright
 
----
-##### Copyright
 _Copyright (c) 2010-2023 Ammar Ali. See LICENSE file for details._
