@@ -16,8 +16,8 @@ Gem::Specification.new do |spec|
   spec.metadata['source_code_uri'] = spec.homepage
   spec.metadata['wiki_uri']        = "#{spec.homepage}/wiki"
 
-  spec.authors       = ['Ammar Ali']
-  spec.email         = ['ammarabuali@gmail.com']
+  spec.authors       = ['Ammar Ali', 'Janosch Müller']
+  spec.email         = ['ammarabuali@gmail.com', 'janosch84@gmail.com']
 
   spec.license       = 'MIT'
 
