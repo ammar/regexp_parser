@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.8.1] - 2023-06-10 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.8.1] - 2023-06-10 - Janosch Müller
 
 ### Fixed
 
 - support for extpict unicode property, added in Ruby 2.6
 - support for 10 unicode script/block properties added in Ruby 3.2
 
-## [2.8.0] - 2023-04-17 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.8.0] - 2023-04-17 - Janosch Müller
 
 ### Added
 
@@ -64,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fixed some scanner errors not inheriting from `Regexp::Scanner::ScannerError`
 - reduced verbosity of inspect / pretty print output
 
-## [2.7.0] - 2023-02-08 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.7.0] - 2023-02-08 - Janosch Müller
 
 ### Added
 
@@ -81,14 +81,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - parsing of octal escape sequences in sets, e.g. `[\141]`
   * thanks to [Randy Stauner](https://github.com/rwstauner) for the report
 
-## [2.6.2] - 2023-01-19 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.6.2] - 2023-01-19 - Janosch Müller
 
 ### Fixed
 
 - fixed `SystemStackError` when cloning recursive subexpression calls
   * e.g. `Regexp::Parser.parse(/a|b\g<0>/).dup`
 
-## [2.6.1] - 2022-11-16 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.6.1] - 2022-11-16 - Janosch Müller
 
 ### Fixed
 
@@ -97,7 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * `(?<!x>)y` used to be misinterpreted as a named group
   * thanks to [Sergio Medina](https://github.com/serch) for the report
 
-## [2.6.0] - 2022-09-26 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.6.0] - 2022-09-26 - Janosch Müller
 
 ### Fixed
 
@@ -118,14 +118,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * returns `true` if the expression is quantified accordingly (e.g. with `*`, `{,n}`)
 - added a deprecation warning when calling `#to_re` on set members
 
-## [2.5.0] - 2022-05-27 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.5.0] - 2022-05-27 - Janosch Müller
 
 ### Added
 
 - `Regexp::Expression::Base.construct` and `.token_class` methods
   * see the [wiki](https://github.com/ammar/regexp_parser/wiki) for details
 
-## [2.4.0] - 2022-05-09 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.4.0] - 2022-05-09 - Janosch Müller
 
 ### Fixed
 
@@ -170,7 +170,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     This is consistent with how Expression::Base instances are created.
 
 
-## [2.3.1] - 2022-04-24 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.3.1] - 2022-04-24 - Janosch Müller
 
 ### Fixed
 
@@ -178,7 +178,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * these were never supported by Ruby or the `Regexp::Scanner`
   * thanks to [Markus Schirp](https://github.com/mbj) for the report
 
-## [2.3.0] - 2022-04-08 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.3.0] - 2022-04-08 - Janosch Müller
 
 ### Added
 
@@ -189,7 +189,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * e.g. `Regexp::Syntax::V3_2_0.added_features`
 - support for new unicode properties of Ruby 3.2 / Unicode 14.0
 
-## [2.2.1] - 2022-02-11 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.2.1] - 2022-02-11 - Janosch Müller
 
 ### Fixed
 
@@ -203,20 +203,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * `set` was removed from the stdlib and made a standalone gem as of Ruby 3
   * this made it a hidden/undeclared dependency of `regexp_parser`
 
-## [2.2.0] - 2021-12-04 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.2.0] - 2021-12-04 - Janosch Müller
 
 ### Added
 
 - added support for 13 new unicode properties introduced in Ruby 3.1.0
 
-## [2.1.1] - 2021-02-23 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.1.1] - 2021-02-23 - Janosch Müller
 
 ### Fixed
 
 - fixed `NameError` when requiring only `'regexp_parser/scanner'` in v2.1.0
   * thanks to [Jared White and Sam Ruby](https://github.com/ruby2js/ruby2js) for the report
 
-## [2.1.0] - 2021-02-22 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.1.0] - 2021-02-22 - Janosch Müller
 
 ### Added
 
@@ -247,7 +247,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * they were misread as bunch of individual literals, escapes, and ranges
 - fixed some cases where calling `#dup`/`#clone` on expressions led to shared state
 
-## [2.0.3] - 2020-12-28 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.0.3] - 2020-12-28 - Janosch Müller
 
 ### Fixed
 
@@ -257,14 +257,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * `NotImplementedError`, `InvalidVersionNameError`, `UnknownSyntaxNameError`
   * they now correctly inherit from `Regexp::Syntax::SyntaxError` instead of Rubys `::SyntaxError`
 
-## [2.0.2] - 2020-12-25 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.0.2] - 2020-12-25 - Janosch Müller
 
 ### Fixed
 
 - fixed `FrozenError` when calling `#to_s` on a frozen `Group::Passive`
   * thanks to [Daniel Gollahon](https://github.com/dgollahon)
 
-## [2.0.1] - 2020-12-20 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.0.1] - 2020-12-20 - Janosch Müller
 
 ### Fixed
 
@@ -275,7 +275,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * e.g. `/\x0A/` was scanned correctly, but the equivalent `/\xA/` was not
   * thanks to [Daniel Gollahon](https://github.com/dgollahon) for the report
 
-## [2.0.0] - 2020-11-25 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [2.0.0] - 2020-11-25 - Janosch Müller
 
 ### Changed
 
@@ -309,7 +309,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * thanks to [Michael Glass](https://github.com/michaelglass) for the report
 - some crashes when scanning contrived patterns such as `'\😋'`
 
-### [1.8.2] - 2020-10-11 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.8.2] - 2020-10-11 - Janosch Müller
 
 ### Fixed
 
@@ -317,7 +317,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * thanks to [Thomas Walpole](https://github.com/twalpole)
 - removed "unknown future version" warning on Ruby 3.0
 
-### [1.8.1] - 2020-09-28 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.8.1] - 2020-09-28 - Janosch Müller
 
 ### Fixed
 
@@ -327,7 +327,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - specified correct minimum Ruby version in gemspec
   * it said 1.9 but really required 2.0 as of v1.8.0
 
-### [1.8.0] - 2020-09-20 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.8.0] - 2020-09-20 - Janosch Müller
 
 ### Changed
 
@@ -347,14 +347,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fixed parsing comments without preceding space or trailing newline in x-mode
   * thanks to [Owen Stephens](https://github.com/owst)
 
-### [1.7.1] - 2020-06-07 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+### [1.7.1] - 2020-06-07 - Ammar Ali
 
 ### Fixed
 
 - Support for literals that include the unescaped delimiters `{`, `}`, and `]`. These
   delimiters are informally supported by various regexp engines.
 
-### [1.7.0] - 2020-02-23 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.7.0] - 2020-02-23 - Janosch Müller
 
 ### Added
 
@@ -366,13 +366,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `MatchLength#each` no longer ignores the given `limit:` when called without a block
 
-### [1.6.0] - 2019-06-16 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.6.0] - 2019-06-16 - Janosch Müller
 
 ### Added
 
 - Added support for 16 new unicode properties introduced in Ruby 2.6.2 and 2.6.3
 
-### [1.5.1] - 2019-05-23 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.5.1] - 2019-05-23 - Janosch Müller
 
 ### Fixed
 
@@ -386,7 +386,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `ScannerError` for some valid meta/control sequences such as '\\C-\\\\'
 - Fixed `Expression::Base#match` and `#=~` not working with a single argument
 
-### [1.5.0] - 2019-05-14 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.5.0] - 2019-05-14 - Janosch Müller
 
 ### Added
 
@@ -412,13 +412,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed quantification of codepoint lists with more than one entry (`\u{62 63 64}+`)
   * quantifiers apply only to the last entry, so this token is now split up if quantified
 
-### [1.4.0] - 2019-04-02 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.4.0] - 2019-04-02 - Janosch Müller
 
 ### Added
 
 - Added support for 19 new unicode properties introduced in Ruby 2.6.0
 
-### [1.3.0] - 2018-11-14 - [Janosch Müller](mailto:janosch84@gmail.com)
+### [1.3.0] - 2018-11-14 - Janosch Müller
 
 ### Added
 
@@ -429,7 +429,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Thanks to [Akira Matsuda](https://github.com/amatsuda)
   * eliminated warning "assigned but unused variable - testEof"
 
-## [1.2.0] - 2018-09-28 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [1.2.0] - 2018-09-28 - Janosch Müller
 
 ### Added
 
@@ -442,7 +442,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * it used to be the only expression stored in a custom ivar, complicating traversal
   * its setter and getter (`#condition=`, `#condition`) still work as before
 
-## [1.1.0] - 2018-09-17 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [1.1.0] - 2018-09-17 - Janosch Müller
 
 ### Added
 
@@ -459,7 +459,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed scanning and parsing of forward-referring subexpression calls (e.g. `\g<+1>`)
 - `Root` and `Sequence` expressions now support the same constructor signature as all other expressions
 
-## [1.0.0] - 2018-09-01 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [1.0.0] - 2018-09-01 - Janosch Müller
 
 This release includes several breaking changes, mostly to character sets, #map and properties.
 
@@ -505,7 +505,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed scanning of codepoint escapes with 6 digits (e.g. `\u{10FFFF}`)
 - Fixed scanning of `\R` and `\X` within sets; they act as literals there
 
-## [0.5.0] - 2018-04-29 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [0.5.0] - 2018-04-29 - Janosch Müller
 
 ### Changed
 
@@ -527,20 +527,20 @@ This release includes several breaking changes, mostly to character sets, #map a
 
 - Added full signature support to collection methods of Expressions (@aa7c55a)
 
-## [0.4.13] - 2018-04-04 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.4.13] - 2018-04-04 - Ammar Ali
 
 - Added ruby version files for 2.2.10 and 2.3.7
 
-## [0.4.12] - 2018-03-30 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [0.4.12] - 2018-03-30 - Janosch Müller
 
 - Added ruby version files for 2.4.4 and 2.5.1
 
-## [0.4.11] - 2018-03-04 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [0.4.11] - 2018-03-04 - Janosch Müller
 
 - Fixed UnknownSyntaxNameError introduced in v0.4.10 if
   the gems parent dir tree included a 'ruby' dir
 
-## [0.4.10] - 2018-03-04 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [0.4.10] - 2018-03-04 - Janosch Müller
 
 - Added ruby version file for 2.6.0
 - Added support for Emoji properties (available in Ruby since 2.5.0)
@@ -549,15 +549,15 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed parsing of the special Assigned property
 - Fixed scanning of InCyrillic_Supplement property
 
-## [0.4.9] - 2017-12-25 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.4.9] - 2017-12-25 - Ammar Ali
 
 - Added ruby version file for 2.5.0
 
-## [0.4.8] - 2017-12-18 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [0.4.8] - 2017-12-18 - Janosch Müller
 
 - Added ruby version files for 2.2.9, 2.3.6, and 2.4.3
 
-## [0.4.7] - 2017-10-15 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [0.4.7] - 2017-10-15 - Janosch Müller
 
 - Fixed a thread safety issue (issue #45)
 - Some public class methods that were only reliable for
@@ -569,56 +569,56 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed a Parser bug where the #number attribute of traditional
   numerical backreferences was not set correctly (commit 851b620)
 
-## [0.4.6] - 2017-09-18 - [Janosch Müller](mailto:janosch84@gmail.com)
+## [0.4.6] - 2017-09-18 - Janosch Müller
 
 - Added Parser support for hex escapes in sets (PR #36)
 - Added Parser support for octal escapes (PR #37)
 - Added support for cluster types \R and \X (PR #38)
 - Added support for more metacontrol notations (PR #39)
 
-## [0.4.5] - 2017-09-17 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.4.5] - 2017-09-17 - Ammar Ali
 
-- Thanks to [Janosch Müller](https://github.com/janosch-x):
+- Thanks to Janosch Müller](https://github.com/janosch-x):
   * Support ruby 2.2.7 (PR #42)
 - Added ruby version files for 2.2.8, 2.3.5, and 2.4.2
 
-## [0.4.4] - 2017-07-10 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.4.4] - 2017-07-10 - Ammar Ali
 
-- Thanks to [Janosch Müller](https://github.com/janosch-x):
+- Thanks to Janosch Müller](https://github.com/janosch-x):
   * Add support for new absence operator (PR #33)
 - Thanks to [Bartek Bułat](https://github.com/barthez):
   * Add support for Ruby 2.3.4 version (PR #40)
 
-## [0.4.3] - 2017-03-24 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.4.3] - 2017-03-24 - Ammar Ali
 
 - Added ruby version file for 2.4.1
 
-## [0.4.2] - 2017-01-10 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.4.2] - 2017-01-10 - Ammar Ali
 
-- Thanks to [Janosch Müller](https://github.com/janosch-x):
+- Thanks to Janosch Müller](https://github.com/janosch-x):
   * Support ruby 2.4 (PR #30)
   * Improve codepoint handling (PR #27)
 
-## [0.4.1] - 2016-11-22 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.4.1] - 2016-11-22 - Ammar Ali
 
 - Updated ruby version file for 2.3.3
 
-## [0.4.0] - 2016-11-20 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.4.0] - 2016-11-20 - Ammar Ali
 
 - Added Syntax.supported? method
 - Updated ruby versions for latest releases; 2.1.10, 2.2.6, and 2.3.2
 
-## [0.3.6] - 2016-06-08 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.3.6] - 2016-06-08 - Ammar Ali
 
 - Thanks to [John Backus](https://github.com/backus):
   * Remove warnings (PR #26)
 
-## [0.3.5] - 2016-05-30 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.3.5] - 2016-05-30 - Ammar Ali
 
 - Thanks to [John Backus](https://github.com/backus):
   * Fix parsing of /\xFF/n (hex:escape) (PR #24)
 
-## [0.3.4] - 2016-05-25 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.3.4] - 2016-05-25 - Ammar Ali
 
 - Thanks to [John Backus](https://github.com/backus):
   * Fix warnings (PR #19)
@@ -627,14 +627,14 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed mistyped \h and \H character types (issue #21)
 - Added ancestry syntax files for latest rubies (issue #22)
 
-## [0.3.3] - 2016-04-26 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.3.3] - 2016-04-26 - Ammar Ali
 
 - Thanks to [John Backus](https://github.com/backus):
   * Fixed scanning of zero length comments (PR #12)
   * Fixed missing escape:codepoint_list syntax token (PR #14)
   * Fixed to_s for modified interval quantifiers (PR #17)
 
-## [0.3.2] - 2016-01-01 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.3.2] - 2016-01-01 - Ammar Ali
 
 - Updated ruby versions for latest releases; 2.1.8, 2.2.4, and 2.3.0
 - Fixed class name for UnknownSyntaxNameError exception
@@ -660,7 +660,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Replaced VERSION.yml file with a constant.
 - Update tokens and scanner with new additions in Unicode 7.0.
 
-## [0.1.6] - 2014-10-06 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.1.6] - 2014-10-06 - Ammar Ali
 
 - Fixed test and gem building rake tasks and extracted the gem
   specification from the Rakefile into a .gemspec file.
@@ -670,7 +670,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Fixed a parser bug where an alternation sequence that contained nested expressions was incorrectly being appended to the parent expression when the nesting was exited. e.g. in /a|(b)c/, c was appended to the root.
 - Fixed a bug where character types were not being correctly scanned within character sets. e.g. in [\d], two tokens were scanned; one for the backslash '\' and one for the 'd'
 
-## [0.1.5] - 2014-01-14 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.1.5] - 2014-01-14 - Ammar Ali
 
 - Added syntax stubs for ruby versions 2.0 and 2.1
 - Added clone methods for deep copying expressions.
@@ -686,6 +686,6 @@ This release includes several breaking changes, mostly to character sets, #map a
 - Added control (\cc and \C-c) and meta (\M-c) escapes to 1.8 syntax
 - The default syntax is now the one of the running ruby version in both the lexer and the parser.
 
-## [0.1.0] - 2010-11-21 - [Ammar Ali](mailto:ammarabuali@gmail.com)
+## [0.1.0] - 2010-11-21 - Ammar Ali
 
 - Initial release
