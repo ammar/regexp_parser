@@ -2,16 +2,16 @@ require 'spec_helper'
 
 RSpec.describe(Regexp::Syntax::Token::Map) do
   let(:map) { Regexp::Syntax::Token::Map }
-  let(:latest_syntax) { Regexp::Syntax::V3_2_0 }
+  let(:current_syntax) { Regexp::Syntax::CURRENT }
 
   specify('is complete') do
-    latest_syntax.features.each do |type, tokens|
+    current_syntax.features.each do |type, tokens|
       tokens.each { |token| expect(map[type]).to include(token) }
     end
   end
 
   specify('contains no duplicate tokens') do
-    latest_syntax.features.each do |_type, tokens|
+    current_syntax.features.each do |_type, tokens|
       expect(tokens).to eq tokens.uniq
     end
   end
