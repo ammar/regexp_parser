@@ -267,6 +267,13 @@
       fret;
     };
 
+    [8-9] . [0-9] { # special case, emits two tokens
+      text = copy(data, ts-1, te)
+      emit(:escape, :literal, text[0, 2])
+      emit(:literal, :literal, text[2])
+      fret;
+    };
+
     meta_char {
       case text = copy(data, ts-1, te)
       when '\.';  emit(:escape, :dot,               text)

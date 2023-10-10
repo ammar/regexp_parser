@@ -40,6 +40,8 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', '[\7]',                  1 => [:escape, :octal,           '\7',         1, 3]
   include_examples 'scan', '[\77]',                 1 => [:escape, :octal,           '\77',        1, 4]
   include_examples 'scan', '[\777]',                1 => [:escape, :octal,           '\777',       1, 5]
+  include_examples 'scan', '[\8]',                  1 => [:escape, :literal,         '\8',         1, 3]
+  include_examples 'scan', '[\88]',                 1 => [:escape, :literal,         '\8',         1, 3]
   include_examples 'scan', '[\\[]',                 1 => [:escape, :set_open,        '\[',         1, 3]
   include_examples 'scan', '[\\]]',                 1 => [:escape, :set_close,       '\]',         1, 3]
   include_examples 'scan', '[a\-]',                 2 => [:escape, :literal,         '\-',         2, 4]

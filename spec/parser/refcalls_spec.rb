@@ -77,6 +77,9 @@ RSpec.describe('Refcall parsing') do
 
   specify('parse invalid reference') do
     expect { RP.parse('\1') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('1\1') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('\8') }.to raise_error(/Invalid reference/)
+    expect { RP.parse('8\8') }.to raise_error(/Invalid reference/)
     expect { RP.parse('(a)\2') }.to raise_error(/Invalid reference/)
     expect { RP.parse('\k<1>') }.to raise_error(/Invalid reference/)
     expect { RP.parse('\k<+1>') }.to raise_error(/Invalid reference/)

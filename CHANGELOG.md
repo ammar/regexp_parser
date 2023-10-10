@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- handle a corner case where parsing redundant number escapes raised an error
+  * e.g. `parse(/\99/)`, which in Ruby is a valid Regexp that matches `99`
+  * thanks to [Markus Schirp](https://github.com/mbj) for the report
+
 ## [2.8.1] - 2023-06-10 - Janosch Müller
 
 ### Fixed

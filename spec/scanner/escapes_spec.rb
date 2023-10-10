@@ -27,6 +27,10 @@ RSpec.describe('Escape scanning') do
   include_examples 'scan', 'a\0124',          1 => [:escape,  :octal,            '\012',           1,  5]
   include_examples 'scan', '\712+7',          0 => [:escape,  :octal,            '\712',           0,  4]
 
+  # special case: "out-of-bound octal escapes" are not treated as backrefs
+  include_examples 'scan', '\80',             0 => [:escape,  :literal,          '\8',             0,  2]
+  include_examples 'scan', '\80',             1 => [:literal, :literal,          '0',              2,  3]
+
   include_examples 'scan', 'a\xA',            1 => [:escape,  :hex,              '\xA',            1,  4]
   include_examples 'scan', 'a\x24c',          1 => [:escape,  :hex,              '\x24',           1,  5]
   include_examples 'scan', 'a\x0640c',        1 => [:escape,  :hex,              '\x06',           1,  5]
