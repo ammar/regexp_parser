@@ -19,7 +19,7 @@ end
 
 RSpec.describe('Expression::Shared#pretty_print') do
   it 'works' do
-    require 'pp' # rubocop:disable Lint/RedundantRequireStatement
+    require 'pp'
     pp_to_s = ->(arg) { ''.dup.tap { |buffer| PP.new(buffer).pp(arg) } }
 
     root = Regexp::Parser.parse(/(a)+/)
