@@ -20,9 +20,11 @@ RSpec.describe('RefCall scanning') do
 
   include_examples 'scan', '(abc)\k<1>',        3 => [:backref, :number_ref_ab,           '\k<1>',      5, 10]
   include_examples 'scan', "(abc)\\k'1'",       3 => [:backref, :number_ref_sq,           "\\k'1'",     5, 10]
+  include_examples 'scan', "(abc)\\k'001'",     3 => [:backref, :number_ref_sq,           "\\k'001'",   5, 12]
 
   include_examples 'scan', '(abc)\k<-1>',       3 => [:backref, :number_rel_ref_ab,       '\k<-1>',     5, 11]
   include_examples 'scan', "(abc)\\k'-1'",      3 => [:backref, :number_rel_ref_sq,       "\\k'-1'",    5, 11]
+  include_examples 'scan', '(abc)\k<-001>',     3 => [:backref, :number_rel_ref_ab,       '\k<-001>',   5, 13]
 
   # Sub-expression invocation, named, numbered, and relative
   include_examples 'scan', '(?<X>abc)\g<X>',    3 => [:backref, :name_call_ab,            '\g<X>',      9, 14]
@@ -33,12 +35,14 @@ RSpec.describe('RefCall scanning') do
 
   include_examples 'scan', '(abc)\g<1>',        3 => [:backref, :number_call_ab,          '\g<1>',      5, 10]
   include_examples 'scan', "(abc)\\g'1'",       3 => [:backref, :number_call_sq,          "\\g'1'",     5, 10]
+  include_examples 'scan', '(abc)\g<001>',      3 => [:backref, :number_call_ab,          '\g<001>',    5, 12]
 
   include_examples 'scan', 'a(b|\g<0>)',        4 => [:backref, :number_call_ab,          '\g<0>',      4, 9]
   include_examples 'scan', "a(b|\\g'0')",       4 => [:backref, :number_call_sq,          "\\g'0'",     4, 9]
 
   include_examples 'scan', '(abc)\g<-1>',       3 => [:backref, :number_rel_call_ab,      '\g<-1>',     5, 11]
   include_examples 'scan', "(abc)\\g'-1'",      3 => [:backref, :number_rel_call_sq,      "\\g'-1'",    5, 11]
+  include_examples 'scan', '(abc)\g<-001>',     3 => [:backref, :number_rel_call_ab,      '\g<-001>',   5, 13]
 
   include_examples 'scan', '\g<+1>(abc)',       0 => [:backref, :number_rel_call_ab,      '\g<+1>',     0, 6]
   include_examples 'scan', "\\g'+1'(abc)",      0 => [:backref, :number_rel_call_sq,      "\\g'+1'",    0, 6]

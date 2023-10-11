@@ -364,6 +364,7 @@
   conditional_expression := |*
     group_lookup . ')' {
       text = copy(data, ts, te-1)
+      text =~ /[^0]/ or raise ValidationError.for(:backref, 'condition', 'invalid ref ID')
       emit(:conditional, :condition, text)
       emit(:conditional, :condition_close, ')')
     };
@@ -541,13 +542,13 @@
       case text = copy(data, ts, te)
       when /^\\k(.)[^0-9\-][^+\-]*['>]$/
         emit(:backref, $1 == '<' ? :name_ref_ab : :name_ref_sq, text)
-      when /^\\k(.)[1-9]\d*['>]$/
+      when /^\\k(.)0*[1-9]\d*['>]$/
         emit(:backref, $1 == '<' ? :number_ref_ab : :number_ref_sq, text)
-      when /^\\k(.)-[1-9]\d*['>]$/
+      when /^\\k(.)-0*[1-9]\d*['>]$/
         emit(:backref, $1 == '<' ? :number_rel_ref_ab : :number_rel_ref_sq, text)
       when /^\\k(.)[^0-9\-].*[+\-]\d+['>]$/
         emit(:backref, $1 == '<' ? :name_recursion_ref_ab : :name_recursion_ref_sq, text)
-      when /^\\k(.)-?[1-9]\d*[+\-]\d+['>]$/
+      when /^\\k(.)-?0*[1-9]\d*[+\-]\d+['>]$/
         emit(:backref, $1 == '<' ? :number_recursion_ref_ab : :number_recursion_ref_sq, text)
       else
         raise ValidationError.for(:backref, 'backreference', 'invalid ref ID')
@@ -560,9 +561,9 @@
       case text = copy(data, ts, te)
       when /^\\g(.)[^0-9+\-].*['>]$/
         emit(:backref, $1 == '<' ? :name_call_ab : :name_call_sq, text)
-      when /^\\g(.)\d+['>]$/
+      when /^\\g(.)(?:0|0*[1-9]\d*)['>]$/
         emit(:backref, $1 == '<' ? :number_call_ab : :number_call_sq, text)
-      when /^\\g(.)[+-]\d+/
+      when /^\\g(.)[+-]0*[1-9]\d*/
         emit(:backref, $1 == '<' ? :number_rel_call_ab : :number_rel_call_sq, text)
       else
         raise ValidationError.for(:backref, 'subexpression call', 'invalid ref ID')

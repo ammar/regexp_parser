@@ -14,6 +14,7 @@ RSpec.describe('Conditional scanning') do
   include_examples 'scan', /(a)(?(1)TRUE|)11/,    9  => [:conditional,  :close,           ')',   13, 14]
   include_examples 'scan', /(?<N>A)(?(<N>)T|F)1/, 5  => [:conditional,  :condition,       '<N>', 10, 13]
   include_examples 'scan', /(?'N'A)(?('N')T|F)2/, 5  => [:conditional,  :condition,       "'N'", 10, 13]
+  include_examples 'scan', /(a)(?(001)T)/,        5  => [:conditional,  :condition,       '001', 6,  9]
 
   include_examples 'scan', /(a(b(c)))(?(1)(?(2)d|(?(3)e|f))|(?(2)(?(1)g|h)))/,
     0  => [:group,        :capture,         '(',   0,  1],

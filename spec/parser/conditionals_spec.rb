@@ -66,4 +66,8 @@ RSpec.describe('Conditional parsing') do
   include_examples 'parse', /(?<A>a)(?(<A>)T|)/,
     [1]    => [Conditional::Expression, count: 3, to_s: '(?(<A>)T|)'],
     [1, 2] => [Conditional::Branch, to_s: '', ts: 16]
+
+  # test insignificant leading zeros in the condition's group number ref
+  include_examples 'parse', /(a)(?(001)T)/,
+    [1, 0] => [Conditional::Condition, to_s: '(001)', reference: 1]
 end

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- fixed scanner errors for insignificant leading zeros in numerical group refs
+  * e.g. `(a)\k<01>`, `(a)\g<-01>`, `(a)?(?(01)b|c)`
+  * thanks to [Markus Schirp](https://github.com/mbj) for the report
+
 ## [2.8.2] - 2023-10-10 - Janosch Müller
 
 ### Fixed

@@ -6,12 +6,16 @@ RSpec.describe('Refcall parsing') do
   include_examples 'parse', /(?<X>abc)\k<X>/, 1 => [Backreference::Name, name: 'X', reference: 'X']
   include_examples 'parse', /(?<X>abc)\k'X'/, 1 => [Backreference::Name, name: 'X', reference: 'X']
   include_examples 'parse', /(abc)\k<1>/,     1 => [Backreference::Number, number: 1, reference: 1]
+  include_examples 'parse', /(abc)\k<001>/,   1 => [Backreference::Number, number: 1, reference: 1]
   include_examples 'parse', /(abc)\k<-1>/,    1 => [Backreference::NumberRelative, number: -1, reference: 1]
   include_examples 'parse', /(abc)\k'-1'/,    1 => [Backreference::NumberRelative, number: -1, reference: 1]
+  include_examples 'parse', /(abc)\k'-001'/,  1 => [Backreference::NumberRelative, number: -1, reference: 1]
   include_examples 'parse', /(?<X>abc)\g<X>/, 1 => [Backreference::NameCall, reference: 'X']
   include_examples 'parse', /(abc)\g<1>/,     1 => [Backreference::NumberCall, reference: 1]
+  include_examples 'parse', '(abc)\g<001>',   1 => [Backreference::NumberCall, reference: 1]
   include_examples 'parse', '\g<0>',          0 => [Backreference::NumberCall, reference: 0]
   include_examples 'parse', /(abc)\g<-1>/,    1 => [Backreference::NumberCallRelative, reference: 1]
+  include_examples 'parse', /(abc)\g<-001>/,  1 => [Backreference::NumberCallRelative, reference: 1]
   include_examples 'parse', /\g<+1>(abc)/,    0 => [Backreference::NumberCallRelative, reference: 1]
 
   include_examples 'parse', /(?<X>abc)\k<X-0>/,
