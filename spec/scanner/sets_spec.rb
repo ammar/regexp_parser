@@ -87,7 +87,7 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', /[a-bd-f]/,              2 => [:set,     :range,          '-',          2, 3]
   include_examples 'scan', /[a-cd-f]/,              5 => [:set,     :range,          '-',          5, 6]
   # this is a buggy range, it matches only `c`, but not `a`, `b` or `-`
-  # (this is a string to work around a rubocop error in Lint/MixedCaseRange)
+  # (this is a string to work around a rubocop v1.56.4 error in Lint/MixedCaseRange)
   include_examples 'scan', '[a-[c]]',               2 => [:set,     :range,          '-',          2, 3]
   # these are not ranges, they match `a`, `c` and `-` (or non-`-` if negated)
   include_examples 'scan', /[[a]-[c]]/,             4 => [:literal, :literal,        '-',          4, 5]
