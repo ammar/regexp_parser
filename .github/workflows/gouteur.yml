@@ -7,14 +7,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
-      - name: Prepare
+          bundler-cache: true
+      - name: Install and run ragel
         run: |
-          bundle install --jobs 4
           sudo apt-get install -yqq ragel
           bundle exec rake ragel:rb
       - name: Test
