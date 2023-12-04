@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.3] - 2023-12-04 - Janosch Müller
+
 ### Fixed
 
 - fixed scanner errors for insignificant leading zeros in numerical group refs
