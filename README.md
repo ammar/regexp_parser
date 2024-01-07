@@ -492,4 +492,4 @@ Documentation and books used while working on this project.
 
 ## Copyright
 
-_Copyright (c) 2010-2023 Ammar Ali. See LICENSE file for details._
+_Copyright (c) 2010-2024 Ammar Ali. See LICENSE file for details._
