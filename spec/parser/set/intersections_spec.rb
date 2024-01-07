@@ -17,7 +17,7 @@ RSpec.describe('CharacterSet::Intersection parsing') do
     [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
     [0, 0, 0, 0] => [CharacterSet::Range, count: 2],
     [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
-    [0, 0, 1, 0] => [CharacterSet, count: 1, negative?: true]
+    [0, 0, 1, 0] => [CharacterSet, count: 1]
 
   include_examples 'parse', /[a&&a-z]/,
     [0]          => [CharacterSet, count: 1],

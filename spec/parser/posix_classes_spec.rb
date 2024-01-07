@@ -3,10 +3,10 @@ require 'spec_helper'
 RSpec.describe('PosixClass parsing') do
   include_examples 'parse', /[[:word:]]/,
     [0]    => [CharacterSet, count: 1],
-    [0, 0] => [:posixclass,    :word, PosixClass, name: 'word', text: '[:word:]', negative?: false]
+    [0, 0] => [:posixclass,    :word, PosixClass, name: 'word', text: '[:word:]']
   include_examples 'parse', /[[:^word:]]/,
     [0]    => [CharacterSet, count: 1],
-    [0, 0] => [:nonposixclass, :word, PosixClass, name: 'word', text: '[:^word:]', negative?: true]
+    [0, 0] => [:nonposixclass, :word, PosixClass, name: 'word', text: '[:^word:]']
 
   # cases treated as regular subsets by Ruby, not as (invalid) posix classes
   include_examples 'parse', '[[:ab]c:]',

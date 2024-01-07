@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- all expressions now respond to `#negative?` / `#negated?`
+  - previously only sets, props, and posix classes did
+- implemented `#negative?` / `#negated?` for more applicable expressions
+  - `\B`, `\D`, `\H`, `\S`, `\W`, `(?!...)`, `(?<!...)`
+
 ## [2.8.3] - 2023-12-04 - Janosch Müller
 
 ### Fixed

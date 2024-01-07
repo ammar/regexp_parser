@@ -1,10 +1,7 @@
 module Regexp::Expression
   class CharacterSet < Regexp::Expression::Subexpression
     attr_accessor :closed, :negative
-
-    alias :negative? :negative
-    alias :negated?  :negative
-    alias :closed?   :closed
+    alias :closed? :closed
 
     def initialize(token, options = {})
       self.negative = false

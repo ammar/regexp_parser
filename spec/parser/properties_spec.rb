@@ -2,32 +2,32 @@ require 'spec_helper'
 
 RSpec.describe('Property parsing') do
   # test various notations supported by Ruby
-  include_examples 'parse', '\p{sd}',           0 => [:property, :soft_dotted, negative?: false]
-  include_examples 'parse', '\p{SD}',           0 => [:property, :soft_dotted, negative?: false]
-  include_examples 'parse', '\p{Soft Dotted}',  0 => [:property, :soft_dotted, negative?: false]
-  include_examples 'parse', '\p{Soft-Dotted}',  0 => [:property, :soft_dotted, negative?: false]
-  include_examples 'parse', '\p{sOfT_dOtTeD}',  0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\p{sd}',           0 => [:property, :soft_dotted]
+  include_examples 'parse', '\p{SD}',           0 => [:property, :soft_dotted]
+  include_examples 'parse', '\p{Soft Dotted}',  0 => [:property, :soft_dotted]
+  include_examples 'parse', '\p{Soft-Dotted}',  0 => [:property, :soft_dotted]
+  include_examples 'parse', '\p{sOfT_dOtTeD}',  0 => [:property, :soft_dotted]
 
   # test ^-negation
-  include_examples 'parse', '\p{^sd}',          0 => [:nonproperty, :soft_dotted, negative?: true]
-  include_examples 'parse', '\p{^SD}',          0 => [:nonproperty, :soft_dotted, negative?: true]
-  include_examples 'parse', '\p{^Soft Dotted}', 0 => [:nonproperty, :soft_dotted, negative?: true]
-  include_examples 'parse', '\p{^Soft-Dotted}', 0 => [:nonproperty, :soft_dotted, negative?: true]
-  include_examples 'parse', '\p{^sOfT_dOtTeD}', 0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\p{^sd}',          0 => [:nonproperty, :soft_dotted]
+  include_examples 'parse', '\p{^SD}',          0 => [:nonproperty, :soft_dotted]
+  include_examples 'parse', '\p{^Soft Dotted}', 0 => [:nonproperty, :soft_dotted]
+  include_examples 'parse', '\p{^Soft-Dotted}', 0 => [:nonproperty, :soft_dotted]
+  include_examples 'parse', '\p{^sOfT_dOtTeD}', 0 => [:nonproperty, :soft_dotted]
 
   # test P-negation
-  include_examples 'parse', '\P{sd}',           0 => [:nonproperty, :soft_dotted, negative?: true]
-  include_examples 'parse', '\P{SD}',           0 => [:nonproperty, :soft_dotted, negative?: true]
-  include_examples 'parse', '\P{Soft Dotted}',  0 => [:nonproperty, :soft_dotted, negative?: true]
-  include_examples 'parse', '\P{Soft-Dotted}',  0 => [:nonproperty, :soft_dotted, negative?: true]
-  include_examples 'parse', '\P{sOfT_dOtTeD}',  0 => [:nonproperty, :soft_dotted, negative?: true]
+  include_examples 'parse', '\P{sd}',           0 => [:nonproperty, :soft_dotted]
+  include_examples 'parse', '\P{SD}',           0 => [:nonproperty, :soft_dotted]
+  include_examples 'parse', '\P{Soft Dotted}',  0 => [:nonproperty, :soft_dotted]
+  include_examples 'parse', '\P{Soft-Dotted}',  0 => [:nonproperty, :soft_dotted]
+  include_examples 'parse', '\P{sOfT_dOtTeD}',  0 => [:nonproperty, :soft_dotted]
 
   # double negation is positive again
-  include_examples 'parse', '\P{^sd}',          0 => [:property, :soft_dotted, negative?: false]
-  include_examples 'parse', '\P{^SD}',          0 => [:property, :soft_dotted, negative?: false]
-  include_examples 'parse', '\P{^Soft Dotted}', 0 => [:property, :soft_dotted, negative?: false]
-  include_examples 'parse', '\P{^Soft-Dotted}', 0 => [:property, :soft_dotted, negative?: false]
-  include_examples 'parse', '\P{^sOfT_dOtTeD}', 0 => [:property, :soft_dotted, negative?: false]
+  include_examples 'parse', '\P{^sd}',          0 => [:property, :soft_dotted]
+  include_examples 'parse', '\P{^SD}',          0 => [:property, :soft_dotted]
+  include_examples 'parse', '\P{^Soft Dotted}', 0 => [:property, :soft_dotted]
+  include_examples 'parse', '\P{^Soft-Dotted}', 0 => [:property, :soft_dotted]
+  include_examples 'parse', '\P{^sOfT_dOtTeD}', 0 => [:property, :soft_dotted]
 
   # test #shortcut
   include_examples 'parse', '\p{soft_dotted}',  0 => [:property, :soft_dotted, shortcut: 'sd']

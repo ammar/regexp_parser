@@ -48,11 +48,11 @@ RSpec.describe('CharacterSet parsing') do
     [0, 1, 1, 0] => [:literal, :literal,   Literal,      text: 'c',           set_level: 3]
 
   include_examples 'parse', '[a[^b[c]]]',
-    [0]          => [:set,     :character, CharacterSet, text: '[', count: 2, set_level: 0, negative?: false],
+    [0]          => [:set,     :character, CharacterSet, text: '[', count: 2, set_level: 0],
     [0, 0]       => [:literal, :literal,   Literal,      text: 'a',           set_level: 1],
-    [0, 1]       => [:set,     :character, CharacterSet, text: '[', count: 2, set_level: 1, negative?: true],
+    [0, 1]       => [:set,     :character, CharacterSet, text: '[', count: 2, set_level: 1],
     [0, 1, 0]    => [:literal, :literal,   Literal,      text: 'b',           set_level: 2],
-    [0, 1, 1]    => [:set,     :character, CharacterSet, text: '[', count: 1, set_level: 2, negative?: false],
+    [0, 1, 1]    => [:set,     :character, CharacterSet, text: '[', count: 1, set_level: 2],
     [0, 1, 1, 0] => [:literal, :literal,   Literal,      text: 'c',           set_level: 3]
 
   include_examples 'parse', '[aaa]',
