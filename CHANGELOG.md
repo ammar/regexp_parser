@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0] - 2024-01-07 - Janosch Müller
+
 ### Added
 
 - all expressions now respond to `#negative?` / `#negated?`
