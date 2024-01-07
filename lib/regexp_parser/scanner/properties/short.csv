@@ -86,6 +86,7 @@ ideo,ideographic
 ids,id_start
 idsb,ids_binary_operator
 idst,ids_trinary_operator
+idsu,ids_unary_operator
 ital,old_italic
 java,javanese
 joinc,join_control

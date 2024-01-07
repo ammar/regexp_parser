@@ -467,6 +467,7 @@ class Regexp::Parser
     when *UPTokens::Age;          node << UP::Age.new(token, active_opts)
     when *UPTokens::Derived;      node << UP::Derived.new(token, active_opts)
     when *UPTokens::Emoji;        node << UP::Emoji.new(token, active_opts)
+    when *UPTokens::Enumerated;   node << UP::Enumerated.new(token, active_opts)
     when *UPTokens::Script;       node << UP::Script.new(token, active_opts)
     when *UPTokens::UnicodeBlock; node << UP::Block.new(token, active_opts)
 

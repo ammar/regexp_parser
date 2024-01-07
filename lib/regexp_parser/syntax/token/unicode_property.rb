@@ -703,6 +703,24 @@ module Regexp::Syntax
         extended_pictographic
       ]
 
+      Enumerated_V2_4_0 = %i[
+        grapheme_cluster_break=control
+        grapheme_cluster_break=cr
+        grapheme_cluster_break=extend
+        grapheme_cluster_break=l
+        grapheme_cluster_break=lf
+        grapheme_cluster_break=lv
+        grapheme_cluster_break=lvt
+        grapheme_cluster_break=prepend
+        grapheme_cluster_break=regional_indicator
+        grapheme_cluster_break=spacingmark
+        grapheme_cluster_break=t
+        grapheme_cluster_break=v
+        grapheme_cluster_break=zwj
+      ]
+
+      Enumerated = all[:Enumerated_V]
+
       Emoji = all[:Emoji_V]
 
       V1_9_0 = Category::All + POSIX + all[:V1_9_0]

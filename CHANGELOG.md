@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - implemented `#negative?` / `#negated?` for more applicable expressions
   - `\B`, `\D`, `\H`, `\S`, `\W`, `(?!...)`, `(?<!...)`
 
+### Fixed
+
+- fixed missing support for grapheme cluster break unicode properties
+  - e.g. `/\p{Grapheme_Cluster_Break=Extend}/`
+
 ## [2.8.3] - 2023-12-04 - Janosch Müller
 
 ### Fixed

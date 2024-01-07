@@ -35,10 +35,12 @@ RSpec.describe('Property parsing') do
   include_examples 'parse', '\p{in_bengali}',   0 => [:property, :in_bengali, shortcut: nil]
 
   # test classification
-  include_examples 'parse', '\p{age=5.2}',      0 => [UnicodeProperty::Age]
-  include_examples 'parse', '\p{Math}',         0 => [UnicodeProperty::Derived]
-  include_examples 'parse', '\p{Hiragana}',     0 => [UnicodeProperty::Script]
-  include_examples 'parse', '\p{InArmenian}',   0 => [UnicodeProperty::Block]
+  include_examples 'parse', '\p{age=5.2}',                     0 => [UnicodeProperty::Age]
+  include_examples 'parse', '\p{InArmenian}',                  0 => [UnicodeProperty::Block]
+  include_examples 'parse', '\p{Math}',                        0 => [UnicodeProperty::Derived]
+  include_examples 'parse', '\p{Emoji}',                       0 => [UnicodeProperty::Emoji]
+  include_examples 'parse', '\p{GraphemeClusterBreak=Extend}', 0 => [UnicodeProperty::Enumerated]
+  include_examples 'parse', '\p{Hiragana}',                    0 => [UnicodeProperty::Script]
 
   specify('parse abandoned newline property') do
     root = RP.parse('\p{newline}', 'ruby/1.9')

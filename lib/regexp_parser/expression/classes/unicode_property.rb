@@ -105,11 +105,12 @@ module Regexp::Expression
       class Unassigned  < Codepoint::Base; end
     end
 
-    class Age     < UnicodeProperty::Base; end
-    class Derived < UnicodeProperty::Base; end
-    class Emoji   < UnicodeProperty::Base; end
-    class Script  < UnicodeProperty::Base; end
-    class Block   < UnicodeProperty::Base; end
+    class Age        < UnicodeProperty::Base; end
+    class Block      < UnicodeProperty::Base; end
+    class Derived    < UnicodeProperty::Base; end
+    class Emoji      < UnicodeProperty::Base; end
+    class Enumerated < UnicodeProperty::Base; end
+    class Script     < UnicodeProperty::Base; end
   end
 
   # alias for symmetry between token symbol and Expression class name
