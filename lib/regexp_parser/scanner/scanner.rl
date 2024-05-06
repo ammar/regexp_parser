@@ -640,9 +640,9 @@
   *|;
 }%%
 
-require 'regexp_parser/scanner/errors/scanner_error'
-require 'regexp_parser/scanner/errors/premature_end_error'
-require 'regexp_parser/scanner/errors/validation_error'
+require_relative 'scanner/errors/scanner_error'
+require_relative 'scanner/errors/premature_end_error'
+require_relative 'scanner/errors/validation_error'
 
 class Regexp::Scanner
   # Scans the given regular expression text, or Regexp object and collects the

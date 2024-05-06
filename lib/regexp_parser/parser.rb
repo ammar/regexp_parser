@@ -1,5 +1,5 @@
-require 'regexp_parser/error'
-require 'regexp_parser/expression'
+require_relative 'error'
+require_relative 'expression'
 
 class Regexp::Parser
   include Regexp::Expression
