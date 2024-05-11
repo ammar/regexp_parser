@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.1] - 2024-05-11 - Janosch Müller
+
+### Fixed
+
+- fixed unnecessary `$LOAD_PATH` searches at load time
+  * thanks to [Koichi ITO](https://github.com/koic)
+
 ## [2.9.0] - 2024-01-07 - Janosch Müller
 
 ### Added
