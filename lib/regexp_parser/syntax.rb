@@ -1,4 +1,4 @@
-require 'regexp_parser/error'
+require_relative 'error'
 
 module Regexp::Syntax
   class SyntaxError < Regexp::Parser::Error; end
