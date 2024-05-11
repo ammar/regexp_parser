@@ -20,19 +20,19 @@ end
 
 
 # Load all the token files, they will populate the Map constant.
-require_relative '../syntax/token/anchor'
-require_relative '../syntax/token/assertion'
-require_relative '../syntax/token/backreference'
-require_relative '../syntax/token/posix_class'
-require_relative '../syntax/token/character_set'
-require_relative '../syntax/token/character_type'
-require_relative '../syntax/token/conditional'
-require_relative '../syntax/token/escape'
-require_relative '../syntax/token/group'
-require_relative '../syntax/token/keep'
-require_relative '../syntax/token/meta'
-require_relative '../syntax/token/quantifier'
-require_relative '../syntax/token/unicode_property'
+require_relative 'token/anchor'
+require_relative 'token/assertion'
+require_relative 'token/backreference'
+require_relative 'token/posix_class'
+require_relative 'token/character_set'
+require_relative 'token/character_type'
+require_relative 'token/conditional'
+require_relative 'token/escape'
+require_relative 'token/group'
+require_relative 'token/keep'
+require_relative 'token/meta'
+require_relative 'token/quantifier'
+require_relative 'token/unicode_property'
 
 
 # After loading all the tokens the map is full. Extract all tokens and types
