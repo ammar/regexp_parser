@@ -12,14 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - all expressions now respond to `#negative?` / `#negated?`
-  - previously only sets, props, and posix classes did
+  * previously only sets, props, and posix classes did
 - implemented `#negative?` / `#negated?` for more applicable expressions
-  - `\B`, `\D`, `\H`, `\S`, `\W`, `(?!...)`, `(?<!...)`
+  * `\B`, `\D`, `\H`, `\S`, `\W`, `(?!...)`, `(?<!...)`
 
 ### Fixed
 
 - fixed missing support for grapheme cluster break unicode properties
-  - e.g. `/\p{Grapheme_Cluster_Break=Extend}/`
+  * e.g. `/\p{Grapheme_Cluster_Break=Extend}/`
 
 ## [2.8.3] - 2023-12-04 - Janosch Müller
 
@@ -63,8 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - support calling `Subexpression#{each_expression,flat_map}` with a one-argument block
   * in this case, only the expressions are passed to the block, no indices
 - support calling test methods at Expression class level
-  - `capturing?`, `comment?`, `decorative?`, `referential?`, `terminal?`
-  - e.g. `Regexp::Expression::CharacterSet.terminal? # => false`
+  * `capturing?`, `comment?`, `decorative?`, `referential?`, `terminal?`
+  * e.g. `Regexp::Expression::CharacterSet.terminal? # => false`
 
 ### Fixed
 
