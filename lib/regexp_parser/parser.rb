@@ -575,18 +575,18 @@ class Regexp::Parser
     options_stack.last
   end
 
-  # Assigns referenced expressions to refering expressions, e.g. if there is
+  # Assigns referenced expressions to referring expressions, e.g. if there is
   # an instance of Backreference::Number, its #referenced_expression is set to
   # the instance of Group::Capture that it refers to via its number.
   def assign_referenced_expressions
-    # find all referencable and refering expressions
+    # find all referenceable and referring expressions
     targets = { 0 => root }
     referrers = []
     root.each_expression do |exp|
       exp.is_a?(Group::Capture) && targets[exp.identifier] = exp
       referrers << exp if exp.referential?
     end
-    # assign reference expression to refering expressions
+    # assign reference expression to referring expressions
     # (in a second iteration because there might be forward references)
     referrers.each do |exp|
       exp.referenced_expression = targets[exp.reference] ||

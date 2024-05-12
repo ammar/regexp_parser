@@ -55,7 +55,7 @@ RSpec.describe('Escape scanning') do
   include_examples 'scan', /a\
 b/x,                                          0 => [:literal,  :literal,         'ab',             0,  2]
 
-  # Meta/control espaces
+  # Meta/control escapes
   #
   # After the following fix in Ruby 3.1, a Regexp#source containing meta/control
   # escapes can only be set with the Regexp::new constructor.
