@@ -47,7 +47,7 @@ RSpec.describe('EscapeSequence parsing') do
     expect { exp.codepoint }.to raise_error(/#codepoints/)
   end
 
-  # Meta/control espaces
+  # Meta/control escapes
   #
   # After the following fix in Ruby 3.1, a Regexp#source containing meta/control
   # escapes can only be set with the Regexp::new constructor.

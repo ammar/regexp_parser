@@ -10,7 +10,7 @@ RSpec.describe('Parsing errors') do
   end
 
   RSpec.shared_examples 'UnknownTokenError' do |type|
-    it "raises for unkown tokens of type #{type}" do
+    it "raises for unknown tokens of type #{type}" do
       expect { parser.send(:parse_token, Regexp::Token.new(type, :foo)) }
         .to raise_error(Regexp::Parser::UnknownTokenError)
     end

@@ -8,7 +8,7 @@ RSpec.describe('RefCall scanning') do
   #
   # NOTE: only \g supports forward-looking references using '+', e.g. \g<+1>
   # refers to the next group, but \k<+1> refers to a group named '+1'.
-  # Inversely, only \k supports addition or substraction of a recursion level.
+  # Inversely, only \k supports addition or subtraction of a recursion level.
   # E.g. \k<x+0> refers to a group named 'x' at the current recursion level,
   # but \g<x+0> refers to a a group named 'x+0'.
   #
