@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.2] - 2024-05-15 - Janosch Müller
+
+### Fixed
+
+- made the MFA requirement for changes to this gem visible on rubygems
+  * thanks to [Geremia Taglialatela](https://github.com/tagliala)
+
 ## [2.9.1] - 2024-05-11 - Janosch Müller
 
 ### Fixed
