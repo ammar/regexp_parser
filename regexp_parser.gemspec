@@ -16,6 +16,8 @@ Gem::Specification.new do |spec|
   spec.metadata['source_code_uri'] = spec.homepage
   spec.metadata['wiki_uri']        = "#{spec.homepage}/wiki"
 
+  spec.metadata['rubygems_mfa_required'] = 'true'
+
   spec.authors       = ['Ammar Ali', 'Janosch Müller']
   spec.email         = ['ammarabuali@gmail.com', 'janosch84@gmail.com']
 
