@@ -41,6 +41,7 @@ RSpec.describe('Group scanning') do
   include_examples 'scan', '(?<!abc)',        0 => [:assertion, :nlookbehind,    '(?<!',       0, 4]
   include_examples 'scan', '(?<!x)y>',        0 => [:assertion, :nlookbehind,    '(?<!',       0, 4]
   include_examples 'scan', '(?<!x>)y',        0 => [:assertion, :nlookbehind,    '(?<!',       0, 4]
+  include_examples 'scan', '(?<=x>)y',        0 => [:assertion, :lookbehind,     '(?<=',       0, 4]
 
   # Options
   include_examples 'scan', '(?-mix:abc)',     0 => [:group,     :options,        '(?-mix:',    0, 7]
