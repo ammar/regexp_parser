@@ -8,7 +8,7 @@ RSpec.describe('Group scanning') do
   # Named groups
   # Names that start with a hyphen or digit (ascii or other) are invalid.
   # ")" is only allowed as first char of the name.
-  # "!" is allowed anywhere, but ?<!...> is treated as a lookbehind by Ruby.
+  # "!" and "=" are allowed anywhere, but (?<!…>…) and (?<=…>…) are treated as lookbehinds by Ruby.
   include_examples 'scan', '(?<name>abc)',    0 => [:group,     :named_ab,       '(?<name>',   0, 8]
   include_examples 'scan', "(?'name'abc)",    0 => [:group,     :named_sq,       "(?'name'",   0, 8]
   include_examples 'scan', '(?<name_1>abc)',  0 => [:group,     :named_ab,       '(?<name_1>', 0,10]
@@ -17,6 +17,10 @@ RSpec.describe('Group scanning') do
   include_examples 'scan', "(?'name-1'abc)",  0 => [:group,     :named_sq,       "(?'name-1'", 0,10]
   include_examples 'scan', "(?<name'1>abc)",  0 => [:group,     :named_ab,       "(?<name'1>", 0,10]
   include_examples 'scan', "(?'name>1'abc)",  0 => [:group,     :named_sq,       "(?'name>1'", 0,10]
+  include_examples 'scan', "(?<n!me1'>abc)",  0 => [:group,     :named_ab,       "(?<n!me1'>", 0,10]
+  include_examples 'scan', "(?'!ame1>'abc)",  0 => [:group,     :named_sq,       "(?'!ame1>'", 0,10]
+  include_examples 'scan', "(?<n=me1'>abc)",  0 => [:group,     :named_ab,       "(?<n=me1'>", 0,10]
+  include_examples 'scan', "(?'=ame1>'abc)",  0 => [:group,     :named_sq,       "(?'=ame1>'", 0,10]
   include_examples 'scan', '(?<üüuuüü>abc)',  0 => [:group,     :named_ab,       '(?<üüuuüü>', 0,10]
   include_examples 'scan', "(?'üüuuüü'abc)",  0 => [:group,     :named_sq,       "(?'üüuuüü'", 0,10]
   include_examples 'scan', "(?<😋1234😋>abc)",  0 => [:group,     :named_ab,       "(?<😋1234😋>", 0,10]
@@ -38,10 +42,10 @@ RSpec.describe('Group scanning') do
   include_examples 'scan', '(?=abc)',         0 => [:assertion, :lookahead,      '(?=',        0, 3]
   include_examples 'scan', '(?!abc)',         0 => [:assertion, :nlookahead,     '(?!',        0, 3]
   include_examples 'scan', '(?<=abc)',        0 => [:assertion, :lookbehind,     '(?<=',       0, 4]
+  include_examples 'scan', '(?<=x>)y',        0 => [:assertion, :lookbehind,     '(?<=',       0, 4]
   include_examples 'scan', '(?<!abc)',        0 => [:assertion, :nlookbehind,    '(?<!',       0, 4]
   include_examples 'scan', '(?<!x)y>',        0 => [:assertion, :nlookbehind,    '(?<!',       0, 4]
   include_examples 'scan', '(?<!x>)y',        0 => [:assertion, :nlookbehind,    '(?<!',       0, 4]
-  include_examples 'scan', '(?<=x>)y',        0 => [:assertion, :lookbehind,     '(?<=',       0, 4]
 
   # Options
   include_examples 'scan', '(?-mix:abc)',     0 => [:group,     :options,        '(?-mix:',    0, 7]

@@ -79,7 +79,7 @@
   group_options         = '?' . ( [^!#'():<=>~]+ . ':'? ) ?;
 
   group_name_id_ab      = ([^!=0-9\->] | utf8_multibyte) . ([^>] | utf8_multibyte)*;
-  group_name_id_sq      = ([^0-9\-']  | utf8_multibyte) . ([^'] | utf8_multibyte)*;
+  group_name_id_sq      = ([^0-9\-']   | utf8_multibyte) . ([^'] | utf8_multibyte)*;
   group_number          = '-'? . [0-9]+;
   group_level           = [+\-] . [0-9]+;
 
