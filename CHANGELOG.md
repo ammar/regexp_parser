@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.3] - 2024-11-29 - Janosch Müller
+
+### Fixed
+
+- fixed positive lookbehinds with character ">" being treated as named groups
+  * e.g. `(?<=foo>)`
+  * thanks to [Daniel Vandersluis](https://github.com/dvandersluis)
+
 ## [2.9.2] - 2024-05-15 - Janosch Müller
 
 ### Fixed
