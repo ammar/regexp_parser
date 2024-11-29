@@ -15,8 +15,9 @@ jobs:
       with:
         ruby-version: 3.2
         bundler-cache: true
-    # Create a dummy scanner.rb so we don't need Ragel but require statements work
-    - name: Stub scanner.rb
-      run: 'echo "class Regexp::Scanner; end" > lib/regexp_parser/scanner.rb'
+    - name: Install and run ragel
+      run: |
+        sudo apt-get install -yqq ragel
+        bundle exec rake ragel:rb
     - name: Run rubocop
       run: bundle exec rubocop

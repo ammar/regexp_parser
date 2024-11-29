@@ -18,5 +18,3 @@ Lint/DuplicateRegexpCharacterClassElement:
   Exclude: ['spec/**/*']
 Lint/MixedRegexpCaptureTypes:
   Exclude: ['spec/**/*']
-Lint/UnescapedBracketInRegexp:
-  Exclude: ['spec/**/*']
