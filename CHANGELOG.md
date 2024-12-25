@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- fixed `#char` & `#codepoint` errors for single-digit hex escapes
+  * e.g. `\xA`
+
 ## [2.9.3] - 2024-11-29 - Janosch Müller
 
 ### Fixed
