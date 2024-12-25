@@ -32,7 +32,7 @@ RSpec.describe(Regexp::MatchLength) do
 
   specify('raises for missing references') do
     exp = RP.parse(/(a)\1/).last
-    exp.referenced_expression = nil
+    exp.referenced_expressions = nil
     expect { exp.match_length }.to raise_error(ArgumentError)
   end
 

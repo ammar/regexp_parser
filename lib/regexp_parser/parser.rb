@@ -580,16 +580,19 @@ class Regexp::Parser
   # the instance of Group::Capture that it refers to via its number.
   def assign_referenced_expressions
     # find all referenceable and referring expressions
-    targets = { 0 => root }
+    targets = { 0 => [root] }
     referrers = []
     root.each_expression do |exp|
-      exp.is_a?(Group::Capture) && targets[exp.identifier] = exp
-      referrers << exp if exp.referential?
+      if exp.referential?
+        referrers << exp
+      elsif exp.is_a?(Group::Capture)
+        (targets[exp.identifier] ||= []) << exp
+      end
     end
-    # assign reference expression to referring expressions
+    # assign referenced expressions to referring expressions
     # (in a second iteration because there might be forward references)
     referrers.each do |exp|
-      exp.referenced_expression = targets[exp.reference] ||
+      exp.referenced_expressions = targets[exp.reference] ||
         raise(ParserError, "Invalid reference #{exp.reference} at pos #{exp.ts}")
     end
   end

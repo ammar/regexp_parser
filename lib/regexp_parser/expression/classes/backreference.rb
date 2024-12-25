@@ -1,25 +1,6 @@
 module Regexp::Expression
   module Backreference
-    class Base < Regexp::Expression::Base
-      attr_accessor :referenced_expression
-
-      def initialize_copy(orig)
-        exp_id = [self.class, self.starts_at]
-
-        # prevent infinite recursion for recursive subexp calls
-        copied = @@copied ||= {}
-        self.referenced_expression =
-          if copied[exp_id]
-            orig.referenced_expression
-          else
-            copied[exp_id] = true
-            orig.referenced_expression.dup
-          end
-        copied.clear
-
-        super
-      end
-    end
+    class Base < Regexp::Expression::Base; end
 
     class Number < Backreference::Base
       attr_reader :number

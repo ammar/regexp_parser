@@ -59,6 +59,14 @@ RSpec.describe('Refcall parsing') do
     expect(exp3.referenced_expression.to_s).to eq '(ghi)'
   end
 
+  specify('parse backref referenced_expressions (multiplex)') do
+    root = RP.parse('(?<a>A)(?<a>B)\\k<a>')
+    exp = root.last
+
+    expect(exp.referenced_expressions).to eq [root[0], root[1]]
+    expect(exp.referenced_expressions.map(&:to_s)).to eq ['(?<a>A)', '(?<a>B)']
+  end
+
   specify('parse backref call referenced_expression') do
     root = RP.parse('\\g<+1>(abc)\\g<+2>(def)(ghi)\\g<-2>')
     exp1 = root[0]

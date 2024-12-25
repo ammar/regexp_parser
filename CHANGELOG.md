@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `#referenced_expressions`
+  - like `#referenced_expression`, but for multiplexing backrefs
+  - returns the `Group` expressions that are being referenced
+
 ### Fixed
 
 - fixed `#char` & `#codepoint` errors for single-digit hex escapes
