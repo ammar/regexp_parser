@@ -4,7 +4,7 @@ RAGEL_SOURCE_FILES = %w[scanner] # scanner.rl imports the other files
 
 namespace :ragel do
   desc 'Process the ragel source files and output ruby code'
-  task rb: :install do |task|
+  task rb: :install do
     RAGEL_SOURCE_FILES.each do |source_file|
       source_path = "#{RAGEL_SOURCE_DIR}/#{source_file}.rl"
       output_path = "#{RAGEL_OUTPUT_DIR}/#{source_file}.rb"
@@ -21,7 +21,7 @@ namespace :ragel do
         .gsub(/\n(?:[ \t]*\n){2,}/, "\n\n") # compact blank lines
 
       File.open(output_path, 'w') do |file|
-        file.puts <<~RUBY
+        file.puts(<<-RUBY.gsub(/^\s+/, ''))
           # -*- warn-indent:false;  -*-
           #
           # THIS IS A GENERATED FILE, DO NOT EDIT DIRECTLY

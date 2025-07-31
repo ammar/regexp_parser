@@ -8,10 +8,13 @@ AllCops:
     - ruby
     - rake
   SuggestExtensions: false
-  TargetRubyVersion: 2.6 # really 2.0, but 2.6 is lowest supported by rubocop
+  TargetRubyVersion: 2.0
 
 Lint:
   Enabled: true
+
+Lint/UselessConstantScoping:
+  Enabled: false
 
 # ignore weird looking regexps in specs, we have these on purpose
 Lint/DuplicateRegexpCharacterClassElement:
