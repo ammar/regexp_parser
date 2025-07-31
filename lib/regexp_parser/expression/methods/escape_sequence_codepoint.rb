@@ -15,6 +15,12 @@ module Regexp::Expression::EscapeSequence
   Hex.class_eval         { def codepoint; text[/\h+/].hex end }
   Codepoint.class_eval   { def codepoint; text[/\h+/].hex end }
 
+  UTF8Hex.class_eval do
+    def codepoint
+      text.scan(/\h+/).map(&:hex).pack('C*').force_encoding('utf-8').ord
+    end
+  end
+
   CodepointList.class_eval do
     # Maybe this should be a unique top-level expression class?
     def char

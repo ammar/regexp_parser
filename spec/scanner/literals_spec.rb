@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe('UTF8 scanning') do
+RSpec.describe('UTF-8 scanning') do
   # ascii, single byte characters
   include_examples 'scan', 'a',
     0 => [:literal,     :literal,       'a',        0, 1]

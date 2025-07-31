@@ -17,7 +17,7 @@ module Regexp::Syntax
                  interval_open interval_close
                  set_open set_close]
 
-      Hex   = %i[hex]
+      Hex   = %i[hex utf8_hex]
 
       Octal = %i[octal]
 

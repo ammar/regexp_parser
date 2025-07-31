@@ -29,6 +29,7 @@ RSpec.describe('EscapeSequence parsing') do
 
   # hex escapes
   include_examples 'parse', /a\xFF/n,        1 => [:escape, :hex,            es::Hex]
+  include_examples 'parse', /a\xFF\xFF/n,    2 => [:escape, :hex,            es::Hex]
 
   # octal escapes
   include_examples 'parse', /a\177/n,        1 => [:escape, :octal,          es::Octal]
@@ -39,6 +40,7 @@ RSpec.describe('EscapeSequence parsing') do
   include_examples 'parse', /\101/,          0 => [char:  'A',     codepoint:  65      ]
   include_examples 'parse', /\x42/,          0 => [char:  'B',     codepoint:  66      ]
   include_examples 'parse', /\xA/,           0 => [char:  "\n",    codepoint:  10      ]
+  include_examples 'parse', /\xE2\x82\xAC/,  0 => [char:  "€",     codepoint:  8364    ]
   include_examples 'parse', /\u0043/,        0 => [char:  'C',     codepoint:  67      ]
   include_examples 'parse', /\u{44 45}/,     0 => [chars: %w[D E], codepoints: [68, 69]]
 

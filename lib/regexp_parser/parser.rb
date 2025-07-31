@@ -319,6 +319,7 @@ class Regexp::Parser
     when :codepoint_list; node << EscapeSequence::CodepointList.new(token, active_opts)
     when :hex;            node << EscapeSequence::Hex.new(token, active_opts)
     when :octal;          node << EscapeSequence::Octal.new(token, active_opts)
+    when :utf8_hex;       node << EscapeSequence::UTF8Hex.new(token, active_opts)
 
     when :control
       if token.text =~ /\A(?:\\C-\\M|\\c\\M)/

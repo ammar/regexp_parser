@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- a new token `:escape, :utf8_hex` and expression `EscapeSequence::UTF8Hex`
+  - used for UTF-8 hex escapes, e.g. `\xE2\x82\xAC` representing U+20AC "€"
+
 ## [2.10.0] - 2024-12-25 - Janosch Müller
 
 ### Added
