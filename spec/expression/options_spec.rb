@@ -43,7 +43,7 @@ RSpec.describe('Expression::Base#options') do
   it 'gives correct precedence when encountering multiple encoding flags' do
     # Any encoding flag overrides all previous encoding flags. If there are
     # multiple encoding flags in an options string, the last one wins.
-    # E.g. /(?dau)\w/ matches UTF8 chars but /(?dua)\w/ only ASCII chars.
+    # E.g. /(?dau)\w/ matches UTF-8 chars but /(?dua)\w/ only ASCII chars.
     regexp1 = /(?dau)\w/
     regexp2 = /(?dua)\w/
     expect(regexp1).to match 'ü'

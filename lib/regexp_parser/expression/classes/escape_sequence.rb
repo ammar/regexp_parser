@@ -18,6 +18,7 @@ module Regexp::Expression
     Codepoint   = Class.new(Base) # e.g. \u000A
 
     CodepointList = Class.new(Base) # e.g. \u{A B}
+    UTF8Hex       = Class.new(Base) # e.g. \xE2\x82\xAC
 
     AbstractMetaControlSequence = Class.new(Base)
     Control                     = Class.new(AbstractMetaControlSequence) # e.g. \cB

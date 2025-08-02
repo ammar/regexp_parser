@@ -40,6 +40,7 @@ RSpec.describe(Regexp::Scanner) do
   include_examples 'scan error', RS::PrematureEndError, 'eof in m-seq', '\M-\C-'
   include_examples 'scan error', RS::InvalidSequenceError, 'invalid hex', '\xZ'
   include_examples 'scan error', RS::InvalidSequenceError, 'invalid hex', '\xZ0'
+  include_examples 'scan error', RS::InvalidSequenceError, 'invalid hex', '\x{'
   include_examples 'scan error', RS::InvalidSequenceError, 'invalid c-seq', '\cü'
   include_examples 'scan error', RS::InvalidSequenceError, 'invalid c-seq', '\c\M-ü'
   include_examples 'scan error', RS::InvalidSequenceError, 'invalid c-seq', '\C-ü'

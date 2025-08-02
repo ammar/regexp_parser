@@ -330,7 +330,7 @@ _Note that not all of these are available in all versions of Ruby_
 | ------------------------------------- | ------------------------------------------------------- |:--------:|
 | **Alternation**                       | `a\|b\|c`                                               | &#x2713; |
 | **Anchors**                           | `\A`, `^`, `\b`                                         | &#x2713; |
-| **Character Classes**                 | `[abc]`, `[^\\]`, `[a-d&&aeiou]`, `[a=e=b]`             | &#x2713; |
+| **Character Classes**                 | `[abc]`, `[^\\]`, `[a-d&&aeiou]`                        | &#x2713; |
 | **Character Types**                   | `\d`, `\H`, `\s`                                        | &#x2713; |
 | **Cluster Types**                     | `\R`, `\X`                                              | &#x2713; |
 | **Conditional Exps.**                 | `(?(cond)yes-subexp)`, `(?(cond)yes-subexp\|no-subexp)` | &#x2713; |
@@ -365,7 +365,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Possessive**_          | `?+`, `*+`, `++` \[1\]                                  | &#x2713; |
 | **String Escapes**                    |                                                         | &#x22f1; |
 | &emsp;&nbsp;_**Control** \[2\]_       | `\C-C`, `\cD`                                           | &#x2713; |
-| &emsp;&nbsp;_**Hex**_                 | `\x20`, `\x{701230}`                                    | &#x2713; |
+| &emsp;&nbsp;_**Hex**_                 | `\x20`, `\xE2\x82\xAC`                                  | &#x2713; |
 | &emsp;&nbsp;_**Meta** \[2\]_          | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |

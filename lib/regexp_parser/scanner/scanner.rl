@@ -37,7 +37,8 @@
   octal_sequence        = [0-7]{1,3};
 
   hex_sequence          = 'x' . xdigit{1,2};
-  hex_sequence_err      = 'x' . [^0-9a-fA-F{];
+  hex_sequence_err      = 'x' . [^0-9A-Fa-f];
+  high_hex_sequence     = 'x' . [89A-Fa-f] . xdigit . ( '\\x' . [89A-Fa-f] . xdigit )*;
 
   codepoint_single      = 'u' . xdigit{4};
   codepoint_list        = 'u{' . xdigit{1,6} . (space . xdigit{1,6})* . '}';
@@ -210,7 +211,7 @@
         type = :nonposixclass
       end
 
-      unless self.class.posix_classes.include?(class_name)
+      unless POSIX_CLASSES[class_name]
         raise ValidationError.for(:posix_class, text)
       end
 
@@ -317,6 +318,16 @@
         emit(:escape, :codepoint_list, text)
       else
         emit(:escape, :codepoint,      text)
+      end
+      fret;
+    };
+
+    high_hex_sequence > (escaped_alpha, 5) {
+      text = copy(data, ts-1, te)
+      if regexp_encoding == Encoding::BINARY
+        text.split(/(?=\\)/).each { |part| emit(:escape, :hex, part) }
+      else
+        emit(:escape, :utf8_hex, text)
       end
       fret;
     };
@@ -662,6 +673,7 @@ class Regexp::Scanner
 
     input = input_object.is_a?(Regexp) ? input_object.source : input_object
     self.free_spacing = free_spacing?(input_object, options)
+    self.regexp_encoding = input_object.encoding if input_object.is_a?(::Regexp)
     self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
 
     data  = input.unpack("c*")
@@ -711,10 +723,9 @@ class Regexp::Scanner
     File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
   end
 
-  def self.posix_classes
+  POSIX_CLASSES =
     %w[alnum alpha ascii blank cntrl digit graph
-       lower print punct space upper word xdigit]
-  end
+       lower print punct space upper word xdigit].to_h { |c| [c, true] }.freeze
 
   # Emits an array with the details of the scanned pattern
   def emit(type, token, text)
@@ -749,6 +760,7 @@ class Regexp::Scanner
   attr_accessor :block,
                 :collect_tokens, :tokens, :prev_token,
                 :free_spacing, :spacing_stack,
+                :regexp_encoding,
                 :group_depth, :set_depth, :conditional_stack,
                 :char_pos
 

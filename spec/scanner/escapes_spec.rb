@@ -34,6 +34,10 @@ RSpec.describe('Escape scanning') do
   include_examples 'scan', 'a\xA',            1 => [:escape,  :hex,              '\xA',            1,  4]
   include_examples 'scan', 'a\x24c',          1 => [:escape,  :hex,              '\x24',           1,  5]
   include_examples 'scan', 'a\x0640c',        1 => [:escape,  :hex,              '\x06',           1,  5]
+  include_examples 'scan', 'a\xE2\x82\xAC',   1 => [:escape,  :utf8_hex,         '\xE2\x82\xAC',   1,  13]
+  include_examples 'scan', /a\xE2\x82\xAC/n,  1 => [:escape,  :hex,              '\xE2',           1,  5]
+  include_examples 'scan', /a\xE2\x82\xAC/n,  2 => [:escape,  :hex,              '\x82',           5,  9]
+  include_examples 'scan', /a\xE2\x82\xAC/n,  3 => [:escape,  :hex,              '\xAC',           9,  13]
 
   include_examples 'scan', 'a\u0640c',        1 => [:escape,  :codepoint,        '\u0640',         1,  7]
   include_examples 'scan', 'a\u{640 0641}c',  1 => [:escape,  :codepoint_list,   '\u{640 0641}',   1,  13]
