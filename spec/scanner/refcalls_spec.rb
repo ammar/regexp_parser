@@ -1,8 +1,21 @@
 require 'spec_helper'
 
 RSpec.describe('RefCall scanning') do
-  # Traditional numerical group back-reference
-  include_examples 'scan', '(abc)\1' ,          3 => [:backref, :number,                  '\1',         5, 7]
+  # Traditional numerical group back-reference.
+  # For non-matched cases see ./escapes_spec.rb
+  include_examples 'scan', '(abc)\1' ,          3 => [:backref, :number, '\1',       5,   7]
+
+  # They can have two or more digits:
+  # "#{[*2..101].join}101"[/#{(2..101).map { |n| "(#{n})" }.join}\K\100/] # => '101'
+  include_examples 'scan', '(((((((((())))))))))\10',
+                                                -1 => [:backref, :number, '\10',     20,  23]
+  include_examples 'scan', "#{[*1..100].map { |n| "(#{n})" }.join}\\100",
+                                                -1 => [:backref, :number, '\100',   392, 396]
+
+  # Double digit escapes are treated as backref as soon as a fitting group is open:
+  # "\10"[/((((((((((\10))))))))))/] # => nil
+  include_examples 'scan', '((((((((((\10))))))))))',
+                                                10 => [:backref, :number, '\10',     10,  13]
 
   # Group back-references, named, numbered, and relative
   #

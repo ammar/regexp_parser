@@ -257,9 +257,21 @@
   # escape sequence scanner
   # --------------------------------------------------------------------------
   escape_sequence := |*
-    [1-9] {
+    [1-9] . [0-9]* {
       text = copy(data, ts-1, te)
-      emit(:backref, :number, text)
+
+      # If not enough groups have been opened, there is a fallback to either an
+      # octal or literal interpretation for 2+ digit numerical escapes.
+      digits = text[1..-1]
+      if digits.size == 1 || digits.to_i <= self.capturing_group_count
+        emit(:backref, :number, text)
+      elsif digits =~ /\A[0-7]{2,}\z/
+        emit(:escape, :octal, text)
+      else
+        emit(:escape, :literal, text[0..1])
+        emit(:literal, :literal, text[2..-1])
+      end
+
       fret;
     };
 
@@ -525,6 +537,7 @@
     };
 
     group_open @group_opened {
+      self.capturing_group_count += 1
       text = copy(data, ts, te)
       emit(:group, :capture, text)
     };
@@ -684,6 +697,7 @@ class Regexp::Scanner
 
     self.set_depth = 0
     self.group_depth = 0
+    self.capturing_group_count = 0
     self.conditional_stack = []
     self.char_pos = 0
 
@@ -762,6 +776,7 @@ class Regexp::Scanner
                 :free_spacing, :spacing_stack,
                 :regexp_encoding,
                 :group_depth, :set_depth, :conditional_stack,
+                :capturing_group_count,
                 :char_pos
 
   def free_spacing?(input_object, options)
