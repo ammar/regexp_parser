@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - a new token `:escape, :utf8_hex` and expression `EscapeSequence::UTF8Hex`
   - used for UTF-8 hex escapes, e.g. `\xE2\x82\xAC` representing U+20AC "€"
 
+### Fixed
+
+- detection of numeric backrefs > 9, e.g. `((((((((((foo))))))))))\10`
+  - these are only backrefs in Ruby if sufficient groups have been opened
+  - they were previously always scanned as octal or literal escapes
+
 ## [2.10.0] - 2024-12-25 - Janosch Müller
 
 ### Added

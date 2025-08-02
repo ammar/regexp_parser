@@ -27,7 +27,17 @@ RSpec.describe('Escape scanning') do
   include_examples 'scan', 'a\0124',          1 => [:escape,  :octal,            '\012',           1,  5]
   include_examples 'scan', '\712+7',          0 => [:escape,  :octal,            '\712',           0,  4]
 
-  # special case: "out-of-bound octal escapes" are not treated as backrefs
+  # Multi-digit escaped numbers that occur before sufficient capturing groups
+  # have been opened are treated as octal or literal.
+  # "\10"[/\10()()()()()()()()()()/] # => "\b" # treated as octal
+  # "\70"[/\70()()()()()()()()()()/] # => "8"  # treated as octal
+  # "90"[/\90()()()()()()()()()()/]  # => "90" # treated as literal
+  # For cases treated as backrefs, see ./refcalls_spec.rb
+  include_examples 'scan', "\\10#{'()' * 10}",0 => [:escape,  :octal,    '\10',            0,  3]
+  include_examples 'scan', "\\90#{'()' * 90}",0 => [:escape,  :literal,  '\9',             0,  2],
+                                              1 => [:literal, :literal,  '0',              2,  3]
+
+  # special case: "out-of-bound octal escapes" (digits > 7) are not treated as backrefs
   include_examples 'scan', '\80',             0 => [:escape,  :literal,          '\8',             0,  2]
   include_examples 'scan', '\80',             1 => [:literal, :literal,          '0',              2,  3]
 
