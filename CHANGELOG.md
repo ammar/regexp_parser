@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0] - 2025-08-03 - Janosch Müller
+
 ### Added
 
 - a new token `:escape, :utf8_hex` and expression `EscapeSequence::UTF8Hex`
@@ -654,13 +656,13 @@ This release includes several breaking changes, mostly to character sets, #map a
 
 ## [0.4.5] - 2017-09-17 - Ammar Ali
 
-- Thanks to Janosch Müller](https://github.com/janosch-x):
+- Thanks to [Janosch Müller](https://github.com/janosch-x):
   * Support ruby 2.2.7 (PR #42)
 - Added ruby version files for 2.2.8, 2.3.5, and 2.4.2
 
 ## [0.4.4] - 2017-07-10 - Ammar Ali
 
-- Thanks to Janosch Müller](https://github.com/janosch-x):
+- Thanks to [Janosch Müller](https://github.com/janosch-x):
   * Add support for new absence operator (PR #33)
 - Thanks to [Bartek Bułat](https://github.com/barthez):
   * Add support for Ruby 2.3.4 version (PR #40)
@@ -671,7 +673,7 @@ This release includes several breaking changes, mostly to character sets, #map a
 
 ## [0.4.2] - 2017-01-10 - Ammar Ali
 
-- Thanks to Janosch Müller](https://github.com/janosch-x):
+- Thanks to [Janosch Müller](https://github.com/janosch-x):
   * Support ruby 2.4 (PR #30)
   * Improve codepoint handling (PR #27)
 
