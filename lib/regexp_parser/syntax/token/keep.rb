@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   module Token
     module Keep
-      Mark = %i[mark]
+      Mark = %i[mark].freeze
 
       All  = Mark
       Type = :keep

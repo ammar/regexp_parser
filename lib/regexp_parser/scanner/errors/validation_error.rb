@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Regexp::Scanner
   # Base for all scanner validation errors
   class ValidationError < ScannerError

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   module Token
     module Quantifier
@@ -5,23 +7,23 @@ module Regexp::Syntax
         zero_or_one
         zero_or_more
         one_or_more
-      ]
+      ].freeze
 
       Reluctant = %i[
         zero_or_one_reluctant
         zero_or_more_reluctant
         one_or_more_reluctant
-      ]
+      ].freeze
 
       Possessive = %i[
         zero_or_one_possessive
         zero_or_more_possessive
         one_or_more_possessive
-      ]
+      ].freeze
 
-      Interval             = %i[interval]
-      IntervalReluctant    = %i[interval_reluctant]
-      IntervalPossessive   = %i[interval_possessive]
+      Interval             = %i[interval].freeze
+      IntervalReluctant    = %i[interval_reluctant].freeze
+      IntervalPossessive   = %i[interval_possessive].freeze
 
       IntervalAll = Interval + IntervalReluctant + IntervalPossessive
 

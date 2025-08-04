@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 BENCHMARKS_DIR = "#{__dir__}/benchmarks"
 
 desc 'Run all IPS benchmarks'

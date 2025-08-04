@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 # Define the base module and the simplest of tokens.
 module Regexp::Syntax
   module Token
-    Map = {}
+    Map = Hash.new
 
     module Literal
-      All = %i[literal]
+      All = %i[literal].freeze
       Type = :literal
     end
 
     module FreeSpace
-      All  = %i[comment whitespace]
+      All  = %i[comment whitespace].freeze
       Type = :free_space
     end
 

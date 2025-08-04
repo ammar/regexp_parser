@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Expression::EscapeSequence
   AsciiEscape.class_eval { def codepoint; 0x1B end }
   Backspace.class_eval   { def codepoint; 0x8  end }

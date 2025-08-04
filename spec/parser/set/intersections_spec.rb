@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # edge cases with `...-&&...` and `...&&-...` are checked in ./ranges_spec.rb

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Expression
   class CharacterSet < Regexp::Expression::Subexpression
     class IntersectedSequence < Regexp::Expression::Sequence; end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   class NotImplementedError < Regexp::Syntax::SyntaxError
     def initialize(syntax, type, token)

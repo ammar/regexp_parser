@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Expression
   class PosixClass < Regexp::Expression::Base
     def name

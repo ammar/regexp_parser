@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Expression
   class CharacterSet < Regexp::Expression::Subexpression
     attr_accessor :closed, :negative

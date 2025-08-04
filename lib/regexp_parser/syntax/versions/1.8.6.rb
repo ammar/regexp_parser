@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Regexp::Syntax::V1_8_6 < Regexp::Syntax::Base
   implements :anchor,     Anchor::All
   implements :assertion,  Assertion::Lookahead

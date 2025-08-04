@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   module Token
     module CharacterType
-      Basic     = []
-      Extended  = %i[digit nondigit space nonspace word nonword]
-      Hex       = %i[hex nonhex]
+      Basic     = [].freeze
+      Extended  = %i[digit nondigit space nonspace word nonword].freeze
+      Hex       = %i[hex nonhex].freeze
 
-      Clustered = %i[linebreak xgrapheme]
+      Clustered = %i[linebreak xgrapheme].freeze
 
       All = Basic + Extended + Hex + Clustered
       Type = :type

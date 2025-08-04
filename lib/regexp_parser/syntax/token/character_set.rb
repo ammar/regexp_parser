@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   module Token
     module CharacterSet
-      Basic     = %i[open close negate range]
+      Basic     = %i[open close negate range].freeze
       Extended  = Basic + %i[intersection]
 
       All = Extended

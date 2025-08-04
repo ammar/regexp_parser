@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :props do
   desc 'Write new property value hashes for the properties scanner'
   task :update do
