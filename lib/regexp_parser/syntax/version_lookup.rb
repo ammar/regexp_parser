@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   VERSION_FORMAT = '\Aruby/\d+\.\d+(\.\d+)?\z'
-  VERSION_REGEXP = /#{VERSION_FORMAT}/
-  VERSION_CONST_REGEXP = /\AV\d+_\d+(?:_\d+)?\z/
+  VERSION_REGEXP = /#{VERSION_FORMAT}/.freeze
+  VERSION_CONST_REGEXP = /\AV\d+_\d+(?:_\d+)?\z/.freeze
 
   class InvalidVersionNameError < Regexp::Syntax::SyntaxError
     def initialize(name)

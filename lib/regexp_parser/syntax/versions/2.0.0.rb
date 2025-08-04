@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Regexp::Syntax::V2_0_0 < Regexp::Syntax::V1_9_3
   implements :keep,        Keep::All
   implements :conditional, Conditional::All

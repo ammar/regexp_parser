@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A very thin wrapper around the scanner that breaks quantified literal runs,
 # collects emitted tokens into an array, calculates their nesting depth, and
 # normalizes tokens for the parser, and checks if they are implemented by the

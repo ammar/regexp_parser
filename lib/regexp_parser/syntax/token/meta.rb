@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   module Token
     module Meta
-      Basic       = %i[dot]
-      Alternation = %i[alternation]
+      Basic       = %i[dot].freeze
+      Alternation = %i[alternation].freeze
       Extended    = Basic + Alternation
 
       All = Extended

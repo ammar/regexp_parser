@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Regexp
   TOKEN_KEYS = %i[
     type

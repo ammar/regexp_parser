@@ -1,37 +1,39 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   module Token
     module UnicodeProperty
       all = proc { |name| constants.grep(/#{name}/).flat_map(&method(:const_get)) }
 
       CharType_V1_9_0 = %i[alnum alpha ascii blank cntrl digit graph
-                           lower print punct space upper word xdigit]
+                           lower print punct space upper word xdigit].freeze
 
-      CharType_V2_5_0 = %i[xposixpunct]
+      CharType_V2_5_0 = %i[xposixpunct].freeze
 
-      POSIX = %i[any assigned newline]
+      POSIX = %i[any assigned newline].freeze
 
       module Category
         Letter        = %i[letter uppercase_letter lowercase_letter
-                           titlecase_letter modifier_letter other_letter]
+                           titlecase_letter modifier_letter other_letter].freeze
 
         Mark          = %i[mark nonspacing_mark spacing_mark
-                           enclosing_mark]
+                           enclosing_mark].freeze
 
         Number        = %i[number decimal_number letter_number
-                           other_number]
+                           other_number].freeze
 
         Punctuation   = %i[punctuation connector_punctuation dash_punctuation
                            open_punctuation close_punctuation initial_punctuation
-                           final_punctuation other_punctuation]
+                           final_punctuation other_punctuation].freeze
 
         Symbol        = %i[symbol math_symbol currency_symbol
-                           modifier_symbol other_symbol]
+                           modifier_symbol other_symbol].freeze
 
         Separator     = %i[separator space_separator line_separator
-                           paragraph_separator]
+                           paragraph_separator].freeze
 
         Codepoint     = %i[other control format
-                           surrogate private_use unassigned]
+                           surrogate private_use unassigned].freeze
 
         All = Letter + Mark + Number + Punctuation +
               Symbol + Separator + Codepoint
@@ -39,27 +41,27 @@ module Regexp::Syntax
 
       Age_V1_9_3 = %i[age=1.1 age=2.0 age=2.1 age=3.0 age=3.1
                       age=3.2 age=4.0 age=4.1 age=5.0 age=5.1
-                      age=5.2 age=6.0]
+                      age=5.2 age=6.0].freeze
 
-      Age_V2_0_0 = %i[age=6.1]
+      Age_V2_0_0 = %i[age=6.1].freeze
 
-      Age_V2_2_0 = %i[age=6.2 age=6.3 age=7.0]
+      Age_V2_2_0 = %i[age=6.2 age=6.3 age=7.0].freeze
 
-      Age_V2_3_0 = %i[age=8.0]
+      Age_V2_3_0 = %i[age=8.0].freeze
 
-      Age_V2_4_0 = %i[age=9.0]
+      Age_V2_4_0 = %i[age=9.0].freeze
 
-      Age_V2_5_0 = %i[age=10.0]
+      Age_V2_5_0 = %i[age=10.0].freeze
 
-      Age_V2_6_0 = %i[age=11.0]
+      Age_V2_6_0 = %i[age=11.0].freeze
 
-      Age_V2_6_2 = %i[age=12.0]
+      Age_V2_6_2 = %i[age=12.0].freeze
 
-      Age_V2_6_3 = %i[age=12.1]
+      Age_V2_6_3 = %i[age=12.1].freeze
 
-      Age_V3_1_0 = %i[age=13.0]
+      Age_V3_1_0 = %i[age=13.0].freeze
 
-      Age_V3_2_0 = %i[age=14.0 age=15.0]
+      Age_V3_2_0 = %i[age=14.0 age=15.0].freeze
 
       Age = all[:Age_V]
 
@@ -115,20 +117,20 @@ module Regexp::Syntax
         white_space
         xid_start
         xid_continue
-      ]
+      ].freeze
 
       Derived_V2_0_0 = %i[
         cased_letter
         combining_mark
-      ]
+      ].freeze
 
       Derived_V2_4_0 = %i[
         prepended_concatenation_mark
-      ]
+      ].freeze
 
       Derived_V2_5_0 = %i[
         regional_indicator
-      ]
+      ].freeze
 
       Derived = all[:Derived_V]
 
@@ -226,13 +228,13 @@ module Regexp::Syntax
         inherited
         common
         unknown
-      ]
+      ].freeze
 
       Script_V1_9_3 = %i[
         brahmi
         batak
         mandaic
-      ]
+      ].freeze
 
       Script_V2_0_0 = %i[
         chakma
@@ -242,7 +244,7 @@ module Regexp::Syntax
         sharada
         sora_sompeng
         takri
-      ]
+      ].freeze
 
       Script_V2_2_0 = %i[
         caucasian_albanian
@@ -268,7 +270,7 @@ module Regexp::Syntax
         khudawadi
         tirhuta
         warang_citi
-      ]
+      ].freeze
 
       Script_V2_3_0 = %i[
         ahom
@@ -277,7 +279,7 @@ module Regexp::Syntax
         multani
         old_hungarian
         signwriting
-      ]
+      ].freeze
 
       Script_V2_4_0 = %i[
         adlam
@@ -286,14 +288,14 @@ module Regexp::Syntax
         newa
         osage
         tangut
-      ]
+      ].freeze
 
       Script_V2_5_0 = %i[
         masaram_gondi
         nushu
         soyombo
         zanabazar_square
-      ]
+      ].freeze
 
       Script_V2_6_0 = %i[
         dogra
@@ -303,21 +305,21 @@ module Regexp::Syntax
         medefaidrin
         old_sogdian
         sogdian
-      ]
+      ].freeze
 
       Script_V2_6_2 = %i[
         elymaic
         nandinagari
         nyiakeng_puachue_hmong
         wancho
-      ]
+      ].freeze
 
       Script_V3_1_0 = %i[
         chorasmian
         dives_akuru
         khitan_small_script
         yezidi
-      ]
+      ].freeze
 
       Script_V3_2_0 = %i[
         cypro_minoan
@@ -327,7 +329,7 @@ module Regexp::Syntax
         tangsa
         toto
         vithkuqi
-      ]
+      ].freeze
 
       Script = all[:Script_V]
 
@@ -428,7 +430,7 @@ module Regexp::Syntax
         in_yi_radicals
         in_yi_syllables
         in_yijing_hexagram_symbols
-      ]
+      ].freeze
 
       UnicodeBlock_V2_0_0 = %i[
         in_aegean_numbers
@@ -556,7 +558,7 @@ module Regexp::Syntax
         in_variation_selectors_supplement
         in_vedic_extensions
         in_vertical_forms
-      ]
+      ].freeze
 
       UnicodeBlock_V2_2_0 = %i[
         in_bassa_vah
@@ -591,7 +593,7 @@ module Regexp::Syntax
         in_supplemental_arrows_c
         in_tirhuta
         in_warang_citi
-      ]
+      ].freeze
 
       UnicodeBlock_V2_3_0 = %i[
         in_ahom
@@ -604,7 +606,7 @@ module Regexp::Syntax
         in_old_hungarian
         in_supplemental_symbols_and_pictographs
         in_sutton_signwriting
-      ]
+      ].freeze
 
       UnicodeBlock_V2_4_0 = %i[
         in_adlam
@@ -618,7 +620,7 @@ module Regexp::Syntax
         in_osage
         in_tangut
         in_tangut_components
-      ]
+      ].freeze
 
       UnicodeBlock_V2_5_0 = %i[
         in_cjk_unified_ideographs_extension_f
@@ -628,7 +630,7 @@ module Regexp::Syntax
         in_soyombo
         in_syriac_supplement
         in_zanabazar_square
-      ]
+      ].freeze
 
       UnicodeBlock_V2_6_0 = %i[
         in_chess_symbols
@@ -642,7 +644,7 @@ module Regexp::Syntax
         in_medefaidrin
         in_old_sogdian
         in_sogdian
-      ]
+      ].freeze
 
       UnicodeBlock_V2_6_2 = %i[
         in_egyptian_hieroglyph_format_controls
@@ -654,7 +656,7 @@ module Regexp::Syntax
         in_symbols_and_pictographs_extended_a
         in_tamil_supplement
         in_wancho
-      ]
+      ].freeze
 
       UnicodeBlock_V3_1_0 = %i[
         in_chorasmian
@@ -665,7 +667,7 @@ module Regexp::Syntax
         in_symbols_for_legacy_computing
         in_tangut_supplement
         in_yezidi
-      ]
+      ].freeze
 
       UnicodeBlock_V3_2_0 = %i[
         in_arabic_extended_b
@@ -687,7 +689,7 @@ module Regexp::Syntax
         in_unified_canadian_aboriginal_syllabics_extended_a
         in_vithkuqi
         in_znamenny_musical_notation
-      ]
+      ].freeze
 
       UnicodeBlock = all[:UnicodeBlock_V]
 
@@ -697,11 +699,11 @@ module Regexp::Syntax
         emoji_modifier
         emoji_modifier_base
         emoji_presentation
-      ]
+      ].freeze
 
       Emoji_V2_6_0 = %i[
         extended_pictographic
-      ]
+      ].freeze
 
       Enumerated_V2_4_0 = %i[
         grapheme_cluster_break=control
@@ -717,7 +719,7 @@ module Regexp::Syntax
         grapheme_cluster_break=t
         grapheme_cluster_break=v
         grapheme_cluster_break=zwj
-      ]
+      ].freeze
 
       Enumerated = all[:Enumerated_V]
 

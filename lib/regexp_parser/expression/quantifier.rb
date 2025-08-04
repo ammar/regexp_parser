@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Expression
   # TODO: in v3.0.0, maybe put Shared back into Base, and inherit from Base and
   # call super in #initialize, but raise in #quantifier= and #quantify,
@@ -6,7 +8,7 @@ module Regexp::Expression
   class Quantifier
     include Regexp::Expression::Shared
 
-    MODES = %i[greedy possessive reluctant]
+    MODES = %i[greedy possessive reluctant].freeze
 
     def initialize(*args)
       deprecated_old_init(*args) and return if args.count == 4 || args.count == 5

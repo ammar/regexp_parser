@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   module Token
     module Virtual
-      Root     = %i[root]
-      Sequence = %i[sequence]
+      Root     = %i[root].freeze
+      Sequence = %i[sequence].freeze
 
-      All  = %i[root sequence]
+      All  = %i[root sequence].freeze
       Type = :expression
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'syntax' do |opts|
   opts[:implements].each do |type, tokens|
     tokens.each do |token|
