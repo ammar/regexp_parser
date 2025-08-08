@@ -16,6 +16,6 @@ jobs:
       - name: Install and run ragel
         run: |
           sudo apt-get install -yqq ragel
-          bundle exec rake ragel:rb
+          bundle exec rake ragel
       - name: Test
         run: bundle exec gouteur
