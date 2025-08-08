@@ -263,7 +263,7 @@
       # If not enough groups have been opened, there is a fallback to either an
       # octal or literal interpretation for 2+ digit numerical escapes.
       digits = text[1..-1]
-      if digits.size == 1 || digits.to_i <= self.capturing_group_count
+      if digits.size == 1 || digits.to_i <= capturing_group_count
         emit(:backref, :number, text)
       elsif digits =~ /\A[0-7]{2,}\z/
         emit(:escape, :octal, text)
