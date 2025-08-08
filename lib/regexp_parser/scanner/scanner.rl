@@ -537,7 +537,7 @@
     };
 
     group_open @group_opened {
-      self.capturing_group_count += 1
+      self.capturing_group_count = capturing_group_count + 1
       text = copy(data, ts, te)
       emit(:group, :capture, text)
     };
@@ -769,7 +769,7 @@ class Regexp::Scanner
     end
   end
 
-  attr_accessor :literal_run # only public for #||= to work on ruby <= 2.5
+  attr_accessor :capturing_group_count, :literal_run # only public for #||= to work on ruby <= 2.5
 
   private
 
@@ -778,7 +778,6 @@ class Regexp::Scanner
                 :free_spacing, :spacing_stack,
                 :regexp_encoding,
                 :group_depth, :set_depth, :conditional_stack,
-                :capturing_group_count,
                 :char_pos
 
   def free_spacing?(input_object, options)
