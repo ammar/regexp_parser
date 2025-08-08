@@ -61,6 +61,8 @@ module Regexp::Syntax
 
       Age_V3_2_0 = %i[age=14.0 age=15.0]
 
+      Age_V3_5_0 = %i[age=15.1]
+
       Age = all[:Age_V]
 
       Derived_V1_9_0 = %i[
@@ -128,6 +130,12 @@ module Regexp::Syntax
 
       Derived_V2_5_0 = %i[
         regional_indicator
+      ]
+
+      Derived_V3_5_0 = %i[
+        id_compat_math_continue
+        id_compat_math_start
+        ids_unary_operator
       ]
 
       Derived = all[:Derived_V]
@@ -689,6 +697,10 @@ module Regexp::Syntax
         in_znamenny_musical_notation
       ]
 
+      UnicodeBlock_V3_5_0 = %i[
+        in_cjk_unified_ideographs_extension_i
+      ]
+
       UnicodeBlock = all[:UnicodeBlock_V]
 
       Emoji_V2_5_0 = %i[
@@ -735,6 +747,7 @@ module Regexp::Syntax
       V2_6_3 = all[:V2_6_3]
       V3_1_0 = all[:V3_1_0]
       V3_2_0 = all[:V3_2_0]
+      V3_5_0 = all[:V3_5_0]
 
       All = all[/^V\d+_\d+_\d+$/]
 

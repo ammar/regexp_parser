@@ -9,6 +9,7 @@ age=13.0,age=13.0
 age=14.0,age=14.0
 age=15.0,age=15.0
 age=15.1,age=15.1
+age=16.0,age=16.0
 age=2.0,age=2.0
 age=2.1,age=2.1
 age=3.0,age=3.0
@@ -103,6 +104,7 @@ extendedpictographic,extended_pictographic
 extender,extender
 finalpunctuation,final_punctuation
 format,format
+garay,garay
 georgian,georgian
 glagolitic,glagolitic
 gothic,gothic
@@ -128,6 +130,7 @@ greek,greek
 gujarati,gujarati
 gunjalagondi,gunjala_gondi
 gurmukhi,gurmukhi
+gurungkhema,gurung_khema
 han,han
 hangul,hangul
 hanifirohingya,hanifi_rohingya
@@ -241,6 +244,7 @@ induployan,in_duployan
 inearlydynasticcuneiform,in_early_dynastic_cuneiform
 inegyptianhieroglyphformatcontrols,in_egyptian_hieroglyph_format_controls
 inegyptianhieroglyphs,in_egyptian_hieroglyphs
+inegyptianhieroglyphsextendeda,in_egyptian_hieroglyphs_extended_a
 inelbasan,in_elbasan
 inelymaic,in_elymaic
 inemoticons,in_emoticons
@@ -253,6 +257,7 @@ inethiopicextended,in_ethiopic_extended
 inethiopicextendeda,in_ethiopic_extended_a
 inethiopicextendedb,in_ethiopic_extended_b
 inethiopicsupplement,in_ethiopic_supplement
+ingaray,in_garay
 ingeneralpunctuation,in_general_punctuation
 ingeometricshapes,in_geometric_shapes
 ingeometricshapesextended,in_geometric_shapes_extended
@@ -268,6 +273,7 @@ ingreekextended,in_greek_extended
 ingujarati,in_gujarati
 ingunjalagondi,in_gunjala_gondi
 ingurmukhi,in_gurmukhi
+ingurungkhema,in_gurung_khema
 inhalfwidthandfullwidthforms,in_halfwidth_and_fullwidth_forms
 inhangulcompatibilityjamo,in_hangul_compatibility_jamo
 inhanguljamo,in_hangul_jamo
@@ -309,6 +315,7 @@ inkhmer,in_khmer
 inkhmersymbols,in_khmer_symbols
 inkhojki,in_khojki
 inkhudawadi,in_khudawadi
+inkiratrai,in_kirat_rai
 inlao,in_lao
 inlatin1supplement,in_latin_1_supplement
 inlatinextendeda,in_latin_extended_a
@@ -364,6 +371,7 @@ inmusicalsymbols,in_musical_symbols
 inmyanmar,in_myanmar
 inmyanmarextendeda,in_myanmar_extended_a
 inmyanmarextendedb,in_myanmar_extended_b
+inmyanmarextendedc,in_myanmar_extended_c
 innabataean,in_nabataean
 innagmundari,in_nag_mundari
 innandinagari,in_nandinagari
@@ -385,6 +393,7 @@ inoldsogdian,in_old_sogdian
 inoldsoutharabian,in_old_south_arabian
 inoldturkic,in_old_turkic
 inolduyghur,in_old_uyghur
+inolonal,in_ol_onal
 inopticalcharacterrecognition,in_optical_character_recognition
 inoriya,in_oriya
 inornamentaldingbats,in_ornamental_dingbats
@@ -424,6 +433,7 @@ inspacingmodifierletters,in_spacing_modifier_letters
 inspecials,in_specials
 insundanese,in_sundanese
 insundanesesupplement,in_sundanese_supplement
+insunuwar,in_sunuwar
 insuperscriptsandsubscripts,in_superscripts_and_subscripts
 insupplementalarrowsa,in_supplemental_arrows_a
 insupplementalarrowsb,in_supplemental_arrows_b
@@ -437,6 +447,7 @@ insuttonsignwriting,in_sutton_signwriting
 insylotinagri,in_syloti_nagri
 insymbolsandpictographsextendeda,in_symbols_and_pictographs_extended_a
 insymbolsforlegacycomputing,in_symbols_for_legacy_computing
+insymbolsforlegacycomputingsupplement,in_symbols_for_legacy_computing_supplement
 insyriac,in_syriac
 insyriacsupplement,in_syriac_supplement
 intagalog,in_tagalog
@@ -459,8 +470,10 @@ inthai,in_thai
 intibetan,in_tibetan
 intifinagh,in_tifinagh
 intirhuta,in_tirhuta
+intodhri,in_todhri
 intoto,in_toto
 intransportandmapsymbols,in_transport_and_map_symbols
+intulutigalari,in_tulu_tigalari
 inugaritic,in_ugaritic
 inunifiedcanadianaboriginalsyllabics,in_unified_canadian_aboriginal_syllabics
 inunifiedcanadianaboriginalsyllabicsextended,in_unified_canadian_aboriginal_syllabics_extended
@@ -491,6 +504,7 @@ khitansmallscript,khitan_small_script
 khmer,khmer
 khojki,khojki
 khudawadi,khudawadi
+kiratrai,kirat_rai
 lao,lao
 latin,latin
 lepcha,lepcha
@@ -524,6 +538,7 @@ meroiticcursive,meroitic_cursive
 meroitichieroglyphs,meroitic_hieroglyphs
 miao,miao
 modi,modi
+modifiercombiningmark,modifier_combining_mark
 modifierletter,modifier_letter
 modifiersymbol,modifier_symbol
 mongolian,mongolian
@@ -553,6 +568,7 @@ oldsogdian,old_sogdian
 oldsoutharabian,old_south_arabian
 oldturkic,old_turkic
 olduyghur,old_uyghur
+olonal,ol_onal
 openpunctuation,open_punctuation
 oriya,oriya
 osage,osage
@@ -606,6 +622,7 @@ space,space
 spaceseparator,space_separator
 spacingmark,spacing_mark
 sundanese,sundanese
+sunuwar,sunuwar
 surrogate,surrogate
 sylotinagri,syloti_nagri
 symbol,symbol
@@ -627,7 +644,9 @@ tibetan,tibetan
 tifinagh,tifinagh
 tirhuta,tirhuta
 titlecaseletter,titlecase_letter
+todhri,todhri
 toto,toto
+tulutigalari,tulu_tigalari
 ugaritic,ugaritic
 unassigned,unassigned
 unifiedideograph,unified_ideograph
