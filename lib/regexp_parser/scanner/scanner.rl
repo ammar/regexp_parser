@@ -737,9 +737,11 @@ class Regexp::Scanner
     File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
   end
 
+  # Use each_with_object for required_ruby_version >= 2.2, or #to_h for >= 2.6
   POSIX_CLASSES =
     %w[alnum alpha ascii blank cntrl digit graph
-       lower print punct space upper word xdigit].to_h { |c| [c, true] }.freeze
+       lower print punct space upper word xdigit]
+      .inject({}) { |o, e| o.merge(e => true) }.freeze
 
   # Emits an array with the details of the scanned pattern
   def emit(type, token, text)

@@ -70,11 +70,12 @@ module Regexp::Expression
     # lit.to_s(:original) # => 'a +' # with quantifier AND intermittent decorations
     #
     def to_s(format = :full)
-      base = parts.each_with_object(''.dup) do |part, buff|
+      base = ''.dup
+      parts.each do |part|
         if part.instance_of?(String)
-          buff << part
+          base << part
         elsif !part.custom_to_s_handling
-          buff << part.to_s(:original)
+          base << part.to_s(:original)
         end
       end
       "#{base}#{pre_quantifier_decoration(format)}#{quantifier_affix(format)}"
