@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.1] - 2025-08-08 - Janosch Müller
+
 ### Fixed
 
-- restored compatibility with Ruby < 2.6, broken in 2.11.0
+- restored compatibility with Ruby < 2.6, broken in regexp_parser v2.11.0
   - thanks to [DanielFinkWoven](https://github.com/DanielFinkWoven) for the report
 
 ## [2.11.0] - 2025-08-03 - Janosch Müller
