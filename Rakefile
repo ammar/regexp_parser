@@ -16,10 +16,10 @@ RSpec::Core::RakeTask.new(:spec)
 task :default => [:'test:full']
 
 namespace :test do
-  task full: [:'ragel:rb', :spec]
+  task full: [:ragel, :spec]
 end
 
 # Add ragel task as a prerequisite for building the gem to ensure that the
 # latest scanner code is generated and included in the build.
-desc "Runs ragel:rb before building the gem"
-task :build => ['ragel:rb']
+desc "Runs ragel before building the gem"
+task build: :ragel

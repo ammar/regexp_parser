@@ -263,7 +263,7 @@
       # If not enough groups have been opened, there is a fallback to either an
       # octal or literal interpretation for 2+ digit numerical escapes.
       digits = text[1..-1]
-      if digits.size == 1 || digits.to_i <= self.capturing_group_count
+      if digits.size == 1 || digits.to_i <= capturing_group_count
         emit(:backref, :number, text)
       elsif digits =~ /\A[0-7]{2,}\z/
         emit(:escape, :octal, text)
@@ -537,7 +537,7 @@
     };
 
     group_open @group_opened {
-      self.capturing_group_count += 1
+      self.capturing_group_count = capturing_group_count + 1
       text = copy(data, ts, te)
       emit(:group, :capture, text)
     };
@@ -737,9 +737,11 @@ class Regexp::Scanner
     File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
   end
 
+  # Use each_with_object for required_ruby_version >= 2.2, or #to_h for >= 2.6
   POSIX_CLASSES =
     %w[alnum alpha ascii blank cntrl digit graph
-       lower print punct space upper word xdigit].to_h { |c| [c, true] }.freeze
+       lower print punct space upper word xdigit]
+      .inject({}) { |o, e| o.merge(e => true) }.freeze
 
   # Emits an array with the details of the scanned pattern
   def emit(type, token, text)
@@ -767,7 +769,7 @@ class Regexp::Scanner
     end
   end
 
-  attr_accessor :literal_run # only public for #||= to work on ruby <= 2.5
+  attr_accessor :capturing_group_count, :literal_run # only public for #||= to work on ruby <= 2.5
 
   private
 
@@ -776,7 +778,6 @@ class Regexp::Scanner
                 :free_spacing, :spacing_stack,
                 :regexp_encoding,
                 :group_depth, :set_depth, :conditional_stack,
-                :capturing_group_count,
                 :char_pos
 
   def free_spacing?(input_object, options)

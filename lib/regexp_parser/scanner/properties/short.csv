@@ -58,6 +58,7 @@ epres,emoji_presentation
 ethi,ethiopic
 ext,extender
 extpict,extended_pictographic
+gara,garay
 geor,georgian
 glag,glagolitic
 gong,gunjala_gondi
@@ -69,6 +70,7 @@ grek,greek
 grext,grapheme_extend
 grlink,grapheme_link
 gujr,gujarati
+gukh,gurung_khema
 guru,gurmukhi
 hang,hangul
 hani,han
@@ -97,6 +99,7 @@ khmr,khmer
 khoj,khojki
 kits,khitan_small_script
 knda,kannada
+krai,kirat_rai
 kthi,kaithi
 l,letter
 lana,tai_tham
@@ -122,6 +125,7 @@ mand,mandaic
 mani,manichaean
 marc,marchen
 mc,spacing_mark
+mcm,modifier_combining_mark
 me,enclosing_mark
 medf,medefaidrin
 mend,mende_kikakui
@@ -154,6 +158,7 @@ oids,other_id_start
 olck,ol_chiki
 olower,other_lowercase
 omath,other_math
+onao,ol_onal
 orkh,old_turkic
 orya,oriya
 osge,osage
@@ -208,6 +213,7 @@ sora,sora_sompeng
 soyo,soyombo
 sterm,sentence_terminal
 sund,sundanese
+sunu,sunuwar
 sylo,syloti_nagri
 syrc,syriac
 tagb,tagbanwa
@@ -225,6 +231,8 @@ thaa,thaana
 tibt,tibetan
 tirh,tirhuta
 tnsa,tangsa
+todr,todhri
+tutg,tulu_tigalari
 ugar,ugaritic
 uideo,unified_ideograph
 vaii,vai

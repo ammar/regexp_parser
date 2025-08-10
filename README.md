@@ -419,13 +419,13 @@ Note that changes to Ragel files will not be reflected when running `rspec` on i
 so to run individual tests you might want to run:
 
 ```
-rake ragel:rb && rspec spec/scanner/properties_spec.rb
+rake ragel && rspec spec/scanner/properties_spec.rb
 ```
 
 ## Building
 
 Building the scanner and the gem requires [Ragel](http://www.colm.net/open-source/ragel/)
-to be installed. The build tasks will automatically invoke the 'ragel:rb' task to generate
+to be installed. The build tasks will automatically invoke the 'ragel' task to generate
 the Ruby scanner code.
 
 The project uses the standard rubygems package tasks, so:
