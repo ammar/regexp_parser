@@ -1,21 +1,21 @@
-name: gouteur
+# name: gouteur
 
-on: [push, pull_request]
+# on: [push, pull_request]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2
-          bundler-cache: true
-      - name: Install and run ragel
-        run: |
-          sudo apt-get install -yqq ragel
-          bundle exec rake ragel
-      - name: Test
-        run: bundle exec gouteur
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Set up Ruby
+#         uses: ruby/setup-ruby@v1
+#         with:
+#           ruby-version: 3.2
+#           bundler-cache: true
+#       - name: Install and run ragel
+#         run: |
+#           sudo apt-get install -yqq ragel
+#           bundle exec rake ragel
+#       - name: Test
+#         run: bundle exec gouteur

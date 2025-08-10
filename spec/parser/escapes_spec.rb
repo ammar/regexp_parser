@@ -57,7 +57,7 @@ RSpec.describe('EscapeSequence parsing') do
   # In Regexp literals, these escapes are now pre-processed to hex escapes.
   #
   # https://github.com/ruby/ruby/commit/11ae581a4a7f5d5f5ec6378872eab8f25381b1b9
-  n = ->(regexp_body){ Regexp.new(regexp_body.force_encoding('ascii-8bit')) }
+  n = ->(regexp_body){ Regexp.new(regexp_body.dup.force_encoding('ascii-8bit')) }
 
   include_examples 'parse', n.('\\\\\c2b'),  1 => [es::Control,     text: '\c2',     char: "\x12",   codepoint: 18 ]
   include_examples 'parse', n.('\d\C-C\w'),  1 => [es::Control,     text: '\C-C',    char: "\x03",   codepoint: 3  ]
