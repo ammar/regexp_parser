@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Expression
   # abstract class
   class SequenceOperation < Regexp::Expression::Subexpression

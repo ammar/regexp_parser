@@ -12,12 +12,18 @@ jobs:
       matrix:
         ruby: [ '2.3', '2.4', '2.5', '2.6', '2.7', '3.0', '3.1', '3.2', '3.3', 'ruby-head' ]
 
+    env:
+      # The RUBYOPT flags can be removed if RuboCop style checks are added
+      # to the lint workflow and support for Ruby < 2.3 is dropped.
+      RUBYOPT: '--enable=frozen-string-literal --debug=frozen-string-literal'
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+          rubygems: latest
           bundler-cache: true
       - name: Install ragel
         run: sudo apt-get install -yqq ragel

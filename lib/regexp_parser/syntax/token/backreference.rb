@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 module Regexp::Syntax
   module Token
     module Backreference
-      Plain     = %i[number]
-      NumberRef = %i[number_ref number_rel_ref]
+      Plain     = %i[number].freeze
+      NumberRef = %i[number_ref number_rel_ref].freeze
       Number    = Plain + NumberRef
-      Name      = %i[name_ref]
+      Name      = %i[name_ref].freeze
 
-      RecursionLevel = %i[name_recursion_ref number_recursion_ref]
+      RecursionLevel = %i[name_recursion_ref number_recursion_ref].freeze
 
       V1_8_6 = Plain
 
@@ -18,8 +20,8 @@ module Regexp::Syntax
 
     # Type is the same as Backreference so keeping it here, for now.
     module SubexpressionCall
-      Name      = %i[name_call]
-      Number    = %i[number_call number_rel_call]
+      Name      = %i[name_call].freeze
+      Number    = %i[number_call number_rel_call].freeze
 
       All = Name + Number
     end

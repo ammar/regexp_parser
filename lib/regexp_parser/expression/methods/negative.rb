@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Expression
   module Shared
     def negative?

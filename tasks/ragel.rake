@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # scanner.rl imports the other files
 RAGEL_SOURCE_PATH = File.join(__dir__, '../lib/regexp_parser/scanner/scanner.rl')
 RAGEL_OUTPUT_PATH = File.join(__dir__, '../lib/regexp_parser/scanner.rb')
@@ -19,7 +21,7 @@ task ragel: 'ragel:install' do
 
   File.open(RAGEL_OUTPUT_PATH, 'w') do |file|
     file.puts(<<-RUBY.gsub(/^\s+/, ''))
-      # -*- warn-indent:false;  -*-
+      # -*- frozen_string_literal: true; warn-indent: false -*-
       #
       # THIS IS A GENERATED FILE, DO NOT EDIT DIRECTLY
       #

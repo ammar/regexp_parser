@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler'
 require 'rubygems'
 require 'rubygems/package_task'

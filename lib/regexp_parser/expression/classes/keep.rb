@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Regexp::Expression
   module Keep
     # TODO: in regexp_parser v3.0.0 this should possibly be a Subexpression

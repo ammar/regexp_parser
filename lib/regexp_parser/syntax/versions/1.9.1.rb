@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Regexp::Syntax::V1_9_1 < Regexp::Syntax::V1_8_6
   implements :assertion,     Assertion::Lookbehind
   implements :backref,       Backreference::V1_9_1 + SubexpressionCall::All

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Ruby 1.x is no longer a supported runtime,
 # but its regex features are still recognized.
 #
