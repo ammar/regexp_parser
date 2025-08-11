@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- enable frozen string literals (#98)
+
 ## [2.11.1] - 2025-08-08 - Janosch Müller
 
 ### Fixed
