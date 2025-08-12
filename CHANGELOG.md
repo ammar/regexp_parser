@@ -10,39 +10,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - enable frozen string literals (#98)
+  * thanks to [Geremia Taglialatela](https://github.com/tagliala)
 
 ### Fixed
 
 - scan with correct encoding when passing regopt individually (#102)
-  - thanks to [Earlopain](https://github.com/Earlopain) for the report
+  * thanks to [Earlopain](https://github.com/Earlopain) for the report
 
 ## [2.11.1] - 2025-08-08 - Janosch Müller
 
 ### Fixed
 
 - restored compatibility with Ruby < 2.6, broken in regexp_parser v2.11.0
-  - thanks to [DanielFinkWoven](https://github.com/DanielFinkWoven) for the report
+  * thanks to [DanielFinkWoven](https://github.com/DanielFinkWoven) for the report
 
 ## [2.11.0] - 2025-08-03 - Janosch Müller
 
 ### Added
 
 - a new token `:escape, :utf8_hex` and expression `EscapeSequence::UTF8Hex`
-  - used for UTF-8 hex escapes, e.g. `\xE2\x82\xAC` representing U+20AC "€"
+  * used for UTF-8 hex escapes, e.g. `\xE2\x82\xAC` representing U+20AC "€"
 
 ### Fixed
 
 - detection of numeric backrefs > 9, e.g. `((((((((((foo))))))))))\10`
-  - these are only backrefs in Ruby if sufficient groups have been opened
-  - they were previously always scanned as octal or literal escapes
+  * these are only backrefs in Ruby if sufficient groups have been opened
+  * they were previously always scanned as octal or literal escapes
 
 ## [2.10.0] - 2024-12-25 - Janosch Müller
 
 ### Added
 
 - `#referenced_expressions`
-  - like `#referenced_expression`, but for multiplexing backrefs
-  - returns the `Group` expressions that are being referenced
+  * like `#referenced_expression`, but for multiplexing backrefs
+  * returns the `Group` expressions that are being referenced
 
 ### Fixed
 
