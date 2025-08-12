@@ -7,7 +7,7 @@ RSpec.describe('passing options to scan') do
     expect(tokens.map { |type, token, *| [type, token] }).to eq(type_tokens)
   end
 
-  it 'raises if if scanning from a Regexp and options are passed' do
+  it 'raises if scanning from a Regexp and options are passed' do
     expect { RS.scan(/a+/, options: ::Regexp::EXTENDED) }.to raise_error(
       ArgumentError,
       'options cannot be supplied unless scanning a String'
@@ -21,6 +21,17 @@ RSpec.describe('passing options to scan') do
         %i[literal literal],
         %i[quantifier one_or_more],
         %i[free_space comment]
+      ]
+    )
+  end
+
+  it 'sets encoding based on options if scanning from a String' do
+    expect_type_tokens(
+      RS.scan('\x94\x95', options: ::Regexp::NOENCODING),
+      [
+        # in non-binary encodings, these would be seen as a single utf8 escape
+        %i[escape hex],
+        %i[escape hex],
       ]
     )
   end

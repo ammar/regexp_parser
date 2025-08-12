@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - enable frozen string literals (#98)
 
+### Fixed
+
+- scan with correct encoding when passing regopt individually (#102)
+  - thanks to [Earlopain](https://github.com/Earlopain) for the report
+
 ## [2.11.1] - 2025-08-08 - Janosch Müller
 
 ### Fixed
