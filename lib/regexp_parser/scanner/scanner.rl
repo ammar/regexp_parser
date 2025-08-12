@@ -686,7 +686,7 @@ class Regexp::Scanner
 
     input = input_object.is_a?(Regexp) ? input_object.source : input_object
     self.free_spacing = free_spacing?(input_object, options)
-    self.regexp_encoding = input_object.encoding if input_object.is_a?(::Regexp)
+    self.regexp_encoding = extract_encoding(input_object, options)
     self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
 
     data  = input.unpack("c*")
@@ -779,6 +779,14 @@ class Regexp::Scanner
                 :regexp_encoding,
                 :group_depth, :set_depth, :conditional_stack,
                 :char_pos
+
+  def extract_encoding(input_object, options)
+    if input_object.is_a?(::Regexp)
+      input_object.encoding
+    elsif options && (options & Regexp::NOENCODING)
+      Encoding::BINARY
+    end
+  end
 
   def free_spacing?(input_object, options)
     if options && !input_object.is_a?(String)
