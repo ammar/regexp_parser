@@ -247,7 +247,7 @@
     # Treat all remaining escapes - those not supported in sets - as literal.
     # (This currently includes \^, \-, \&, \:, although these could potentially
     # be meta chars when not escaped, depending on their position in the set.)
-    any > (escaped_set_alpha, 1) {
+    any > (escaped_set_alpha, 1) | utf8_multibyte > (escaped_set_alpha, 1) {
       emit(:escape, :literal, copy(data, ts-1, te))
       fret;
     };
