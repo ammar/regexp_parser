@@ -16,7 +16,9 @@ task ragel: 'ragel:install' do
     File
     .read(RAGEL_OUTPUT_PATH)
     .gsub(/[ \t]+$/, '') # remove trailing whitespace emitted by ragel
+    .gsub(/ then$/, '') # remove redundant then keywords emitted by ragel
     .gsub(/(?<=\d,)[ \t]+|^[ \t]+(?=-?\d)/, '') # compact FSM tables (saves ~6KB)
+    .gsub(/(?<=\S ) +/, '') # compact in-line spaces
     .gsub(/\n(?:[ \t]*\n){2,}/, "\n\n") # compact blank lines
 
   File.open(RAGEL_OUTPUT_PATH, 'w') do |file|
@@ -31,6 +33,10 @@ task ragel: 'ragel:install' do
 
     file.write(cleaned_contents)
   end
+
+  # Remove redundant begin/end blocks emitted by ragel.
+  # This saves 1KB, but is disabled for now because it increases build time from 0.2s to 1s.
+  # `bundle exec rubocop --only Style/RedundantBegin --autocorrect #{RAGEL_OUTPUT_PATH}`
 end
 
 namespace :ragel do
