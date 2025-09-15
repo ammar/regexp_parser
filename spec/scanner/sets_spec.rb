@@ -66,6 +66,7 @@ RSpec.describe('Set scanning') do
   include_examples 'scan', '[\R]',                  1 => [:escape, :literal,         '\R',         1, 3]
   include_examples 'scan', '[\X]',                  1 => [:escape, :literal,         '\X',         1, 3]
   include_examples 'scan', '[\B]',                  1 => [:escape, :literal,         '\B',         1, 3]
+  include_examples 'scan', '[\💎]',                 1 => [:escape, :literal,         '\💎',        1, 3]
 
   include_examples 'scan', /[\d]/,                  1 => [:type,   :digit,           '\d',         1, 3]
   include_examples 'scan', /[\da-z]/,               1 => [:type,   :digit,           '\d',         1, 3]
