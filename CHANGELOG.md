@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.3] - 2025-09-15 - Janosch Müller
+
 ### Fixed
 
 - correctly emit backslash-escaped UTF8 characters in character classes as one token (#104)
+  * thanks to [Earlopain](https://github.com/Earlopain) for the report and fix
 
 ## [2.11.2] - 2025-08-12 - Janosch Müller
 
