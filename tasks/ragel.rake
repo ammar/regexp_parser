@@ -43,12 +43,12 @@ namespace :ragel do
   task :install do
     next if ENV['CI']
 
-    if system('command -v ragel')
+    if system('sh -c "command -v ragel"')
       # already installed
-    elsif system('command -v brew')
+    elsif system('sh -c "command -v brew"')
       puts 'ragel not found, installing with homebrew ...'
       `brew install ragel`
-    elsif system('command -v apt-get')
+    elsif system('sh -c "command -v apt-get"')
       puts 'ragel not found, installing with apt-get ...'
       `sudo apt-get install -y ragel`
     else
