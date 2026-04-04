@@ -2,6 +2,6 @@
 
 class Regexp
   class Parser
-    VERSION = '2.11.3'
+    VERSION = '2.12.0'
   end
 end
