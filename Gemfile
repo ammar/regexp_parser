@@ -11,7 +11,7 @@ group :development, :test do
   gem 'rspec', '~> 3.10'
   if RUBY_VERSION.to_f >= 2.7
     gem 'benchmark-ips', '~> 2.1'
-    gem 'gouteur', '~> 1.1'
+    gem 'gouteur', '~> 1.2'
     gem 'rubocop', '>= 1.80.2'
   end
 end
