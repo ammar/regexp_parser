@@ -11,6 +11,7 @@ bamu,bamum
 bass,bassa_vah
 batk,batak
 beng,bengali
+berf,beria_erfe
 bhks,bhaiksuki
 bidic,bidi_control
 bopo,bopomofo
@@ -202,6 +203,7 @@ sgnw,signwriting
 shaw,shavian
 shrd,sharada
 sidd,siddham
+sidt,sidetic
 sind,khudawadi
 sinh,sinhala
 sk,modifier_symbol
@@ -223,6 +225,7 @@ talu,new_tai_lue
 taml,tamil
 tang,tangut
 tavt,tai_viet
+tayo,tai_yo
 telu,telugu
 term,terminal_punctuation
 tfng,tifinagh
@@ -232,6 +235,7 @@ tibt,tibetan
 tirh,tirhuta
 tnsa,tangsa
 todr,todhri
+tols,tolong_siki
 tutg,tulu_tigalari
 ugar,ugaritic
 uideo,unified_ideograph

@@ -3,7 +3,10 @@
 module Regexp::Syntax
   module Token
     module UnicodeProperty
-      all = proc { |name| constants.grep(/#{name}/).flat_map(&method(:const_get)) }
+      def self.all(name)
+        constants.grep(/#{name}/).flat_map(&method(:const_get)).freeze
+      end
+      private_class_method :all
 
       CharType_V1_9_0 = %i[alnum alpha ascii blank cntrl digit graph
                            lower print punct space upper word xdigit].freeze
@@ -63,9 +66,11 @@ module Regexp::Syntax
 
       Age_V3_2_0 = %i[age=14.0 age=15.0].freeze
 
-      Age_V3_5_0 = %i[age=15.1]
+      Age_V3_5_0 = %i[age=15.1].freeze
 
-      Age = all[:Age_V]
+      Age_V4_0_0 = %i[age=16.0 age=17.0].freeze
+
+      Age = all(:Age_V)
 
       Derived_V1_9_0 = %i[
         ascii_hex_digit
@@ -138,9 +143,13 @@ module Regexp::Syntax
         id_compat_math_continue
         id_compat_math_start
         ids_unary_operator
+      ].freeze
+
+      Derived_V4_0_0 = %i[
+        modifier_combining_mark
       ]
 
-      Derived = all[:Derived_V]
+      Derived = all(:Derived_V)
 
       Script_V1_9_0 = %i[
         arabic
@@ -339,7 +348,21 @@ module Regexp::Syntax
         vithkuqi
       ].freeze
 
-      Script = all[:Script_V]
+      Script_V4_0_0 = %i[
+        beria_erfe
+        garay
+        gurung_khema
+        kirat_rai
+        ol_onal
+        sidetic
+        sunuwar
+        tai_yo
+        todhri
+        tolong_siki
+        tulu_tigalari
+      ].freeze
+
+      Script = all(:Script_V)
 
       UnicodeBlock_V1_9_0 = %i[
         in_alphabetic_presentation_forms
@@ -701,9 +724,30 @@ module Regexp::Syntax
 
       UnicodeBlock_V3_5_0 = %i[
         in_cjk_unified_ideographs_extension_i
-      ]
+      ].freeze
 
-      UnicodeBlock = all[:UnicodeBlock_V]
+      UnicodeBlock_V4_0_0 = %i[
+        in_beria_erfe
+        in_cjk_unified_ideographs_extension_j
+        in_egyptian_hieroglyphs_extended_a
+        in_garay
+        in_gurung_khema
+        in_kirat_rai
+        in_miscellaneous_symbols_supplement
+        in_myanmar_extended_c
+        in_ol_onal
+        in_sharada_supplement
+        in_sidetic
+        in_sunuwar
+        in_symbols_for_legacy_computing_supplement
+        in_tai_yo
+        in_tangut_components_supplement
+        in_todhri
+        in_tolong_siki
+        in_tulu_tigalari
+      ].freeze
+
+      UnicodeBlock = all(:UnicodeBlock_V)
 
       Emoji_V2_5_0 = %i[
         emoji
@@ -733,25 +777,26 @@ module Regexp::Syntax
         grapheme_cluster_break=zwj
       ].freeze
 
-      Enumerated = all[:Enumerated_V]
+      Enumerated = all(:Enumerated_V)
 
-      Emoji = all[:Emoji_V]
+      Emoji = all(:Emoji_V)
 
-      V1_9_0 = Category::All + POSIX + all[:V1_9_0]
-      V1_9_3 = all[:V1_9_3]
-      V2_0_0 = all[:V2_0_0]
-      V2_2_0 = all[:V2_2_0]
-      V2_3_0 = all[:V2_3_0]
-      V2_4_0 = all[:V2_4_0]
-      V2_5_0 = all[:V2_5_0]
-      V2_6_0 = all[:V2_6_0]
-      V2_6_2 = all[:V2_6_2]
-      V2_6_3 = all[:V2_6_3]
-      V3_1_0 = all[:V3_1_0]
-      V3_2_0 = all[:V3_2_0]
-      V3_5_0 = all[:V3_5_0]
+      V1_9_0 = Category::All + POSIX + all(:V1_9_0)
+      V1_9_3 = all(:V1_9_3)
+      V2_0_0 = all(:V2_0_0)
+      V2_2_0 = all(:V2_2_0)
+      V2_3_0 = all(:V2_3_0)
+      V2_4_0 = all(:V2_4_0)
+      V2_5_0 = all(:V2_5_0)
+      V2_6_0 = all(:V2_6_0)
+      V2_6_2 = all(:V2_6_2)
+      V2_6_3 = all(:V2_6_3)
+      V3_1_0 = all(:V3_1_0)
+      V3_2_0 = all(:V3_2_0)
+      V3_5_0 = all(:V3_5_0)
+      V4_0_0 = all(:V4_0_0)
 
-      All = all[/^V\d+_\d+_\d+$/]
+      All = all(/^V\d+_\d+_\d+$/)
 
       Type = :property
       NonType = :nonproperty

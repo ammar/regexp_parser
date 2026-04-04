@@ -10,6 +10,7 @@ age=14.0,age=14.0
 age=15.0,age=15.0
 age=15.1,age=15.1
 age=16.0,age=16.0
+age=17.0,age=17.0
 age=2.0,age=2.0
 age=2.1,age=2.1
 age=3.0,age=3.0
@@ -44,6 +45,7 @@ bamum,bamum
 bassavah,bassa_vah
 batak,batak
 bengali,bengali
+beriaerfe,beria_erfe
 bhaiksuki,bhaiksuki
 bidicontrol,bidi_control
 blank,blank
@@ -176,6 +178,7 @@ inbasiclatin,in_basic_latin
 inbassavah,in_bassa_vah
 inbatak,in_batak
 inbengali,in_bengali
+inberiaerfe,in_beria_erfe
 inbhaiksuki,in_bhaiksuki
 inblockelements,in_block_elements
 inbopomofo,in_bopomofo
@@ -211,6 +214,7 @@ incjkunifiedideographsextensionf,in_cjk_unified_ideographs_extension_f
 incjkunifiedideographsextensiong,in_cjk_unified_ideographs_extension_g
 incjkunifiedideographsextensionh,in_cjk_unified_ideographs_extension_h
 incjkunifiedideographsextensioni,in_cjk_unified_ideographs_extension_i
+incjkunifiedideographsextensionj,in_cjk_unified_ideographs_extension_j
 incombiningdiacriticalmarks,in_combining_diacritical_marks
 incombiningdiacriticalmarksextended,in_combining_diacritical_marks_extended
 incombiningdiacriticalmarksforsymbols,in_combining_diacritical_marks_for_symbols
@@ -360,6 +364,7 @@ inmiscellaneousmathematicalsymbolsb,in_miscellaneous_mathematical_symbols_b
 inmiscellaneoussymbols,in_miscellaneous_symbols
 inmiscellaneoussymbolsandarrows,in_miscellaneous_symbols_and_arrows
 inmiscellaneoussymbolsandpictographs,in_miscellaneous_symbols_and_pictographs
+inmiscellaneoussymbolssupplement,in_miscellaneous_symbols_supplement
 inmiscellaneoustechnical,in_miscellaneous_technical
 inmodi,in_modi
 inmodifiertoneletters,in_modifier_tone_letters
@@ -419,9 +424,11 @@ insaurashtra,in_saurashtra
 inscriptionalpahlavi,inscriptional_pahlavi
 inscriptionalparthian,inscriptional_parthian
 insharada,in_sharada
+insharadasupplement,in_sharada_supplement
 inshavian,in_shavian
 inshorthandformatcontrols,in_shorthand_format_controls
 insiddham,in_siddham
+insidetic,in_sidetic
 insinhala,in_sinhala
 insinhalaarchaicnumbers,in_sinhala_archaic_numbers
 insmallformvariants,in_small_form_variants
@@ -457,12 +464,14 @@ intaile,in_tai_le
 intaitham,in_tai_tham
 intaiviet,in_tai_viet
 intaixuanjingsymbols,in_tai_xuan_jing_symbols
+intaiyo,in_tai_yo
 intakri,in_takri
 intamil,in_tamil
 intamilsupplement,in_tamil_supplement
 intangsa,in_tangsa
 intangut,in_tangut
 intangutcomponents,in_tangut_components
+intangutcomponentssupplement,in_tangut_components_supplement
 intangutsupplement,in_tangut_supplement
 intelugu,in_telugu
 inthaana,in_thaana
@@ -471,6 +480,7 @@ intibetan,in_tibetan
 intifinagh,in_tifinagh
 intirhuta,in_tirhuta
 intodhri,in_todhri
+intolongsiki,in_tolong_siki
 intoto,in_toto
 intransportandmapsymbols,in_transport_and_map_symbols
 intulutigalari,in_tulu_tigalari
@@ -612,6 +622,7 @@ separator,separator
 sharada,sharada
 shavian,shavian
 siddham,siddham
+sidetic,sidetic
 signwriting,signwriting
 sinhala,sinhala
 softdotted,soft_dotted
@@ -632,6 +643,7 @@ tagbanwa,tagbanwa
 taile,tai_le
 taitham,tai_tham
 taiviet,tai_viet
+taiyo,tai_yo
 takri,takri
 tamil,tamil
 tangsa,tangsa
@@ -645,6 +657,7 @@ tifinagh,tifinagh
 tirhuta,tirhuta
 titlecaseletter,titlecase_letter
 todhri,todhri
+tolongsiki,tolong_siki
 toto,toto
 tulutigalari,tulu_tigalari
 ugaritic,ugaritic

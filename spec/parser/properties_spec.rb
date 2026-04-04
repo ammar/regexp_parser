@@ -57,7 +57,8 @@ RSpec.describe('Property parsing') do
       unsupported = RegexpPropertyValues.all_for_current_ruby.reject do |prop|
         RP.parse("\\p{#{prop}}") rescue false
       end
-      expect(unsupported).to be_empty
+      expect(unsupported).to be_empty,
+        "Undeclared unicode properties: #{unsupported.map(&:full_name).join(', ')}"
     end
   end
 

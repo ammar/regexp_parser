@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- support for new unicode properties of Ruby 4.0.0
+
 ## [2.11.3] - 2025-09-15 - Janosch Müller
 
 ### Fixed
