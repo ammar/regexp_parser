@@ -12,5 +12,7 @@ repos:
     subdir: ruby # mutant moved code to this subdir in 51f1a94
     tasks: rspec --pattern "**/{,*}regexp{,*,*/**/*}_spec.rb"
 
-  - uri: https://github.com/teamcapybara/capybara
-    tasks: rspec spec/regexp_dissassembler_spec.rb
+  # disabled because capybara's build is currently broken
+  # - uri: https://github.com/teamcapybara/capybara
+  #   before: sed -i .bak "s/gem 'bundler', '< 3.0'//g" Gemfile
+  #   tasks: rspec spec/regexp_dissassembler_spec.rb
