@@ -8,8 +8,9 @@ repos:
   - uri: https://github.com/rubocop-hq/rubocop
     tasks: rspec --pattern "**/{,*}regexp{,*,*/**/*}_spec.rb"
 
-  - uri: https://github.com/mbj/mutant
-    tasks: rspec --pattern "**/{,*}regexp{,*,*/**/*}_spec.rb"
+  # mutant moved code to a subdirectory in 51f1a94 which gouteur cant handle yet
+  # - uri: https://github.com/mbj/mutant
+  #   tasks: rspec --pattern "**/{,*}regexp{,*,*/**/*}_spec.rb"
 
   - uri: https://github.com/teamcapybara/capybara
     tasks: rspec spec/regexp_dissassembler_spec.rb
