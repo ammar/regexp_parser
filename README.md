@@ -332,7 +332,7 @@ _Note that not all of these are available in all versions of Ruby_
 | **Character Classes**                 | `[abc]`, `[^\\]`, `[a-d&&aeiou]`                        | &#x2713; |
 | **Character Types**                   | `\d`, `\H`, `\s`                                        | &#x2713; |
 | **Cluster Types**                     | `\R`, `\X`                                              | &#x2713; |
-| **Conditional Exps.**                 | `(?(cond)yes-subexp)`, `(?(cond)yes-subexp\|no-subexp)` | &#x2713; |
+| **Conditional Exps.**                 | `(?(<cond>)yes)`, `(?('cond')yes\|no)`                  | &#x2713; |
 | **Escape Sequences**                  | `\t`, `\\+`, `\?`                                       | &#x2713; |
 | **Free Space**                        | whitespace and `# Comments` _(x modifier)_              | &#x2713; |
 | **Grouped Exps.**                     |                                                         | &#x22f1; |
@@ -368,7 +368,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Meta** \[2\]_          | `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`        | &#x2713; |
 | &emsp;&nbsp;_**Octal**_               | `\0`, `\01`, `\012`                                     | &#x2713; |
 | &emsp;&nbsp;_**Unicode**_             | `\uHHHH`, `\u{H+ H+}`                                   | &#x2713; |
-| **Unicode Properties**                | _<sub>([Unicode 15.0.0])</sub>_                         | &#x22f1; |
+| **Unicode Properties**                | _<sub>([Unicode 17.0.0])</sub>_                         | &#x22f1; |
 | &emsp;&nbsp;_**Age**_                 | `\p{Age=5.2}`, `\P{age=7.0}`, `\p{^age=8.0}`            | &#x2713; |
 | &emsp;&nbsp;_**Blocks**_              | `\p{InArmenian}`, `\P{InKhmer}`, `\p{^InThai}`          | &#x2713; |
 | &emsp;&nbsp;_**Classes**_             | `\p{Alpha}`, `\P{Space}`, `\p{^Alnum}`                  | &#x2713; |
@@ -377,7 +377,7 @@ _Note that not all of these are available in all versions of Ruby_
 | &emsp;&nbsp;_**Scripts**_             | `\p{Arabic}`, `\P{Hiragana}`, `\p{^Greek}`              | &#x2713; |
 | &emsp;&nbsp;_**Simple**_              | `\p{Dash}`, `\p{Extender}`, `\p{^Hyphen}`               | &#x2713; |
 
-[Unicode 15.0.0]: https://www.unicode.org/versions/Unicode15.0.0/
+[Unicode 17.0.0]: https://www.unicode.org/versions/Unicode17.0.0/
 
 **\[1\]**: Ruby does not support lazy or possessive interval quantifiers.
 Any `+` or `?` that follows an interval quantifier will be treated as another,
@@ -461,6 +461,8 @@ with alias support.
 - [repper](https://github.com/jaynetics/repper) is a regular expression
 pretty-printer and formatter for Ruby.
 
+- [rubree](https://github.com/aim2bpg/rubree) runs and visualizes Ruby Regexps in the browser.
+
 - [rubocop](https://github.com/rubocop-hq/rubocop) is a linter for Ruby that
 uses regexp_parser to lint Regexps.
 
@@ -491,4 +493,4 @@ Documentation and books used while working on this project.
 
 ## Copyright
 
-_Copyright (c) 2010-2025 Ammar Ali. See LICENSE file for details._
+_Copyright (c) 2010-2026 Ammar Ali. See LICENSE file for details._
