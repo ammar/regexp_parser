@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `#match_length` now respects the quantifier of backrefs and subexp calls (#107)
+  * thanks to [Oskar Eichler](https://github.com/OskarEichler) for the report
+- `#match_length` now handles backref/subexp call multiplexing (#107)
+  * thanks to [Oskar Eichler](https://github.com/OskarEichler) for the report
+
 ## [2.12.0] - 2026-04-04 - Janosch Müller
 
 ### Added

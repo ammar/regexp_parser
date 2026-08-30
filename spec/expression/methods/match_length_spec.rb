@@ -24,7 +24,13 @@ RSpec.describe(Regexp::MatchLength) do
   specify('free space') { expect(ML.of(/   /x).minmax).to eq [0, 0] }
   specify('comment') { expect(ML.of(/(?#comment)/x).minmax).to eq [0, 0] }
   specify('backreference') { expect(ML.of(/(abc){2}\1/).minmax).to eq [9, 9] }
+  specify('fixed quantified backref') { expect(ML.of(/(a)\1{2}/).minmax).to eq [3, 3] }
+  specify('range quantified backref') { expect(ML.of(/(ab)\1{2,4}/).minmax).to eq [6, 10] }
+  specify('open-end quantified backref') { expect(ML.of(/(a)\1*/).minmax).to eq [1, Float::INFINITY] }
+  specify('backref to alternation') { expect(ML.of(/(a|bb)\1{2}/).minmax).to eq [3, 6] }
+  specify('multiplexed backref') { expect(ML.of(/(?:(?<x>a)|(?<x>bb))\k<x>/).minmax).to eq [2, 4] }
   specify('subexp call') { expect(ML.of(/(abc){2}\g<-1>/).minmax).to eq [9, 9] }
+  specify('quantified subexp call') { expect(ML.of(/(ab){2}\g<1>{2}/).minmax).to eq [8, 8] }
   specify('alternation') { expect(ML.of(/a|bcde/).minmax).to eq [1, 4] }
   specify('nested alternation') { expect(ML.of(/a|bc(d|efg)/).minmax).to eq [1, 5] }
   specify('quantified alternation') { expect(ML.of(/a|bcde?/).minmax).to eq [1, 4] }

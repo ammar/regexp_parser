@@ -112,9 +112,9 @@ module Regexp::Expression
   class Subexpression
     def match_length
       MatchLength.new(self,
-                       base_min: map { |exp| exp.match_length.min }.inject(0, :+),
-                       base_max: map { |exp| exp.match_length.max }.inject(0, :+),
-                       reify: ->{ map { |exp| exp.match_length.to_re }.join })
+                      base_min: map { |exp| exp.match_length.min }.inject(0, :+),
+                      base_max: map { |exp| exp.match_length.max }.inject(0, :+),
+                      reify: ->{ map { |exp| exp.match_length.to_re }.join })
     end
 
     def inner_match_length
@@ -132,9 +132,9 @@ module Regexp::Expression
     klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
       def match_length
         MatchLength.new(self,
-                         base_min: map { |exp| exp.match_length.min }.min,
-                         base_max: map { |exp| exp.match_length.max }.max,
-                         reify: ->{ map { |exp| exp.match_length.to_re }.join('|') })
+                        base_min: map { |exp| exp.match_length.min }.min,
+                        base_max: map { |exp| exp.match_length.max }.max,
+                        reify: ->{ map { |exp| exp.match_length.to_re }.join('|') })
       end
     RUBY
   end
@@ -158,7 +158,15 @@ module Regexp::Expression
       if referenced_expression.nil?
         raise ArgumentError, 'Missing referenced_expression - not parsed?'
       end
-      referenced_expression.unquantified_clone.match_length
+      # The targets' own quantifiers do not apply: a backref/subexp match what
+      # the target captures in one repetition. The backref/call's own quantifier
+      # does apply, and they can be multiplexed, i.e. refer to several targets.
+      targets = referenced_expressions
+                .map { |exp| exp.unquantified_clone.match_length }
+      MatchLength.new(self,
+                      base_min: targets.map(&:min).min,
+                      base_max: targets.map(&:max).max,
+                      reify: ->{ targets.map(&:to_re).join('|') })
     end
   end
 
