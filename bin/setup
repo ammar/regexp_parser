@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -euo pipefail
+IFS=$'\n\t'
+set -vx
 
 # install gems
-bundle
+bundle install
 
 # install ragel
 rake ragel:install
