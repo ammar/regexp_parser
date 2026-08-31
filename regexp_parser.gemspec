@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-$:.unshift File.join(File.dirname(__FILE__), 'lib')
-
-require 'regexp_parser/version'
+require_relative 'lib/regexp_parser/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'regexp_parser'
