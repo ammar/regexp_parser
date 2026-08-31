@@ -27,8 +27,8 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ['lib']
 
-  spec.files         = Dir.glob('lib/**/*.{csv,rb,rl}') +
-                       %w[Gemfile Rakefile LICENSE regexp_parser.gemspec]
+  spec.files         = Dir.glob('lib/**/*.{csv,rb}') +
+                       %w[LICENSE regexp_parser.gemspec]
 
   spec.platform      = Gem::Platform::RUBY
 
