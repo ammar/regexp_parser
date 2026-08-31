@@ -30,7 +30,5 @@ Gem::Specification.new do |spec|
   spec.files         = Dir.glob('lib/**/*.{csv,rb}') +
                        %w[LICENSE regexp_parser.gemspec]
 
-  spec.platform      = Gem::Platform::RUBY
-
   spec.required_ruby_version = '>= 2.0.0'
 end
