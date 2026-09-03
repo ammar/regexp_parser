@@ -101,9 +101,19 @@ module Regexp::Expression
     end
 
     def nesting_level=(lvl)
-      @nesting_level = lvl
-      quantifier && quantifier.nesting_level = lvl
-      terminal? || each { |subexp| subexp.nesting_level = lvl + 1 }
+      pending = [[self, lvl]]
+
+      until pending.empty?
+        exp, exp_lvl = pending.pop
+        exp.instance_variable_set(:@nesting_level, exp_lvl)
+        exp.quantifier.nesting_level = exp_lvl if exp.quantifier
+
+        next if exp.terminal?
+
+        exp.expressions.reverse_each do |subexp|
+          pending << [subexp, exp_lvl + 1]
+        end
+      end
     end
 
     def quantifier=(qtf)

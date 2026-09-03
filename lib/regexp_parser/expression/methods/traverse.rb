@@ -36,13 +36,19 @@ module Regexp::Expression
 
       block.call(:enter, self, 0) if include_self
 
-      each_with_index do |exp, index|
-        if exp.terminal?
+      pending = []
+      push_children(pending, self)
+
+      until pending.empty?
+        event, exp, index = pending.pop
+        if event == :exit
+          block.call(:exit, exp, index)
+        elsif exp.terminal?
           block.call(:visit, exp, index)
         else
           block.call(:enter, exp, index)
-          exp.traverse(&block)
-          block.call(:exit, exp, index)
+          pending << [:exit, exp, index]
+          push_children(pending, exp)
         end
       end
 
@@ -66,16 +72,32 @@ module Regexp::Expression
     protected
 
     def each_expression_with_index(&block)
-      each_with_index do |exp, index|
+      pending = []
+      push_children(pending, self, false)
+
+      until pending.empty?
+        exp, index = pending.pop
         block.call(exp, index)
-        exp.each_expression_with_index(&block) unless exp.terminal?
+        push_children(pending, exp, false) unless exp.terminal?
       end
     end
 
     def each_expression_without_index(&block)
-      each do |exp|
+      pending = expressions.reverse
+
+      until pending.empty?
+        exp = pending.pop
         block.call(exp)
-        exp.each_expression_without_index(&block) unless exp.terminal?
+        pending.concat(exp.expressions.reverse) unless exp.terminal?
+      end
+    end
+
+    def push_children(pending, parent, with_event = true)
+      index = parent.length
+      while index > 0
+        index -= 1
+        child = parent[index]
+        pending << (with_event ? [:enter, child, index] : [child, index])
       end
     end
   end

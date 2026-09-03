@@ -36,6 +36,7 @@ class Regexp::Parser
     self.conditional_nesting = []
 
     self.captured_group_counts = Hash.new(0)
+    self.total_captured_group_count = 0
 
     Regexp::Lexer.scan(input, syntax, options: options, collect_tokens: false) do |token|
       parse_token(token)
@@ -57,7 +58,7 @@ class Regexp::Parser
 
   attr_accessor :root, :node, :nesting,
                 :options_stack, :switching_options, :conditional_nesting,
-                :captured_group_counts
+                :captured_group_counts, :total_captured_group_count
 
   def extract_options(input, options)
     if options && !input.is_a?(String)
@@ -197,16 +198,13 @@ class Regexp::Parser
     nest(group)
   end
 
-  def total_captured_group_count
-    captured_group_counts.values.reduce(0, :+)
-  end
-
   def captured_group_count_at_level
     captured_group_counts[node]
   end
 
   def count_captured_group
     captured_group_counts[node] += 1
+    self.total_captured_group_count += 1
   end
 
   def close_group
@@ -510,9 +508,14 @@ class Regexp::Parser
   end
 
   def increase_group_level(exp)
-    exp.level += 1
-    exp.quantifier.level += 1 if exp.quantifier
-    exp.terminal? || exp.each { |subexp| increase_group_level(subexp) }
+    pending = [exp]
+
+    until pending.empty?
+      current = pending.pop
+      current.level += 1
+      current.quantifier.level += 1 if current.quantifier
+      pending.concat(current.expressions.reverse) unless current.terminal?
+    end
   end
 
   def set(token)

@@ -22,7 +22,7 @@ module Regexp::Syntax
   # Returns the syntax specification class for the given syntax
   # version name. The special names 'any' and '*' return Syntax::Any.
   def for(name)
-    (@alias_map ||= {})[name] ||= version_class(name)
+    version_class(name)
   end
 
   def new(name)
