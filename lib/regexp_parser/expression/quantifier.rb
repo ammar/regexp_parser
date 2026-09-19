@@ -11,7 +11,7 @@ module Regexp::Expression
     MODES = %i[greedy possessive reluctant].freeze
 
     def initialize(*args)
-      deprecated_old_init(*args) and return if args.count == 4 || args.count == 5
+      deprecated_old_init(*args) and return if args.length == 4 || args.length == 5
 
       init_from_token_and_options(*args)
       # TODO: remove in v3.0.0, stop removing parts of #token (?)

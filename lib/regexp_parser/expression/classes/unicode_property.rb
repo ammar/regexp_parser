@@ -118,4 +118,4 @@ module Regexp::Expression
   # alias for symmetry between token symbol and Expression class name
   Property    = UnicodeProperty
   Nonproperty = UnicodeProperty
-end # module Regexp::Expression
+end

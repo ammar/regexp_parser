@@ -24,7 +24,7 @@ module Regexp::Expression
       expressions << exp
     end
 
-    %w[[] at each empty? fetch index join last length values_at].each do |method|
+    %w[[] at each empty? fetch index join last length values_at zip].each do |method|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{method}(*args, &block)
           expressions.#{method}(*args, &block)
@@ -51,7 +51,7 @@ module Regexp::Expression
 
     def extract_quantifier_target(quantifier_description)
       pre_quantifier_decorations = []
-      target = expressions.reverse.find do |exp|
+      target = expressions.reverse_each.find do |exp|
         if exp.decorative?
           exp.custom_to_s_handling = true
           pre_quantifier_decorations << exp.text

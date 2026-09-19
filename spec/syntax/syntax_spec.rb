@@ -39,13 +39,18 @@ RSpec.describe(Regexp::Syntax) do
     end
 
     it 'raises for invalid names' do
-      expect { Regexp::Syntax.version_class('2.0.0') }.to raise_error(Regexp::Syntax::InvalidVersionNameError)
-      expect { Regexp::Syntax.version_class('ruby/20') }.to raise_error(Regexp::Syntax::InvalidVersionNameError)
+      expect { Regexp::Syntax.for('2.0.0') }.to raise_error(Regexp::Syntax::InvalidVersionNameError)
+      expect { Regexp::Syntax.for('ruby/20') }.to raise_error(Regexp::Syntax::InvalidVersionNameError)
     end
   end
 
   specify('::new is a deprecated alias of ::for') do
     expect { expect(Regexp::Syntax.new('ruby/2.0.0')).to eq Regexp::Syntax::V2_0_0 }
+      .to output(/deprecated/).to_stderr
+  end
+
+  specify('::version_class is a deprecated alias of ::for') do
+    expect { expect(Regexp::Syntax.version_class('ruby/2.0.0')).to eq Regexp::Syntax::V2_0_0 }
       .to output(/deprecated/).to_stderr
   end
 

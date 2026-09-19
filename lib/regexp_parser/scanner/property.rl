@@ -14,7 +14,7 @@
   unicode_property := |*
 
     property_sequence < eof(premature_property_end) {
-      text = copy(data, ts-1, te)
+      text = copy(source, ts-1, te)
       type = (text[1] == 'P') ^ (text[3] == '^') ? :nonproperty : :property
 
       name = text[3..-2].gsub(/[\^\s_\-]/, '').downcase

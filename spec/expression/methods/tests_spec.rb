@@ -113,6 +113,10 @@ RSpec.describe('ExpressionTests') do
     expect(RP.parse(/[a]/)).to                  eq RP.parse(/[a]/)
     expect(RP.parse(/[a]/)).not_to              eq RP.parse(/[B]/)
 
+    expect(RP.parse(/[ab]/)).to                 eq RP.parse(/[ab]/)
+    expect(RP.parse(/[ab]/)).not_to             eq RP.parse(/[a]/)
+    expect(RP.parse(/[a]/)).not_to              eq RP.parse(/[ab]/)
+
     expect(RP.parse(/(a)/)).to                  eq RP.parse(/(a)/)
     expect(RP.parse(/(a)/)).not_to              eq RP.parse(/(B)/)
 

@@ -1,5 +1,9 @@
 # frozen_string_literal: true
-
+#
+# This file implements several tree traversal methods.
+#
+# Note: The methods are optimized for performance and avoid stack overflows on
+#       large trees. Check tasks/benchmark/traversal.rb when working in here.
 module Regexp::Expression
   class Subexpression < Regexp::Expression::Base
 
@@ -36,14 +40,30 @@ module Regexp::Expression
 
       block.call(:enter, self, 0) if include_self
 
-      each_with_index do |exp, index|
-        if exp.terminal?
-          block.call(:visit, exp, index)
-        else
-          block.call(:enter, exp, index)
-          exp.traverse(&block)
-          block.call(:exit, exp, index)
+      stack = []
+      parent, children, index = self, expressions, 0
+
+      loop do
+        while (exp = children[index])
+          if exp.terminal?
+            block.call(:visit, exp, index)
+            index += 1
+          else
+            block.call(:enter, exp, index)
+            # Resume at this child to emit its exit event after descending.
+            stack.push(parent, index)
+            parent, children, index = exp, exp.expressions, 0
+          end
         end
+
+        break if stack.empty?
+
+        exp = parent
+        index = stack.pop
+        parent = stack.pop
+        children = parent.expressions
+        block.call(:exit, exp, index)
+        index += 1
       end
 
       block.call(:exit, self, 0) if include_self
@@ -66,16 +86,34 @@ module Regexp::Expression
     protected
 
     def each_expression_with_index(&block)
-      each_with_index do |exp, index|
-        block.call(exp, index)
-        exp.each_expression_with_index(&block) unless exp.terminal?
+      stack = []
+      children, index = expressions, 0
+
+      loop do
+        while (exp = children[index])
+          block.call(exp, index)
+          index += 1
+          unless exp.terminal?
+            # Resume at the next sibling after visiting this child's subtree.
+            stack.push(children, index)
+            children, index = exp.expressions, 0
+          end
+        end
+
+        break if stack.empty?
+
+        index = stack.pop
+        children = stack.pop
       end
     end
 
     def each_expression_without_index(&block)
-      each do |exp|
+      queue = expressions.reverse
+
+      until queue.empty?
+        exp = queue.pop
         block.call(exp)
-        exp.each_expression_without_index(&block) unless exp.terminal?
+        queue.concat(exp.expressions.reverse) unless exp.terminal?
       end
     end
   end

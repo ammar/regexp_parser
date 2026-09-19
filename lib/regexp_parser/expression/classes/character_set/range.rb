@@ -14,7 +14,7 @@ module Regexp::Expression
       end
 
       def complete?
-        count == 2
+        length == 2
       end
     end
   end

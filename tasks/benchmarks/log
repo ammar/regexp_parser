@@ -1,14 +1,29 @@
-Results of rake:benchmark on ruby 3.1.0p0 (2021-12-25 revision fb4df44d16) [arm64-darwin21]
+Results of rake:benchmark on ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [arm64-darwin27]
+
+Comparing a complex Regexp (URI.regexp)
+ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [arm64-darwin27]
+
+    Regexp#==: 18825378.7 i/s
+Expression#==:     5810.3 i/s - 3240.01x  slower
 
 Parsing a minimal Regexp
+ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [arm64-darwin27]
 
-       Scanner::scan:    32069.4 i/s
-          Lexer::lex:    30700.6 i/s - same-ish: difference falls within error
-       Parser::parse:    26248.5 i/s - 1.22x  (± 0.00) slower
+Scanner::scan:   781571.0 i/s
+   Lexer::lex:   469475.9 i/s - 1.66x  slower
+Parser::parse:   191978.3 i/s - 4.07x  slower
+
+Regexp::Expression traversal
+ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [arm64-darwin27]
+
+         #each_expression:    15648.2 i/s
+#each_expression w. index:    13330.0 i/s - 1.17x  slower
+                #traverse:    11738.1 i/s - 1.33x  slower
 
 Parsing a complex Regexp (URI.regexp)
+ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [arm64-darwin27]
 
-       Scanner::scan:      843.4 i/s
-          Lexer::lex:      546.3 i/s - 1.54x  (± 0.00) slower
-       Parser::parse:      332.5 i/s - 2.54x  (± 0.00) slower
+Scanner::scan:     1939.7 i/s
+   Lexer::lex:     1144.6 i/s - 1.69x  slower
+Parser::parse:      589.4 i/s - 3.29x  slower
 

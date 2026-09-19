@@ -124,13 +124,13 @@
 
   # EOF error, used where it can be detected
   action premature_end_error {
-    text = copy(data, ts ? ts-1 : 0, -1)
+    text = error_text(source, ts, p)
     raise PrematureEndError.new(text)
   }
 
   # Invalid sequence error, used from sequences, like escapes and sets
   action invalid_sequence_error {
-    text = copy(data, ts ? ts-1 : 0, -1)
+    text = error_text(source, ts, p)
     raise ValidationError.for(:sequence, 'sequence', text)
   }
 
@@ -145,7 +145,7 @@
   # --------------------------------------------------------------------------
   character_set := |*
     set_close > (set_meta, 2) @set_closed {
-      emit(:set, :close, copy(data, ts, te))
+      emit(:set, :close, copy(source, ts, te))
       if in_set?
         fret;
       else
@@ -202,7 +202,7 @@
     };
 
     class_posix >(open_bracket, 1) @set_closed @eof(premature_end_error) {
-      text = copy(data, ts, te)
+      text = copy(source, ts, te)
 
       type = :posixclass
       class_name = text[2..-3]
@@ -219,11 +219,11 @@
     };
 
     meta_char > (set_meta, 1) {
-      emit(:literal, :literal, copy(data, ts, te))
+      emit(:literal, :literal, copy(source, ts, te))
     };
 
     any | ascii_nonprint | utf8_multibyte {
-      text = copy(data, ts, te)
+      text = copy(source, ts, te)
       emit(:literal, :literal, text)
     };
   *|;
@@ -233,7 +233,7 @@
   set_escape_sequence := |*
     # Special case: in sets, octal sequences have higher priority than backrefs
     octal_sequence {
-      emit(:escape, :octal, copy(data, ts-1, te))
+      emit(:escape, :octal, copy(source, ts-1, te))
       fret;
     };
 
@@ -248,7 +248,7 @@
     # (This currently includes \^, \-, \&, \:, although these could potentially
     # be meta chars when not escaped, depending on their position in the set.)
     (any | utf8_multibyte) > (escaped_set_alpha, 1) {
-      emit(:escape, :literal, copy(data, ts-1, te))
+      emit(:escape, :literal, copy(source, ts-1, te))
       fret;
     };
   *|;
@@ -258,7 +258,7 @@
   # --------------------------------------------------------------------------
   escape_sequence := |*
     [1-9] . [0-9]* {
-      text = copy(data, ts-1, te)
+      text = copy(source, ts-1, te)
 
       # If not enough groups have been opened, there is a fallback to either an
       # octal or literal interpretation for 2+ digit numerical escapes.
@@ -276,19 +276,19 @@
     };
 
     octal_sequence {
-      emit(:escape, :octal, copy(data, ts-1, te))
+      emit(:escape, :octal, copy(source, ts-1, te))
       fret;
     };
 
     [8-9] . [0-9] { # special case, emits two tokens
-      text = copy(data, ts-1, te)
+      text = copy(source, ts-1, te)
       emit(:escape, :literal, text[0, 2])
       emit(:literal, :literal, text[2])
       fret;
     };
 
     meta_char {
-      case text = copy(data, ts-1, te)
+      case text = copy(source, ts-1, te)
       when '\.';  emit(:escape, :dot,               text)
       when '\|';  emit(:escape, :alternation,       text)
       when '\^';  emit(:escape, :bol,               text)
@@ -311,7 +311,7 @@
     escaped_ascii > (escaped_alpha, 7) {
       # \b is emitted as backspace only when inside a character set, otherwise
       # it is a word boundary anchor. A syntax might "normalize" it if needed.
-      case text = copy(data, ts-1, te)
+      case text = copy(source, ts-1, te)
       when '\a'; emit(:escape, :bell,           text)
       when '\b'; emit(:escape, :backspace,      text)
       when '\e'; emit(:escape, :escape,         text)
@@ -325,7 +325,7 @@
     };
 
     codepoint_sequence > (escaped_alpha, 6) $eof(premature_end_error) {
-      text = copy(data, ts-1, te)
+      text = copy(source, ts-1, te)
       if text[2] == '{'
         emit(:escape, :codepoint_list, text)
       else
@@ -335,7 +335,7 @@
     };
 
     high_hex_sequence > (escaped_alpha, 5) {
-      text = copy(data, ts-1, te)
+      text = copy(source, ts-1, te)
       if regexp_encoding == Encoding::BINARY
         text.split(/(?=\\)/).each { |part| emit(:escape, :hex, part) }
       else
@@ -345,7 +345,7 @@
     };
 
     hex_sequence > (escaped_alpha, 5) @eof(premature_end_error) {
-      emit(:escape, :hex, copy(data, ts-1, te))
+      emit(:escape, :hex, copy(source, ts-1, te))
       fret;
     };
 
@@ -354,12 +354,12 @@
     };
 
     control_sequence >(escaped_alpha, 4) $eof(premature_end_error) {
-      emit_meta_control_sequence(data, ts, te, :control)
+      emit_meta_control_sequence(data, source, ts, te, :control)
       fret;
     };
 
     meta_sequence >(backslashed, 3) $eof(premature_end_error) {
-      emit_meta_control_sequence(data, ts, te, :meta_sequence)
+      emit_meta_control_sequence(data, source, ts, te, :meta_sequence)
       fret;
     };
 
@@ -376,7 +376,7 @@
     };
 
     (any -- non_literal_escape) | utf8_multibyte > (escaped_alpha, 1) {
-      emit(:escape, :literal, copy(data, ts-1, te))
+      emit(:escape, :literal, copy(source, ts-1, te))
       fret;
     };
   *|;
@@ -386,7 +386,7 @@
   # --------------------------------------------------------------------------
   conditional_expression := |*
     group_lookup . ')' {
-      text = copy(data, ts, te-1)
+      text = copy(source, ts, te-1)
       text =~ /[^0]/ or raise ValidationError.for(:backref, 'condition', 'invalid ref ID')
       emit(:conditional, :condition, text)
       emit(:conditional, :condition_close, ')')
@@ -406,33 +406,33 @@
     # Meta characters
     # ------------------------------------------------------------------------
     dot {
-      emit(:meta, :dot, copy(data, ts, te))
+      emit(:meta, :dot, copy(source, ts, te))
     };
 
     alternation {
       if conditional_stack.last == group_depth
-        emit(:conditional, :separator, copy(data, ts, te))
+        emit(:conditional, :separator, copy(source, ts, te))
       else
-        emit(:meta, :alternation, copy(data, ts, te))
+        emit(:meta, :alternation, copy(source, ts, te))
       end
     };
 
     # Anchors
     # ------------------------------------------------------------------------
     beginning_of_line {
-      emit(:anchor, :bol, copy(data, ts, te))
+      emit(:anchor, :bol, copy(source, ts, te))
     };
 
     end_of_line {
-      emit(:anchor, :eol, copy(data, ts, te))
+      emit(:anchor, :eol, copy(source, ts, te))
     };
 
     backslash . keep_mark > (backslashed, 4) {
-      emit(:keep, :mark, copy(data, ts, te))
+      emit(:keep, :mark, copy(source, ts, te))
     };
 
     backslash . anchor_char > (backslashed, 3) {
-      case text = copy(data, ts, te)
+      case text = copy(source, ts, te)
       when '\A';  emit(:anchor, :bos,                text)
       when '\z';  emit(:anchor, :eos,                text)
       when '\Z';  emit(:anchor, :eos_ob_eol,         text)
@@ -443,13 +443,13 @@
     };
 
     literal_delimiters {
-      append_literal(data, ts, te)
+      append_literal(source, ts, te)
     };
 
     # Character sets
     # ------------------------------------------------------------------------
     set_open >set_opened {
-      emit(:set, :open, copy(data, ts, te))
+      emit(:set, :open, copy(source, ts, te))
       fcall character_set;
     };
 
@@ -458,7 +458,7 @@
     #   (?(condition)Y|N)   conditional expression
     # ------------------------------------------------------------------------
     conditional {
-      text = copy(data, ts, te)
+      text = copy(source, ts, te)
 
       conditional_stack << group_depth
 
@@ -473,7 +473,7 @@
     # special case for close to get the correct closing count.
     # ------------------------------------------------------------------------
     (group_open . group_comment) @group_closed {
-      emit(:group, :comment, copy(data, ts, te))
+      emit(:group, :comment, copy(source, ts, te))
     };
 
     # Expression options:
@@ -488,7 +488,7 @@
     #   (?imxdau-imx:subexp)  option on/off for subexp
     # ------------------------------------------------------------------------
     (group_open . group_options) >group_opened {
-      text = copy(data, ts, te)
+      text = copy(source, ts, te)
       if text[2..-1] =~ /([^\-mixdau:]|^$)|-.*([dau])/
         raise ValidationError.for(:group_option, $1 || "-#{$2}", text)
       end
@@ -502,7 +502,7 @@
     #   (?<!subexp)         negative look-behind
     # ------------------------------------------------------------------------
     (group_open . assertion_type) >group_opened {
-      case text = copy(data, ts, te)
+      case text = copy(source, ts, te)
       when '(?=';  emit(:assertion, :lookahead,    text)
       when '(?!';  emit(:assertion, :nlookahead,   text)
       when '(?<='; emit(:assertion, :lookbehind,   text)
@@ -519,7 +519,7 @@
     #   (subexp)            captured group
     # ------------------------------------------------------------------------
     (group_open . group_type) >group_opened {
-      case text = copy(data, ts, te)
+      case text = copy(source, ts, te)
       when '(?:';  emit(:group, :passive,      text)
       when '(?>';  emit(:group, :atomic,       text)
       when '(?~';  emit(:group, :absence,      text)
@@ -538,7 +538,7 @@
 
     group_open @group_opened {
       self.capturing_group_count = capturing_group_count + 1
-      text = copy(data, ts, te)
+      text = copy(source, ts, te)
       emit(:group, :capture, text)
     };
 
@@ -563,7 +563,7 @@
     # Group backreference, named and numbered
     # ------------------------------------------------------------------------
     backslash . (group_ref) > (backslashed, 4) {
-      case text = copy(data, ts, te)
+      case text = copy(source, ts, te)
       when /^\\k(.)[^0-9\-][^+\-]*['>]$/
         emit(:backref, $1 == '<' ? :name_ref_ab : :name_ref_sq, text)
       when /^\\k(.)0*[1-9]\d*['>]$/
@@ -582,7 +582,7 @@
     # Group call, named and numbered
     # ------------------------------------------------------------------------
     backslash . (group_call) > (backslashed, 4) {
-      case text = copy(data, ts, te)
+      case text = copy(source, ts, te)
       when /^\\g(.)[^0-9+\-].*['>]$/
         emit(:backref, $1 == '<' ? :name_call_ab : :name_call_sq, text)
       when /^\\g(.)(?:0|0*[1-9]\d*)['>]$/
@@ -598,7 +598,7 @@
     # Quantifiers
     # ------------------------------------------------------------------------
     zero_or_one {
-      case text = copy(data, ts, te)
+      case text = copy(source, ts, te)
       when '?' ;  emit(:quantifier, :zero_or_one,            text)
       when '??';  emit(:quantifier, :zero_or_one_reluctant,  text)
       when '?+';  emit(:quantifier, :zero_or_one_possessive, text)
@@ -606,7 +606,7 @@
     };
 
     zero_or_more {
-      case text = copy(data, ts, te)
+      case text = copy(source, ts, te)
       when '*' ;  emit(:quantifier, :zero_or_more,            text)
       when '*?';  emit(:quantifier, :zero_or_more_reluctant,  text)
       when '*+';  emit(:quantifier, :zero_or_more_possessive, text)
@@ -614,7 +614,7 @@
     };
 
     one_or_more {
-      case text = copy(data, ts, te)
+      case text = copy(source, ts, te)
       when '+' ;  emit(:quantifier, :one_or_more,            text)
       when '+?';  emit(:quantifier, :one_or_more_reluctant,  text)
       when '++';  emit(:quantifier, :one_or_more_possessive, text)
@@ -622,12 +622,12 @@
     };
 
     quantifier_interval {
-      emit(:quantifier, :interval, copy(data, ts, te))
+      emit(:quantifier, :interval, copy(source, ts, te))
     };
 
     # Catch unmatched curly braces as literals
     range_open {
-      append_literal(data, ts, te)
+      append_literal(source, ts, te)
     };
 
     # Escaped sequences
@@ -638,19 +638,19 @@
 
     comment {
       if free_spacing
-        emit(:free_space, :comment, copy(data, ts, te))
+        emit(:free_space, :comment, copy(source, ts, te))
       else
         # consume only the pound sign (#) and backtrack to do regular scanning
-        append_literal(data, ts, ts + 1)
+        append_literal(source, ts, ts + 1)
         fexec ts + 1;
       end
     };
 
     space+ {
       if free_spacing
-        emit(:free_space, :whitespace, copy(data, ts, te))
+        emit(:free_space, :whitespace, copy(source, ts, te))
       else
-        append_literal(data, ts, te)
+        append_literal(source, ts, te)
       end
     };
 
@@ -658,7 +658,7 @@
     # except meta characters.
     # ------------------------------------------------------------------------
     (ascii_print -- space)+ | ascii_nonprint+ | utf8_multibyte+ {
-      append_literal(data, ts, te)
+      append_literal(source, ts, te)
     };
 
   *|;
@@ -669,6 +669,10 @@ require_relative 'scanner/errors/premature_end_error'
 require_relative 'scanner/errors/validation_error'
 
 class Regexp::Scanner
+  # Emit fixed machine data once. The ragel task converts its generated
+  # accessors and tables to constants with frozen values.
+  %% write data;
+
   # Scans the given regular expression text, or Regexp object and collects the
   # emitted token into an array that gets returned at the end. If a block is
   # given, it gets called for each emitted token.
@@ -689,7 +693,9 @@ class Regexp::Scanner
     self.regexp_encoding = extract_encoding(input_object, options)
     self.spacing_stack = [{:free_spacing => free_spacing, :depth => 0}]
 
-    data  = input.unpack("c*")
+    # Keep token text stable if a callback mutates the caller's String.
+    source = input.dup.freeze
+    data  = source.unpack("c*")
     eof   = data.length
 
     self.tokens = []
@@ -701,7 +707,6 @@ class Regexp::Scanner
     self.conditional_stack = []
     self.char_pos = 0
 
-    %% write data;
     %% write init;
     %% write exec;
 
@@ -709,8 +714,8 @@ class Regexp::Scanner
     testEof = testEof
 
     if cs == re_scanner_error
-      text = copy(data, ts ? ts-1 : 0, -1)
-      raise ScannerError.new("Scan error at '#{text}'")
+      text = error_text(source, ts, p)
+      raise ScannerError.new("Scan error at #{text}")
     end
 
     raise PrematureEndError.new("(missing group closing paranthesis) "+
@@ -808,15 +813,28 @@ class Regexp::Scanner
     set_depth > 0
   end
 
-  # Copy from ts to te from data as text
-  def copy(data, ts, te)
-    data[ts...te].pack('c*').force_encoding('utf-8')
+  # Ragel offsets are bytes; emitted token positions are characters.
+  def copy(source, ts, te)
+    source.byteslice(ts, te - ts).force_encoding('utf-8')
+  end
+
+  def error_text(source, ts, position)
+    start = ts ? [ts - 1, 0].max : 0
+    finish = source.bytesize
+    if position < finish
+      # Include the complete offending UTF-8 character, but no following text.
+      character = source.byteslice(position, 4).force_encoding('utf-8').each_char.first
+      finish = position + character.bytesize
+    end
+    text = copy(source, start, finish)
+		text = "…#{text[-9..-1]}" if text.length > 10
+		text
   end
 
   # Appends one or more characters to the literal buffer, to be emitted later
   # by a call to emit_literal.
-  def append_literal(data, ts, te)
-    (self.literal_run ||= []) << copy(data, ts, te)
+  def append_literal(source, ts, te)
+    (self.literal_run ||= []) << copy(source, ts, te)
   end
 
   # Emits the literal run collected by calls to the append_literal method.
@@ -855,10 +873,10 @@ class Regexp::Scanner
     emit(:group, token, text)
   end
 
-  def emit_meta_control_sequence(data, ts, te, token)
+  def emit_meta_control_sequence(data, source, ts, te, token)
     if data.last < 0x00 || data.last > 0x7F
       raise ValidationError.for(:sequence, 'escape', token.to_s)
     end
-    emit(:escape, token, copy(data, ts-1, te))
+    emit(:escape, token, copy(source, ts-1, te))
   end
-end # module Regexp::Scanner
+end

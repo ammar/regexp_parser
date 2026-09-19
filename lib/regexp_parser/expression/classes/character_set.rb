@@ -22,4 +22,4 @@ module Regexp::Expression
 
   # alias for symmetry between token symbol and Expression class name
   Set = CharacterSet
-end # module Regexp::Expression
+end

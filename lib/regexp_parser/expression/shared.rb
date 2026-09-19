@@ -9,11 +9,9 @@ module Regexp::Expression
         extend Shared::ClassMethods
 
         attr_accessor :type, :token, :text, :ts, :te,
-                      :level, :set_level, :conditional_level,
-                      :options, :parent,
+                      :level, :set_level, :conditional_level, :nesting_level,
+                      :options, :parent, :quantifier,
                       :custom_to_s_handling, :pre_quantifier_decorations
-
-        attr_reader   :nesting_level, :quantifier
       end
     end
 
@@ -72,15 +70,30 @@ module Regexp::Expression
     # lit.to_s(:original) # => 'a +' # with quantifier AND intermittent decorations
     #
     def to_s(format = :full)
-      base = ''.dup
-      parts.each do |part|
-        if part.instance_of?(String)
-          base << part
-        elsif !part.custom_to_s_handling
-          base << part.to_s(:original)
+      result = ''.dup
+      stack = []
+      exp, current_parts, index = self, parts, 0
+
+      loop do
+        while index < current_parts.length
+          part = current_parts[index]
+          index += 1
+          if part.instance_of?(String)
+            result << part
+          elsif !part.custom_to_s_handling
+            stack.push([exp, format, current_parts, index])
+            exp, format, current_parts, index = part, :original, part.parts, 0
+          end
         end
+
+        result << exp.pre_quantifier_decoration(format).to_s
+        result << exp.quantifier_affix(format).to_s
+        break if stack.empty?
+
+        exp, format, current_parts, index = stack.pop
       end
-      "#{base}#{pre_quantifier_decoration(format)}#{quantifier_affix(format)}"
+
+      result
     end
     alias :to_str :to_s
 
@@ -98,17 +111,6 @@ module Regexp::Expression
 
     def coded_offset
       '@%d+%d' % offset
-    end
-
-    def nesting_level=(lvl)
-      @nesting_level = lvl
-      quantifier && quantifier.nesting_level = lvl
-      terminal? || each { |subexp| subexp.nesting_level = lvl + 1 }
-    end
-
-    def quantifier=(qtf)
-      @quantifier = qtf
-      @repetitions = nil # clear memoized value
     end
   end
 end
