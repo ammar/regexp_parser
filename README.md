@@ -60,10 +60,10 @@ called with the results as follows:
   example in the next section for details.
 
 * **Lexer**: the block gets passed the tokens one by one as they are scanned.
-  _The result of the block is returned._
+  _Returns an Array of all token objects._
 
 * **Parser**: after completion, the block gets passed the root expression.
-  _The result of the block is returned._
+  _Returns the block result when a block is given, else the root expression._
 
 All three methods accept either a `Regexp` or `String` (containing the pattern)
 - if a String is passed, `options` can be supplied:

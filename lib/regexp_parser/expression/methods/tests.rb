@@ -101,14 +101,30 @@ module Regexp::Expression
     # When changing the conditions, please make sure to update
     # #pretty_print_instance_variables so that it includes all relevant values.
     def ==(other)
-      self.class   == other.class &&
-        text       == other.text &&
-        quantifier == other.quantifier &&
-        options    == other.options &&
-        (terminal? || expressions == other.expressions)
+      return shallow_equal?(other) if terminal?
+
+      stack = [[self, other]]
+      until stack.empty?
+        exp1, exp2 = stack.pop
+        return false unless exp1.shallow_equal?(exp2)
+
+        next if exp1.terminal?
+        return false unless exp1.length == exp2.length
+
+        stack.concat(exp1.zip(exp2))
+      end
+      true
     end
     alias :=== :==
     alias :eql? :==
+
+    # Compares two expressions without considering their subexpressions.
+    def shallow_equal?(other)
+      self.class   == other.class &&
+        text       == other.text &&
+        quantifier == other.quantifier &&
+        options    == other.options
+    end
 
     def optional?
       quantified? && quantifier.min == 0

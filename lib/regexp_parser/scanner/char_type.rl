@@ -10,7 +10,7 @@
   # --------------------------------------------------------------------------
   char_type := |*
     char_type_char {
-      case text = copy(data, ts-1, te)
+      case text = copy(source, ts-1, te)
       when '\d'; emit(:type, :digit,      text)
       when '\D'; emit(:type, :nondigit,   text)
       when '\h'; emit(:type, :hex,        text)

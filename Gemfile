@@ -4,6 +4,10 @@ source 'https://rubygems.org'
 
 gemspec
 
+group :development do
+  gem 'irb'
+end
+
 group :development, :test do
   gem 'leto', '~> 2.1'
   gem 'rake', '~> 13.1'

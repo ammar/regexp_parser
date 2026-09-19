@@ -84,4 +84,14 @@ RSpec.describe(Regexp::Scanner) do
   include_examples 'scan error', RS::UnknownPosixClassError, 'unknown POSIX class [:x:]', '[[:x:]]'
   include_examples 'scan error', RS::UnknownPosixClassError, 'unknown POSIX class', '[[:^x:]]'
   include_examples 'scan error', RS::UnknownPosixClassError, 'unknown POSIX class', '[[:WORD:]]'
+
+  it 'includes the final character in error text' do
+    expect { RS.scan('ä\xZ') }.to raise_error(RS::InvalidSequenceError, 'Invalid sequence at \xZ')
+    expect { RS.scan('ä\xZy') }.to raise_error(RS::InvalidSequenceError, 'Invalid sequence at \xZ')
+    expect { RS.scan('ä\x😀') }.to raise_error(RS::InvalidSequenceError, 'Invalid sequence at \x😀')
+    expect { RS.scan('ä\x😀y') }.to raise_error(RS::InvalidSequenceError, 'Invalid sequence at \x😀')
+    expect { RS.scan('😀\u') }.to raise_error(RS::PrematureEndError, 'Premature end of pattern at \u')
+    expect { RS.scan('😀\uZy') }.to raise_error(RS::ScannerError, 'Scan error at \uZ')
+    expect { RS.scan('\\') }.to raise_error(RS::PrematureEndError, 'Premature end of pattern at \\')
+  end
 end

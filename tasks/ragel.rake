@@ -21,6 +21,26 @@ task ragel: 'ragel:install' do
     .gsub(/(?<=\S ) +/, '') # compact in-line spaces
     .gsub(/\n(?:[ \t]*\n){2,}/, "\n\n") # compact blank lines
 
+  # Ragel's Ruby backend emits mutable singleton accessors for machine data.
+  # Replace them with frozen constants shared by all scanner instances.
+  # This is necessary to support running "%% write data;" only once,
+  # at the class level, but still have state at the Scanner instance level .
+  data_names = []
+  cleaned_contents.gsub!(
+    /class << self\s*attr_accessor :(\w+)\n.*?\bend\nself\.\1 = (\[.*?\n\]|\d+);?/m
+  ) do
+    name, value = Regexp.last_match.captures
+    # Track the names of the attributes so we can update references to them later
+    data_names << name
+    "#{name.upcase.sub(/\A_/, '')} = #{value}.freeze"
+  end
+  raise 'No Ragel scanner data found' if data_names.empty?
+
+  # Update references to the attribute accessors to use the constants instead.
+  cleaned_contents.gsub!(/\b(?:#{Regexp.union(data_names)})\b/) do |name|
+    name.upcase.sub(/\A_/, '')
+  end
+
   File.open(RAGEL_OUTPUT_PATH, 'w') do |file|
     file.puts(<<-RUBY.gsub(/^\s+/, ''))
       # -*- frozen_string_literal: true; warn-indent: false -*-

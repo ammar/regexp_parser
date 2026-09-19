@@ -17,4 +17,18 @@ RSpec.describe(Regexp::Scanner) do
     re = /^(one|two){2,3}([^d\]efm-qz\,\-]*)(ghi)+$/i
     expect(RS.scan(re).length).to eq 28
   end
+
+  specify('nested scans keep their mutable state separate') do
+    outer = /(?<word>a|b)\k<word>/
+    inner = /[a-z&&[^aeiou]]+/ix
+    expected_outer = RS.scan(outer)
+    expected_inner = RS.scan(inner)
+    nested_results = []
+
+    result = RS.scan(outer) { nested_results << RS.scan(inner) }
+
+    expect(result).to eq expected_outer
+    expect(nested_results.length).to eq expected_outer.length
+    expect(nested_results).to all(eq expected_inner)
+  end
 end

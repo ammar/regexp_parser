@@ -5,19 +5,17 @@
 # normalizes tokens for the parser, and checks if they are implemented by the
 # given syntax flavor.
 class Regexp::Lexer
-
   OPENING_TOKENS = %i[
     capture passive lookahead nlookahead lookbehind nlookbehind
     atomic options options_switch named absence open
   ].freeze
-
-  CLOSING_TOKENS = %i[close].freeze
 
   CONDITION_TOKENS = %i[condition condition_close].freeze
 
   def self.lex(input, syntax = nil, options: nil, collect_tokens: true, &block)
     new.lex(input, syntax, options: options, collect_tokens: collect_tokens, &block)
   end
+  class << self; alias :scan :lex end
 
   def lex(input, syntax = nil, options: nil, collect_tokens: true, &block)
     syntax = syntax ? Regexp::Syntax.for(syntax) : Regexp::Syntax::CURRENT
@@ -33,19 +31,21 @@ class Regexp::Lexer
     self.shift = 0
 
     Regexp::Scanner.scan(input, options: options, collect_tokens: false) do |type, token, text, ts, te|
-      type, token = *syntax.normalize(type, token)
+      type, token = syntax.normalize(type, token)
       syntax.check! type, token
 
       ascend(type, token)
 
-      if (last = prev_token) &&
-         type == :quantifier &&
-         (
-           (last.type == :literal         && (parts = break_literal(last))) ||
-           (last.token == :codepoint_list && (parts = break_codepoint_list(last)))
-         )
-        emit(parts[0])
-        last = parts[1]
+      if (last = prev_token) && type == :quantifier
+        shortened_run, quantified_node =
+          if    last.type  == :literal        then break_literal_run(last)
+          elsif last.token == :codepoint_list then break_codepoint_list(last)
+          end
+
+        if shortened_run
+          emit(shortened_run)
+          last = quantified_node
+        end
       end
 
       current = Regexp::Token.new(type, token, text, ts + shift, te + shift,
@@ -80,10 +80,6 @@ class Regexp::Lexer
     end
   end
 
-  class << self
-    alias :scan :lex
-  end
-
   private
 
   attr_accessor :block,
@@ -91,7 +87,7 @@ class Regexp::Lexer
                 :nesting, :set_nesting, :conditional_nesting, :shift
 
   def ascend(type, token)
-    return unless CLOSING_TOKENS.include?(token)
+    return unless token == :close
 
     case type
     when :group, :assertion
@@ -122,7 +118,7 @@ class Regexp::Lexer
 
   # called by scan to break a literal run that is longer than one character
   # into two separate tokens when it is followed by a quantifier
-  def break_literal(token)
+  def break_literal_run(token)
     lead, last, _ = token.text.partition(/.\z/mu)
     return if lead.empty?
 
@@ -141,7 +137,7 @@ class Regexp::Lexer
 
   # if a codepoint list is followed by a quantifier, that quantifier applies
   # to the last codepoint, e.g. /\u{61 62 63}{3}/ =~ 'abccc'
-  # c.f. #break_literal.
+  # c.f. #break_literal_run.
   def break_codepoint_list(token)
     lead, _, tail = token.text.rpartition(' ')
     return if lead.empty?
@@ -153,7 +149,11 @@ class Regexp::Lexer
               (token.ts + lead.length + 1), (token.te + 3),
               nesting, set_nesting, conditional_nesting)
 
-    self.shift = shift + 3 # one space less, but extra \, u, {, and }
+    # Splitting the codepoint list into two parts changes the correct offsets
+    # of any following tokens because it requires extra chars to represent the
+    # 'virtual' token, e.g. `\u{61 62 63}{3}` is lexed as `\u{61 62}\u{63}{3}`,
+    # which is 3 chars longer.
+    self.shift = shift + 3
 
     token_1.previous = preprev_token
     token_1.next = token_2
@@ -167,5 +167,4 @@ class Regexp::Lexer
     token.previous = preprev_token # .next will be set by #lex
     token
   end
-
-end # module Regexp::Lexer
+end

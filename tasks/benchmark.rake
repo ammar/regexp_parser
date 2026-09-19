@@ -8,7 +8,7 @@ task :benchmark do
 end
 
 namespace :benchmark do
-  desc 'Run all IPS benchmarks and store the comparison results in BENCHMARK.md'
+  desc "Run all IPS benchmarks and store the comparison results in the log file (to compare via git diff)"
   task :write_to_file do
     require 'stringio'
 

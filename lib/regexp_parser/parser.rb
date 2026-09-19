@@ -36,15 +36,14 @@ class Regexp::Parser
     self.conditional_nesting = []
 
     self.captured_group_counts = Hash.new(0)
+    self.total_captured_group_count = 0
 
-    Regexp::Lexer.scan(input, syntax, options: options, collect_tokens: false) do |token|
+    Regexp::Lexer.new.lex(input, syntax, options: options, collect_tokens: false) do |token|
       parse_token(token)
     end
 
-    # Trigger recursive setting of #nesting_level, which reflects how deep
-    # a node is in the tree. Do this at the end to account for tree rewrites.
-    root.nesting_level = 0
-    assign_referenced_expressions
+    root.assign_referenced_expressions
+    root.recursively_update_nesting_levels
 
     if block_given?
       block.call(root)
@@ -57,7 +56,7 @@ class Regexp::Parser
 
   attr_accessor :root, :node, :nesting,
                 :options_stack, :switching_options, :conditional_nesting,
-                :captured_group_counts
+                :captured_group_counts, :total_captured_group_count
 
   def extract_options(input, options)
     if options && !input.is_a?(String)
@@ -197,16 +196,13 @@ class Regexp::Parser
     nest(group)
   end
 
-  def total_captured_group_count
-    captured_group_counts.values.reduce(0, :+)
-  end
-
   def captured_group_count_at_level
     captured_group_counts[node]
   end
 
   def count_captured_group
     captured_group_counts[node] += 1
+    self.total_captured_group_count = total_captured_group_count + 1
   end
 
   def close_group
@@ -496,7 +492,10 @@ class Regexp::Parser
       )
       new_group.implicit = true
       new_group << target_node
-      increase_group_level(target_node)
+      increment_group_level(target_node)
+      unless target_node.terminal?
+        target_node.each_expression { |exp| increment_group_level(exp) }
+      end
       node.expressions[node.expressions.index(target_node)] = new_group
       target_node = new_group
     end
@@ -509,10 +508,9 @@ class Regexp::Parser
     target_node.quantify(token, active_opts)
   end
 
-  def increase_group_level(exp)
+  def increment_group_level(exp)
     exp.level += 1
     exp.quantifier.level += 1 if exp.quantifier
-    exp.terminal? || exp.each { |subexp| increase_group_level(subexp) }
   end
 
   def set(token)
@@ -577,26 +575,4 @@ class Regexp::Parser
   def active_opts
     options_stack.last
   end
-
-  # Assigns referenced expressions to referring expressions, e.g. if there is
-  # an instance of Backreference::Number, its #referenced_expression is set to
-  # the instance of Group::Capture that it refers to via its number.
-  def assign_referenced_expressions
-    # find all referenceable and referring expressions
-    targets = { 0 => [root] }
-    referrers = []
-    root.each_expression do |exp|
-      if exp.referential?
-        referrers << exp
-      elsif exp.is_a?(Group::Capture)
-        (targets[exp.identifier] ||= []) << exp
-      end
-    end
-    # assign referenced expressions to referring expressions
-    # (in a second iteration because there might be forward references)
-    referrers.each do |exp|
-      exp.referenced_expressions = targets[exp.reference] ||
-        raise(ParserError, "Invalid reference #{exp.reference} at pos #{exp.ts}")
-    end
-  end
-end # module Regexp::Parser
+end

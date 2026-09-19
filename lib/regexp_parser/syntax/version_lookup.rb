@@ -22,7 +22,11 @@ module Regexp::Syntax
   # Returns the syntax specification class for the given syntax
   # version name. The special names 'any' and '*' return Syntax::Any.
   def for(name)
-    (@alias_map ||= {})[name] ||= version_class(name)
+    return Regexp::Syntax::Any if ['*', 'any'].include?(name.to_s)
+
+    name =~ VERSION_REGEXP || raise(InvalidVersionNameError, name)
+    version_const_name = "V#{name.to_s.scan(/\d+/).join('_')}"
+    const_get(version_const_name)
   end
 
   def new(name)
@@ -31,23 +35,34 @@ module Regexp::Syntax
     self.for(name)
   end
 
+  def version_class(name)
+    warn 'Regexp::Syntax.version_class is deprecated in favor of Regexp::Syntax.for. '\
+         'It will be removed in regexp_parser v3.0.0.'
+    self.for(name)
+  end
+
   def supported?(name)
     name =~ VERSION_REGEXP && comparable(name) >= comparable('1.8.6')
   end
 
-  def version_class(version)
-    return Regexp::Syntax::Any if ['*', 'any'].include?(version.to_s)
-
-    version =~ VERSION_REGEXP || raise(InvalidVersionNameError, version)
-    version_const_name = "V#{version.to_s.scan(/\d+/).join('_')}"
-    const_get(version_const_name) || raise(UnknownSyntaxNameError, version)
-  end
-
   def const_missing(const_name)
     if const_name =~ VERSION_CONST_REGEXP
-      return fallback_version_class(const_name)
+      return set_fallback_version_class(const_name) ||
+             raise(UnknownSyntaxNameError, const_name)
     end
     super
+  end
+
+  def set_fallback_version_class(const_name)
+    return unless (klass = fallback_version_class(const_name))
+
+    if constants.count { |c| c =~ VERSION_REGEXP } > 1000
+      raise Regexp::Syntax::SyntaxError,
+            "Unexpected high number of syntax versions defined. "\
+            "Do not accept unfiltered user input as Regexp::Syntax version."
+    end
+    const_set(const_name, klass)
+    klass
   end
 
   def fallback_version_class(version)

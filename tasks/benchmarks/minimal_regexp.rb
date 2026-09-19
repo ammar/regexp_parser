@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'benchmark/ips'
-require_relative '../../lib/regexp_parser'
+require_relative 'shared'
 
 puts 'Parsing a minimal Regexp'
 
