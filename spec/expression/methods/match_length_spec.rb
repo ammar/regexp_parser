@@ -44,6 +44,186 @@ RSpec.describe(Regexp::MatchLength) do
     expect { exp.match_length }.to raise_error(ArgumentError)
   end
 
+  describe('recursive references') do
+    [
+      '(?<a>a\g<a>?)',
+      '(a\g<1>?)',
+      'a\g<0>?',
+      '(?<a>a\k<a>?)',
+    ].each do |pattern|
+      it "calculates bounds and lengths for #{pattern}" do
+        length = ML.of(pattern)
+        expect(length.minmax).to eq [1, Float::INFINITY]
+        expect(length.first(5)).to eq [1, 2, 3, 4, 5]
+      end
+    end
+
+    it 'allows repeated references to the same target' do
+      expect(ML.of('(?<a>a)(?<b>\g<a>\g<a>)\g<b>').minmax).to eq [5, 5]
+    end
+
+    it 'does not follow references inside assertions' do
+      expect(ML.of('(?<a>a(?=\g<a>))\g<a>').minmax).to eq [2, 2]
+    end
+
+    it 'preserves gaps introduced by recursion' do
+      length = ML.of('(?<a>a(?:\g<a>aa)?)')
+      expect(length.minmax).to eq [1, Float::INFINITY]
+      expect(length.first(6)).to eq [1, 4, 7, 10, 13, 16]
+      expect(length).not_to include 2
+      expect(length).to include 100
+      expect(length).not_to include 101
+    end
+
+    it 'finds a terminating alternative for a mandatory recursive call' do
+      length = ML.of('(?<a>a\g<a>|aaa)')
+      expect(length.minmax).to eq [3, Float::INFINITY]
+      expect(length.first(4)).to eq [3, 4, 5, 6]
+    end
+
+    it 'handles mutual recursion' do
+      length = ML.of('(?<a>a\g<b>?)(?<b>aa\g<a>?)')
+      expect(length.minmax).to eq [3, Float::INFINITY]
+      expect(length.first(8)).to eq [3, 4, 5, 6, 7, 8, 9, 10]
+    end
+
+    it 'handles more than one recursive call per branch' do
+      length = ML.of('(?<a>a(?:\g<a>\g<a>)?)')
+      expect(length.minmax).to eq [1, Float::INFINITY]
+      expect(length.first(6)).to eq [1, 3, 5, 7, 9, 11]
+    end
+
+    it 'applies the referring expression and enclosing group quantifiers' do
+      length = ML.of('(?<a>a(?:\g<a>aa)?){2}\g<a>{2}')
+      expect(length.minmax).to eq [4, Float::INFINITY]
+      expect(length.first(5)).to eq [4, 7, 10, 13, 16]
+    end
+
+    it 'works on a recursive call node directly' do
+      call = RP.parse('(?<a>a\g<a>?)')[0][1]
+      expect(call.match_length.minmax).to eq [0, Float::INFINITY]
+      expect(call.match_length.first(4)).to eq [0, 1, 2, 3]
+    end
+
+    it 'handles zero-growth recursion without reporting an infinite maximum' do
+      length = ML.of('(?<a>\g<a>|aa)')
+      expect(length.minmax).to eq [2, 2]
+      expect(length.to_a).to eq [2]
+      expect(length).to be_fixed
+    end
+
+    it 'handles recursive expressions which only produce the empty string' do
+      length = ML.of('(?<a>\g<a>?)')
+      expect(length.minmax).to eq [0, 0]
+      expect(length.to_a).to eq [0]
+    end
+
+    it 'keeps mutually recursive zero-growth alternatives finite' do
+      length = ML.of('(?<a>\g<b>|a)(?<b>\g<a>|aa)')
+      expect(length.minmax).to eq [2, 4]
+      expect(length.to_a).to eq [2, 3, 4]
+    end
+
+    it 'handles nullable recursion that can also grow' do
+      length = ML.of('(?<a>(?:aa\g<a>)?)')
+      expect(length.minmax).to eq [0, Float::INFINITY]
+      expect(length.first(5)).to eq [0, 2, 4, 6, 8]
+    end
+
+    it 'treats recursion without a terminating derivation as an empty length set' do
+      length = ML.of('(?<a>a\g<a>)')
+      expect(length.minmax).to eq [nil, nil]
+      expect(length.to_a).to eq []
+      expect(length.endless_each.to_a).to eq []
+      expect(length).not_to be_fixed
+      expect(length).not_to include 0
+      expect(length).not_to include 10
+    end
+
+    it 'discards nonterminating alternatives when calculating bounds' do
+      length = ML.of('(?<a>a\g<a>)|aa')
+      expect(length.minmax).to eq [2, 2]
+      expect(length.to_a).to eq [2]
+    end
+
+    it 'can skip a nonterminating expression' do
+      length = ML.of('(?<a>a\g<a>)?')
+      expect(length.minmax).to eq [0, 0]
+      expect(length.to_a).to eq [0]
+    end
+
+    it 'ignores recursive branches quantified with zero repetitions' do
+      length = ML.of('(?<a>a\g<a>{0})')
+      expect(length.minmax).to eq [1, 1]
+      expect(length.to_a).to eq [1]
+    end
+
+    it 'supports long matches without relying on the regexp engine recursion limit' do
+      length = ML.of('(?<a>a\g<a>?)')
+      expect(length).to include 3000
+      expect(length.endless_each.first(1100)).to eq (1..1100).to_a
+      expect(length.first(1100)).to eq (1..1000).to_a
+    end
+
+    describe('#to_re') do
+      it 'can compose multiple conversions of the same recursive expression' do
+        length = ML.of('(?<a>a(?:\g<a>aa)?)')
+        regexp = /\A#{length.to_re}#{length.to_re}\z/
+        expect(regexp).to match('X' * 2)
+        expect(regexp).to match('X' * 5)
+        expect(regexp).not_to match('X' * 3)
+      end
+
+      [
+        '(?<a>a(?:\g<a>aa)?)',
+        '(?<a>a\g<a>|aaa)',
+        '(?<a>a(?:\g<a>\g<a>)?)',
+        '(?<a>(?:aa\g<a>)?)',
+        '(?<a>\g<a>|aa)',
+        '(?<a>\g<a>?)',
+        '(?<a>a\g<a>)',
+        '(?<a>\g<a>aa|a)',
+        '(?<a>\g<b>aa|a)(?<b>\g<a>aaa|aa)',
+        '(?<a>\g<a>\g<a>|a)',
+        '(?<a>(?:a|\g<a>)*)',
+      ].each do |pattern|
+        it "represents the length language of #{pattern}" do
+          length = ML.of(pattern)
+          regexp = /\A(?:#{length.to_re})\z/
+          (0..20).each do |n|
+            expect(!!regexp.match('X' * n)).to eq(length.include?(n)), "length #{n} of #{pattern}"
+          end
+        end
+      end
+    end
+
+    describe('agreement with Ruby for consuming recursion') do
+      [
+        '(?<a>a\g<a>?)',
+        '(?<a>a(?:\g<a>aa)?)',
+        '(?<a>a\g<a>|aaa)',
+        '(?<a>a\g<a>{2,3}|aa)',
+        '(?<a>(?:aa\g<a>)?)',
+        '(?<a>a\g<b>?)(?<b>aa\g<a>?)',
+      ].each do |pattern|
+        it "matches the attainable lengths of #{pattern}" do
+          original = Regexp.new("\\A(?:#{pattern})\\z")
+          length = ML.of(pattern)
+          expected = (0..20).select { |n| original.match('a' * n) }
+          expect((0..20).select { |n| length.include?(n) }).to eq expected
+        end
+      end
+    end
+  end
+
+  specify('large finite quantifiers') do
+    expect(ML.of('a{1000000,2000000}').minmax).to eq [1000000, 2000000]
+  end
+
+  specify('unbounded repetitions of a zero-length expression') do
+    expect(ML.of('(?:)*').minmax).to eq [0, 0]
+  end
+
   describe('::of') do
     it('works with Regexps') { expect(ML.of(/foo/).minmax).to eq [3, 3] }
     it('works with Strings') { expect(ML.of('foo').minmax).to eq [3, 3] }
@@ -60,6 +240,25 @@ RSpec.describe(Regexp::MatchLength) do
       expect(exp).to be_a Regexp::Expression::Assertion::Base
       expect(exp.match_length.minmax).to eq [0, 0]
       expect(exp.inner_match_length.minmax).to eq [2, 4]
+    end
+
+    it 'handles recursive references inside an assertion' do
+      exp = RP.parse('(?=(?<a>a(?:\g<a>aa)?))')[0]
+      expect(exp.match_length.minmax).to eq [0, 0]
+      expect(exp.inner_match_length.minmax).to eq [1, Float::INFINITY]
+      expect(exp.inner_match_length.first(4)).to eq [1, 4, 7, 10]
+    end
+  end
+
+  describe('#to_re') do
+    ['abc', 'a{2,5}', '(?:aa)*', '(?:a?)*', '(?:aa|aaaa){2}', '(a)\1{2}'].each do |pattern|
+      it "represents the lengths of #{pattern}" do
+        length = ML.of(pattern)
+        regexp = /\A(?:#{length.to_re})\z/
+        (0..15).each do |n|
+          expect(!!regexp.match('X' * n)).to eq length.include?(n)
+        end
+      end
     end
   end
 

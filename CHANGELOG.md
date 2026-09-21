@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `#match_length` now handles recursive references
+
 ### Added
 
 - greatly improved scanning, lexing, and parsing performance
