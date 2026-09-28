@@ -40,8 +40,8 @@ RSpec.describe('Escape scanning') do
                                               1 => [:literal, :literal,  '0',              2,  3]
 
   # special case: "out-of-bound octal escapes" (digits > 7) are not treated as backrefs
-  include_examples 'scan', '\80',             0 => [:escape,  :literal,          '\8',             0,  2]
-  include_examples 'scan', '\80',             1 => [:literal, :literal,          '0',              2,  3]
+  include_examples 'scan', '\80',             0 => [:escape,  :literal,          '\8',             0,  2],
+                                              1 => [:literal, :literal,          '0',              2,  3]
 
   include_examples 'scan', 'a\xA',            1 => [:escape,  :hex,              '\xA',            1,  4]
   include_examples 'scan', 'a\x24c',          1 => [:escape,  :hex,              '\x24',           1,  5]
@@ -70,6 +70,13 @@ RSpec.describe('Escape scanning') do
   # newline literals can't be escaped in x-mode, c.f. https://bugs.ruby-lang.org/issues/19639
   include_examples 'scan', /a\
 b/x,                                          0 => [:literal,  :literal,         'ab',             0,  2]
+
+  # special case: /\p/ triggers an Onigmo warning, but matches "p"
+  include_examples 'scan', '\p',              0 => [:escape,  :literal,          '\p',             0,  2]
+  include_examples 'scan', '\P',              0 => [:escape,  :literal,          '\P',             0,  2]
+  include_examples 'scan', '\pa',             0 => [:escape,  :literal,          '\p',             0,  2],
+                                              1 => [:literal, :literal,          'a',              2,  3]
+  include_examples 'scan', '[\p]',            1 => [:escape,  :literal,          '\p',             1,  3]
 
   # Meta/control escapes
   #

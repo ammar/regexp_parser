@@ -2,8 +2,7 @@
   machine re_property;
 
   property_char     = [pP];
-
-  property_sequence = property_char . '{' . '^'? (alnum|space|[_\-\.=])+ '}';
+  property_body     = '{' . '^'? (alnum|space|[_\-\.=])+ '}';
 
   action premature_property_end {
     raise PrematureEndError.new('unicode property')
@@ -13,7 +12,7 @@
   # --------------------------------------------------------------------------
   unicode_property := |*
 
-    property_sequence < eof(premature_property_end) {
+    property_char . property_body < eof(premature_property_end) {
       text = copy(source, ts-1, te)
       type = (text[1] == 'P') ^ (text[3] == '^') ? :nonproperty : :property
 
@@ -24,6 +23,12 @@
 
       self.emit(type, token.to_sym, text)
 
+      fret;
+    };
+
+    # fall through to special case, a lone "\p" without a curly bracket after it
+    property_char {
+      emit(:escape, :literal, copy(source, ts-1, te))
       fret;
     };
   *|;

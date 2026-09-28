@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- support lone `\p` expressions and scan them as escaped literal (#111)
+  * match Ruby's behavior, which only warns for `\p` without a curly bracket
+  * thanks to [Jason Barnabe](https://github.com/JasonBarnabe) for the report
+
 ## [2.13.0] - 2026-09-21 - Janosch Müller
 
 ### Added
