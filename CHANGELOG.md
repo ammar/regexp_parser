@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.1] - 2026-09-28 - Janosch Müller
+
 ### Fixed
 
 - support lone `\p` expressions and scan them as escaped literal (#111)
