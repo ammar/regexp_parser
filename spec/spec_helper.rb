@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 $VERBOSE = true
+Warning[:experimental] = false
 
 require 'leto'
 require 'regexp_property_values'
 require_relative 'support/capturing_stderr'
 require_relative 'support/shared_examples'
+require_relative 'support/ractor'
 
 req_warn = capturing_stderr { @required_now = require('regexp_parser') }
 req_warn.empty? || fail("requiring parser generated warnings:\n#{req_warn}")

@@ -739,7 +739,9 @@ class Regexp::Scanner
   end
 
   def self.parse_prop_map(name)
-    File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
+    map = File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
+    Ractor.make_shareable(map) if defined? Ractor.make_shareable
+    map
   end
 
   # Use each_with_object for required_ruby_version >= 2.2, or #to_h for >= 2.6
@@ -878,5 +880,10 @@ class Regexp::Scanner
       raise ValidationError.for(:sequence, 'escape', token.to_s)
     end
     emit(:escape, token, copy(source, ts-1, te))
+  end
+
+  if defined?(Ractor)
+    short_prop_map
+    long_prop_map
   end
 end
