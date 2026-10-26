@@ -14,6 +14,6 @@ require_relative 'syntax/versions'
 
 # Make all versions Ractor-safe
 Regexp::Syntax.constants.each do |const|
-  object = Regexp::Syntax.const_get(const)
-  object.finalize if object.respond_to?(:finalize)
+  obj = Regexp::Syntax.const_get(const)
+  obj.freeze_features if obj.instance_of?(Class) && obj < Regexp::Syntax::Base
 end

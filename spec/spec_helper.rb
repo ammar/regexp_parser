@@ -4,6 +4,7 @@ $VERBOSE = true
 
 require 'leto'
 require 'regexp_property_values'
+require 'warning'
 require_relative 'support/capturing_stderr'
 require_relative 'support/shared_examples'
 
@@ -16,8 +17,6 @@ RL = Regexp::Lexer
 RP = Regexp::Parser
 RE = Regexp::Expression
 T = Regexp::Syntax::Token
-
-include Regexp::Expression
 
 def ruby_version_at_least(version)
   Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new(version)

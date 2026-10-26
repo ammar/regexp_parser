@@ -33,6 +33,7 @@ module Regexp::Expression
 
       def condition=(exp)
         expressions.delete(condition)
+        exp.parent = self
         expressions.unshift(exp)
       end
 

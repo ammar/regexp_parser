@@ -5,36 +5,36 @@ require 'spec_helper'
 RSpec.describe(Regexp::Expression::Shared) do
   describe '::construct' do
     {
-      Alternation                       => :meta,
-      Alternative                       => :expression,
-      Anchor::Base                      => :anchor,
-      Anchor::EndOfLine                 => :anchor,
-      Assertion::Base                   => :assertion,
-      Assertion::Lookahead              => :assertion,
-      Backreference::Base               => :backref,
-      Backreference::Number             => :backref,
-      CharacterSet                      => :set,
-      CharacterSet::IntersectedSequence => :expression,
-      CharacterSet::Intersection        => :set,
-      CharacterSet::Range               => :set,
-      CharacterType::Any                => :meta,
-      CharacterType::Base               => :type,
-      CharacterType::Digit              => :type,
-      Conditional::Branch               => :expression,
-      Conditional::Condition            => :conditional,
-      Conditional::Expression           => :conditional,
-      EscapeSequence::Base              => :escape,
-      EscapeSequence::Literal           => :escape,
-      FreeSpace                         => :free_space,
-      Group::Base                       => :group,
-      Group::Capture                    => :group,
-      Keep::Mark                        => :keep,
-      Literal                           => :literal,
-      PosixClass                        => :posixclass,
-      Quantifier                        => :quantifier,
-      Root                              => :expression,
-      UnicodeProperty::Base             => :property,
-      UnicodeProperty::Number::Decimal  => :property,
+      RE::Alternation                       => :meta,
+      RE::Alternative                       => :expression,
+      RE::Anchor::Base                      => :anchor,
+      RE::Anchor::EndOfLine                 => :anchor,
+      RE::Assertion::Base                   => :assertion,
+      RE::Assertion::Lookahead              => :assertion,
+      RE::Backreference::Base               => :backref,
+      RE::Backreference::Number             => :backref,
+      RE::CharacterSet                      => :set,
+      RE::CharacterSet::IntersectedSequence => :expression,
+      RE::CharacterSet::Intersection        => :set,
+      RE::CharacterSet::Range               => :set,
+      RE::CharacterType::Any                => :meta,
+      RE::CharacterType::Base               => :type,
+      RE::CharacterType::Digit              => :type,
+      RE::Conditional::Branch               => :expression,
+      RE::Conditional::Condition            => :conditional,
+      RE::Conditional::Expression           => :conditional,
+      RE::EscapeSequence::Base              => :escape,
+      RE::EscapeSequence::Literal           => :escape,
+      RE::FreeSpace                         => :free_space,
+      RE::Group::Base                       => :group,
+      RE::Group::Capture                    => :group,
+      RE::Keep::Mark                        => :keep,
+      RE::Literal                           => :literal,
+      RE::PosixClass                        => :posixclass,
+      RE::Quantifier                        => :quantifier,
+      RE::Root                              => :expression,
+      RE::UnicodeProperty::Base             => :property,
+      RE::UnicodeProperty::Number::Decimal  => :property,
     }.each do |klass, expected_type|
       it "works for #{klass}" do
         result = klass.construct
@@ -44,15 +44,15 @@ RSpec.describe(Regexp::Expression::Shared) do
     end
 
     it 'allows overriding defaults' do
-      expect(Literal.construct(type: :foo).type).to eq :foo
+      expect(RE::Literal.construct(type: :foo).type).to eq :foo
     end
 
     it 'allows passing options' do
-      expect(Literal.construct(options: { i: true }).options[:i]).to eq true
+      expect(RE::Literal.construct(options: { i: true }).options[:i]).to eq true
     end
 
     it 'raises ArgumentError for unknown parameters' do
-      expect { Literal.construct(foo: :foo) }.to raise_error(ArgumentError)
+      expect { RE::Literal.construct(foo: :foo) }.to raise_error(ArgumentError)
     end
   end
 end

@@ -18,22 +18,36 @@ RSpec.describe('Quantifier parsing') do
   include_examples 'parse', /a{4}b/,   [0, :q] => [:interval,     text: '{4}',   mode: :greedy,     min: 4, max: 4,  ts: 1]
   include_examples 'parse', /a{004}b/, [0, :q] => [:interval,     text: '{004}', mode: :greedy,     min: 4, max: 4,  ts: 1]
 
+  # special case: only non-exact interval quantifiers can be lazy (but not possessive)
+  include_examples 'parse', /a{2,}?b/,
+    [0, :q] => [:quantifier, :interval, RE::Quantifier, text: '{2,}?', mode: :reluctant, min: 2, max: -1, ts: 1]
+
   # special case: exps with chained quantifiers are wrapped in implicit passive groups
   include_examples 'parse', /a+{2}{3}/,
-    [0]           => [:group,      :passive,     Group::Passive, implicit?: true, level: 0],
-    [0, :q]       => [:quantifier, :interval,    Quantifier,     text: '{3}',     level: 0],
-    [0, 0]        => [:group,      :passive,     Group::Passive, implicit?: true, level: 1],
-    [0, 0, :q]    => [:quantifier, :interval,    Quantifier,     text: '{2}',     level: 1],
-    [0, 0, 0]     => [:literal,    :literal,     Literal,        text: 'a',       level: 2],
-    [0, 0, 0, :q] => [:quantifier, :one_or_more, Quantifier,     text: '+',       level: 2]
+    [0]           => [:group,      :passive,     RE::Group::Passive, implicit?: true, level: 0],
+    [0, :q]       => [:quantifier, :interval,    RE::Quantifier,     text: '{3}',     level: 0],
+    [0, 0]        => [:group,      :passive,     RE::Group::Passive, implicit?: true, level: 1],
+    [0, 0, :q]    => [:quantifier, :interval,    RE::Quantifier,     text: '{2}',     level: 1],
+    [0, 0, 0]     => [:literal,    :literal,     RE::Literal,        text: 'a',       level: 2],
+    [0, 0, 0, :q] => [:quantifier, :one_or_more, RE::Quantifier,     text: '+',       level: 2]
 
-  # Ruby does not support modes for intervals, following `?` and `+` are read as chained quantifiers
-  include_examples 'parse', /a{2,4}?b/,
-    [0, :q]    => [:quantifier, :zero_or_one, Quantifier, text: '?',     mode: :greedy, min: 0, max: 1, ts: 6],
-    [0, 0, :q] => [:quantifier, :interval,    Quantifier, text: '{2,4}', mode: :greedy, min: 2, max: 4, ts: 1]
+  # chained quantifiers in alternation branches (regression tests for #115)
+  include_examples 'parse', /a|b{2}?/,
+    [0, 1, 0]         => [RE::Group::Passive, implicit?: true, level: 0],
+    [0, 1, 0, :q]     => [RE::Quantifier,     text: '?',       level: 0],
+    [0, 1, 0, 0]      => [RE::Literal,        text: 'b',       level: 1],
+    [0, 1, 0, 0, :q]  => [RE::Quantifier,     text: '{2}',     level: 1]
+  include_examples 'parse', /a{2}?|b/,                   [] => [to_s: 'a{2}?|b']
+  include_examples 'parse', /a|b+{2}{3}|c/,              [] => [to_s: 'a|b+{2}{3}|c']
+  include_examples 'parse', /a|bc{2}?d/,                 [] => [to_s: 'a|bc{2}?d']
+  include_examples 'parse', /a|(bc){2}?/,                [] => [to_s: 'a|(bc){2}?']
+  include_examples 'parse', /(a)(?(1)b{2}?|c{3}+)/,      [] => [to_s: '(a)(?(1)b{2}?|c{3}+)']
+  include_examples 'parse', /(?x)a|b (?#y) {2} (?#z) ?/, [] => [to_s: '(?x)a|b (?#y) {2} (?#z) ?']
+
+  # `+` following *any* interval quantifier is read as chained quantifier
   include_examples 'parse', /a{2,4}+b/,
-    [0, :q]    => [:quantifier, :one_or_more, Quantifier, text: '+',     mode: :greedy, min: 1, max: -1, ts: 6],
-    [0, 0, :q] => [:quantifier, :interval,    Quantifier, text: '{2,4}', mode: :greedy, min: 2, max: 4,  ts: 1]
+    [0, :q]    => [:quantifier, :one_or_more, RE::Quantifier, text: '+',     mode: :greedy, min: 1, max: -1, ts: 6],
+    [0, 0, :q] => [:quantifier, :interval,    RE::Quantifier, text: '{2,4}', mode: :greedy, min: 2, max: 4,  ts: 1]
 
   specify('mode-checking methods') do
     exp = RP.parse(/a??/).first

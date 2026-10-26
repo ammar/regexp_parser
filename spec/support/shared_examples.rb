@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'syntax' do |opts|
-  opts[:implements].each do |type, tokens|
+  opts[:implements].to_a.each do |type, tokens|
     tokens.each do |token|
       it("implements #{token} #{type}") do
         expect(described_class.implements?(type, token)).to be true
@@ -9,7 +9,7 @@ RSpec.shared_examples 'syntax' do |opts|
     end
   end
 
-  opts[:excludes] && opts[:excludes].each do |type, tokens|
+  opts[:excludes].to_a.each do |type, tokens|
     tokens.each do |token|
       it("does not implement #{token} #{type}") do
         expect(described_class.implements?(type, token)).to be false
