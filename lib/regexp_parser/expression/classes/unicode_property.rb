@@ -8,7 +8,7 @@ module Regexp::Expression
       end
 
       def shortcut
-        Regexp::Scanner.short_prop_map.key(token.to_s)
+        Regexp::Scanner::SHORT_PROP_MAP.key(token.to_s)
       end
     end
 

@@ -95,6 +95,18 @@ module Regexp::Syntax
           [type, token]
         end
       end
+
+      def finalize
+        if defined?(Ractor.make_shareable)
+          Ractor.make_shareable(added_features)
+          Ractor.make_shareable(removed_features)
+          Ractor.make_shareable(features)
+        else
+          added_features.freeze
+          removed_features.freeze
+          features.freeze
+        end
+      end
     end
 
     # TODO: drop this backwards compatibility code in v3.0.0, do `private :new`

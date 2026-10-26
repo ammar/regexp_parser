@@ -729,18 +729,15 @@ class Regexp::Scanner
     tokens
   end
 
-  # lazy-load property maps when first needed
-  def self.short_prop_map
-    @short_prop_map ||= parse_prop_map('short')
-  end
-
-  def self.long_prop_map
-    @long_prop_map ||= parse_prop_map('long')
-  end
-
   def self.parse_prop_map(name)
-    File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
+    map = File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
+    Ractor.make_shareable(map) if defined? Ractor.make_shareable
+    map
   end
+
+  # eager-load prop maps in case they are first used outside the main Ractor
+  SHORT_PROP_MAP = parse_prop_map('short')
+  LONG_PROP_MAP  = parse_prop_map('long')
 
   # Use each_with_object for required_ruby_version >= 2.2, or #to_h for >= 2.6
   POSIX_CLASSES =

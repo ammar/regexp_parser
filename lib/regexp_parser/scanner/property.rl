@@ -18,7 +18,7 @@
 
       name = text[3..-2].gsub(/[\^\s_\-]/, '').downcase
 
-      token = self.class.short_prop_map[name] || self.class.long_prop_map[name]
+      token = SHORT_PROP_MAP[name] || LONG_PROP_MAP[name]
       raise ValidationError.for(:property, name) unless token
 
       self.emit(type, token.to_sym, text)
