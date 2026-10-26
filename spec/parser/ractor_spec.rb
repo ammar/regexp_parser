@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe('Parsing outside the main Ractor') do
-  it "parses outside the main Ractor" do
+RSpec.describe(Regexp::Parser) do
+  it "works with Ractor", if: defined?(Ractor) && Ractor.method_defined?(:value) do
     r = regexp_with_all_features
-    works_on_ractor(r) { |r| RP.parse(r) }
+    ractor = Ractor.new(r) { |r| RP.parse(r) }
+    expect(ractor.value).to be_a Regexp::Expression::Root
   end
 end
