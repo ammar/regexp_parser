@@ -7,6 +7,8 @@ class Regexp::Syntax::V2_0_0 < Regexp::Syntax::V1_9_3
   implements :nonproperty, UnicodeProperty::V2_0_0
   implements :type,        CharacterType::Clustered
 
-  excludes   :property,    %i[newline]
-  excludes   :nonproperty, %i[newline]
+  unless RUBY_ENGINE == 'jruby'
+    excludes   :property,    %i[newline]
+    excludes   :nonproperty, %i[newline]
+  end
 end

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- support usage outside the main Ractor (#112)
+  * thanks to [Konstantin Haase](https://github.com/rkh) for the report & fix
+- missing `#parent` for alternative, intersection & conditional branches
+- some inconsistent references in trees returned from `#dup` or `#clone`
+- scanning of non-exact, lazy interval quantifiers, e.g. `a{2,}?`
+  - these were previously scanned as two quantifiers
+  - note that only non-exact interval quantifiers support the lazy mode
+
 ## [2.13.1] - 2026-09-28 - Janosch Müller
 
 ### Fixed

@@ -5,19 +5,19 @@ require 'spec_helper'
 RSpec.describe('Expression::Base#options') do
   it 'returns a hash of options/flags that affect the expression' do
     exp = RP.parse(/a/ix)[0]
-    expect(exp).to be_a Literal
+    expect(exp).to be_a RE::Literal
     expect(exp.options).to eq(i: true, x: true)
   end
 
   it 'includes options that are locally enabled via special groups' do
     exp = RP.parse(/(?x)(?m:a)/i)[1][0]
-    expect(exp).to be_a Literal
+    expect(exp).to be_a RE::Literal
     expect(exp.options).to eq(i: true, m: true, x: true)
   end
 
   it 'excludes locally disabled options' do
     exp = RP.parse(/(?x)(?-im:a)/i)[1][0]
-    expect(exp).to be_a Literal
+    expect(exp).to be_a RE::Literal
     expect(exp.options).to eq(x: true)
   end
 
@@ -28,7 +28,7 @@ RSpec.describe('Expression::Base#options') do
     expect(regexp).not_to match 'A'
 
     exp = RP.parse(regexp)[0][0]
-    expect(exp).to be_a Literal
+    expect(exp).to be_a RE::Literal
     expect(exp.options).to eq({})
   end
 
@@ -58,7 +58,7 @@ RSpec.describe('Expression::Base#options') do
   end
 
   it 'is accessible via shortcuts' do
-    exp = Root.construct
+    exp = RE::Root.construct
 
     expect { exp.options[:i] = true }
       .to  change { exp.i? }.from(false).to(true)

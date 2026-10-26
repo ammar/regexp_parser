@@ -6,59 +6,59 @@ require 'spec_helper'
 
 RSpec.describe('CharacterSet::Intersection parsing') do
   include_examples 'parse', /[a&&z]/,
-    [0]          => [CharacterSet, count: 1],
-    [0, 0]       => [CharacterSet::Intersection, count: 2],
-    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0]          => [RE::CharacterSet, count: 1],
+    [0, 0]       => [RE::CharacterSet::Intersection, count: 2],
+    [0, 0, 0]    => [RE::CharacterSet::IntersectedSequence, count: 1],
     [0, 0, 0, 0] => [:literal, text: 'a'],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence, count: 1],
     [0, 0, 1, 0] => [:literal, text: 'z']
 
   include_examples 'parse', /[a-z&&[^a]]/,
-    [0]          => [CharacterSet, count: 1],
-    [0, 0]       => [CharacterSet::Intersection, count: 2],
-    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
-    [0, 0, 0, 0] => [CharacterSet::Range, count: 2],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
-    [0, 0, 1, 0] => [CharacterSet, count: 1]
+    [0]          => [RE::CharacterSet, count: 1],
+    [0, 0]       => [RE::CharacterSet::Intersection, count: 2],
+    [0, 0, 0]    => [RE::CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 0, 0] => [RE::CharacterSet::Range, count: 2],
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1, 0] => [RE::CharacterSet, count: 1]
 
   include_examples 'parse', /[a&&a-z]/,
-    [0]          => [CharacterSet, count: 1],
-    [0, 0]       => [CharacterSet::Intersection, count: 2],
-    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0]          => [RE::CharacterSet, count: 1],
+    [0, 0]       => [RE::CharacterSet::Intersection, count: 2],
+    [0, 0, 0]    => [RE::CharacterSet::IntersectedSequence, count: 1],
     [0, 0, 0, 0] => [:literal, text: 'a'],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
-    [0, 0, 1, 0] => [CharacterSet::Range, count: 2]
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1, 0] => [RE::CharacterSet::Range, count: 2]
 
   include_examples 'parse', /[a&&\w]/,
-    [0]          => [CharacterSet, count: 1],
-    [0, 0]       => [CharacterSet::Intersection, count: 2],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0]          => [RE::CharacterSet, count: 1],
+    [0, 0]       => [RE::CharacterSet::Intersection, count: 2],
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence, count: 1],
     [0, 0, 1, 0] => [:word, text: '\w']
 
   include_examples 'parse', /[\h&&\w&&efg]/,
-    [0]          => [CharacterSet, count: 1],
-    [0, 0]       => [CharacterSet::Intersection, count: 3],
-    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0]          => [RE::CharacterSet, count: 1],
+    [0, 0]       => [RE::CharacterSet::Intersection, count: 3],
+    [0, 0, 0]    => [RE::CharacterSet::IntersectedSequence, count: 1],
     [0, 0, 0, 0] => [:hex, text: '\h'],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence, count: 1],
     [0, 0, 1, 0] => [:word, text: '\w'],
-    [0, 0, 2]    => [CharacterSet::IntersectedSequence, count: 3],
+    [0, 0, 2]    => [RE::CharacterSet::IntersectedSequence, count: 3],
     [0, 0, 2, 0] => [:literal, text: 'e'],
     [0, 0, 2, 1] => [:literal, text: 'f'],
     [0, 0, 2, 2] => [:literal, text: 'g']
 
   # test correct ts values for empty sequences
   include_examples 'parse', /[&&]/,
-    [0, 0]       => [CharacterSet::Intersection, text: '&&', count: 2, ts: 1],
-    [0, 0, 0]    => [CharacterSet::IntersectedSequence,      count: 0, ts: 1],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence,      count: 0, ts: 3]
+    [0, 0]       => [RE::CharacterSet::Intersection, text: '&&', count: 2, ts: 1],
+    [0, 0, 0]    => [RE::CharacterSet::IntersectedSequence,      count: 0, ts: 1],
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence,      count: 0, ts: 3]
 
   # test correct ts values for non-empty sequences
   include_examples 'parse', /[ab&&cd&&ef]/,
-    [0, 0]       => [CharacterSet::Intersection,        count: 3, text: '&&', ts: 1],
-    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 2, to_s: 'ab', ts: 1],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 2, to_s: 'cd', ts: 5],
-    [0, 0, 2]    => [CharacterSet::IntersectedSequence, count: 2, to_s: 'ef', ts: 9]
+    [0, 0]       => [RE::CharacterSet::Intersection,        count: 3, text: '&&', ts: 1],
+    [0, 0, 0]    => [RE::CharacterSet::IntersectedSequence, count: 2, to_s: 'ab', ts: 1],
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence, count: 2, to_s: 'cd', ts: 5],
+    [0, 0, 2]    => [RE::CharacterSet::IntersectedSequence, count: 2, to_s: 'ef', ts: 9]
 
   # Some edge-case patterns are evaluated with #match to make sure that
   # their matching behavior still reflects the way they are parsed.

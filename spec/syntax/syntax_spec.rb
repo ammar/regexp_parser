@@ -41,6 +41,7 @@ RSpec.describe(Regexp::Syntax) do
     it 'raises for invalid names' do
       expect { Regexp::Syntax.for('2.0.0') }.to raise_error(Regexp::Syntax::InvalidVersionNameError)
       expect { Regexp::Syntax.for('ruby/20') }.to raise_error(Regexp::Syntax::InvalidVersionNameError)
+      expect { Regexp::Syntax.for(2) }.to raise_error(Regexp::Syntax::InvalidVersionNameError)
     end
   end
 

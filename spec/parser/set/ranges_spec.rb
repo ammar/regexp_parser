@@ -4,63 +4,63 @@ require 'spec_helper'
 
 RSpec.describe('CharacterSet::Range parsing') do
   include_examples 'parse', '[a-z]',
-    [0]       => [CharacterSet, count: 1],
-    [0, 0]    => [CharacterSet::Range, count: 2],
+    [0]       => [RE::CharacterSet, count: 1],
+    [0, 0]    => [RE::CharacterSet::Range, count: 2],
     [0, 0, 0] => [:literal, text: 'a'],
     [0, 0, 1] => [:literal, text: 'z']
 
   include_examples 'parse', '[\x00-\x22]',
-    [0]       => [CharacterSet, count: 1],
-    [0, 0]    => [CharacterSet::Range, count: 2],
+    [0]       => [RE::CharacterSet, count: 1],
+    [0, 0]    => [RE::CharacterSet::Range, count: 2],
     [0, 0, 0] => [:hex, text: '\x00'],
     [0, 0, 1] => [:hex, text: '\x22']
 
   include_examples 'parse', '[\u{40 42}-\u1234]',
-    [0]       => [CharacterSet, count: 1],
-    [0, 0]    => [CharacterSet::Range, count: 2],
+    [0]       => [RE::CharacterSet, count: 1],
+    [0, 0]    => [RE::CharacterSet::Range, count: 2],
     [0, 0, 0] => [:codepoint_list, text: '\u{40 42}'],
     [0, 0, 1] => [:codepoint, text: '\u1234']
 
   include_examples 'parse', '[--z]',
-    [0]       => [CharacterSet, count: 1],
-    [0, 0]    => [CharacterSet::Range, count: 2],
+    [0]       => [RE::CharacterSet, count: 1],
+    [0, 0]    => [RE::CharacterSet::Range, count: 2],
     [0, 0, 0] => [:literal, text: '-'],
     [0, 0, 1] => [:literal, text: 'z']
 
   include_examples 'parse', '[!--]',
-    [0]       => [CharacterSet, count: 1],
-    [0, 0]    => [CharacterSet::Range, count: 2],
+    [0]       => [RE::CharacterSet, count: 1],
+    [0, 0]    => [RE::CharacterSet::Range, count: 2],
     [0, 0, 0] => [:literal, text: '!'],
     [0, 0, 1] => [:literal, text: '-']
 
   include_examples 'parse', '[!-^]',
-    [0]       => [CharacterSet, count: 1],
-    [0, 0]    => [CharacterSet::Range, count: 2],
+    [0]       => [RE::CharacterSet, count: 1],
+    [0, 0]    => [RE::CharacterSet::Range, count: 2],
     [0, 0, 0] => [:literal, text: '!'],
     [0, 0, 1] => [:literal, text: '^']
 
   # edge cases that are NOT treated as range
 
   include_examples 'parse', '[^-z]',
-    [0]    => [CharacterSet, count: 2],
+    [0]    => [RE::CharacterSet, count: 2],
     [0, 0] => [:literal, text: '-'],
     [0, 1] => [:literal, text: 'z']
 
   include_examples 'parse', '[[\-ab]&&-bc]',
-    [0]          => [CharacterSet, count: 1],
-    [0, 0]       => [CharacterSet::Intersection, count: 2],
-    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 1],
-    [0, 0, 0, 0] => [CharacterSet, count: 3],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 3],
+    [0]          => [RE::CharacterSet, count: 1],
+    [0, 0]       => [RE::CharacterSet::Intersection, count: 2],
+    [0, 0, 0]    => [RE::CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 0, 0] => [RE::CharacterSet, count: 3],
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence, count: 3],
     [0, 0, 1, 0] => [:literal, text: '-']
 
   include_examples 'parse', '[bc-&&[\-ab]]',
-    [0]          => [CharacterSet, count: 1],
-    [0, 0]       => [CharacterSet::Intersection, count: 2],
-    [0, 0, 0]    => [CharacterSet::IntersectedSequence, count: 3],
+    [0]          => [RE::CharacterSet, count: 1],
+    [0, 0]       => [RE::CharacterSet::Intersection, count: 2],
+    [0, 0, 0]    => [RE::CharacterSet::IntersectedSequence, count: 3],
     [0, 0, 0, 2] => [:literal, text: '-'],
-    [0, 0, 1]    => [CharacterSet::IntersectedSequence, count: 1],
-    [0, 0, 1, 0] => [CharacterSet, count: 3]
+    [0, 0, 1]    => [RE::CharacterSet::IntersectedSequence, count: 1],
+    [0, 0, 1, 0] => [RE::CharacterSet, count: 3]
 
   # Some edge-case patterns are evaluated with #match to make sure that
   # their matching behavior still reflects the way they are parsed.

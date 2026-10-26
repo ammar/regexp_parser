@@ -4,16 +4,16 @@ require 'spec_helper'
 
 RSpec.describe(Regexp::Parser) do
   specify('parse returns a root expression') do
-    expect(RP.parse('abc')).to be_instance_of(Root)
+    expect(RP.parse('abc')).to be_instance_of(RE::Root)
   end
 
   specify('parse can be called with block') do
-    expect(RP.parse('abc') { |root| root.class }).to eq Root
+    expect(RP.parse('abc') { |root| root.class }).to eq RE::Root
   end
 
   specify('parse root contains expressions') do
     root = RP.parse(/^a.c+[^one]{2,3}\b\d\\\C-C$/)
-    expect(root.expressions).to all(be_a Regexp::Expression::Base)
+    expect(root.expressions).to all(be_a RE::Base)
   end
 
   specify('parse root options mi') do

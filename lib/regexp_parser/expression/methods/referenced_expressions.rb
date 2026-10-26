@@ -1,30 +1,21 @@
 # frozen_string_literal: true
 
 module Regexp::Expression
-  module ReferencedExpressions
-    attr_accessor :referenced_expressions
-
+  class Base
     def referenced_expression
-      referenced_expressions && referenced_expressions.first
+      referenced_expressions.first
     end
 
-    def initialize_copy(orig)
-      exp_id = [self.class, self.starts_at]
+    # Find referenced expressions. E.g. if this is a Backreference::Number,
+    # find the Group::Capture instance that it refers to via its number.
+    def referenced_expressions
+      result = []
+      return result unless referential? && parent
 
-      # prevent infinite recursion for recursive subexp calls
-      copied = self.class.instance_eval { @copied_ref_exps ||= {} }
-      self.referenced_expressions =
-        if copied[exp_id]
-          orig.referenced_expressions
-        else
-          copied[exp_id] = true
-          orig.referenced_expressions && orig.referenced_expressions.map(&:dup)
-        end
-      copied.clear
-
-      super
+      find_root.each_expression(true) do |exp|
+        result << exp if exp.referable? && exp.identifier == reference
+      end
+      result
     end
   end
-
-  Base.include ReferencedExpressions
 end

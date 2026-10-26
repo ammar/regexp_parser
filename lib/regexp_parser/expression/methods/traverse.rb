@@ -6,7 +6,6 @@
 #       large trees. Check tasks/benchmark/traversal.rb when working in here.
 module Regexp::Expression
   class Subexpression < Regexp::Expression::Base
-
     # Traverses the expression, passing each recursive child to the
     # given block.
     # If the block takes two arguments, the indices of the children within
