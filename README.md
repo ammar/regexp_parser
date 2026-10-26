@@ -379,9 +379,11 @@ _Note that not all of these are available in all versions of Ruby_
 
 [Unicode 17.0.0]: https://www.unicode.org/versions/Unicode17.0.0/
 
-**\[1\]**: Ruby does not support lazy or possessive interval quantifiers.
-Any `+` or `?` that follows an interval quantifier will be treated as another,
-chained quantifier. See also [#3](https://github.com/ammar/regexp_parser/issue/3),
+**\[1\]**: Ruby does not support possessive interval quantifiers, and lazy mode
+is only supported for non-exact intervals, e.g. `{2,4}`, `{2,}`, `{,4}`,
+but *not* `{2}`. So `+` following *any* interval, and `?` following an exact
+interval, are treated as another, chained quantifier.
+See also [#3](https://github.com/ammar/regexp_parser/issue/3),
 [#69](https://github.com/ammar/regexp_parser/pull/69).
 
 **\[2\]**: As of Ruby 3.1, meta and control sequences are [pre-processed to hex

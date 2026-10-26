@@ -16,40 +16,12 @@ module Regexp::Expression
       ::Regexp.new(to_s(format))
     end
 
-    def quantify(*args)
-      self.quantifier = Quantifier.new(*args)
-    end
-
-    def unquantified_clone
-      clone.tap { |exp| exp.quantifier = nil }
-    end
-
-    # Deprecated. Prefer `#repetitions` which has a more uniform interface.
-    def quantity
-      return [nil, nil] unless quantified?
-
-      [quantifier.min, quantifier.max]
-    end
-
-    def repetitions
-      return 1..1 unless quantified?
-
-      min = quantifier.min
-      max = quantifier.max < 0 ? Float::INFINITY : quantifier.max
-      min..max
-    end
-
-    def greedy?
-      quantified? and quantifier.greedy?
-    end
-
-    def reluctant?
-      quantified? and quantifier.reluctant?
-    end
-    alias :lazy? :reluctant?
-
-    def possessive?
-      quantified? and quantifier.possessive?
+    # Returns the root expression of the current expression. This will be a
+    # Regexp::Expression::Root, unless called on a manually constructed node.
+    def find_root
+      exp = self
+      exp = exp.parent until exp.parent.nil?
+      exp
     end
 
     def to_h
@@ -83,31 +55,6 @@ module Regexp::Expression
         exp.terminal? || exp.expressions.each do |subexp|
           queue.push(exp_lvl + 1, subexp)
         end
-      end
-    end
-
-    # Assigns referenced expressions to referring expressions, e.g. if there is
-    # an instance of Backreference::Number, its #referenced_expression is set to
-    # the instance of Group::Capture that it refers to via its number.
-    def assign_referenced_expressions
-      # find all referenceable and referring expressions
-      targets = {}
-      targets[0] = [self] if instance_of?(Root)
-      referrers = []
-      each_expression do |exp|
-        if exp.referential?
-          referrers << exp
-        elsif exp.is_a?(Group::Capture)
-          (targets[exp.identifier] ||= []) << exp
-        end
-      end
-      # assign referenced expressions to referring expressions
-      # (in a second iteration because there might be forward references)
-      referrers.each do |exp|
-        exp.referenced_expressions = targets[exp.reference] || raise(
-          Regexp::Parser::ParserError,
-          "Invalid reference #{exp.reference} at pos #{exp.ts}"
-        )
       end
     end
   end

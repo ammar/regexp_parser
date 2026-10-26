@@ -13,6 +13,7 @@ group :development, :test do
   gem 'rake', '~> 13.1'
   gem 'regexp_property_values', '~> 1.5'
   gem 'rspec', '~> 3.10'
+  gem 'warning'
   if RUBY_VERSION.to_f >= 2.7
     gem 'benchmark-ips', '~> 2.1'
     gem 'gouteur', '~> 1.2'

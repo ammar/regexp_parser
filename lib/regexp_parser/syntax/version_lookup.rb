@@ -24,7 +24,7 @@ module Regexp::Syntax
   def for(name)
     return Regexp::Syntax::Any if ['*', 'any'].include?(name.to_s)
 
-    name =~ VERSION_REGEXP || raise(InvalidVersionNameError, name)
+    name.to_s =~ VERSION_REGEXP || raise(InvalidVersionNameError, name)
     version_const_name = "V#{name.to_s.scan(/\d+/).join('_')}"
     const_get(version_const_name)
   end
@@ -75,6 +75,8 @@ module Regexp::Syntax
     constants.select { |const_name| const_name =~ VERSION_CONST_REGEXP }
   end
 
+  # This method only runs at load-time, otherwise it could interfere with Ractors.
+  # https://github.com/ruby/rubygems/issues/9964
   def comparable(name)
     # add .99 to treat versions without a patch value as latest patch version
     Gem::Version.new((name.to_s.scan(/\d+/) << 99).join('.'))

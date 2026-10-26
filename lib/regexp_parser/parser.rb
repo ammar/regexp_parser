@@ -42,7 +42,6 @@ class Regexp::Parser
       parse_token(token)
     end
 
-    root.assign_referenced_expressions
     root.recursively_update_nesting_levels
 
     if block_given?
@@ -68,9 +67,11 @@ class Regexp::Parser
     return {} unless options
 
     enabled_options = {}
-    enabled_options[:i] = true if options & ::Regexp::IGNORECASE != 0
-    enabled_options[:m] = true if options & ::Regexp::MULTILINE  != 0
-    enabled_options[:x] = true if options & ::Regexp::EXTENDED   != 0
+    enabled_options[:i] = true if options & ::Regexp::IGNORECASE    != 0
+    enabled_options[:m] = true if options & ::Regexp::MULTILINE     != 0
+    enabled_options[:n] = true if options & ::Regexp::NOENCODING    != 0
+    enabled_options[:s] = true if options & ::Regexp::FIXEDENCODING != 0
+    enabled_options[:x] = true if options & ::Regexp::EXTENDED      != 0
     enabled_options
   end
 
@@ -379,7 +380,7 @@ class Regexp::Parser
     unless node.instance_of?(klass)
       operator = klass.new(token, active_opts)
       sequence = operator.add_sequence(active_opts, { ts: token.ts })
-      sequence.expressions = node.expressions
+      node.each { |exp| sequence << exp }
       node.expressions = []
       nest(operator)
     end
@@ -482,6 +483,7 @@ class Regexp::Parser
     # description of the problem: https://github.com/ammar/regexp_parser/issues/3
     # rationale for this solution: https://github.com/ammar/regexp_parser/pull/69
     if target_node.quantified?
+      target_parent = target_node.parent
       new_group = Group::Passive.construct(
         token:             :passive,
         ts:                target_node.ts,
@@ -491,12 +493,13 @@ class Regexp::Parser
         options:           active_opts,
       )
       new_group.implicit = true
+      new_group.parent = target_parent
       new_group << target_node
       increment_group_level(target_node)
       unless target_node.terminal?
         target_node.each_expression { |exp| increment_group_level(exp) }
       end
-      node.expressions[node.expressions.index(target_node)] = new_group
+      target_parent.expressions.map! { |exp| exp.equal?(target_node) ? new_group : exp }
       target_node = new_group
     end
 

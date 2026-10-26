@@ -7,5 +7,8 @@ module Regexp::Expression
            "regexp_parser v3.0.0. Please use `.construct(options: options)`."
       construct(options: options)
     end
+
+    # For \g<0> style references
+    def identifier; 0 end
   end
 end

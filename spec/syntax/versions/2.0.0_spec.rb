@@ -7,9 +7,13 @@ RSpec.describe(Regexp::Syntax::V2_0_0) do
   implements: {
     property: T::UnicodeProperty::Age_V2_0_0,
     nonproperty: T::UnicodeProperty::Age_V2_0_0
-  },
-  excludes: {
-    property: %i[newline],
-    nonproperty: %i[newline]
   }
+
+  unless RUBY_ENGINE == 'jruby' # jruby never removed the newline property
+    include_examples 'syntax',
+    excludes: {
+      property: %i[newline],
+      nonproperty: %i[newline]
+    }
+  end
 end

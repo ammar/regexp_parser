@@ -7,21 +7,21 @@ RSpec.describe('Expression::Base#parts') do
   include_examples 'parse', /a/,       [0] => [:literal,   parts: ['a']]
   include_examples 'parse', /\K/,      [0] => [:mark,      parts: ['\K']]
   include_examples 'parse', /\p{any}/, [0] => [:any,       parts: ['\p{any}']]
-  include_examples 'parse', /[a]/,     [0] => [:character, parts: ['[', s(Literal, 'a'), ']']]
-  include_examples 'parse', /[^a]/,    [0] => [:character, parts: ['[^', s(Literal, 'a'), ']']]
-  include_examples 'parse', /(a)/,     [0] => [:capture,   parts: ['(', s(Literal, 'a'), ')']]
-  include_examples 'parse', /(?>a)/,   [0] => [:atomic,    parts: ['(?>', s(Literal, 'a'), ')']]
-  include_examples 'parse', /(?=a)/,   [0] => [:lookahead, parts: ['(?=', s(Literal, 'a'), ')']]
+  include_examples 'parse', /[a]/,     [0] => [:character, parts: ['[', s(RE::Literal, 'a'), ']']]
+  include_examples 'parse', /[^a]/,    [0] => [:character, parts: ['[^', s(RE::Literal, 'a'), ']']]
+  include_examples 'parse', /(a)/,     [0] => [:capture,   parts: ['(', s(RE::Literal, 'a'), ')']]
+  include_examples 'parse', /(?>a)/,   [0] => [:atomic,    parts: ['(?>', s(RE::Literal, 'a'), ')']]
+  include_examples 'parse', /(?=a)/,   [0] => [:lookahead, parts: ['(?=', s(RE::Literal, 'a'), ')']]
   include_examples 'parse', /(?#a)/,   [0] => [:comment,   parts: ['(?#a)']]
 
   include_examples 'parse', /(a(b(c)))/,
     [0] => [:capture, parts: [
       '(',
-      s(Literal, 'a'),
-      s(Group::Capture, '(',
-        s(Literal, 'b'),
-        s(Group::Capture, '(',
-          s(Literal, 'c'),
+      s(RE::Literal, 'a'),
+      s(RE::Group::Capture, '(',
+        s(RE::Literal, 'b'),
+        s(RE::Group::Capture, '(',
+          s(RE::Literal, 'c'),
         )
       ),
       ')'
@@ -29,62 +29,62 @@ RSpec.describe('Expression::Base#parts') do
 
   include_examples 'parse', /a|b|c/,
     [] => [:root, parts: [
-      s(Alternation, '|',
-        s(Alternative, nil, s(Literal, 'a')),
-        s(Alternative, nil, s(Literal, 'b')),
-        s(Alternative, nil, s(Literal, 'c'))
+      s(RE::Alternation, '|',
+        s(RE::Alternative, nil, s(RE::Literal, 'a')),
+        s(RE::Alternative, nil, s(RE::Literal, 'b')),
+        s(RE::Alternative, nil, s(RE::Literal, 'c'))
       )
     ]],
     [0] => [:alternation, parts: [
-      s(Alternative, nil, s(Literal, 'a')),
+      s(RE::Alternative, nil, s(RE::Literal, 'a')),
       '|',
-      s(Alternative, nil, s(Literal, 'b')),
+      s(RE::Alternative, nil, s(RE::Literal, 'b')),
       '|',
-      s(Alternative, nil, s(Literal, 'c'))
+      s(RE::Alternative, nil, s(RE::Literal, 'c'))
     ]]
 
   include_examples 'parse', /[a-z]/,
     [] => [:root, parts: [
-      s(CharacterSet, '[',
-        s(CharacterSet::Range, '-', s(Literal, 'a'), s(Literal, 'z')),
+      s(RE::CharacterSet, '[',
+        s(RE::CharacterSet::Range, '-', s(RE::Literal, 'a'), s(RE::Literal, 'z')),
       )
     ]],
     [0] => [:character, parts: [
       '[',
-      s(CharacterSet::Range, '-', s(Literal, 'a'), s(Literal, 'z')),
+      s(RE::CharacterSet::Range, '-', s(RE::Literal, 'a'), s(RE::Literal, 'z')),
       ']'
     ]],
     [0, 0] => [:range, parts: [
-      s(Literal, 'a'),
+      s(RE::Literal, 'a'),
       '-',
-      s(Literal, 'z')
+      s(RE::Literal, 'z')
     ]]
 
   include_examples 'parse', /[a&&b&&c]/,
     [] => [:root, parts: [
-      s(CharacterSet, '[',
-        s(CharacterSet::Intersection, '&&',
-          s(CharacterSet::IntersectedSequence, nil, s(Literal, 'a')),
-          s(CharacterSet::IntersectedSequence, nil, s(Literal, 'b')),
-          s(CharacterSet::IntersectedSequence, nil, s(Literal, 'c'))
+      s(RE::CharacterSet, '[',
+        s(RE::CharacterSet::Intersection, '&&',
+          s(RE::CharacterSet::IntersectedSequence, nil, s(RE::Literal, 'a')),
+          s(RE::CharacterSet::IntersectedSequence, nil, s(RE::Literal, 'b')),
+          s(RE::CharacterSet::IntersectedSequence, nil, s(RE::Literal, 'c'))
         )
       )
     ]],
     [0, 0] => [:intersection, parts: [
-      s(CharacterSet::IntersectedSequence, nil, s(Literal, 'a')),
+      s(RE::CharacterSet::IntersectedSequence, nil, s(RE::Literal, 'a')),
       '&&',
-      s(CharacterSet::IntersectedSequence, nil, s(Literal, 'b')),
+      s(RE::CharacterSet::IntersectedSequence, nil, s(RE::Literal, 'b')),
       '&&',
-      s(CharacterSet::IntersectedSequence, nil, s(Literal, 'c'))
+      s(RE::CharacterSet::IntersectedSequence, nil, s(RE::Literal, 'c'))
     ]]
 
   include_examples 'parse', /(a)(?(1)T|F)/,
-    [1] => [Conditional::Expression, parts: [
+    [1] => [RE::Conditional::Expression, parts: [
       '(?',
-      s(Conditional::Condition, '(1)'),
-      s(Conditional::Branch, nil, s(Literal, 'T')),
+      s(RE::Conditional::Condition, '(1)'),
+      s(RE::Conditional::Branch, nil, s(RE::Literal, 'T')),
       '|',
-      s(Conditional::Branch, nil, s(Literal, 'F')),
+      s(RE::Conditional::Branch, nil, s(RE::Literal, 'F')),
       ')'
     ]]
 end

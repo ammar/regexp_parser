@@ -158,4 +158,9 @@ module Regexp::Expression
   Backreference::Base.instance_eval     { def referential?; true  end }
   Conditional::Condition.instance_eval  { def referential?; true  end }
   Conditional::Expression.instance_eval { def referential?; true  end }
+
+  Shared.class_eval                     { def referable?; self.class.referable? end }
+  Shared::ClassMethods.class_eval       { def referable?; false end }
+  Group::Capture.instance_eval          { def referable?; true  end }
+  Root.instance_eval                    { def referable?; true  end }
 end

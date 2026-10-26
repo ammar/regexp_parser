@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe('EscapeSequence parsing') do
-  es = EscapeSequence
+  es = RE::EscapeSequence
 
   include_examples 'parse', /a\ac/,          1 => [:escape, :bell,           es::Bell]
   include_examples 'parse', /a\ec/,          1 => [:escape, :escape,         es::AsciiEscape]

@@ -11,7 +11,7 @@ RSpec.describe(Regexp::Expression::FreeSpace) do
     root = RP.parse(regexp)
     space = root[0]
 
-    expect(space).to be_instance_of(FreeSpace::WhiteSpace)
+    expect(space).to be_instance_of(RE::WhiteSpace)
     expect { space.quantify(:dummy, '#') }.to raise_error(Regexp::Parser::Error)
   end
 
@@ -23,7 +23,7 @@ RSpec.describe(Regexp::Expression::FreeSpace) do
     root = RP.parse(regexp)
     comment = root[3]
 
-    expect(comment).to be_instance_of(FreeSpace::Comment)
+    expect(comment).to be_instance_of(RE::Comment)
     expect { comment.quantify(:dummy, '#') }.to raise_error(Regexp::Parser::Error)
   end
 end

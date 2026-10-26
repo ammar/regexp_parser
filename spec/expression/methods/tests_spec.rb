@@ -190,7 +190,7 @@ RSpec.describe('ExpressionTests') do
 
   # test #terminal?
   include_examples 'parse', /^a([b]+)c$/,
-    []        => [Root,           terminal?: false],
+    []        => [RE::Root,           terminal?: false],
     [0]       => [to_s: '^',      terminal?: true],
     [1]       => [to_s: 'a',      terminal?: true],
     [2]       => [to_s: '([b]+)', terminal?: false],
@@ -200,7 +200,7 @@ RSpec.describe('ExpressionTests') do
     [4]       => [to_s: '$',      terminal?: true]
 
   include_examples 'parse', /^(ab|cd)$/,
-    []           => [Root,                          terminal?: false],
+    []           => [RE::Root,                          terminal?: false],
     [0]          => [:bol,         to_s: '^',       terminal?: true],
     [1]          => [:capture,     to_s: '(ab|cd)', terminal?: false],
     [1, 0]       => [:alternation, to_s: 'ab|cd',   terminal?: false],
@@ -211,16 +211,22 @@ RSpec.describe('ExpressionTests') do
     [2]          => [:eol,         to_s: '$',       terminal?: true]
 
   specify('tests at expression class level') do
-    expect(Regexp::Expression::Literal).to be_terminal
-    expect(Regexp::Expression::CharacterSet).not_to be_terminal
+    expect(RE::Literal).to be_terminal
+    expect(RE::CharacterSet).not_to be_terminal
 
-    expect(Regexp::Expression::Comment).to be_comment
-    expect(Regexp::Expression::Literal).not_to be_comment
+    expect(RE::Comment).to be_comment
+    expect(RE::Literal).not_to be_comment
 
-    expect(Regexp::Expression::Comment).to be_decorative
-    expect(Regexp::Expression::Literal).not_to be_decorative
+    expect(RE::Comment).to be_decorative
+    expect(RE::Literal).not_to be_decorative
 
-    expect(Regexp::Expression::Backreference::Base).to be_referential
-    expect(Regexp::Expression::Literal).not_to be_referential
+    expect(RE::Backreference::Base).to be_referential
+    expect(RE::Backreference::NameCall).to be_referential
+    expect(RE::Literal).not_to be_referential
+
+    expect(RE::Root).to be_referable
+    expect(RE::Group::Capture).to be_referable
+    expect(RE::Group::Named).to be_referable
+    expect(RE::Literal).not_to be_referable
   end
 end

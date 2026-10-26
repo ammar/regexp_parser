@@ -60,8 +60,13 @@
   quantity_minimum      = (digit+) . ',';
   quantity_maximum      = ',' . (digit+);
   quantity_range        = (digit+) . ',' . (digit+);
-  quantifier_interval   = range_open . ( quantity_exact | quantity_minimum |
-                          quantity_maximum | quantity_range ) . range_close;
+  quantifier_interval   = (range_open . quantity_exact . range_close) |
+                          (
+                            range_open .
+                            (quantity_minimum | quantity_maximum | quantity_range) .
+                            range_close .
+                            '?'?
+                          );
 
   conditional           = '(?(';
 
@@ -622,7 +627,9 @@
     };
 
     quantifier_interval {
-      emit(:quantifier, :interval, copy(source, ts, te))
+      text = copy(source, ts, te)
+      token = text.end_with?('?') ? :interval_reluctant : :interval
+      emit(:quantifier, token, text)
     };
 
     # Catch unmatched curly braces as literals
@@ -731,7 +738,12 @@ class Regexp::Scanner
 
   def self.parse_prop_map(name)
     map = File.read("#{__dir__}/scanner/properties/#{name}.csv").scan(/(.+),(.+)/).to_h
-    Ractor.make_shareable(map) if defined? Ractor.make_shareable
+    if defined? Ractor.make_shareable
+      Ractor.make_shareable(map)
+    else
+      map.each { |k, v| k.freeze; v.freeze }
+      map.freeze
+    end
     map
   end
 
