@@ -17,6 +17,7 @@ module Regexp::Expression
           ts:                params[:ts],
         )
         sequence.options = active_opts
+        sequence.parent = exp
         exp.expressions << sequence
         sequence
       end

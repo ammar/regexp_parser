@@ -39,8 +39,7 @@ RSpec.describe(Regexp::MatchLength) do
   end
 
   specify('raises for missing references') do
-    exp = RP.parse(/(a)\1/).last
-    exp.referenced_expressions = nil
+    exp = RP.parse('\1')[0]
     expect { exp.match_length }.to raise_error(ArgumentError)
   end
 
@@ -57,7 +56,7 @@ RSpec.describe(Regexp::MatchLength) do
   describe('Expression::Base#inner_match_length') do
     it 'returns the MatchLength of an expression that does not count towards parent match_length' do
       exp = RP.parse(/(?=ab|cdef)/)[0]
-      expect(exp).to be_a Regexp::Expression::Assertion::Base
+      expect(exp).to be_a RE::Assertion::Base
       expect(exp.match_length.minmax).to eq [0, 0]
       expect(exp.inner_match_length.minmax).to eq [2, 4]
     end

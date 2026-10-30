@@ -81,10 +81,33 @@ RSpec.describe('Expression::Base#to_s') do
           [c-g]  +          # A set
           |                 #
           [h-j]  +          (?# Extra test for Sequence#quantify )
+          [k-l] (?# hi! ) + # comment before quantifier
           \z
         /x
 
     expect_round_trip(multiline.to_s)
+  end
+
+  specify('multiline with nested quantifiers') do
+    multiline = /
+          a  {2}
+          a  {2}  {2}
+        /x
+
+    expect_round_trip(multiline.to_s)
+  end
+
+  specify('formats decorated chained quantifiers') do
+    root = parse_frozen('(?x)a (?#inner) + (?#outer) {2}')
+    group = root[1]
+    literal = group[0]
+
+    expect(group.to_s(:base)).to eql('a (?#inner) +')
+    expect(group.to_s(:full)).to eql('a (?#inner) +{2}')
+    expect(group.to_s(:original)).to eql('a (?#inner) + (?#outer) {2}')
+    expect(literal.to_s(:base)).to eql('a')
+    expect(literal.to_s(:full)).to eql('a+')
+    expect(literal.to_s(:original)).to eql('a (?#inner) +')
   end
 
   specify('regexp with all features') do
@@ -102,7 +125,7 @@ RSpec.describe('Expression::Base#to_s') do
   specify('non-ascii comment') do
     pattern = '(?x) 😋 # 😋'
     root = RP.parse(pattern)
-    expect(root.last).to be_a(Regexp::Expression::Comment)
+    expect(root.last).to be_a(RE::Comment)
     expect(root.last.to_s).to eql('# 😋')
     expect(root.to_s).to eql(pattern)
   end

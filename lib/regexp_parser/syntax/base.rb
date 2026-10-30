@@ -12,22 +12,15 @@ module Regexp::Syntax
     include Regexp::Syntax::Token
 
     class << self
-      attr_accessor :features
+      attr_accessor :features, :added_features, :removed_features
 
       # automatically inherit features through the syntax class hierarchy
       def inherited(subclass)
         super
+        # a min target of Ruby 2.6 would allow `to_h { |k, v| [k, v.dup] }`
         subclass.features = features.to_h.map { |k, v| [k, v.dup] }.to_h
-      end
-
-      def implements(type, tokens)
-        (features[type] ||= []).concat(tokens)
-        added_features[type] = tokens
-      end
-
-      def excludes(type, tokens)
-        tokens.each { |tok| features[type].delete(tok) }
-        removed_features[type] = tokens
+        subclass.added_features = {}
+        subclass.removed_features = {}
       end
 
       def implements?(type, token)
@@ -45,14 +38,6 @@ module Regexp::Syntax
       end
       alias :check! :implements!
 
-      def added_features
-        @added_features ||= {}
-      end
-
-      def removed_features
-        @removed_features ||= {}
-      end
-
       def normalize(type, token)
         case type
         when :group
@@ -62,6 +47,24 @@ module Regexp::Syntax
         else
           [type, token]
         end
+      end
+
+      def freeze_features
+        freeze_feature_map(features)
+        freeze_feature_map(added_features)
+        freeze_feature_map(removed_features)
+      end
+
+      private
+
+      def implements(type, tokens)
+        (features[type] ||= []).concat(tokens)
+        added_features[type] = tokens
+      end
+
+      def excludes(type, tokens)
+        tokens.each { |tok| features[type].delete(tok) }
+        removed_features[type] = tokens
       end
 
       def normalize_group(type, token)
@@ -96,15 +99,14 @@ module Regexp::Syntax
         end
       end
 
-      def finalize
-        if defined?(Ractor.make_shareable)
-          Ractor.make_shareable(added_features)
-          Ractor.make_shareable(removed_features)
-          Ractor.make_shareable(features)
-        else
-          added_features.freeze
-          removed_features.freeze
-          features.freeze
+      if defined?(Ractor)
+        def freeze_feature_map(map)
+          Ractor.make_shareable(map)
+        end
+      else
+        def freeze_feature_map(map)
+          map.each_value(&:freeze)
+          map.freeze
         end
       end
     end

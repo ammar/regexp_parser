@@ -12,7 +12,7 @@ RSpec.describe('Expression::Shared#te,ts') do
 
     checked_exps = root.each_expression.with_object([]) do |(exp), acc|
       acc.each { |e| fail "dupe: #{[e, exp]}" if e.to_s == exp.to_s }
-      acc << exp unless exp.is_a?(Sequence) || exp.is_a?(WhiteSpace)
+      acc << exp unless exp.is_a?(RE::Sequence) || exp.is_a?(RE::WhiteSpace)
     end
     expect(checked_exps).not_to be_empty
 

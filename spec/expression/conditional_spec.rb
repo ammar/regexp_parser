@@ -24,6 +24,6 @@ RSpec.describe(Regexp::Expression::Conditional) do
   specify('parse conditional excessive branches') do
     regexp = '(?<A>a)(?(<A>)T|F|X)'
 
-    expect { RP.parse(regexp) }.to raise_error(Conditional::TooManyBranches)
+    expect { RP.parse(regexp) }.to raise_error(RE::Conditional::TooManyBranches)
   end
 end

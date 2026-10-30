@@ -18,7 +18,7 @@ RSpec.describe(Regexp::Expression::Base) do
 
   # test #coded_offset
   include_examples 'parse', /^a*(b+(c?))$/,
-    []        => [Root,             coded_offset: '@0+12'],
+    []        => [RE::Root,             coded_offset: '@0+12'],
     [0]       => [to_s: '^',        coded_offset: '@0+1'],
     [1]       => [to_s: 'a*',       coded_offset: '@1+2'],
     [2]       => [to_s: '(b+(c?))', coded_offset: '@3+8'],
@@ -41,21 +41,21 @@ RSpec.describe(Regexp::Expression::Base) do
 
   # test #base_length, #full_length, #starts_at, #ends_at
   include_examples 'parse', /(aa)/,
-    []     => [Root,           base_length: 4, full_length: 4, starts_at: 0, ends_at: 4],
-    [0]    => [Group::Capture, base_length: 4, full_length: 4, starts_at: 0, ends_at: 4],
-    [0, 0] => [Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
+    []     => [RE::Root,           base_length: 4, full_length: 4, starts_at: 0, ends_at: 4],
+    [0]    => [RE::Group::Capture, base_length: 4, full_length: 4, starts_at: 0, ends_at: 4],
+    [0, 0] => [RE::Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
   include_examples 'parse', /(aa){42}/,
-    []     => [Root,           base_length: 8, full_length: 8, starts_at: 0, ends_at: 8],
-    [0]    => [Group::Capture, base_length: 4, full_length: 8, starts_at: 0, ends_at: 8],
-    [0, 0] => [Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
+    []     => [RE::Root,           base_length: 8, full_length: 8, starts_at: 0, ends_at: 8],
+    [0]    => [RE::Group::Capture, base_length: 4, full_length: 8, starts_at: 0, ends_at: 8],
+    [0, 0] => [RE::Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
   include_examples 'parse', /(aa) {42}/x,
-    []     => [Root,           base_length: 9, full_length: 9, starts_at: 0, ends_at: 9],
-    [0]    => [Group::Capture, base_length: 4, full_length: 9, starts_at: 0, ends_at: 9],
-    [0, 0] => [Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
+    []     => [RE::Root,           base_length: 9, full_length: 9, starts_at: 0, ends_at: 9],
+    [0]    => [RE::Group::Capture, base_length: 4, full_length: 9, starts_at: 0, ends_at: 9],
+    [0, 0] => [RE::Literal,        base_length: 2, full_length: 2, starts_at: 1, ends_at: 3]
 
   # test #to_re
   include_examples 'parse', '^a*(b([cde]+))+f?$',
-    [] => [Root, to_re: /^a*(b([cde]+))+f?$/]
+    [] => [RE::Root, to_re: /^a*(b([cde]+))+f?$/]
 
   specify '#parent' do
     root = Regexp::Parser.parse(/(a(b)){42}/)
@@ -66,6 +66,12 @@ RSpec.describe(Regexp::Expression::Base) do
     expect(root[0][0].parent).to eq root[0]
     expect(root[0][1].parent).to eq root[0]
     expect(root[0][1][0].parent).to eq root[0][1]
+
+    complex_tree = Regexp::Parser.parse(regexp_with_all_features)
+
+    complex_tree.each_expression(true) do |exp|
+      exp.terminal? || exp.each { |child| expect(child.parent).to equal exp }
+    end
   end
 
   specify '#to_re warns when used on set members' do

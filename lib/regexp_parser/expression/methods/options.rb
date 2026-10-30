@@ -33,5 +33,15 @@ module Regexp::Expression
       options[:u] == true
     end
     alias :u? :unicode_classes?
+
+    def no_encoding?
+      options[:n] == true
+    end
+    alias :n? :no_encoding?
+
+    def fixed_encoding?
+      options[:s] == true
+    end
+    alias :s? :fixed_encoding?
   end
 end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe('Expression::Base#to_h') do
-  include_examples 'parse', /abc/, [] => [Root, to_h: {
+  include_examples 'parse', /abc/, [] => [RE::Root, to_h: {
     token: :root,
     type: :expression,
     text: 'abc',
@@ -30,7 +30,7 @@ RSpec.describe('Expression::Base#to_h') do
     ]
   }]
 
-  include_examples 'parse', /a{2,4}/, [0, :q] => [Quantifier, to_h: {
+  include_examples 'parse', /a{2,4}/, [0, :q] => [RE::Quantifier, to_h: {
     max: 4,
     min: 2,
     mode: :greedy,

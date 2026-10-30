@@ -10,8 +10,7 @@ module Regexp::Expression
 
         attr_accessor :type, :token, :text, :ts, :te,
                       :level, :set_level, :conditional_level, :nesting_level,
-                      :options, :parent, :quantifier,
-                      :custom_to_s_handling, :pre_quantifier_decorations
+                      :options, :parent, :quantifier
       end
     end
 
@@ -30,14 +29,14 @@ module Regexp::Expression
     private :init_from_token_and_options
 
     def initialize_copy(orig)
+      super
       self.text       = orig.text.dup         if orig.text
       self.options    = orig.options.dup      if orig.options
       self.quantifier = orig.quantifier.clone if orig.quantifier
       self.parent     = nil # updated by Subexpression#initialize_copy
-      if orig.pre_quantifier_decorations
-        self.pre_quantifier_decorations = orig.pre_quantifier_decorations.map(&:dup)
+      if orig.respond_to?(:option_changes) && orig.option_changes
+        self.option_changes = orig.option_changes.dup
       end
-      super
     end
 
     def starts_at
@@ -54,55 +53,6 @@ module Regexp::Expression
 
     def full_length
       to_s(:original).length
-    end
-
-    # #to_s reproduces the original source, as an unparser would.
-    #
-    # It takes an optional format argument.
-    #
-    # Example:
-    #
-    # lit = Regexp::Parser.parse(/a +/x)[0]
-    #
-    # lit.to_s            # => 'a+'  # default; with quantifier
-    # lit.to_s(:full)     # => 'a+'  # default; with quantifier
-    # lit.to_s(:base)     # => 'a'   # without quantifier
-    # lit.to_s(:original) # => 'a +' # with quantifier AND intermittent decorations
-    #
-    def to_s(format = :full)
-      result = ''.dup
-      stack = []
-      exp, current_parts, index = self, parts, 0
-
-      loop do
-        while index < current_parts.length
-          part = current_parts[index]
-          index += 1
-          if part.instance_of?(String)
-            result << part
-          elsif !part.custom_to_s_handling
-            stack.push([exp, format, current_parts, index])
-            exp, format, current_parts, index = part, :original, part.parts, 0
-          end
-        end
-
-        result << exp.pre_quantifier_decoration(format).to_s
-        result << exp.quantifier_affix(format).to_s
-        break if stack.empty?
-
-        exp, format, current_parts, index = stack.pop
-      end
-
-      result
-    end
-    alias :to_str :to_s
-
-    def pre_quantifier_decoration(expression_format = :original)
-      pre_quantifier_decorations.to_a.join if expression_format == :original
-    end
-
-    def quantifier_affix(expression_format = :full)
-      quantifier.to_s if quantified? && expression_format != :base
     end
 
     def offset

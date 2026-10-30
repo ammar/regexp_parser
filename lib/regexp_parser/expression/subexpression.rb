@@ -13,10 +13,10 @@ module Regexp::Expression
 
     # Override base method to clone the expressions as well.
     def initialize_copy(orig)
+      super
       self.expressions = orig.expressions.map do |exp|
         exp.clone.tap { |copy| copy.parent = self }
       end
-      super
     end
 
     def <<(exp)
@@ -49,20 +49,13 @@ module Regexp::Expression
       )
     end
 
+    # Find the expression targeted by this quantifier, ignoring decorations
+    # in between the two (e.g. whitespace in x-mode).
     def extract_quantifier_target(quantifier_description)
-      pre_quantifier_decorations = []
-      target = expressions.reverse_each.find do |exp|
-        if exp.decorative?
-          exp.custom_to_s_handling = true
-          pre_quantifier_decorations << exp.text
-          next
-        end
-        exp
-      end
+      target = expressions.reverse_each.find { |exp| !exp.decorative? }
       target or raise Regexp::Parser::ParserError,
         "No valid target found for '#{quantifier_description}' quantifier"
 
-      target.pre_quantifier_decorations = pre_quantifier_decorations
       target
     end
   end

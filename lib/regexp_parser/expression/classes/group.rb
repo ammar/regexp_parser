@@ -25,12 +25,8 @@ module Regexp::Expression
     class Options < Group::Base
       attr_accessor :option_changes
 
-      def initialize_copy(orig)
-        self.option_changes = orig.option_changes.dup
-        super
-      end
-
       def quantify(*args)
+        # in Ruby, /a(?i)+b/ raises SyntaxError, but /a(?i:)b/ is allowed
         if token == :options_switch
           raise Regexp::Parser::Error, 'Can not quantify an option switch'
         else
@@ -45,18 +41,10 @@ module Regexp::Expression
     end
 
     class Named < Group::Capture
-      attr_reader :name
+      def name
+        text[3..-2]
+      end
       alias identifier name
-
-      def initialize(token, options = {})
-        @name = token.text[3..-2]
-        super
-      end
-
-      def initialize_copy(orig)
-        @name = orig.name.dup
-        super
-      end
     end
 
     class Comment < Group::Base
