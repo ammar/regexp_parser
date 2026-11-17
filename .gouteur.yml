@@ -2,9 +2,10 @@
 
 repos:
   - uri: https://github.com/jaynetics/js_regex
+    quick: true
 
-  # TODO: re-enable once repper no longer relies on #nesting_level= side-effects
-  # - uri: https://github.com/jaynetics/repper
+  - uri: https://github.com/jaynetics/repper
+    quick: true
 
   - uri: https://github.com/rubocop-hq/rubocop
     tasks: rspec --pattern "**/{,*}regexp{,*,*/**/*}_spec.rb"
@@ -21,6 +22,6 @@ repos:
     before:
       # use contemporary bundler
       - sed -i.bak '/add_development_dependency "bundler"/d' json_schemer.gemspec
-      # prevent a coverage failure when running this individual test
+      # prevent a coverage failure when running a subset of all tests
       - sed -i.bak "s/SimpleCov.start/false and x/g" test/test_helper.rb
     tasks: rake test TEST=test/regex_test.rb

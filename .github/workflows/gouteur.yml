@@ -13,6 +13,7 @@ jobs:
         with:
           ruby-version: 4.0
           bundler-cache: true
+          cache-version: 1
       - name: Install and run ragel
         run: |
           sudo apt-get install -yqq ragel
