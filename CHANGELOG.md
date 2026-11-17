@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.3] - 2026-11-17 - Janosch Müller
+
+### Fixed
+
+- json_schemer compatibility regression of version 2.13.2 (#116)
+  * thanks to [Viktor Schmidt](https://github.com/viktorianer) for the report and [Jules](https://github.com/bonjourjules) for the fix
+
 ## [2.13.2] - 2026-11-16 - Janosch Müller
 
 ### Fixed
