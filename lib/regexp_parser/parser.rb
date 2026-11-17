@@ -70,7 +70,8 @@ class Regexp::Parser
     enabled_options[:i] = true if options & ::Regexp::IGNORECASE    != 0
     enabled_options[:m] = true if options & ::Regexp::MULTILINE     != 0
     enabled_options[:n] = true if options & ::Regexp::NOENCODING    != 0
-    enabled_options[:s] = true if options & ::Regexp::FIXEDENCODING != 0
+    # note: this would be wrong, FIXEDENCODING is any encoding, /s Windows-31J
+    # enabled_options[:s] = true if options & ::Regexp::FIXEDENCODING != 0
     enabled_options[:x] = true if options & ::Regexp::EXTENDED      != 0
     enabled_options
   end
