@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- incorrect setting of option `s` for any fixed-encoding regexp
+  - e.g. `parse(/\p{ascii}/).options` used to return `{ s: true }`
+  - but in Ruby, the s-option specifically indicates Windows-31J encoding
+
 ## [2.13.3] - 2026-11-17 - Janosch Müller
 
 ### Fixed
