@@ -16,3 +16,11 @@ repos:
   - uri: https://github.com/teamcapybara/capybara
     # before: sed -i.bak "s/gem 'bundler', '< 3.0'//g" Gemfile
     tasks: rspec spec/regexp_dissassembler_spec.rb
+
+  - uri: https://github.com/davishmcclurg/json_schemer
+    before:
+      # use contemporary bundler
+      - sed -i.bak '/add_development_dependency "bundler"/d' json_schemer.gemspec
+      # prevent a coverage failure when running this individual test
+      - sed -i.bak "s/SimpleCov.start/false and x/g" test/test_helper.rb
+    tasks: rake test TEST=test/regex_test.rb
