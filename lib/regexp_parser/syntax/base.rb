@@ -55,8 +55,6 @@ module Regexp::Syntax
         freeze_feature_map(removed_features)
       end
 
-      private
-
       def implements(type, tokens)
         (features[type] ||= []).concat(tokens)
         added_features[type] = tokens
@@ -66,6 +64,8 @@ module Regexp::Syntax
         tokens.each { |tok| features[type].delete(tok) }
         removed_features[type] = tokens
       end
+
+      private
 
       def normalize_group(type, token)
         case token
